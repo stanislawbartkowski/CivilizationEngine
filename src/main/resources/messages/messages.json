@@ -1,0 +1,7 @@
+{
+  "COMMANDPREFACEPOINT": "Action : %s (%s), civilization %s, at point (%d,%d) ",
+  "CITYMANAGEMENTPREFACEPOINT": "City Management action : %s (%s), civilization %s, in the city (%d,%d) ",
+  "COMMANDPREFACEWITOUTPOINT": "Action %s (%s), civilization %s ",
+  "ACTIONCANNOTBEEXECUTEDINTHISPHASE": "cannot be executed in this phase of the game. Current phase %s, required phase %s",
+  "DUPLICATECITYACTIONINTHISCITY": "duplicate City Management action in the same city. Previous action %s"
+}

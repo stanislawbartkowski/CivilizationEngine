@@ -1,0 +1,39 @@
+{
+  "players" : [
+    {
+      "civ" : "Germany"
+    }
+  ],
+  "map" : [
+    {
+      "tname" : "TILEGERMANY.json", "p" : { "row" : 0, "col" : 0},"orientation" : "Down"
+    },
+    {
+      "tname" : "TILE2.json", "p" : { "row" : 1, "col" : 0}
+    }
+  ],
+  "market" : {
+    "hutvillages" : [
+      {
+        "hv" : "Hut", "resource" : "Spy"
+      },
+      {
+        "hv" : "Hut", "resource" : "Iron"
+      },
+      {
+        "hv" : "Hut", "resource" : "Silk"
+      },
+      {
+        "hv" : "Village", "resource" : "Uranium"
+      },
+      {
+        "hv" : "Village", "resource" : "Spy"
+      },
+      {
+        "hv" : "Village", "resource" : "Wheat"
+      }
+    ],
+    "hutvillagesused" : []
+  }
+
+}

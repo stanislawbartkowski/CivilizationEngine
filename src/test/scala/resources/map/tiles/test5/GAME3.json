@@ -1,0 +1,11 @@
+{
+  "game": [
+    {"command" : "SETCAPITAL","civ" : "Germany", "p" : {"row":2, "col" : 2}},
+    { "command" : "SETFIGURE", "civ" : "Germany", "p" : {"row":2, "col" : 2},"param":{ "p": {"row":3, "col" : 1}, "figure": "Army"}},
+    { "command" : "SETFIGURE", "civ" : "Germany", "p" : {"row":2, "col" : 2},"param": {"p" : {"row":2, "col" : 1}, "figure": "Scout"}},
+    { "command" : "ENDOFPHASE","civ" : "Germany", "param" : "StartOfTurn" },
+    { "command" : "ENDOFPHASE","civ" : "Germany", "param" : "Trade" },
+    { "command" : "BUYFIGURE", "civ" : "Germany", "p" : {"row":2, "col" : 2},"param": {"p" : {"row":1, "col" : 1}, "figure": "Army"}}
+
+  ]
+}

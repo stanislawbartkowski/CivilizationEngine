@@ -1,0 +1,130 @@
+package civilization.io
+
+import civilization.objects._
+import play.api.libs.json._
+import play.api.libs.functional.syntax._
+import civilization.gameboard._
+import play.api.libs.json
+
+package object tojson {
+
+  //  class EnumerationWrites[E <: Enumeration] extends Writes[E#Value] {
+  //    def writes(value:E#Value):JsValue = if (value == null) JsNull else JsString(value.toString)
+  //  }
+
+
+  implicit val hutVillageWrites: Writes[HutVillage] = (
+    (JsPath \ S.hutvillage).write[HutVillage.T] and
+      (JsPath \ S.resource).write[Resource.T]
+    ) (unlift(HutVillage.unapply))
+
+  implicit val pointWrites: Writes[P] = (
+    (JsPath \ S.row).write[Int] and
+      (JsPath \ S.col).write[Int]
+    ) (unlift(P.unapply))
+
+  implicit val cityWrites: Writes[City] = (
+    (JsPath \ S.civ).write[Civilization.T] and
+      (JsPath \ S.citytype).write[City.T]
+    ) (unlift(City.unapply))
+
+
+  //  implicit val hutVillageWrites: Writes[HutVillage] = new Writes[HutVillage] {
+  //
+  //    def writes(m : HutVillage) = Json.obj(
+  //      "hv" -> m.hv,
+  //      "resource" -> {if (m.resource == null) JsNull else m.resource }
+  //    )
+  //  }
+
+  implicit val marketWrites: Writes[Market] = new Writes[Market] {
+
+    def writes(m: Market) = Json.obj(
+      S.hutvillages -> m.hv,
+      S.hutvillagesused -> m.hvused
+    )
+  }
+
+  implicit val playertechnologyWrites: Writes[PlayerTechnology] = new Writes[PlayerTechnology] {
+    def writes(m: PlayerTechnology) = Json.obj(
+      S.tech -> m.tech
+    )
+  }
+
+  implicit val playerdeckWrites: Writes[PlayerDeck] = new Writes[PlayerDeck] {
+    def writes(m: PlayerDeck) = Json.obj(
+      S.civ -> m.civ,
+      S.tech -> m.tech
+    )
+  }
+
+  implicit val playerfiguresWrites: Writes[PlayerFigures] = new Writes[PlayerFigures] {
+    def writes(m: PlayerFigures) = Json.obj(
+      S.civ -> {
+        if (m.civ == null) json.JsNull else m.civ
+      },
+      S.numberofArmies -> m.numberofArmies,
+      S.numberofScouts -> m.numberofScouts
+    )
+  }
+
+  implicit val mapsqaureWrites: Writes[MapSquare] = new Writes[MapSquare] {
+    def writes(m: MapSquare) = Json.obj(
+      S.hutvillage -> {
+        if (m.hv == null) json.JsNull else m.hv
+      },
+      S.city -> {
+        if (m.city == null) json.JsNull else m.city
+      }
+    )
+  }
+
+  implicit val gameboardWrites: Writes[GameBoard] = new Writes[GameBoard] {
+    def writes(m: GameBoard) = Json.obj(
+      S.players -> m.players,
+      S.map -> m.map.map,
+      S.market -> m.market
+    )
+  }
+
+  implicit val gameboardFigures: Writes[Figures] = new Writes[Figures] {
+    def writes(f:Figures) = Json.obj(
+      S.numberofArmies -> f.numberofArmies,
+      S.numberofScouts -> f.numberofScouts
+    )
+  }
+
+  implicit val maptileWrites: Writes[MapTile] = new Writes[MapTile] {
+    def writes(m: MapTile) = Json.obj(
+      S.tilename -> m.tname,
+      S.p -> m.p,
+      S.orientation -> {
+        if (m.orientation == null) json.JsNull else m.orientation
+      },
+      S.squares -> m.mapsquares
+    )
+  }
+
+  def writeCivilizationT(c: Civilization.T): JsValue = Json.toJson(c)
+
+  def writeHutVillage(h: HutVillage): JsValue = Json.toJson(h)
+
+  def writeMarket(m: Market): JsValue = Json.toJson(m)
+
+  def writePlayerTechnology(t: PlayerTechnology): JsValue = Json.toJson(t)
+
+  def writeSeqPlayerDeck(d: Seq[PlayerDeck]): JsValue = Json.toJson(d)
+
+  def writeSeqOfMapTile(d: Seq[MapTile]): JsValue = Json.toJson(d)
+
+  def writesGameBoard(d: GameBoard): JsValue = Json.toJson(d)
+
+  def writesP(p : P) : JsValue = Json.toJson(p)
+
+  def writesFigures(f : Figures) = Json.toJson(f)
+
+  def writeListOfCiv(filt: Civilization.T => Boolean): JsValue = {
+    val j: Seq[Civilization.T] = Civilization.values.toList.filter(filt)
+    Json.toJson(j)
+  }
+}

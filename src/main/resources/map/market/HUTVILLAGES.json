@@ -1,0 +1,20 @@
+[
+  {
+    "hv" : "Hut", "resource" : "Spy"
+  },
+  {
+    "hv" : "Hut", "resource" : "Iron"
+  },
+  {
+    "hv" : "Hut", "resource" : "Silk"
+  },
+  {
+    "hv" : "Village", "resource" : "Uranium"
+  },
+  {
+    "hv" : "Village", "resource" : "Spy"
+  },
+  {
+    "hv" : "Village", "resource" : "Wheat"
+  }
+]
