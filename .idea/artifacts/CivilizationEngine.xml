@@ -1,8 +1,8 @@
 <component name="ArtifactManager">
-  <artifact type="jar" name="TestC:jar">
-    <output-path>$PROJECT_DIR$/out/artifacts/TestC_jar</output-path>
-    <root id="archive" name="TestC.jar">
-      <element id="module-output" name="testc-build" />
+  <artifact type="jar" name="CivilizationEngine">
+    <output-path>$PROJECT_DIR$/out/artifacts/CivilizationEngine</output-path>
+    <root id="archive" name="CivilizationEngine.jar">
+      <element id="module-output" name="civilizationengine-build" />
       <element id="module-output" name="civilizationengine" />
       <element id="extracted-dir" path="$USER_HOME$/.ivy2/cache/joda-time/joda-time/jars/joda-time-2.9.9.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$USER_HOME$/.ivy2/cache/com.fasterxml.jackson.datatype/jackson-datatype-jsr310/bundles/jackson-datatype-jsr310-2.8.9.jar" path-in-jar="/" />
