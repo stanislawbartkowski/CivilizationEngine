@@ -21,7 +21,7 @@ The solution is available as Intellij IDEA project.Steps to recreate:
 - Parent Directory : according to your local environment
 - Directory Name : CivilizationEngine
 
- ![hello][https://github.com/stanislawbartkowski/CivilizationEngine/blob/master/screenshots/Zrzut%20ekranu%20z%202017-08-22%2023-10-06.png|align=center]
+ ![](screenshots/Zrzut%20ekranu%20z%202017-08-22%2023-10-06.png|align=center)
 
 
 
