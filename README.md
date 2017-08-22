@@ -20,7 +20,8 @@ The solution is available as Intellij IDEA project.Steps to recreate:
 - Git Repository URL : https://github.com/stanislawbartkowski/CivilizationEngine
 - Parent Directory : according to your local environment
 - Directory Name : CivilizationEngine
-- 
+
+[[screenshots/Zrzut ekranu z 2017-08-22 23-10-06.png]]
 
 
 
