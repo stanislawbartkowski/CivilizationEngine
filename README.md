@@ -44,10 +44,10 @@ The solution is available as Intellij IDEA project.Steps to recreate:
 | Method | Parameters | Result | Example | Description |
 | -------|:----------:| :-----:|:-------:|:------------|
 | getData(LISTOFCIV | null | List of civilizations available | val l : String = getData(LISTOFCIV,null) | Should be called at then beginning of game to allow players to choose civilization they want to run
-| getData(REGISTERGAME | civilization, string | Token, string | val token:String = getData(REGISTERGAME,"Germany") | The command initialize map, register civilization as game owner and return unique token. This token should be used in the next calls
+| getData(REGISTERGAME | civilization, string | Token, string | val token:String = getData(REGISTERGAME,"Germany") | The command initialize map, register civilization as game owner and return the unique token. The token should be used in the next calls
 | getData(GETBOARDGAME | token, string | Current state of game as JSON object | val board:String = getData(GETBOARDGAME,"xxx") | Returns the gameboard reflecting the current state. 
 | executeCommand | token: String, action:String command to execute, row,col : Int: position on map, jsparam : additional parameters for command to execute. Content is specific for a particular command | null if success otherwise the error description | Executes command and moves game from one state to another. After success call getData(GETBOARDGAME) to receive current game state.
-| itemizeCommand | token :String, command String | Returns list of possible parameters for the command. The content depends on a particular command | val l : String = itemizeCommand("xxxx","SETCAPITAL") | Returns more detailed information. For instance: if the command is SETCAPITAL the command will return a list of all points where the capital can be build. Can be used by user interface to customize screen.
+| itemizeCommand | token :String, command String | Returns list of possible parameters for the command. The content depends on a particular command | val l : String = itemizeCommand("xxxx","SETCAPITAL") | Returns more detailed information. For instance: if the command is SETCAPITAL the command will return a list of all points where the capital can be built. Can be used by user interface to customize screen.
 
 
 
