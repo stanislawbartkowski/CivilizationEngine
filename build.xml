@@ -2,7 +2,7 @@
 <project name="civilizationengine" default="all">
   
   
-  <property file="civilizationengine.properties"/>
+  <property file="build.properties"/>
   <!-- Uncomment the following property if no tests compilation is needed -->
   <!-- 
   <property name="skip.tests" value="true"/>
@@ -19,17 +19,15 @@
     <exclude name="**/*.pyc/**"/>
     <exclude name="**/*.pyo/**"/>
     <exclude name="**/*.rbc/**"/>
+    <exclude name="**/*.yarb/**"/>
     <exclude name="**/*~/**"/>
     <exclude name="**/.DS_Store/**"/>
     <exclude name="**/.git/**"/>
     <exclude name="**/.hg/**"/>
     <exclude name="**/.svn/**"/>
     <exclude name="**/CVS/**"/>
-    <exclude name="**/RCS/**"/>
-    <exclude name="**/SCCS/**"/>
     <exclude name="**/__pycache__/**"/>
     <exclude name="**/_svn/**"/>
-    <exclude name="**/rcs/**"/>
     <exclude name="**/vssver.scc/**"/>
     <exclude name="**/vssver2.scc/**"/>
   </patternset>
@@ -59,22 +57,22 @@
   <property name="jdk.bin.1.8" value="${jdk.home.1.8}/bin"/>
   <path id="jdk.classpath.1.8">
     <fileset dir="${jdk.home.1.8}">
-      <include name="jre/lib/charsets.jar"/>
-      <include name="jre/lib/ext/cldrdata.jar"/>
-      <include name="jre/lib/ext/dnsns.jar"/>
-      <include name="jre/lib/ext/icedtea-sound.jar"/>
-      <include name="jre/lib/ext/jaccess.jar"/>
-      <include name="jre/lib/ext/localedata.jar"/>
-      <include name="jre/lib/ext/nashorn.jar"/>
-      <include name="jre/lib/ext/sunec.jar"/>
-      <include name="jre/lib/ext/sunjce_provider.jar"/>
-      <include name="jre/lib/ext/sunpkcs11.jar"/>
-      <include name="jre/lib/ext/zipfs.jar"/>
-      <include name="jre/lib/jce.jar"/>
-      <include name="jre/lib/jsse.jar"/>
-      <include name="jre/lib/management-agent.jar"/>
-      <include name="jre/lib/resources.jar"/>
-      <include name="jre/lib/rt.jar"/>
+      <include name="../java-1.8.0-openjdk-amd64/jre/lib/charsets.jar"/>
+      <include name="../java-1.8.0-openjdk-amd64/jre/lib/ext/cldrdata.jar"/>
+      <include name="../java-1.8.0-openjdk-amd64/jre/lib/ext/dnsns.jar"/>
+      <include name="../java-1.8.0-openjdk-amd64/jre/lib/ext/icedtea-sound.jar"/>
+      <include name="../java-1.8.0-openjdk-amd64/jre/lib/ext/jaccess.jar"/>
+      <include name="../java-1.8.0-openjdk-amd64/jre/lib/ext/localedata.jar"/>
+      <include name="../java-1.8.0-openjdk-amd64/jre/lib/ext/nashorn.jar"/>
+      <include name="../java-1.8.0-openjdk-amd64/jre/lib/ext/sunec.jar"/>
+      <include name="../java-1.8.0-openjdk-amd64/jre/lib/ext/sunjce_provider.jar"/>
+      <include name="../java-1.8.0-openjdk-amd64/jre/lib/ext/sunpkcs11.jar"/>
+      <include name="../java-1.8.0-openjdk-amd64/jre/lib/ext/zipfs.jar"/>
+      <include name="../java-1.8.0-openjdk-amd64/jre/lib/jce.jar"/>
+      <include name="../java-1.8.0-openjdk-amd64/jre/lib/jsse.jar"/>
+      <include name="../java-1.8.0-openjdk-amd64/jre/lib/management-agent.jar"/>
+      <include name="../java-1.8.0-openjdk-amd64/jre/lib/resources.jar"/>
+      <include name="../java-1.8.0-openjdk-amd64/jre/lib/rt.jar"/>
     </fileset>
   </path>
   
@@ -144,9 +142,6 @@
   <path id="library.sbt:_org.typelevel:macro-compat_2.12:1.1.1:jar.classpath">
     <pathelement location="${basedir}/../../.ivy2/cache/org.typelevel/macro-compat_2.12/jars/macro-compat_2.12-1.1.1.jar"/>
   </path>
-  
-  
-  <!-- Global Libraries -->
   
   <!-- Modules -->
   
@@ -657,6 +652,10 @@
     <exclude name="target/scala-2.10/sbt-0.13/**"/>
     <exclude name="target/scala-2.10/sbt-0.13/resolution-cache/**"/>
     <exclude name="target/scala-2.10/sbt-0.13/resolution-cache/default/**"/>
+    <exclude name="target/scala-2.10/sbt-0.13/resolution-cache/default/testc-build/**"/>
+    <exclude name="target/scala-2.10/sbt-0.13/resolution-cache/default/testc-build/scala_2.10/**"/>
+    <exclude name="target/scala-2.10/sbt-0.13/resolution-cache/default/testc-build/scala_2.10/sbt_0.13/**"/>
+    <exclude name="target/scala-2.10/sbt-0.13/resolution-cache/default/testc-build/scala_2.10/sbt_0.13/0.1-SNAPSHOT/**"/>
     <exclude name="target/scala-2.10/sbt-0.13/resolution-cache/default/civilizationengine-build/**"/>
     <exclude name="target/scala-2.10/sbt-0.13/resolution-cache/default/civilizationengine-build/scala_2.10/**"/>
     <exclude name="target/scala-2.10/sbt-0.13/resolution-cache/default/civilizationengine-build/scala_2.10/sbt_0.13/**"/>
@@ -752,6 +751,10 @@
     <exclude name="target/idea-classes/target/scala-2.10/sbt-0.13/**"/>
     <exclude name="target/idea-classes/target/scala-2.10/sbt-0.13/resolution-cache/**"/>
     <exclude name="target/idea-classes/target/scala-2.10/sbt-0.13/resolution-cache/default/**"/>
+    <exclude name="target/idea-classes/target/scala-2.10/sbt-0.13/resolution-cache/default/testc-build/**"/>
+    <exclude name="target/idea-classes/target/scala-2.10/sbt-0.13/resolution-cache/default/testc-build/scala_2.10/**"/>
+    <exclude name="target/idea-classes/target/scala-2.10/sbt-0.13/resolution-cache/default/testc-build/scala_2.10/sbt_0.13/**"/>
+    <exclude name="target/idea-classes/target/scala-2.10/sbt-0.13/resolution-cache/default/testc-build/scala_2.10/sbt_0.13/0.1-SNAPSHOT/**"/>
     <exclude name="target/idea-classes/target/scala-2.10/sbt-0.13/resolution-cache/default/civilizationengine-build/**"/>
     <exclude name="target/idea-classes/target/scala-2.10/sbt-0.13/resolution-cache/default/civilizationengine-build/scala_2.10/**"/>
     <exclude name="target/idea-classes/target/scala-2.10/sbt-0.13/resolution-cache/default/civilizationengine-build/scala_2.10/sbt_0.13/**"/>
