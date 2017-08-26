@@ -11,14 +11,14 @@ It is the beginning, for the time being only the following actions are implement
 * figures movement
 * tile revealing
 
-The engine does not contain any user interface, the user interface is developed as a separate project. It keeps all game logic and state and executes commands to move from one game stage to another and provides current state to the clients to keep user interface synchronized.
+The engine does not contain any user interface, the user interface is developed as a separate project. [https://github.com/stanislawbartkowski/CivilizationUI] It keeps all game logic and state and executes commands to move from one game stage to another and provides the current state to the clients to keep user interface synchronized.
 Only single player test game is available.
 The output artifact is CivilizationEngine.jar
 The only dependency is play_json (https://www.playframework.com/documentation/2.6.x/ScalaJson). Check build.sbt file.
 
 # The project
 
-The solution is available as Intellij IDEA project.Steps to recreate:
+The solution is available as Intellij IDEA project. Steps to recreate:
 * VCS -> Checkout from Version Control -> Git
 - Git Repository URL : https://github.com/stanislawbartkowski/CivilizationEngine
 - Parent Directory : according to your local environment
@@ -38,7 +38,7 @@ The solution is available as Intellij IDEA project.Steps to recreate:
 * pick up the result: ls out/artifacts/CivilizationEngine/
 IMPORTANT: seems not working properly, IntelliJ ant build does not generate scalac tasks
 
-# Brief interface result
+# Brief interface description
 
 * package civilization.I. All parameters and result are passed as JSON objects
 
