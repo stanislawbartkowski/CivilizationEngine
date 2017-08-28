@@ -1,14 +1,13 @@
 package civilization.test
 
+import civilization.I._
 import civilization.gameboard.{Figures, GameBoard}
 import civilization.helper.AllowedCommands.{PossibleMove, allowedCommands, itemizeForMove, itemizeforStartOfMove}
-import org.scalatest.FunSuite
 import civilization.helper._
-import civilization.objects._
-import civilization.I._
-import play.api.libs.json._
-import civilization.io.tojson._
 import civilization.io.fromjson._
+import civilization.objects._
+import org.scalatest.FunSuite
+import play.api.libs.json._
 
 
 class Test9 extends FunSuite {
@@ -275,6 +274,23 @@ class Test9 extends FunSuite {
     val a : JsArray = Json.parse(s).as[JsArray]
     println(a)
     assert(a.value.length == 1)
+  }
+
+  test("Execute command, check two figures ending on the sampe square") {
+    var b: GameBoard = Helper.readBoardAndPlay("test9/BOARDGAME1.json", "test9/GAME7.json")
+    val token: String = registerGame(b, Civilization.Rome)
+    var s : String = executeCommand(token, "STARTMOVE", 3, 1, "{ \"numberofArmies\" : 1, \"numberofScouts\" : 0}")
+    println(s)
+    assert (s == null)
+    s = executeCommand(token, "MOVE", 4, 1,null)
+    println(s)
+    assert (s == null)
+    s = executeCommand(token, "MOVE", 4, 2,null)
+    println(s)
+    assert (s == null)
+    s = executeCommand(token, "ENDOFMOVE", -1, -1,null)
+    println(s)
+    assert (s == null)
   }
 
   }

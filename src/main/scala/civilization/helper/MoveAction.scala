@@ -1,8 +1,7 @@
 package civilization.helper
 
-import civilization.action.{AbstractCommand, Command}
-import civilization.gameboard.{Figures, GameBoard, PlayerFigures}
-import civilization.io.fromjson.toFigures
+import civilization.action.AbstractCommand
+import civilization.gameboard.{Figures, GameBoard}
 import civilization.message.{M, Mess}
 import civilization.objects._
 
@@ -46,8 +45,9 @@ object MoveAction {
     val figdesc: (P, Figures) = (s.p, fig)
     if (s.sm.terrain == Terrain.Water && li.waterstopallowed) return Some(Mess(M.CANNOTSTOPINWATER, figdesc))
     if (s.s.city != null && s.s.city.civ == civ) return Some(Mess(M.CANNOTSTOPINCITY, figdesc))
-    val numb = fig.numberofArmies + fig.numberofScouts + s.s.figures.numberofArmies + s.s.figures.numberofScouts
-    if (numb > li.stackinglimit) return Some(Mess(M.STACKINGSIZEEXCEEDED, (figdesc, li.stackinglimit, numb)))
+    // 2017/08/28 figures already on the point
+//    val numb = fig.numberofArmies + fig.numberofScouts + s.s.figures.numberofArmies + s.s.figures.numberofScouts
+//    if (numb > li.stackinglimit) return Some(Mess(M.STACKINGSIZEEXCEEDED, (figdesc, li.stackinglimit, numb)))
     None
   }
 
