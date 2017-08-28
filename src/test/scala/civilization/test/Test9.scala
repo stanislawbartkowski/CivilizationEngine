@@ -192,16 +192,16 @@ class Test9 extends FunSuite {
     var a: Seq[Command.T] = allowedCommands(b, Civilization.Rome)
     println(a)
     assert(a.find(_ == Command.SETCITY).isDefined)
-    var s:String = executeCommand(token, "SETCITY", 4, 2, null)
+    var s: String = executeCommand(token, "SETCITY", 4, 2, null)
     println(s)
     b = getBoardForToken(token)
-    val ci : Seq[MapSquareP] = citiesForCivilization(b,Civilization.Rome)
+    val ci: Seq[MapSquareP] = citiesForCivilization(b, Civilization.Rome)
     println(ci)
     assert(ci.length == 2)
-    var trade : Int = numberofTrade(b,Civilization.Rome)
+    var trade: Int = numberofTrade(b, Civilization.Rome)
     println(trade)
     assert(trade == 5)
-    val figures : Seq[MapSquareP] = getFigures(b,Civilization.Rome)
+    val figures: Seq[MapSquareP] = getFigures(b, Civilization.Rome)
     figures.foreach(println)
     assert(figures.length == 1)
     var count: (Int, Int) = getNumberOfArmies(b, Civilization.Rome)
@@ -221,7 +221,7 @@ class Test9 extends FunSuite {
     s = executeCommand(token, "BUYSCOUT", 4, 2, "{\"col\" : 2, \"row\" : 5}")
     assert(s == null)
     b = getBoardForToken(token)
-    a  = allowedCommands(b, Civilization.Rome)
+    a = allowedCommands(b, Civilization.Rome)
     println(a)
     assert(a.length == 1)
   }
@@ -229,19 +229,19 @@ class Test9 extends FunSuite {
   test("Execute command, check movement to starting point") {
     var b: GameBoard = Helper.readBoardAndPlay("test9/BOARDGAME1.json", "test9/GAME3.json")
     val token: String = registerGame(b, Civilization.Rome);
-    val curr : Option[PlayerMove] = getCurrentMove(b,Civilization.Rome)
+    val curr: Option[PlayerMove] = getCurrentMove(b, Civilization.Rome)
     println(curr)
-    assert(curr.get.lastp == P(0,2))
+    assert(curr.get.lastp == P(0, 2))
     var s: String = executeCommand(token, "MOVE", 1, 3, null)
     println(s)
-    assert (s != null)
+    assert(s != null)
     // movement to the same point
     s = executeCommand(token, "MOVE", 0, 2, null)
     println(s)
-    assert (s != null)
+    assert(s != null)
     s = executeCommand(token, "MOVE", 1, 2, null)
     println(s)
-    assert (s == null)
+    assert(s == null)
   }
 
   test("Execute command, revealtime itemize") {
@@ -250,7 +250,7 @@ class Test9 extends FunSuite {
     var a: Seq[Command.T] = allowedCommands(b, Civilization.Rome)
     println(a)
     // get reveal itemized
-    val s : String  = itemizeCommand(token,"REVEALTILE")
+    val s: String = itemizeCommand(token, "REVEALTILE")
     println(s)
     assert(s != null)
     // TODO: more detailed test
@@ -258,20 +258,20 @@ class Test9 extends FunSuite {
 
   test("Check itemize for setcapital") {
     val token: String = getData(REGISTEROWNER, "Germany")
-    val s: String = itemizeCommand(token,"SETCAPITAL")
+    val s: String = itemizeCommand(token, "SETCAPITAL")
     println(s)
     assert(s != null)
-    val a : JsArray = Json.parse(s).as[JsArray]
+    val a: JsArray = Json.parse(s).as[JsArray]
     assert(a.value.length == 4)
   }
 
   test("Execute command, check itemized for SetCity") {
     var b: GameBoard = Helper.readBoardAndPlay("test9/BOARDGAME1.json", "test9/GAME5.json")
     val token: String = registerGame(b, Civilization.Rome)
-    val s: String = itemizeCommand(token,"SETCITY")
+    val s: String = itemizeCommand(token, "SETCITY")
     println(s)
     assert(s != null)
-    val a : JsArray = Json.parse(s).as[JsArray]
+    val a: JsArray = Json.parse(s).as[JsArray]
     println(a)
     assert(a.value.length == 1)
   }
@@ -279,18 +279,26 @@ class Test9 extends FunSuite {
   test("Execute command, check two figures ending on the sampe square") {
     var b: GameBoard = Helper.readBoardAndPlay("test9/BOARDGAME1.json", "test9/GAME7.json")
     val token: String = registerGame(b, Civilization.Rome)
-    var s : String = executeCommand(token, "STARTMOVE", 3, 1, "{ \"numberofArmies\" : 1, \"numberofScouts\" : 0}")
+    var s: String = executeCommand(token, "STARTMOVE", 3, 1, "{ \"numberofArmies\" : 1, \"numberofScouts\" : 0}")
     println(s)
-    assert (s == null)
-    s = executeCommand(token, "MOVE", 4, 1,null)
+    assert(s == null)
+    s = executeCommand(token, "MOVE", 4, 1, null)
     println(s)
-    assert (s == null)
-    s = executeCommand(token, "MOVE", 4, 2,null)
+    assert(s == null)
+    s = executeCommand(token, "MOVE", 4, 2, null)
     println(s)
-    assert (s == null)
-    s = executeCommand(token, "ENDOFMOVE", -1, -1,null)
+    assert(s == null)
+    s = executeCommand(token, "ENDOFMOVE", -1, -1, null)
     println(s)
-    assert (s == null)
+    assert(s == null)
   }
 
+  test("Execute command, check two figures ending on the sampe square and available commands") {
+    var b: GameBoard = Helper.readBoardAndPlay("test9/BOARDGAME1.json", "test9/GAME8.json")
+    val token: String = registerGame(b, Civilization.Rome)
+    var a: Seq[Command.T] = allowedCommands(b, Civilization.Rome)
+    println(a)
+    assert(a.find(_ == Command.STARTMOVE).isEmpty)
   }
+
+}
