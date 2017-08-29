@@ -13,8 +13,10 @@ import civilization.io.readdir.GenBoard.genBoard
 
 class Test6 extends FunSuite{
 
+  Helper.I
+
   test("Start game") {
-    val b : GameBoard = Helper.readBoardAndPlay("test5/BOARDGAME1.json","test6/GAME1.json")
+    val b : GameBoard = Helper.readBoardAndPlay("test5/BOARDGAME1.json","test6/GAME1.json",Civilization.Germany)
     val trade : Int = numberofTrade(b,Civilization.Germany)
     println(trade)
     var com: Command = constructCommand(Command.RESEARCH, Civilization.Germany, null, toJ("\"Irigation\""))
@@ -32,7 +34,7 @@ class Test6 extends FunSuite{
 
   test("Start game next research") {
     println("======== next test")
-    val b : GameBoard = Helper.readBoardAndPlay("test5/BOARDGAME1.json","test6/GAME2.json")
+    val b : GameBoard = Helper.readBoardAndPlay("test5/BOARDGAME1.json","test6/GAME2.json",Civilization.Germany)
     var com:Command = constructCommand(Command.RESEARCH, Civilization.Germany, null, toJ("\"HorsebackRiding\""))
     var m:Mess = playCommand(b,com)
     println(m)

@@ -14,6 +14,8 @@ import civilization.io.fromjson._
 
 class Test8 extends FunSuite {
 
+  Helper.I
+
   test("Execute command, check available") {
     val token: String = getData(REGISTEROWNER, "Germany")
     var g: GameBoard = getBoardForToken(token);
@@ -40,6 +42,7 @@ class Test8 extends FunSuite {
     val token: String = getData(REGISTEROWNER, "Germany")
     var g: GameBoard = getBoardForToken(token);
     var s: String = executeCommand(token, "SETCAPITAL", 2, 2, null)
+    g = getBoardForToken(token);
     var l: Seq[Command.T] = allowedCommands(g, Civilization.Germany)
     println(l)
     assert(l.find(_ == Command.SETSCOUT).isDefined)
@@ -47,12 +50,14 @@ class Test8 extends FunSuite {
     s = executeCommand(token, "SETARMY", 2, 2, "{\"col\" : 1, \"row\" : 2}")
     println(s)
     assert(s == null)
+    g = getBoardForToken(token);
     l = allowedCommands(g, Civilization.Germany)
     println(l)
     assert(l.find(_ == Command.SETSCOUT).isDefined)
     assert(l.find(_ == Command.SETARMY).isEmpty)
     s = executeCommand(token, "SETSCOUT", 2, 2, "{\"col\" : 1, \"row\" : 1}")
     println(s)
+    g = getBoardForToken(token);
     l = allowedCommands(g, Civilization.Germany)
     println(l)
     assert(l.find(_ == Command.SETSCOUT).isEmpty)
@@ -65,6 +70,7 @@ class Test8 extends FunSuite {
     var s: String = executeCommand(token, "SETCAPITAL", 1, 2, null)
     println(s)
     assert(s == null)
+    g = getBoardForToken(token);
     var l: Seq[Command.T] = allowedCommands(g, Civilization.Rome)
     println(l)
     var a: Seq[(P, P)] = itemizeForSetBuyFigures(g, Civilization.Rome, Command.SETARMY)

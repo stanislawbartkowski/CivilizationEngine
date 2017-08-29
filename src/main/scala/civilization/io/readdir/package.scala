@@ -54,12 +54,9 @@ package object readdir {
     g
   }
 
-  def readPlay(j: JsValue): Play.Play = {
+  def readPlay(j: JsValue): Seq[CommandValues] = {
     val js: JsValue = (j \ "game").get
-    val l: Seq[CommandValues] = toSeqParams(js)
-    val p: Play.Play = new Play.Play()
-    p.commands = l.map(co => constructCommand(co.command, co.civ, co.p, co.param))
-    p
+    toSeqParams(js)
   }
 
   def readTechnologies: Seq[Technology] = {

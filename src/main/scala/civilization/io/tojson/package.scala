@@ -88,7 +88,7 @@ package object tojson {
   }
 
   implicit val gameboardFigures: Writes[Figures] = new Writes[Figures] {
-    def writes(f:Figures) = Json.obj(
+    def writes(f: Figures) = Json.obj(
       S.numberofArmies -> f.numberofArmies,
       S.numberofScouts -> f.numberofScouts
     )
@@ -105,6 +105,26 @@ package object tojson {
     )
   }
 
+  //  implicit val commandparamReads: Reads[CommandValues] = new Reads[CommandValues] {
+  //    def reads(json: JsValue): JsResult[CommandValues] = {
+  //      val command: Command.T = (json \ S.command).as[Command.T]
+  //      val civ: Civilization.T = (json \ S.civ).as[Civilization.T]
+  //      val p: P = (json \ S.p).asOpt[P].getOrElse(null)
+  //      val param: JsValue = (json \ S.param).asOpt[JsValue].getOrElse(null)
+  //      JsSuccess(CommandValues(command, civ, p, param))
+  //    }
+  //  }
+
+  implicit val commandparamWrites: Writes[CommandValues] = new Writes[CommandValues] {
+    def writes(m: CommandValues) = Json.obj(
+      S.command -> m.command,
+      S.civ -> m.civ,
+      S.p -> { if (m.p == null) json.JsNull else m.p },
+      S.param -> { if (m.param == null) json.JsNull else m.param }
+    )
+  }
+
+
   def writeCivilizationT(c: Civilization.T): JsValue = Json.toJson(c)
 
   def writeHutVillage(h: HutVillage): JsValue = Json.toJson(h)
@@ -119,12 +139,14 @@ package object tojson {
 
   def writesGameBoard(d: GameBoard): JsValue = Json.toJson(d)
 
-  def writesP(p : P) : JsValue = Json.toJson(p)
+  def writesP(p: P): JsValue = Json.toJson(p)
 
-  def writesFigures(f : Figures) = Json.toJson(f)
+  def writesFigures(f: Figures) = Json.toJson(f)
 
   def writeListOfCiv(filt: Civilization.T => Boolean): JsValue = {
     val j: Seq[Civilization.T] = Civilization.values.toList.filter(filt)
     Json.toJson(j)
   }
+
+  def writeCommandValues(m: CommandValues): JsValue = Json.toJson(m)
 }

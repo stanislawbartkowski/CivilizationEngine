@@ -10,6 +10,8 @@ import civilization.message.Mess
 
 class Test4 extends FunSuite {
 
+  Helper.I
+
   test("Check city") {
     val b: GameBoard = Helper.getBoard("test2/BOARDGAME1.json")
     revealTile(b, Orientation.Down, P(0, 0))

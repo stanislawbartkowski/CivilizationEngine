@@ -7,6 +7,8 @@ import org.scalatest.FunSuite
 
 class Test3 extends FunSuite{
 
+  Helper.I
+
   test("Test get hut from market") {
     val b: GameBoard = Helper.getBoard("test2/BOARDGAME1.json")
     val prev : Int = b.market.hv.length

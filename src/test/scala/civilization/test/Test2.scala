@@ -7,6 +7,8 @@ import civilization.helper._
 
 class Test2 extends FunSuite {
 
+  Helper.I
+
   test("Test board") {
     val b: GameBoard = Helper.getBoard("test2/BOARDGAME1.json")
     val li: Seq[P] = allPoints(b)

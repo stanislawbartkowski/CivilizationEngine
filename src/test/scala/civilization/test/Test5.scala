@@ -12,8 +12,10 @@ import civilization.message._
 
 class Test5 extends FunSuite {
 
+  Helper.I
+
   test("Start game") {
-    val b : GameBoard = Helper.readBoardAndPlay("test5/BOARDGAME1.json","test5/GAME1.json")
+    val b : GameBoard = Helper.readBoardAndPlay("test5/BOARDGAME1.json","test5/GAME1.json",Civilization.Germany)
     assert(isCapitalBuild(b, Civilization.Germany))
     assert(citiesForCivilization(b, Civilization.Germany).length == 1)
     //    squaresAround(b,P(2,2)).foreach(println)
@@ -47,7 +49,7 @@ class Test5 extends FunSuite {
   }
 
   test("Start game 1") {
-    val b: GameBoard = Helper.readBoardAndPlay("test5/BOARDGAME1.json", "test5/GAME2.json")
+    val b: GameBoard = Helper.readBoardAndPlay("test5/BOARDGAME1.json", "test5/GAME2.json",Civilization.Germany)
     val prod: Int = getProductionForCity(b, P(2, 2))
     println(prod)
     assert(prod == 5)
@@ -83,7 +85,7 @@ class Test5 extends FunSuite {
   }
 
   test("Start game 2") {
-    val b: GameBoard = Helper.readBoardAndPlay("test5/BOARDGAME1.json", "test5/GAME3.json")
+    val b: GameBoard = Helper.readBoardAndPlay("test5/BOARDGAME1.json", "test5/GAME3.json",Civilization.Germany)
     var js: String = "{ \"p\": {\"row\":1, \"col\" : 2}, \"figure\": \"Army\"}"
     var j: JsValue = toJ(js)
     var com1: Command = constructCommand(Command.BUYFIGURE, Civilization.Germany, P(2, 2), j)
@@ -123,7 +125,7 @@ class Test5 extends FunSuite {
   }
 
   test("Start game 4") {
-    val b: GameBoard = Helper.readBoardAndPlay("test5/BOARDGAME1.json", "test5/GAME4.json")
+    val b: GameBoard = Helper.readBoardAndPlay("test5/BOARDGAME1.json", "test5/GAME4.json",Civilization.Germany)
     println("Test no 4 =========================")
     var com2: Command = constructCommand(Command.STARTMOVE, Civilization.Germany,P(1,1), toJ("{\"numberofArmies\" : 1, \"numberofScouts\" : 0}"))
     var m:Mess  = playCommand(b,com2)
@@ -183,7 +185,7 @@ class Test5 extends FunSuite {
   }
 
   test("Start game 5") {
-    val b: GameBoard = Helper.readBoardAndPlay("test5/BOARDGAME1.json", "test5/GAME5.json")
+    val b: GameBoard = Helper.readBoardAndPlay("test5/BOARDGAME1.json", "test5/GAME5.json",Civilization.Germany)
     println("Test no 5 =========================")
     var com: Command = constructCommand(Command.REVEALTILE, Civilization.Germany,P(1,0),toJ("\"Left\""))
     var m:Mess  = playCommand(b,com)
@@ -221,7 +223,7 @@ class Test5 extends FunSuite {
   }
 
   test("Start game 6") {
-    val b: GameBoard = Helper.readBoardAndPlay("test5/BOARDGAME2.json", "test5/GAME6.json")
+    val b: GameBoard = Helper.readBoardAndPlay("test5/BOARDGAME2.json", "test5/GAME6.json",Civilization.Germany)
     println("Test no 6 =========================")
     var com : Command = constructCommand(Command.STARTMOVE, Civilization.Germany,P(3,1), toJ("{\"numberofArmies\" : 1}"))
     var m : Mess  = playCommand(b,com)

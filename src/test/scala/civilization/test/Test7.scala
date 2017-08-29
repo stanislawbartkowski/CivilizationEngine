@@ -15,6 +15,8 @@ import civilization.io.readdir.GenBoard.genBoard
 
 class Test7 extends FunSuite {
 
+  Helper.I
+
   test("Write basic") {
     var j : JsValue = writeCivilizationT(Civilization.Rome)
     println(j)

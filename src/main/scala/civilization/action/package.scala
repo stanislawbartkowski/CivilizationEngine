@@ -44,13 +44,13 @@ package object action {
     case Command.SETFIGURE | Command.BUYFIGURE => new SetFigureAction.SetFigureAction(toPointFigure(param))
 
     case Command.SETSCOUT | Command.SETARMY => {
-      val p : P = toP(param)
-      new SetFigureAction.SetFigureAction(if (command == Command.SETARMY) Figure.Army else Figure.Scout,p)
+      val p: P = toP(param)
+      new SetFigureAction.SetFigureAction(if (command == Command.SETARMY) Figure.Army else Figure.Scout, p)
     }
 
     case Command.BUYSCOUT | Command.BUYARMY => {
-      val p : P = toP(param)
-      new SetFigureAction.SetFigureAction(if (command == Command.BUYARMY) Figure.Army else Figure.Scout,p)
+      val p: P = toP(param)
+      new SetFigureAction.SetFigureAction(if (command == Command.BUYARMY) Figure.Army else Figure.Scout, p)
     }
 
     case Command.FORCEDMOVEFIGURES => new MoveAction.ForceMoveAction(toFigures(param))
@@ -88,6 +88,10 @@ package object action {
     c.civ = civ
     c.j = param
     c
+  }
+
+  def constructCommand(c: CommandValues): Command = {
+    constructCommand(c.command, c.civ, c.p, c.param)
   }
 
 }

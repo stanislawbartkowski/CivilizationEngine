@@ -295,7 +295,7 @@ package object helper {
     null
   }
 
-  private def playsingleCommand(b: GameBoard, command: Command): Mess = {
+  def playsingleCommand(b: GameBoard, command: Command, f: Command => Unit = p => Unit): Mess = {
     var m: Mess = commandForPhase(b, command)
     if (m != null) return m
     // test if point on board
@@ -305,31 +305,23 @@ package object helper {
       return m
     }
     command.execute(b)
+    f(command)
     b.play.commands = b.play.commands :+ command
     null
   }
 
-  def playCommand(b: GameBoard, command: Command): Mess = {
-    var m: Mess = playsingleCommand(b, command)
+  def playCommand(b: GameBoard, command: Command, f: Command => Unit = p => Unit): Mess = {
+    var m: Mess = playsingleCommand(b, command, f)
     if (m != null) return m
     // play forced commands
     while (!b.forcednext.isEmpty) {
       val com: Command = b.forcednext.head
       b.forcednext = b.forcednext.tail
-      m = playsingleCommand(b, com)
+      m = playsingleCommand(b, com, f)
       if (m != null) return m
     }
     null
   }
-
-  def playList(b: GameBoard, p: Play.Play) = p.commands.foreach(c => {
-    val m: Mess = playCommand(b, c);
-    if (m != null) {
-      println(m);
-      throw FatalError(m)
-    }
-  }
-  )
 
   def gameStart(b: GameBoard): Boolean = currentPhase(b).roundno == 0
 

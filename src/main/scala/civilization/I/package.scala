@@ -1,7 +1,7 @@
 package civilization
 
 import civilization.io.tojson._
-import civilization.io.fromjson.toJ
+import civilization.io.fromjson._
 import play.api.libs.json._
 import java.security.SecureRandom
 import java.math.BigInteger
@@ -11,14 +11,17 @@ import civilization.objects._
 import civilization.action._
 import civilization.helper._
 import civilization.gameboard.GameBoard
-import civilization.io.readdir.readListOfTiles
+import civilization.io.readdir.{readListOfTiles, readGameBoard}
 import civilization.message._
 import civilization.io.readdir.GenBoard.genBoard
 
-import scala.collection.mutable.Map
+package object I {
 
+  private var r: RAccess = _
 
-object I {
+  def setR(r: RAccess) = {
+    this.r = r
+  }
 
   val LISTOFCIV: Int = 0;
   val REGISTEROWNER: Int = 1
@@ -26,18 +29,30 @@ object I {
 
   private val random = new SecureRandom()
 
-  private case class Board(val g: GameBoard, val civ: Civilization.T, var timestamp: Long)
-
-  private val m: Map[String, Board] = Map()
-
   private def genToken(): String = new BigInteger(130, random).toString(32)
+
+  private def getBoard(token: String): (CurrentGame, GameBoard) = {
+    val game: CurrentGame = r.getCurrentGame(token)
+    val s: String = r.getGame(game.gameid)
+    val g: GameBoard = readGameBoard(toJ(s))
+    // replay game
+    val p: Seq[String] = r.getPlayForGame(game.gameid)
+    p.foreach(s => {
+      val co: CommandValues = toParams(toJ(s));
+      val comm: Command = action.constructCommand(co)
+      playsingleCommand(g, comm)
+    }
+    )
+    (game, g)
+  }
+
+  private def toC(com: Command): CommandValues = CommandValues(com.command, com.civ, com.p, com.j)
 
   def getData(what: Int, tokenorciv: String): String = {
     synchronized {
       what match {
         case LISTOFCIV => getListOfCiv()
         case REGISTEROWNER => registerOwnerPlay(tokenorciv)
-        //        case GETBOARDGAME => getBoardName(tokenorciv)
         case GETBOARDGAME => getBoardForCiv(tokenorciv)
       }
     }
@@ -56,39 +71,62 @@ object I {
 
   def registerGame(g: GameBoard, civ: Civilization.T): String = {
     val token: String = genToken()
-    m.put(token, Board(g, civ, Calendar.getInstance().getTime.getTime))
+    val gameS: String = writesGameBoard(g).toString()
+    val gameid: Int = r.registerGame(gameS)
+    val cu: CurrentGame = CurrentGame(gameid, civ, Calendar.getInstance().getTime.getTime)
+    //    m.put(token, Board(g, civ, Calendar.getInstance().getTime.getTime))
+    // play
+    g.play.commands.foreach(co => {
+      val cc: CommandValues = toC(co)
+      val s: String = writeCommandValues(cc).toString()
+      r.addMoveToPlay(gameid, s)
+    }
+    )
+    r.registerCurrentGame(token, cu)
     token
   }
 
 
   private def getBoardName(token: String): String = {
-    val g: GameBoard = m.get(token).get.g
-    Json.prettyPrint(writesGameBoard(g))
+    val g = getBoard(token)
+    Json.prettyPrint(writesGameBoard(g._2))
   }
 
   private def getBoardForCiv(token: String): String = {
-    val g: GameBoard = m.get(token).get.g
-    val civ: Civilization.T = m.get(token).get.civ
-    Json.prettyPrint(genboardj.genBoardGameJson(g, civ))
+    val g = getBoard(token)
+    val civ: Civilization.T = g._1.civ
+    Json.prettyPrint(genboardj.genBoardGameJson(g._2, civ))
   }
 
-  def executeCommand(token: String, action: String, row: Int, col: Int, jsparam: String): String = {
-    val g: GameBoard = m.get(token).get.g
-    val civ: Civilization.T = m.get(token).get.civ
-    val command: Command.T = Command.withName(action)
-    val co: Command = constructCommand(command, civ, if (row == -1) null else P(row, col), if (jsparam == null) null else toJ(jsparam))
-    var mess: Mess = playCommand(g, co)
+  private def executeCommand(gb: (CurrentGame, GameBoard), com: CommandValues): String = {
+    val co: Command = constructCommand(com)
+    var mess: Mess = playCommand(gb._2, co, c => {
+      val cv: CommandValues = toC(c)
+      r.addMoveToPlay(gb._1.gameid, writeCommandValues(cv).toString())
+    })
     return if (mess == null) return null else mess.toString
+  }
+
+  // for testing only
+  def executeCommand(token: String, com: CommandValues): String = executeCommand(getBoard(token), com)
+
+  def executeCommand(token: String, action: String, row: Int, col: Int, jsparam: String): String = {
+    val gb = getBoard(token)
+    val g: GameBoard = gb._2
+    val civ: Civilization.T = gb._1.civ
+    val command: Command.T = Command.withName(action)
+    val coma: CommandValues = CommandValues(command, civ, if (row == -1) null else P(row, col), if (jsparam == null) null else toJ(jsparam))
+    executeCommand(gb, coma)
   }
 
   def itemizeCommand(token: String, action: String): String = {
     val command: Command.T = Command.withName(action)
-    val b: Board = m.get(token).get
-    AllowedCommands.itemizeCommandS(b.g, b.civ, command)
+    val g = getBoard(token)
+    AllowedCommands.itemizeCommandS(g._2, g._1.civ, command)
   }
 
   /* for test only */
-  def getBoardForToken(token: String): GameBoard = m.get(token).get.g
+  def getBoardForToken(token: String): GameBoard = getBoard(token)._2
 
 }
 

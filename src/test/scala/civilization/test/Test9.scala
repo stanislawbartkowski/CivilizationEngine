@@ -12,8 +12,12 @@ import play.api.libs.json._
 
 class Test9 extends FunSuite {
 
+  Helper.I
+
   test("Execute command, set army and scout goto citymanagement") {
-    var b: GameBoard = Helper.readBoardAndPlay("test9/BOARDGAME1.json", "test9/GAME1.json")
+    val r = Helper.readBoardAndPlayT("test9/BOARDGAME1.json", "test9/GAME1.json", Civilization.Rome)
+    val token: String = r._1
+    var b: GameBoard = r._2
     val cu: CurrentPhase = currentPhase(b)
     println(cu)
     assert(cu.turnPhase == TurnPhase.CityManagement)
@@ -21,7 +25,6 @@ class Test9 extends FunSuite {
     println(prod)
     var l: Seq[Command.T] = allowedCommands(b, Civilization.Rome)
     println(l)
-    val token: String = registerGame(b, Civilization.Rome);
     var s: String = executeCommand(token, "BUYARMY", 1, 2, "{\"col\" : 2, \"row\" : 2}")
     assert(s == null)
     b = getBoardForToken(token)
@@ -34,7 +37,7 @@ class Test9 extends FunSuite {
   }
 
   test("Execute command, buy scout") {
-    var b: GameBoard = Helper.readBoardAndPlay("test9/BOARDGAME1.json", "test9/GAME1.json")
+    var b: GameBoard = Helper.readBoardAndPlay("test9/BOARDGAME1.json", "test9/GAME1.json", Civilization.Rome)
     val token: String = registerGame(b, Civilization.Rome);
     val s: String = getData(GETBOARDGAME, token)
     println(s)
@@ -57,7 +60,7 @@ class Test9 extends FunSuite {
   }
 
   test("Execute command, movement start") {
-    var b: GameBoard = Helper.readBoardAndPlay("test9/BOARDGAME1.json", "test9/GAME2.json")
+    var b: GameBoard = Helper.readBoardAndPlay("test9/BOARDGAME1.json", "test9/GAME2.json", Civilization.Rome)
     val token: String = registerGame(b, Civilization.Rome);
     val a: Seq[Command.T] = allowedCommands(b, Civilization.Rome)
     println(a)
@@ -70,7 +73,7 @@ class Test9 extends FunSuite {
   }
 
   test("Execute command, movement started") {
-    var b: GameBoard = Helper.readBoardAndPlay("test9/BOARDGAME1.json", "test9/GAME3.json")
+    var b: GameBoard = Helper.readBoardAndPlay("test9/BOARDGAME1.json", "test9/GAME3.json", Civilization.Rome)
     val token: String = registerGame(b, Civilization.Rome);
     var a: Seq[Command.T] = allowedCommands(b, Civilization.Rome)
     println(a)
@@ -112,6 +115,7 @@ class Test9 extends FunSuite {
     // itemize
     s = itemizeCommand(token, "MOVE")
     println(s)
+    b = getBoardForToken(token)
     val o: Option[PossibleMove] = itemizeForMove(b, Civilization.Rome)
     println(o.get.move)
     assert(o.get.move.find(_ == P(0, 1)).isDefined)
@@ -125,7 +129,7 @@ class Test9 extends FunSuite {
   }
 
   test("Execute command, next movements") {
-    var b: GameBoard = Helper.readBoardAndPlay("test9/BOARDGAME1.json", "test9/GAME4.json")
+    var b: GameBoard = Helper.readBoardAndPlay("test9/BOARDGAME1.json", "test9/GAME4.json", Civilization.Rome)
     val token: String = registerGame(b, Civilization.Rome)
     var a: Seq[Command.T] = allowedCommands(b, Civilization.Rome)
     println(a)
@@ -187,7 +191,7 @@ class Test9 extends FunSuite {
   }
 
   test("Execute command, set up next city") {
-    var b: GameBoard = Helper.readBoardAndPlay("test9/BOARDGAME1.json", "test9/GAME5.json")
+    var b: GameBoard = Helper.readBoardAndPlay("test9/BOARDGAME1.json", "test9/GAME5.json", Civilization.Rome)
     val token: String = registerGame(b, Civilization.Rome)
     var a: Seq[Command.T] = allowedCommands(b, Civilization.Rome)
     println(a)
@@ -212,7 +216,7 @@ class Test9 extends FunSuite {
   }
 
   test("Execute command, two city actions") {
-    var b: GameBoard = Helper.readBoardAndPlay("test9/BOARDGAME1.json", "test9/GAME6.json")
+    var b: GameBoard = Helper.readBoardAndPlay("test9/BOARDGAME1.json", "test9/GAME6.json", Civilization.Rome)
     val token: String = registerGame(b, Civilization.Rome)
     var a: Seq[Command.T] = allowedCommands(b, Civilization.Rome)
     println(a)
@@ -227,7 +231,7 @@ class Test9 extends FunSuite {
   }
 
   test("Execute command, check movement to starting point") {
-    var b: GameBoard = Helper.readBoardAndPlay("test9/BOARDGAME1.json", "test9/GAME3.json")
+    var b: GameBoard = Helper.readBoardAndPlay("test9/BOARDGAME1.json", "test9/GAME3.json", Civilization.Rome)
     val token: String = registerGame(b, Civilization.Rome);
     val curr: Option[PlayerMove] = getCurrentMove(b, Civilization.Rome)
     println(curr)
@@ -245,7 +249,7 @@ class Test9 extends FunSuite {
   }
 
   test("Execute command, revealtime itemize") {
-    var b: GameBoard = Helper.readBoardAndPlay("test9/BOARDGAME1.json", "test9/GAME4.json")
+    var b: GameBoard = Helper.readBoardAndPlay("test9/BOARDGAME1.json", "test9/GAME4.json", Civilization.Rome)
     val token: String = registerGame(b, Civilization.Rome)
     var a: Seq[Command.T] = allowedCommands(b, Civilization.Rome)
     println(a)
@@ -266,7 +270,7 @@ class Test9 extends FunSuite {
   }
 
   test("Execute command, check itemized for SetCity") {
-    var b: GameBoard = Helper.readBoardAndPlay("test9/BOARDGAME1.json", "test9/GAME5.json")
+    var b: GameBoard = Helper.readBoardAndPlay("test9/BOARDGAME1.json", "test9/GAME5.json", Civilization.Rome)
     val token: String = registerGame(b, Civilization.Rome)
     val s: String = itemizeCommand(token, "SETCITY")
     println(s)
@@ -277,7 +281,7 @@ class Test9 extends FunSuite {
   }
 
   test("Execute command, check two figures ending on the sampe square") {
-    var b: GameBoard = Helper.readBoardAndPlay("test9/BOARDGAME1.json", "test9/GAME7.json")
+    var b: GameBoard = Helper.readBoardAndPlay("test9/BOARDGAME1.json", "test9/GAME7.json", Civilization.Rome)
     val token: String = registerGame(b, Civilization.Rome)
     var s: String = executeCommand(token, "STARTMOVE", 3, 1, "{ \"numberofArmies\" : 1, \"numberofScouts\" : 0}")
     println(s)
@@ -294,7 +298,7 @@ class Test9 extends FunSuite {
   }
 
   test("Execute command, check two figures ending on the sampe square and available commands") {
-    var b: GameBoard = Helper.readBoardAndPlay("test9/BOARDGAME1.json", "test9/GAME8.json")
+    var b: GameBoard = Helper.readBoardAndPlay("test9/BOARDGAME1.json", "test9/GAME8.json", Civilization.Rome)
     val token: String = registerGame(b, Civilization.Rome)
     var a: Seq[Command.T] = allowedCommands(b, Civilization.Rome)
     println(a)

@@ -13,6 +13,8 @@ import scala.io.Source
 
 class Test1 extends FunSuite {
 
+  Helper.I
+
   test("Test that we can read resource/map/tile without exception") {
     val l: List[(String, JsValue)] = readdirJSON("map/tiles")
     assert(!l.isEmpty)
