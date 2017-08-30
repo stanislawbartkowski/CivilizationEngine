@@ -41,8 +41,6 @@ package object action {
 
     case Command.SETCAPITAL | Command.SETCITY => new SetCityAction.SetCityAction()
 
-    case Command.SETFIGURE | Command.BUYFIGURE => new SetFigureAction.SetFigureAction(toPointFigure(param))
-
     case Command.SETSCOUT | Command.SETARMY => {
       val p: P = toP(param)
       new SetFigureAction.SetFigureAction(if (command == Command.SETARMY) Figure.Army else Figure.Scout, p)
@@ -80,10 +78,7 @@ package object action {
   def constructCommand(command: Command.T, civ: Civilization.T, p: P, param: JsValue = null): Command = {
     assert(civ != null && command != null)
     val c: Command = produceCommand(command, civ, p, param)
-    // TODO: I'm not happy with that
-    // TODO: future, remove SETFIGURE AND BUYFIGURE, used only to tessting now
-    c.command = if (command == Command.SETARMY || command == Command.SETSCOUT) Command.SETFIGURE else command
-    c.command = if (command == Command.BUYARMY || command == Command.BUYSCOUT) Command.BUYFIGURE else command
+    c.command = command
     c.p = p
     c.civ = civ
     c.j = param

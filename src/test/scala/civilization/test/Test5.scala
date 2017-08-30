@@ -1,14 +1,13 @@
 package civilization.test
 
-import civilization.action.Play.Play
-import civilization.gameboard.GameBoard
-import org.scalatest.FunSuite
-import civilization.helper._
-import civilization.objects._
-import civilization.io.fromjson._
-import play.api.libs.json.JsValue
 import civilization.action._
+import civilization.gameboard.GameBoard
+import civilization.helper._
+import civilization.io.fromjson._
 import civilization.message._
+import civilization.objects._
+import org.scalatest.FunSuite
+import play.api.libs.json.JsValue
 
 class Test5 extends FunSuite {
 
@@ -23,21 +22,21 @@ class Test5 extends FunSuite {
     println(num)
     assert(num == 6)
     // try to set figure
-    var js: String = "{ \"p\": {\"row\":2, \"col\" : 2}, \"figure\": \"Army\"}"
+    var js: String = "{\"row\":2, \"col\" : 2}"
     var j: JsValue = toJ(js)
-    var com: Command = constructCommand(Command.SETFIGURE, Civilization.Germany, P(2, 2), j)
+    var com: Command = constructCommand(Command.SETARMY, Civilization.Germany, P(2, 2), j)
     println(com.verify(b))
     assert(com.verify(b) != null)
 
-    js = "{ \"p\": {\"row\":2, \"col\" : 3}, \"figure\": \"Army\"}"
+    js = "{\"row\":2, \"col\" : 3}"
     j = toJ(js)
-    com = constructCommand(Command.SETFIGURE, Civilization.Germany, P(2, 2), j)
+    com = constructCommand(Command.SETARMY, Civilization.Germany, P(2, 2), j)
     println(com.verify(b))
     assert(com.verify(b) != null)
 
-    js = "{ \"p\": {\"row\":1, \"col\" : 3}, \"figure\": \"Army\"}"
+    js = "{\"row\":1, \"col\" : 3}"
     j = toJ(js)
-    com = constructCommand(Command.SETFIGURE, Civilization.Germany, P(2, 2), j)
+    com = constructCommand(Command.SETARMY, Civilization.Germany, P(2, 2), j)
     assert(com.verify(b) == null)
     com.execute(b)
     val m: MapSquareP = getSquare(b, P(1, 3))
@@ -61,15 +60,15 @@ class Test5 extends FunSuite {
     println("=======================")
     assert(count._1 == 1)
     assert(count._2 == 1)
-    var js: String = "{ \"p\": {\"row\":1, \"col\" : 1}, \"figure\": \"Army\"}"
+    var js: String = "{\"row\":1, \"col\" : 1}"
     var j: JsValue = toJ(js)
-    var com1: Command = constructCommand(Command.BUYFIGURE, Civilization.Germany, P(2, 2), j)
+    var com1: Command = constructCommand(Command.BUYARMY, Civilization.Germany, P(2, 2), j)
     println(com1.verify(b))
     assert(com1.verify(b) == null)
-    js = "{ \"p\": {\"row\":1, \"col\" : 1}, \"figure\": \"Scout\"}"
+    js = "{\"row\":1, \"col\" : 1}"
     j = toJ(js)
     // cannot afford figure
-    var com2: Command = constructCommand(Command.BUYFIGURE, Civilization.Germany, P(2, 2), j)
+    var com2: Command = constructCommand(Command.BUYSCOUT, Civilization.Germany, P(2, 2), j)
     println(com2.verify(b))
     assert(com2.verify(b) != null)
     com1.execute(b)
@@ -86,9 +85,9 @@ class Test5 extends FunSuite {
 
   test("Start game 2") {
     val b: GameBoard = Helper.readBoardAndPlay("test5/BOARDGAME1.json", "test5/GAME3.json",Civilization.Germany)
-    var js: String = "{ \"p\": {\"row\":1, \"col\" : 2}, \"figure\": \"Army\"}"
+    var js: String = "{\"row\":1, \"col\" : 2}"
     var j: JsValue = toJ(js)
-    var com1: Command = constructCommand(Command.BUYFIGURE, Civilization.Germany, P(2, 2), j)
+    var com1: Command = constructCommand(Command.BUYARMY, Civilization.Germany, P(2, 2), j)
     var m : Mess = playCommand(b,com1)
     println(m)
     assert (m != null)

@@ -318,12 +318,6 @@ package object fromjson {
     j.as[Figure.T]
   }
 
-  def toPointFigure(j: JsValue): (Figure.T, P) = {
-    val f: Figure.T = (j \ "figure").as[Figure.T]
-    val p: P = (j \ S.p).as[P]
-    (f, p)
-  }
-
   def toFigures(j : JsValue) : Figures = convert[FiguresToMoveJ](FiguresToMoveJ(j))
 
   def toTechnologies(j : JsValue) : Seq[Technology] = convert[SeqTechnologyJ](SeqTechnologyJ(j))

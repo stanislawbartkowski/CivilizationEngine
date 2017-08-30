@@ -5,14 +5,14 @@ import play.api.libs.json.JsValue
 object Command extends Enumeration {
 
   type T = Value
-  val SETCAPITAL, SETCITY, SETFIGURE, BUYFIGURE, ENDOFPHASE, STARTMOVE, MOVE, REVEALTILE, ENDOFMOVE,
+  val SETCAPITAL, SETCITY, ENDOFPHASE, STARTMOVE, MOVE, REVEALTILE, ENDOFMOVE,
   SETARMY, SETSCOUT, BUYARMY, BUYSCOUT, RESEARCH, FORCEDMOVEFIGURES = Value
 
   def actionPhase(t: Value): TurnPhase.T = {
     t match {
-      case SETCAPITAL | SETCAPITAL | SETFIGURE | SETARMY | SETSCOUT => TurnPhase.StartOfTurn
+      case SETCAPITAL | SETCAPITAL | SETARMY | SETSCOUT => TurnPhase.StartOfTurn
       case STARTMOVE | MOVE | ENDOFMOVE | REVEALTILE => TurnPhase.Movement
-      case BUYFIGURE | BUYARMY | BUYSCOUT => TurnPhase.CityManagement
+      case BUYARMY | BUYSCOUT => TurnPhase.CityManagement
       case RESEARCH => TurnPhase.Research
       case _ => null
     }

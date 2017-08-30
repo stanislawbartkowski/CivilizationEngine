@@ -1,10 +1,10 @@
 {
   "game": [
     {"command" : "SETCAPITAL","civ" : "Germany", "p" : {"row":2, "col" : 2}},
-    { "command" : "SETFIGURE", "civ" : "Germany", "p" : {"row":2, "col" : 2},"param":{ "p": {"row":3, "col" : 1}, "figure": "Army"}},
-    { "command" : "SETFIGURE", "civ" : "Germany", "p" : {"row":2, "col" : 2},"param": {"p" : {"row":2, "col" : 1}, "figure": "Scout"}},
+    { "command" : "SETARMY", "civ" : "Germany", "p" : {"row":2, "col" : 2},"param":{"row":3, "col" : 1}},
+    { "command" : "SETSCOUT", "civ" : "Germany", "p" : {"row":2, "col" : 2},"param": {"row":2, "col" : 1}},
     { "command" : "ENDOFPHASE","civ" : "Germany", "param" : "Trade" },
-    { "command" : "BUYFIGURE", "civ" : "Germany", "p" : {"row":2, "col" : 2},"param": {"p" : {"row":1, "col" : 1}, "figure": "Army"}},
+    { "command" : "BUYARMY", "civ" : "Germany", "p" : {"row":2, "col" : 2},"param": {"row":1, "col" : 1}},
     { "command" : "ENDOFPHASE","civ" : "Germany", "param" : "CityManagement" },
     { "command" : "STARTMOVE", "civ" : "Germany", "p" : { "row":1,"col" : 1},"param" : {"numberofArmies" : 1} },
     { "command" : "MOVE", "civ" : "Germany", "p" : { "row":0,"col" : 1}},

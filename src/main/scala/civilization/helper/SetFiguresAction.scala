@@ -11,11 +11,11 @@ object SetFigureAction {
   def verifySetFigure(board: GameBoard, civ: Civilization.T, pcity: P, p: P, f: Figure.T, command: Command.T): Option[Mess] = {
     var m: Option[Mess] = checkCity(board, pcity)
     if (m.isDefined) return m
-    if (command == Command.BUYFIGURE) {
+    if (command == Command.BUYSCOUT || command == Command.BUYARMY) {
       m = canBuyFigure(board, civ, pcity, f)
       if (m.isDefined) return m
     }
-    checkP(board,p)
+    checkP(board, p)
     isSquareForFigure(board, civ, f, p)
   }
 
@@ -24,7 +24,7 @@ object SetFigureAction {
     def execute(board: GameBoard) =
       putFigures(board, civ, param._2, if (param._1 == Figure.Army) Figures(1, 0) else Figures(0, 1))
 
-    def verify(board: GameBoard): Mess = verifySetFigure(board,civ,p,param._2,param._1,command).getOrElse(null)
+    def verify(board: GameBoard): Mess = verifySetFigure(board, civ, p, param._2, param._1, command).getOrElse(null)
   }
 
 }
