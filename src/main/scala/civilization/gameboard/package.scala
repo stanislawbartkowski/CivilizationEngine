@@ -1,10 +1,14 @@
 package civilization
 
+import java.util.Calendar
+
 import civilization.objects._
 import civilization.action.{Command, Play}
 
 
 package object gameboard {
+
+  private final val packageversion : Int = 0;
 
   case class PatterMap(val p: P, val o: Orientation.T)
 
@@ -82,7 +86,18 @@ package object gameboard {
     var tech: Seq[PlayerTechnology] = Nil
   }
 
-  case class GameBoard(val players: Seq[PlayerDeck], val map: Map, val market: Market) {
+  case class GameMetaData(val version : Int, val createtime : Long , var accesstime : Long, val desc : String) {
+
+    def this(desc : String) {
+      this(packageversion, Calendar.getInstance().getTime.getTime, Calendar.getInstance().getTime.getTime, desc)
+    }
+
+    def okV : Boolean = version == packageversion
+  }
+
+  case class GameBoard(val players: Seq[PlayerDeck], val map: Map, val market: Market ) {
+
+    var metadata : GameMetaData = new GameMetaData("")
 
     // force command to execute next
     // TODO: I'm not happy with that

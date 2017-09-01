@@ -5,25 +5,39 @@ import com.redis._
 
 package object R {
 
+  private final val CIVILIZATION = "civilization"
+  private final val CURRENT = "current"
+  private final val GAMES = "games"
+  private final def SEQKEY = CIVILIZATION + "." + "seq"
+  private final def PLAY = "play"
+  private final def METADATA = "metadata"
+  private final val reg = raw"(\d{4})-(\d{2})-(\d{2})".r
+  private final val rid = (CIVILIZATION + raw"\." + GAMES + raw"\." + raw"(\d*)." + METADATA).r
+
+  private def extractGameId(s : String) : Int = {
+//    "2004-01-20" match {
+//      case date(year, month, day) => s"$year was a good year for PLs."
+//    }
+      s match {
+        case rid(gameid) => gameid.toInt
+      }
+  }
+
   class R extends RAccess {
 
+    private final val expireT: Int = 3600 * 24
+
     private final val r: RedisClient = rr.get
-
-    private final def CIVILIZATION = "civilization"
-
-    private final def CURRENT = "current"
-
-    private final def GAMES = "games"
-
-    private final def SEQKEY = CIVILIZATION + "." + "seq"
-
-    private final def PLAY = "play"
 
     private def currentKey(token: String) = CIVILIZATION + "." + token
 
     override def getCurrentGame(token: String): String = r.get(currentKey(token)).get
 
-    override def registerCurrentGame(token: String, content: String): Unit = r.set(currentKey(token), content)
+    override def registerCurrentGame(token: String, content: String): Unit = {
+      r.set(currentKey(token), content)
+      // remove after one day
+      r.expire(currentKey(token), expireT)
+    }
 
     override def updateCurrentGame(token: String, content: String): Unit = registerCurrentGame(token, content)
 
@@ -47,6 +61,18 @@ package object R {
     override def addMoveToPlay(id: Int, move: String): Unit = r.rpush(keyPlay(id), move)
 
     override def getGame(id: Int): String = r.get(gameKey(id)).get
+
+    def keyMetaData(id: Int) = gameKey(id) + "." + METADATA
+
+    override def updateMetaData(id: Int, value: String): Unit = r.set(keyMetaData(id), value)
+
+    override def getMetaData(id: Int): String = r.get(keyMetaData(id)).get
+
+    override def getGames(): Seq[(Int, String)] = {
+      val keyspattern : String = CIVILIZATION + "." + GAMES + ".*." + METADATA
+      val keys: List[String] = r.keys(keyspattern).get.filter(_.isDefined).map(_.get)
+      keys.map(extractGameId(_)).map(g => (g,getMetaData(g)))
+    }
   }
 
   private var rr: Option[RedisClient] = None

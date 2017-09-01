@@ -1,19 +1,21 @@
 package civilization
 
-import civilization.io.tojson._
-import civilization.io.fromjson._
-import play.api.libs.json._
 import java.security.SecureRandom
 import java.math.BigInteger
 import java.util.Calendar
 
+import civilization.io.tojson._
+import civilization.io.fromjson._
+import play.api.libs.json._
+
 import civilization.objects._
 import civilization.action._
 import civilization.helper._
-import civilization.gameboard.GameBoard
+import civilization.gameboard.{GameBoard, GameMetaData}
 import civilization.io.readdir.{readListOfTiles, readGameBoard}
 import civilization.message._
 import civilization.io.readdir.GenBoard.genBoard
+import civilization.io.fromjson.toMetaData
 
 package object I {
 
@@ -35,6 +37,8 @@ package object I {
     val game: CurrentGame = r.getCurrentGame(token)
     val s: String = r.getGame(game.gameid)
     val g: GameBoard = readGameBoard(toJ(s))
+    val m : GameMetaData = toMetaData(toJ(r.getMetaData(game.gameid)))
+    g.metadata = m
     // replay game
     val p: Seq[String] = r.getPlayForGame(game.gameid)
     p.foreach(s => {
@@ -73,8 +77,9 @@ package object I {
     val token: String = genToken()
     val gameS: String = writesGameBoard(g).toString()
     val gameid: Int = r.registerGame(gameS)
+    val metadata : String = writeMetaData(g.metadata).toString()
+    r.updateMetaData(gameid,metadata)
     val cu: CurrentGame = CurrentGame(gameid, civ, Calendar.getInstance().getTime.getTime)
-    //    m.put(token, Board(g, civ, Calendar.getInstance().getTime.getTime))
     // play
     g.play.commands.foreach(co => {
       val cc: CommandValues = toC(co)

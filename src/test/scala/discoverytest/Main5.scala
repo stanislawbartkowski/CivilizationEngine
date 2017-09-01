@@ -3,8 +3,6 @@ package discoverytest
 import java.math.BigInteger
 import java.security.SecureRandom
 
-import civilization.io.readdir.readTestJSON
-import play.api.libs.json.{JsDefined, JsValue}
 import civilization.R
 
 object Main5 {
@@ -36,10 +34,17 @@ object Main5 {
     println(r.getPlayForGame(id))
   }
 
+  def main2() = {
+    val r  = R.R
+    val p: Seq[(Int,String)] = r.getGames()
+    p.foreach(println)
+    }
+
   def main(args: Array[String]): Unit = {
 
     R.setConnection("localhost", 6379)
-    main1()
+//    main1
+    main2
 
   }
 

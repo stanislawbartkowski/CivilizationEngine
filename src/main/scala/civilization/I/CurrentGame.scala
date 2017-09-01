@@ -1,29 +1,30 @@
 package civilization.I
 
-import civilization.objects._
-import play.api.libs.json
-import play.api.libs.json.{JsValue, Json}
 import civilization.io.fromjson._
+import civilization.objects._
+import play.api.libs.json.{JsValue, Json}
 
-case class CurrentGame(val gameid : Int, val civ : Civilization.T, val accesstime : Long)
+case class CurrentGame(val gameid : Int, val civ : Civilization.T, val createtime : Long, val accesstime : Long)
 
 object CurrentGame {
 
   implicit def converttoJ(g : CurrentGame) : String = {
     val j : JsValue = Json.obj(
-      "gameid" -> g.gameid,
+      S.gameid -> g.gameid,
       S.civ -> g.civ,
-      "accesstime" -> g.accesstime
+      S.createtime -> g.createtime,
+      S.accesstime -> g.accesstime
     )
     j.toString()
   }
 
   implicit def convertFromJ(s : String) : CurrentGame = {
     val j : JsValue = toJ(s)
-    val gameid = (j \ "gameid").get.as[Int]
+    val gameid = (j \ S.gameid).get.as[Int]
     val civ = (j \ S.civ).get.as[Civilization.T]
-    val accesstime = (j \ "accesstime").get.as[Long]
-    CurrentGame(gameid,civ,accesstime)
+    val createtime = (j \ S.createtime).get.as[Long]
+    val accesstime = (j \ S.accesstime).get.as[Long]
+    CurrentGame(gameid,civ,createtime,accesstime)
   }
 
 }

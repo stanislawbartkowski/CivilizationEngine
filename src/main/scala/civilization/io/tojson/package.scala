@@ -1,10 +1,10 @@
 package civilization.io
 
-import civilization.objects._
-import play.api.libs.json._
-import play.api.libs.functional.syntax._
 import civilization.gameboard._
+import civilization.objects._
+import play.api.libs.functional.syntax._
 import play.api.libs.json
+import play.api.libs.json._
 
 package object tojson {
 
@@ -105,15 +105,15 @@ package object tojson {
     )
   }
 
-  //  implicit val commandparamReads: Reads[CommandValues] = new Reads[CommandValues] {
-  //    def reads(json: JsValue): JsResult[CommandValues] = {
-  //      val command: Command.T = (json \ S.command).as[Command.T]
-  //      val civ: Civilization.T = (json \ S.civ).as[Civilization.T]
-  //      val p: P = (json \ S.p).asOpt[P].getOrElse(null)
-  //      val param: JsValue = (json \ S.param).asOpt[JsValue].getOrElse(null)
-  //      JsSuccess(CommandValues(command, civ, p, param))
-  //    }
-  //  }
+  implicit val metadataWrites : Writes[GameMetaData] = new Writes[GameMetaData] {
+    def writes(m: GameMetaData) = Json.obj(
+      S.version -> m.version,
+      S.createtime -> m.createtime,
+      S.accesstime -> m.accesstime,
+      S.desc -> m.desc
+    )
+  }
+
 
   implicit val commandparamWrites: Writes[CommandValues] = new Writes[CommandValues] {
     def writes(m: CommandValues) = Json.obj(
@@ -149,4 +149,7 @@ package object tojson {
   }
 
   def writeCommandValues(m: CommandValues): JsValue = Json.toJson(m)
+
+  def writeMetaData(m : GameMetaData) : JsValue = Json.toJson(m)
+
 }

@@ -185,6 +185,12 @@ package object fromjson {
     }
   }
 
+  implicit val metadataReads: Reads[GameMetaData] = (
+    (JsPath \ S.version).read[Int] and
+    (JsPath \ S.createtime).read[Long] and
+    (JsPath \ S.accesstime).read[Long] and
+    (JsPath \ S.desc).read[String]
+    ) (GameMetaData.apply _)
 
   trait FromJson {
     type Value
@@ -327,5 +333,7 @@ package object fromjson {
   def toSeqPatterMap(j : JsValue) : Seq[PatterMap] = convert[PatterMapSeqJ](PatterMapSeqJ(j))
 
   def toArrayHutVillages(j : JsValue) : Array[HutVillage] = j.as[Array[HutVillage]]
+
+  def toMetaData(j : JsValue) : GameMetaData = j.as[GameMetaData]
 
 }
