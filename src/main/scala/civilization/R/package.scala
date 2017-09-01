@@ -84,7 +84,22 @@ package object R {
     if (rr.isEmpty) rr = Some(new RedisClient(host, port))
   }
 
+  def setConnection(url: String): Unit = {
+    val u: java.net.URI = new java.net.URI(url)
+    if (rr.isEmpty) rr = Some(new RedisClient(u))
+  }
+
   // multiply R instances but accessing single connection all the time
   def R: RAccess = new R()
 
+}
+
+
+// to be visible from Java
+object RR {
+  def setConnection(host: String, port: Int) = R.setConnection(host, port)
+
+  def setConnection(url: String): Unit = R.setConnection(url)
+
+  def RA: RAccess = R.R
 }

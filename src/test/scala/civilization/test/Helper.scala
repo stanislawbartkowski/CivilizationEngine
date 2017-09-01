@@ -10,7 +10,8 @@ import civilization.objects._
 object Helper {
 
   def I = {
-    R.setConnection("localhost", 6379)
+//    R.setConnection("localhost", 6379)
+    R.setConnection("redis://localhost:6379")
     civilization.I.setR(R.R)
   }
 
