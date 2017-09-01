@@ -7,11 +7,12 @@ import java.security.SecureRandom
 import java.math.BigInteger
 import java.util.Calendar
 
+import civilization.I.RAccess
 import civilization.objects._
 import civilization.action._
 import civilization.helper._
 import civilization.gameboard.GameBoard
-import civilization.io.readdir.{readListOfTiles, readGameBoard}
+import civilization.io.readdir.{readGameBoard, readListOfTiles}
 import civilization.message._
 import civilization.io.readdir.GenBoard.genBoard
 
@@ -130,3 +131,19 @@ package object I {
 
 }
 
+// to be visible from Java
+
+object II {
+  val LISTOFCIV = I.LISTOFCIV
+  val REGISTEROWNER = I.REGISTEROWNER
+  val GETBOARDGAME = I.GETBOARDGAME
+
+  def getData(what: Int, tokenorciv: String): String = I.getData(what, tokenorciv)
+
+  def executeCommand(token: String, action: String, row: Int, col: Int, jsparam: String): String = I.executeCommand(token, action, row, col, jsparam)
+
+  def itemizeCommand(token: String, action: String): String = I.itemizeCommand(token, action)
+
+  def setR(r: RAccess) = I.setR(r)
+
+}
