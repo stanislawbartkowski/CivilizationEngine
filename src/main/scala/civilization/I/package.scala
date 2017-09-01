@@ -5,7 +5,7 @@ import java.security.SecureRandom
 
 import civilization.I.RAccess
 import civilization.action._
-import civilization.gameboard.{GameBoard,GameMetaData}
+import civilization.gameboard.{GameBoard, GameMetaData}
 import civilization.helper._
 import civilization.io.fromjson._
 import civilization.io.readdir.GenBoard.genBoard
@@ -26,7 +26,7 @@ package object I {
   final val LISTOFCIV: Int = 0;
   final val REGISTEROWNER: Int = 1
   final val GETBOARDGAME: Int = 2
-  final val LISTOFGAMES : Int = 3
+  final val LISTOFGAMES: Int = 3
 
   private val random = new SecureRandom()
 
@@ -35,7 +35,7 @@ package object I {
   private def getGameBoard(gameid: Int): GameBoard = {
     val s: String = r.getGame(gameid)
     val g: GameBoard = readGameBoard(toJ(s))
-    val m : GameMetaData = toMetaData(toJ(r.getMetaData(gameid)))
+    val m: GameMetaData = toMetaData(toJ(r.getMetaData(gameid)))
     g.metadata = m
     // replay game
     val p: Seq[String] = r.getPlayForGame(gameid)
@@ -71,19 +71,27 @@ package object I {
     Json.prettyPrint(writeListOfCiv(tiles contains _))
   }
 
+  //  private def toCiv(civ : String) : Civilization.T = Civilization.values.find(_.toString == civ).get
+  private def toCiv(civ: String): Civilization.T = Civilization.withName(civ)
+
   private def registerOwnerPlay(civ: String): String = {
-    val v: Option[Civilization.T] = Civilization.values.find(_.toString == civ)
-    val g: GameBoard = genBoard(List(v.get), "TEST1.json")
-    registerGame(g, v.get)
+    val c: Civilization.T = toCiv(civ)
+    val g: GameBoard = genBoard(List(c), "TEST1.json")
+    registerGame(g, c)
+  }
+
+  private def currentGame(civ: Civilization.T, gameid: Int): String = {
+    val token: String = genToken()
+    val cu: CurrentGame = CurrentGame(gameid, civ)
+    r.registerCurrentGame(token, cu)
+    token
   }
 
   def registerGame(g: GameBoard, civ: Civilization.T): String = {
-    val token: String = genToken()
     val gameS: String = writesGameBoard(g).toString()
     val gameid: Int = r.registerGame(gameS)
-    val metadata : String = writeMetaData(g.metadata).toString()
-    r.updateMetaData(gameid,metadata)
-    val cu: CurrentGame = CurrentGame(gameid, civ)
+    val metadata: String = writeMetaData(g.metadata).toString()
+    r.updateMetaData(gameid, metadata)
     // play
     g.play.commands.foreach(co => {
       val cc: CommandValues = toC(co)
@@ -91,8 +99,7 @@ package object I {
       r.addMoveToPlay(gameid, s)
     }
     )
-    r.registerCurrentGame(token, cu)
-    token
+    currentGame(civ, gameid)
   }
 
 
@@ -134,17 +141,21 @@ package object I {
     AllowedCommands.itemizeCommandS(g._2, g._1.civ, command)
   }
 
-  private def listOfGames() : String = {
-
-    val l : Seq[(Int,GameMetaData)] = r.getGames().map(s => (s._1,toMetaData(toJ(s._2)))).filter(_._2.okV)
-    val lg : Seq[(Int,GameBoard)] = l.map(p => (p._1,getGameBoard(p._1)))
-    val ld : Seq[JsValue] =  lg.map( p => {
-      val g : GameBoard = p._2
-      val civ : Seq[Civilization.T] = g.players.map(_.civ)
-      val cu : CurrentPhase = currentPhase(g)
-      GameData(p._1,civ,g.metadata.createtime,g.metadata.accesstime,cu.turnPhase,cu.roundno).as[JsValue]
+  private def listOfGames(): String = {
+    val l: Seq[(Int, GameMetaData)] = r.getGames().map(s => (s._1, toMetaData(toJ(s._2)))).filter(_._2.okV)
+    val lg: Seq[(Int, GameBoard)] = l.map(p => (p._1, getGameBoard(p._1)))
+    val ld: Seq[JsValue] = lg.map(p => {
+      val g: GameBoard = p._2
+      val civ: Seq[Civilization.T] = g.players.map(_.civ)
+      val cu: CurrentPhase = currentPhase(g)
+      GameData(p._1, civ, g.metadata.createtime, g.metadata.accesstime, cu.turnPhase, cu.roundno).as[JsValue]
     })
     Json.toJson(ld).toString()
+  }
+
+  def resumeGame(gameid: Int, c: String): String = {
+    val civ: Civilization.T = toCiv(c)
+    currentGame(civ, gameid)
   }
 
   /* for test only */
@@ -168,6 +179,7 @@ object II {
 
   def setR(r: RAccess) = I.setR(r)
 
+  def resumeGame(gameid : Int, civ : String) : String = I.resumeGame(gameid, civ)
 
 }
 
