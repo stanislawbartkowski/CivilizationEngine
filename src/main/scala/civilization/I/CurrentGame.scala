@@ -1,10 +1,12 @@
 package civilization.I
 
+import java.util.Calendar
+
 import civilization.io.fromjson._
 import civilization.objects._
 import play.api.libs.json.{JsValue, Json}
 
-case class CurrentGame(val gameid : Int, val civ : Civilization.T, val createtime : Long, val accesstime : Long)
+case class CurrentGame(val gameid : Int, val civ : Civilization.T, val createtime : Long = Calendar.getInstance().getTime.getTime, val accesstime : Long = Calendar.getInstance().getTime.getTime)
 
 object CurrentGame {
 

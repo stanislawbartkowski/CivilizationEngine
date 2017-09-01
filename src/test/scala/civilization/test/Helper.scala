@@ -3,16 +3,16 @@ package civilization.test
 import civilization.gameboard.GameBoard
 import civilization.io.readdir.{readGameBoard, readPlay, readTestJSON}
 import play.api.libs.json.JsValue
-import civilization.R
+import civilization.RR
 import civilization.objects.CommandValues
 import civilization.objects._
 
 object Helper {
 
   def I = {
-//    R.setConnection("localhost", 6379)
-    R.setConnection("redis://localhost:6379")
-    civilization.I.setR(R.R)
+    RR.setConnection("localhost", 6379,1)
+//    R.setConnection("redis://localhost:6379")
+    civilization.I.setR(RR.RA)
   }
 
   def getBoard(path: String): GameBoard = {

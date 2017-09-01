@@ -1,6 +1,7 @@
 package civilization.test
 
 import civilization.I._
+import civilization.II
 import civilization.gameboard.{Figures, GameBoard}
 import civilization.helper.AllowedCommands.{PossibleMove, allowedCommands, itemizeForMove, itemizeforStartOfMove}
 import civilization.helper._
@@ -303,6 +304,13 @@ class Test9 extends FunSuite {
     var a: Seq[Command.T] = allowedCommands(b, Civilization.Rome)
     println(a)
     assert(a.find(_ == Command.STARTMOVE).isEmpty)
+  }
+
+  test("Check list of games available") {
+    var b: GameBoard = Helper.readBoardAndPlay("test9/BOARDGAME1.json", "test9/GAME8.json", Civilization.Rome)
+    val token: String = registerGame(b, Civilization.Rome)
+    val js = II.getData(II.LISTOFGAMES)
+    println(js)
   }
 
 }

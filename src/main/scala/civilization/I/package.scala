@@ -1,19 +1,19 @@
 package civilization
 
-import civilization.io.tojson._
-import civilization.io.fromjson._
-import play.api.libs.json._
-import java.security.SecureRandom
 import java.math.BigInteger
-import java.util.Calendar
+import java.security.SecureRandom
 
-import civilization.objects._
+import civilization.I.RAccess
 import civilization.action._
+import civilization.gameboard.{GameBoard,GameMetaData}
 import civilization.helper._
-import civilization.gameboard.GameBoard
-import civilization.io.readdir.{readListOfTiles, readGameBoard}
-import civilization.message._
+import civilization.io.fromjson._
 import civilization.io.readdir.GenBoard.genBoard
+import civilization.io.readdir.{readGameBoard, readListOfTiles}
+import civilization.io.tojson._
+import civilization.message._
+import civilization.objects._
+import play.api.libs.json._
 
 package object I {
 
@@ -23,27 +23,34 @@ package object I {
     this.r = r
   }
 
-  val LISTOFCIV: Int = 0;
-  val REGISTEROWNER: Int = 1
-  val GETBOARDGAME: Int = 2
+  final val LISTOFCIV: Int = 0;
+  final val REGISTEROWNER: Int = 1
+  final val GETBOARDGAME: Int = 2
+  final val LISTOFGAMES : Int = 3
 
   private val random = new SecureRandom()
 
   private def genToken(): String = new BigInteger(130, random).toString(32)
 
-  private def getBoard(token: String): (CurrentGame, GameBoard) = {
-    val game: CurrentGame = r.getCurrentGame(token)
-    val s: String = r.getGame(game.gameid)
+  private def getGameBoard(gameid: Int): GameBoard = {
+    val s: String = r.getGame(gameid)
     val g: GameBoard = readGameBoard(toJ(s))
+    val m : GameMetaData = toMetaData(toJ(r.getMetaData(gameid)))
+    g.metadata = m
     // replay game
-    val p: Seq[String] = r.getPlayForGame(game.gameid)
+    val p: Seq[String] = r.getPlayForGame(gameid)
     p.foreach(s => {
       val co: CommandValues = toParams(toJ(s));
       val comm: Command = action.constructCommand(co)
       playsingleCommand(g, comm)
     }
     )
-    (game, g)
+    g
+  }
+
+  private def getBoard(token: String): (CurrentGame, GameBoard) = {
+    val game: CurrentGame = r.getCurrentGame(token)
+    (game, getGameBoard(game.gameid))
   }
 
   private def toC(com: Command): CommandValues = CommandValues(com.command, com.civ, com.p, com.j)
@@ -54,6 +61,7 @@ package object I {
         case LISTOFCIV => getListOfCiv()
         case REGISTEROWNER => registerOwnerPlay(tokenorciv)
         case GETBOARDGAME => getBoardForCiv(tokenorciv)
+        case LISTOFGAMES => listOfGames
       }
     }
   }
@@ -73,8 +81,9 @@ package object I {
     val token: String = genToken()
     val gameS: String = writesGameBoard(g).toString()
     val gameid: Int = r.registerGame(gameS)
-    val cu: CurrentGame = CurrentGame(gameid, civ, Calendar.getInstance().getTime.getTime)
-    //    m.put(token, Board(g, civ, Calendar.getInstance().getTime.getTime))
+    val metadata : String = writeMetaData(g.metadata).toString()
+    r.updateMetaData(gameid,metadata)
+    val cu: CurrentGame = CurrentGame(gameid, civ)
     // play
     g.play.commands.foreach(co => {
       val cc: CommandValues = toC(co)
@@ -125,8 +134,40 @@ package object I {
     AllowedCommands.itemizeCommandS(g._2, g._1.civ, command)
   }
 
+  private def listOfGames() : String = {
+
+    val l : Seq[(Int,GameMetaData)] = r.getGames().map(s => (s._1,toMetaData(toJ(s._2)))).filter(_._2.okV)
+    val lg : Seq[(Int,GameBoard)] = l.map(p => (p._1,getGameBoard(p._1)))
+    val ld : Seq[JsValue] =  lg.map( p => {
+      val g : GameBoard = p._2
+      val civ : Seq[Civilization.T] = g.players.map(_.civ)
+      val cu : CurrentPhase = currentPhase(g)
+      GameData(p._1,civ,g.metadata.createtime,g.metadata.accesstime,cu.turnPhase,cu.roundno).as[JsValue]
+    })
+    Json.toJson(ld).toString()
+  }
+
   /* for test only */
   def getBoardForToken(token: String): GameBoard = getBoard(token)._2
+
+}
+
+// to be visible from Java
+
+object II {
+  val LISTOFCIV = I.LISTOFCIV
+  val REGISTEROWNER = I.REGISTEROWNER
+  val GETBOARDGAME = I.GETBOARDGAME
+  val LISTOFGAMES = I.LISTOFGAMES
+
+  def getData(what: Int, tokenorciv: String = null): String = I.getData(what, tokenorciv)
+
+  def executeCommand(token: String, action: String, row: Int, col: Int, jsparam: String): String = I.executeCommand(token, action, row, col, jsparam)
+
+  def itemizeCommand(token: String, action: String): String = I.itemizeCommand(token, action)
+
+  def setR(r: RAccess) = I.setR(r)
+
 
 }
 

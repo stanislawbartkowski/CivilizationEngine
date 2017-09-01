@@ -80,8 +80,8 @@ package object R {
   // singleton RedisClient to keep single connection to Redis
   // assuming that host and port does not change
   // in Heroku, if JVM changes initizalize new Redis connection
-  def setConnection(host: String, port: Int): Unit = {
-    if (rr.isEmpty) rr = Some(new RedisClient(host, port))
+  def setConnection(host: String, port: Int, database : Int): Unit = {
+    if (rr.isEmpty) rr = Some(new RedisClient(host, port,database))
   }
 
   def setConnection(url: String): Unit = {
@@ -97,7 +97,7 @@ package object R {
 
 // to be visible from Java
 object RR {
-  def setConnection(host: String, port: Int) = R.setConnection(host, port)
+  def setConnection(host: String, port: Int, database: Int = 0) = R.setConnection(host, port,database)
 
   def setConnection(url: String): Unit = R.setConnection(url)
 

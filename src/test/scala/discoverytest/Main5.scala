@@ -3,7 +3,7 @@ package discoverytest
 import java.math.BigInteger
 import java.security.SecureRandom
 
-import civilization.R
+import civilization.RR
 
 object Main5 {
 
@@ -12,7 +12,7 @@ object Main5 {
   private def genToken(): String = new BigInteger(130, random).toString(32)
 
   def main1(): Unit = {
-    val r  = R.R
+    val r  = RR.RA
     val token : String = genToken()
     r.registerCurrentGame(token, "aaaa")
     println(r.getCurrentGame(token))
@@ -35,14 +35,14 @@ object Main5 {
   }
 
   def main2() = {
-    val r  = R.R
+    val r  = RR.RA
     val p: Seq[(Int,String)] = r.getGames()
     p.foreach(println)
     }
 
   def main(args: Array[String]): Unit = {
 
-    R.setConnection("localhost", 6379)
+    RR.setConnection("localhost", 6379)
 //    main1
     main2
 
