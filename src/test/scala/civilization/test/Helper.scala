@@ -10,8 +10,8 @@ import civilization.objects._
 object Helper {
 
   def I = {
-    RR.setConnection("localhost", 6379,1)
-//    R.setConnection("redis://localhost:6379")
+    RR.setConnection("localhost", 6379, 1)
+    //    R.setConnection("redis://localhost:6379")
     civilization.I.setR(RR.RA)
   }
 
@@ -32,10 +32,10 @@ object Helper {
     val token: String = civilization.I.registerGame(g, civ)
     val p: Seq[CommandValues] = getPlay(playPath)
     p.foreach(co => civilization.I.executeCommand(token, co))
-    (token,civilization.I.getBoardForToken(token))
+    (token, civilization.I.getBoardForToken(token))
   }
 
-  def readBoardAndPlay(boardpath: String, playPath: String, civ: Civilization.T): GameBoard = readBoardAndPlayT(boardpath,playPath,civ)._2
+  def readBoardAndPlay(boardpath: String, playPath: String, civ: Civilization.T): GameBoard = readBoardAndPlayT(boardpath, playPath, civ)._2
 
 }
 

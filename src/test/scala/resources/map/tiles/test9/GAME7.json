@@ -1,39 +1,246 @@
 {
   "game": [
-    {"command" : "SETCAPITAL","civ" : "Rome", "p" : {"row":1, "col" : 2}},
-    { "command" : "SETSCOUT", "civ" : "Rome", "p" : {"row":1, "col" : 2}, "param" : {"row" : 0, "col":2}},
-    { "command" : "SETARMY", "civ" : "Rome", "p" : {"row":1, "col" : 2}, "param" : {"row" : 0, "col":1}},
-    { "command" : "ENDOFPHASE","civ" : "Rome", "param" : "StartOfTurn" },
-    { "command" : "ENDOFPHASE","civ" : "Rome", "param" : "Trade" },
-    { "command" : "ENDOFPHASE","civ" : "Rome", "param" : "CityManagement" },
-    { "command" : "STARTMOVE","civ" : "Rome","p" : {"row" : 0, "col" : 2}, "param" : { "numberofArmies" : 0, "numberofScouts" : 1}},
-    { "command" : "MOVE","civ" : "Rome","p" : {"row" : 1, "col" : 2}},
-    { "command" : "MOVE","civ" : "Rome","p" : {"row" : 2, "col" : 2}},
-    { "command" : "ENDOFMOVE","civ" : "Rome"},
-    { "command" : "STARTMOVE","civ" : "Rome","p" : {"row" : 0, "col" : 1}, "param" : { "numberofArmies" : 1, "numberofScouts" : 0}},
-    { "command" : "MOVE","civ" : "Rome","p" : {"row" : 1, "col" : 1}},
-    { "command" : "MOVE","civ" : "Rome","p" : {"row" : 2, "col" : 1}},
-    { "command" : "ENDOFPHASE","civ" : "Rome", "param" : "Movement" },
-    { "command" : "ENDOFPHASE","civ" : "Rome", "param" : "Research" },
-    { "command" : "ENDOFPHASE","civ" : "Rome", "param" : "StartOfTurn" },
-    { "command" : "ENDOFPHASE","civ" : "Rome", "param" : "Trade" },
-    { "command" : "ENDOFPHASE","civ" : "Rome", "param" : "CityManagement" },
-    { "command" : "STARTMOVE","civ" : "Rome","p" : {"row" : 2, "col" : 1}, "param" : { "numberofArmies" : 1, "numberofScouts" : 0}},
-    { "command" : "MOVE","civ" : "Rome","p" : {"row" : 3, "col" : 1}},
-    { "command" : "REVEALTILE","civ" : "Rome","p" : {"row" : 1, "col" : 0}, "param" : "Down" },
-    { "command" : "ENDOFMOVE","civ" : "Rome"},
-    { "command" : "STARTMOVE","civ" : "Rome","p" : {"row" : 2, "col" : 2}, "param" : { "numberofArmies" : 0, "numberofScouts" : 1}},
-    { "command" : "MOVE","civ" : "Rome","p" : {"row" : 3, "col" : 2}},
-    { "command" : "MOVE","civ" : "Rome","p" : {"row" : 4, "col" : 2}},
-    { "command" : "ENDOFMOVE","civ" : "Rome"},
-    { "command" : "ENDOFPHASE","civ" : "Rome", "param" : "Movement" },
-    { "command" : "ENDOFPHASE","civ" : "Rome", "param" : "Research" },
-    { "command" : "ENDOFPHASE","civ" : "Rome", "param" : "StartOfTurn" },
-    { "command" : "ENDOFPHASE","civ" : "Rome", "param" : "Trade" },
-    { "command" : "ENDOFPHASE","civ" : "Rome", "param" : "Movement" },
-    { "command" : "ENDOFPHASE","civ" : "Rome", "param" : "Research" },
-    { "command" : "ENDOFPHASE","civ" : "Rome", "param" : "StartOfTurn" },
-    { "command" : "ENDOFPHASE","civ" : "Rome", "param" : "Trade" },
-    { "command" : "ENDOFPHASE","civ" : "Rome", "param" : "CityManagement" }
+    {
+      "command": "SETCAPITAL",
+      "civ": "Rome",
+      "p": {
+        "row": 1,
+        "col": 2
+      }
+    },
+    {
+      "command": "SETSCOUT",
+      "civ": "Rome",
+      "p": {
+        "row": 1,
+        "col": 2
+      },
+      "param": {
+        "row": 0,
+        "col": 2
+      }
+    },
+    {
+      "command": "SETARMY",
+      "civ": "Rome",
+      "p": {
+        "row": 1,
+        "col": 2
+      },
+      "param": {
+        "row": 0,
+        "col": 1
+      }
+    },
+    {
+      "command": "ENDOFPHASE",
+      "civ": "Rome",
+      "param": "StartOfTurn"
+    },
+    {
+      "command": "ENDOFPHASE",
+      "civ": "Rome",
+      "param": "Trade"
+    },
+    {
+      "command": "ENDOFPHASE",
+      "civ": "Rome",
+      "param": "CityManagement"
+    },
+    {
+      "command": "STARTMOVE",
+      "civ": "Rome",
+      "p": {
+        "row": 0,
+        "col": 2
+      },
+      "param": {
+        "numberofArmies": 0,
+        "numberofScouts": 1
+      }
+    },
+    {
+      "command": "MOVE",
+      "civ": "Rome",
+      "p": {
+        "row": 1,
+        "col": 2
+      }
+    },
+    {
+      "command": "MOVE",
+      "civ": "Rome",
+      "p": {
+        "row": 2,
+        "col": 2
+      }
+    },
+    {
+      "command": "ENDOFMOVE",
+      "civ": "Rome"
+    },
+    {
+      "command": "STARTMOVE",
+      "civ": "Rome",
+      "p": {
+        "row": 0,
+        "col": 1
+      },
+      "param": {
+        "numberofArmies": 1,
+        "numberofScouts": 0
+      }
+    },
+    {
+      "command": "MOVE",
+      "civ": "Rome",
+      "p": {
+        "row": 1,
+        "col": 1
+      }
+    },
+    {
+      "command": "MOVE",
+      "civ": "Rome",
+      "p": {
+        "row": 2,
+        "col": 1
+      }
+    },
+    {
+      "command": "ENDOFPHASE",
+      "civ": "Rome",
+      "param": "Movement"
+    },
+    {
+      "command": "ENDOFPHASE",
+      "civ": "Rome",
+      "param": "Research"
+    },
+    {
+      "command": "ENDOFPHASE",
+      "civ": "Rome",
+      "param": "StartOfTurn"
+    },
+    {
+      "command": "ENDOFPHASE",
+      "civ": "Rome",
+      "param": "Trade"
+    },
+    {
+      "command": "ENDOFPHASE",
+      "civ": "Rome",
+      "param": "CityManagement"
+    },
+    {
+      "command": "STARTMOVE",
+      "civ": "Rome",
+      "p": {
+        "row": 2,
+        "col": 1
+      },
+      "param": {
+        "numberofArmies": 1,
+        "numberofScouts": 0
+      }
+    },
+    {
+      "command": "MOVE",
+      "civ": "Rome",
+      "p": {
+        "row": 3,
+        "col": 1
+      }
+    },
+    {
+      "command": "REVEALTILE",
+      "civ": "Rome",
+      "p": {
+        "row": 1,
+        "col": 0
+      },
+      "param": "Down"
+    },
+    {
+      "command": "ENDOFMOVE",
+      "civ": "Rome"
+    },
+    {
+      "command": "STARTMOVE",
+      "civ": "Rome",
+      "p": {
+        "row": 2,
+        "col": 2
+      },
+      "param": {
+        "numberofArmies": 0,
+        "numberofScouts": 1
+      }
+    },
+    {
+      "command": "MOVE",
+      "civ": "Rome",
+      "p": {
+        "row": 3,
+        "col": 2
+      }
+    },
+    {
+      "command": "MOVE",
+      "civ": "Rome",
+      "p": {
+        "row": 4,
+        "col": 2
+      }
+    },
+    {
+      "command": "ENDOFMOVE",
+      "civ": "Rome"
+    },
+    {
+      "command": "ENDOFPHASE",
+      "civ": "Rome",
+      "param": "Movement"
+    },
+    {
+      "command": "ENDOFPHASE",
+      "civ": "Rome",
+      "param": "Research"
+    },
+    {
+      "command": "ENDOFPHASE",
+      "civ": "Rome",
+      "param": "StartOfTurn"
+    },
+    {
+      "command": "ENDOFPHASE",
+      "civ": "Rome",
+      "param": "Trade"
+    },
+    {
+      "command": "ENDOFPHASE",
+      "civ": "Rome",
+      "param": "Movement"
+    },
+    {
+      "command": "ENDOFPHASE",
+      "civ": "Rome",
+      "param": "Research"
+    },
+    {
+      "command": "ENDOFPHASE",
+      "civ": "Rome",
+      "param": "StartOfTurn"
+    },
+    {
+      "command": "ENDOFPHASE",
+      "civ": "Rome",
+      "param": "Trade"
+    },
+    {
+      "command": "ENDOFPHASE",
+      "civ": "Rome",
+      "param": "CityManagement"
+    }
   ]
 }

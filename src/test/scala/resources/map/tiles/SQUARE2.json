@@ -1,1 +1,6 @@
-{"terrain" : "Mountain","tokens" : {"Production" : 1}}
+{
+  "terrain": "Mountain",
+  "tokens": {
+    "Production": 1
+  }
+}

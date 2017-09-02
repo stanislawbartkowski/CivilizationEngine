@@ -8,19 +8,23 @@ package object R {
   private final val CIVILIZATION = "civilization"
   private final val CURRENT = "current"
   private final val GAMES = "games"
+
   private final def SEQKEY = CIVILIZATION + "." + "seq"
+
   private final def PLAY = "play"
+
   private final def METADATA = "metadata"
+
   private final val reg = raw"(\d{4})-(\d{2})-(\d{2})".r
   private final val rid = (CIVILIZATION + raw"\." + GAMES + raw"\." + raw"(\d*)." + METADATA).r
 
-  private def extractGameId(s : String) : Int = {
-//    "2004-01-20" match {
-//      case date(year, month, day) => s"$year was a good year for PLs."
-//    }
-      s match {
-        case rid(gameid) => gameid.toInt
-      }
+  private def extractGameId(s: String): Int = {
+    //    "2004-01-20" match {
+    //      case date(year, month, day) => s"$year was a good year for PLs."
+    //    }
+    s match {
+      case rid(gameid) => gameid.toInt
+    }
   }
 
   class R extends RAccess {
@@ -69,9 +73,9 @@ package object R {
     override def getMetaData(id: Int): String = r.get(keyMetaData(id)).get
 
     override def getGames(): Seq[(Int, String)] = {
-      val keyspattern : String = CIVILIZATION + "." + GAMES + ".*." + METADATA
+      val keyspattern: String = CIVILIZATION + "." + GAMES + ".*." + METADATA
       val keys: List[String] = r.keys(keyspattern).get.filter(_.isDefined).map(_.get)
-      keys.map(extractGameId(_)).map(g => (g,getMetaData(g)))
+      keys.map(extractGameId(_)).map(g => (g, getMetaData(g)))
     }
   }
 
@@ -80,8 +84,8 @@ package object R {
   // singleton RedisClient to keep single connection to Redis
   // assuming that host and port does not change
   // in Heroku, if JVM changes initizalize new Redis connection
-  def setConnection(host: String, port: Int, database : Int): Unit = {
-    if (rr.isEmpty) rr = Some(new RedisClient(host, port,database))
+  def setConnection(host: String, port: Int, database: Int): Unit = {
+    if (rr.isEmpty) rr = Some(new RedisClient(host, port, database))
   }
 
   def setConnection(url: String): Unit = {
@@ -97,7 +101,7 @@ package object R {
 
 // to be visible from Java
 object RR {
-  def setConnection(host: String, port: Int, database: Int = 0) = R.setConnection(host, port,database)
+  def setConnection(host: String, port: Int, database: Int = 0) = R.setConnection(host, port, database)
 
   def setConnection(url: String): Unit = R.setConnection(url)
 

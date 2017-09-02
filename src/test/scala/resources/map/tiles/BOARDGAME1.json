@@ -1,13 +1,17 @@
 {
-  "players" : [
+  "players": [
     {
-      "civ" : "Germany"
+      "civ": "Germany"
     }
   ],
-  "map" : [
+  "map": [
     {
-      "tname" : "TILEGERMANY.json", "p" : { "row" : 0, "col" : 0},
-      "squares" : [
+      "tname": "TILEGERMANY.json",
+      "p": {
+        "row": 0,
+        "col": 0
+      },
+      "squares": [
         [
           {},
           {},
@@ -35,8 +39,12 @@
       ]
     },
     {
-      "tname" : "TILE1.json", "p" : { "row" : 1, "col" : 0},
-      "squares" : [
+      "tname": "TILE1.json",
+      "p": {
+        "row": 1,
+        "col": 0
+      },
+      "squares": [
         [
           {},
           {},
@@ -64,9 +72,9 @@
       ]
     }
   ],
-  "market" : {
-    "hutvillages" : [
+  "market": {
+    "hutvillages": [
     ],
-    "hutvillagesused" : []
+    "hutvillagesused": []
   }
 }

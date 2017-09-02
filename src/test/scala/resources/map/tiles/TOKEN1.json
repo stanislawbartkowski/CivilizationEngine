@@ -1,1 +1,5 @@
-{"Culture" : 1,"Production" : 2, "Trade" : 3}
+{
+  "Culture": 1,
+  "Production": 2,
+  "Trade": 3
+}

@@ -9,15 +9,15 @@ object MoveAction {
 
 
   private def directMove(p: P, next: P): Boolean = {
-// removed: 2017.08.21
-//    if (p.row == next.row && p.col == next.col) return true
+    // removed: 2017.08.21
+    //    if (p.row == next.row && p.col == next.col) return true
     if ((p.row == next.row) && ((p.col + 1 == next.col) || (p.col - 1 == next.col))) return true
     if ((p.col == next.col) && ((p.row + 1 == next.row) || (p.row - 1 == next.row))) return true
     false
   }
 
   private def startOfMoveVerify(b: GameBoard, civ: Civilization.T, p: P, fig: Figures): Mess = {
-    checkP(b,p)
+    checkP(b, p)
     // check if figures moves again from last position
     val s: MapSquareP = getSquare(b, p)
     val flast: Seq[PlayerMove] = civLastMoves(b, civ)
@@ -46,8 +46,8 @@ object MoveAction {
     if (s.sm.terrain == Terrain.Water && li.waterstopallowed) return Some(Mess(M.CANNOTSTOPINWATER, figdesc))
     if (s.s.city != null && s.s.city.civ == civ) return Some(Mess(M.CANNOTSTOPINCITY, figdesc))
     // 2017/08/28 figures already on the point
-//    val numb = fig.numberofArmies + fig.numberofScouts + s.s.figures.numberofArmies + s.s.figures.numberofScouts
-//    if (numb > li.stackinglimit) return Some(Mess(M.STACKINGSIZEEXCEEDED, (figdesc, li.stackinglimit, numb)))
+    //    val numb = fig.numberofArmies + fig.numberofScouts + s.s.figures.numberofArmies + s.s.figures.numberofScouts
+    //    if (numb > li.stackinglimit) return Some(Mess(M.STACKINGSIZEEXCEEDED, (figdesc, li.stackinglimit, numb)))
     None
   }
 
@@ -113,7 +113,7 @@ object MoveAction {
   class ForceMoveAction(override val param: Figures) extends AbstractCommand(param) {
     def execute(board: GameBoard) = putFigures(board, civ, p, param)
 
-    def verify(board: GameBoard): Mess = checkFinalPoint(board,civ,getSquare(board,p),param).getOrElse(null)
+    def verify(board: GameBoard): Mess = checkFinalPoint(board, civ, getSquare(board, p), param).getOrElse(null)
   }
 
 }

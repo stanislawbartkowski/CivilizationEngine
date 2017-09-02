@@ -6,7 +6,7 @@ import civilization.message._
 import civilization.objects._
 import play.api.libs.json.{JsArray, JsValue, Json}
 
-object  AllowedCommands {
+object AllowedCommands {
 
   // City Management, BUTSCOUT, BUYARMY
   private def allowedActionForCityManagement(b: GameBoard, civ: Civilization.T): Seq[Command.T] = {
@@ -39,12 +39,14 @@ object  AllowedCommands {
   def itemizeforStartOfMove(b: GameBoard, civ: Civilization.T): Seq[(Figures, P)] = {
     val lastp: Seq[(Figures, P, P)] = civLastMoves(b, civ).map(o => (o.f.toFigures, o.begstop._1.p.get, o.begstop._2.p.get))
     //TODO: can be done better,2 traversals, use mutable map and fold
-//    val startmap : Map[P,Figures] = lastp.map(t => t._3 -> Figures(0,0)) toMap
-//    val lastm: Map[P, Figures] = lastp.map(t => t._3 -> t._1).toMap
+    //    val startmap : Map[P,Figures] = lastp.map(t => t._3 -> Figures(0,0)) toMap
+    //    val lastm: Map[P, Figures] = lastp.map(t => t._3 -> t._1).toMap
     // current points on board belonging to civilization
     //    val current: Seq[(Figures, P)] = allSquares(b).filter(p => p.s.figures.civOccupying.isDefined && p.s.figures.civOccupying.get == civ).map(m => (m.s.figures.toFigures, m.p))
     // sum all figures finishing at given point
-    val lastm: Map[P, Figures] = lastp.groupBy(_._3).map(e => e._1 -> e._2.foldLeft[Figures](Figures(0,0))((f,p) => { f + p._1; f }))
+    val lastm: Map[P, Figures] = lastp.groupBy(_._3).map(e => e._1 -> e._2.foldLeft[Figures](Figures(0, 0))((f, p) => {
+      f + p._1; f
+    }))
     val current: Seq[(Figures, P)] = getFigures(b, civ).map(m => (m.s.figures.toFigures, m.p))
     // remove all figures which has moved already
     current.foreach(f => {
@@ -161,10 +163,10 @@ object  AllowedCommands {
         l = o.get.reveal.map(r => Json.obj(S.p -> writesP(r._1), S.orientation -> r._2))
       }
       case Command.SETCITY => {
-        l  = itemizeForSetSity(b,civ).map(writesP(_))
+        l = itemizeForSetSity(b, civ).map(writesP(_))
       }
       case Command.SETCAPITAL => {
-        l  = itemizeForSetCapital(b,civ).map(writesP(_))
+        l = itemizeForSetCapital(b, civ).map(writesP(_))
       }
       case _ => None
     }

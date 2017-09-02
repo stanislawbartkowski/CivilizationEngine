@@ -2,6 +2,7 @@ package civilization
 
 import java.math.BigInteger
 import java.security.SecureRandom
+import java.util.Calendar
 
 import civilization.I.RAccess
 import civilization.action._
@@ -114,12 +115,18 @@ package object I {
     Json.prettyPrint(genboardj.genBoardGameJson(g._2, civ))
   }
 
+  private def touchGame(gameid : Int, g : GameBoard) = {
+    g.metadata.accesstime = Calendar.getInstance().getTime.getTime
+    r.updateMetaData(gameid,writeMetaData(g.metadata).toString())
+  }
+
   private def executeCommand(gb: (CurrentGame, GameBoard), com: CommandValues): String = {
     val co: Command = constructCommand(com)
     var mess: Mess = playCommand(gb._2, co, c => {
       val cv: CommandValues = toC(c)
       r.addMoveToPlay(gb._1.gameid, writeCommandValues(cv).toString())
-    })
+    }
+    )
     return if (mess == null) return null else mess.toString
   }
 
@@ -132,6 +139,7 @@ package object I {
     val civ: Civilization.T = gb._1.civ
     val command: Command.T = Command.withName(action)
     val coma: CommandValues = CommandValues(command, civ, if (row == -1) null else P(row, col), if (jsparam == null) null else toJ(jsparam))
+    touchGame(gb._1.gameid,g)
     executeCommand(gb, coma)
   }
 
@@ -142,7 +150,8 @@ package object I {
   }
 
   private def listOfGames(): String = {
-    val l: Seq[(Int, GameMetaData)] = r.getGames().map(s => (s._1, toMetaData(toJ(s._2)))).filter(_._2.okV)
+    // only the latest 50 sorted newest first
+    val l: Seq[(Int, GameMetaData)] = r.getGames().map(s => (s._1, toMetaData(toJ(s._2)))).filter(_._2.okV).sortBy(_._2.accesstime)(Ordering.Long.reverse).take(50)
     val lg: Seq[(Int, GameBoard)] = l.map(p => (p._1, getGameBoard(p._1)))
     val ld: Seq[JsValue] = lg.map(p => {
       val g: GameBoard = p._2
@@ -179,7 +188,7 @@ object II {
 
   def setR(r: RAccess) = I.setR(r)
 
-  def resumeGame(gameid : Int, civ : String) : String = I.resumeGame(gameid, civ)
+  def resumeGame(gameid: Int, civ: String): String = I.resumeGame(gameid, civ)
 
 }
 

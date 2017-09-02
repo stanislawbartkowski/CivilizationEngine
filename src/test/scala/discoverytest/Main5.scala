@@ -12,8 +12,8 @@ object Main5 {
   private def genToken(): String = new BigInteger(130, random).toString(32)
 
   def main1(): Unit = {
-    val r  = RR.RA
-    val token : String = genToken()
+    val r = RR.RA
+    val token: String = genToken()
     r.registerCurrentGame(token, "aaaa")
     println(r.getCurrentGame(token))
     r.updateCurrentGame(token, "cccccc")
@@ -22,7 +22,7 @@ object Main5 {
     val id = r.registerGame("game")
     println(id)
     println(r.getGame(id))
-    r.updateGame(id,"next game")
+    r.updateGame(id, "next game")
     println(r.getGame(id))
     println(r.getPlayForGame(id))
     r.addMoveToPlay(id, "move1")
@@ -35,15 +35,15 @@ object Main5 {
   }
 
   def main2() = {
-    val r  = RR.RA
-    val p: Seq[(Int,String)] = r.getGames()
+    val r = RR.RA
+    val p: Seq[(Int, String)] = r.getGames()
     p.foreach(println)
-    }
+  }
 
   def main(args: Array[String]): Unit = {
 
     RR.setConnection("localhost", 6379)
-//    main1
+    //    main1
     main2
 
   }

@@ -120,14 +120,14 @@ class Test1 extends FunSuite {
     l.foreach(l => println(l.name + " " + l.tile))
   }
 
-//  test("Read player from test ") {
-//    val l: JsValue = readTestJSON("resources/map/tiles/PLAYER.json")
-//    println(l)
-//    val t: Player = convert[PlayerJ](PlayerJ(l))
-//    println(t)
-//    assert(Player.A == t.player)
-//    assert(Civilization.Germany == t.civ)
-//  }
+  //  test("Read player from test ") {
+  //    val l: JsValue = readTestJSON("resources/map/tiles/PLAYER.json")
+  //    println(l)
+  //    val t: Player = convert[PlayerJ](PlayerJ(l))
+  //    println(t)
+  //    assert(Player.A == t.player)
+  //    assert(Civilization.Germany == t.civ)
+  //  }
 
   test("Read single map tile ") {
     val l: JsValue = readTestJSON("resources/map/tiles/MAP1.json")
@@ -200,14 +200,14 @@ class Test1 extends FunSuite {
   }
 
   test("Read techonlogies") {
-    val l : Seq[Technology] = readTechnologies
+    val l: Seq[Technology] = readTechnologies
     println(l)
     assert(l != null)
     assert(!l.isEmpty)
   }
 
   test("read null enum") {
-    var c :  Orientation.T = toOrientation(toJ("\"Left\""))
+    var c: Orientation.T = toOrientation(toJ("\"Left\""))
     println(c)
     c = toOrientation(toJ("null"))
     println(c)
@@ -215,14 +215,14 @@ class Test1 extends FunSuite {
   }
 
   test("Read tile ROME ") {
-    val l: JsValue = readJSON("map/tiles","TILEROME.json")
+    val l: JsValue = readJSON("map/tiles", "TILEROME.json")
     println(l)
     val t: Tile = convert[TileJ](TileJ(l))
     println(t)
     assert(Civilization.Rome == t.civ)
     assert(1 == t.suggestedcapital.row)
     assert(2 == t.suggestedcapital.col)
-    val s : Square = t.terrain(1)(2)
+    val s: Square = t.terrain(1)(2)
     println(s)
     assert(s.terrain == Terrain.Grassland)
   }

@@ -8,7 +8,7 @@ import civilization.action.{Command, Play}
 
 package object gameboard {
 
-  private final val packageversion : Int = 0;
+  private final val packageversion: Int = 0;
 
   case class PatterMap(val p: P, val o: Orientation.T)
 
@@ -16,7 +16,7 @@ package object gameboard {
 
   case class PlayerTechnology(val tech: TechnologyName.T)
 
-  case class Figures(var numberofArmies: Int, var numberofScouts: Int ) {
+  case class Figures(var numberofArmies: Int, var numberofScouts: Int) {
     def empty: Boolean = (numberofArmies == 0 && numberofScouts == 0)
 
     def +(that: Figures) = {
@@ -25,18 +25,19 @@ package object gameboard {
     }
 
     def -(that: Figures) = this + Figures(0 - that.numberofArmies, 0 - that.numberofScouts)
-    def unary_- : Figures = Figures(0 - numberofArmies,0 - numberofScouts)
+
+    def unary_- : Figures = Figures(0 - numberofArmies, 0 - numberofScouts)
   }
 
   case class PlayerFigures(var civ: Civilization.T, var numberofArmies: Int, var numberofScouts: Int) {
 
     require(ok)
 
-    private def ok : Boolean = numberofArmies >= 0 && numberofScouts >= 0
+    private def ok: Boolean = numberofArmies >= 0 && numberofScouts >= 0
 
     def empty: Boolean = (numberofArmies == 0 && numberofScouts == 0)
 
-    def civOccupying(civ:Civilization.T) : Boolean = !empty && this.civ == civ
+    def civOccupying(civ: Civilization.T): Boolean = !empty && this.civ == civ
 
     def +(that: Figures) = {
       this.numberofScouts = this.numberofScouts + that.numberofScouts
@@ -86,24 +87,24 @@ package object gameboard {
     var tech: Seq[PlayerTechnology] = Nil
   }
 
-  case class GameMetaData(val version : Int, val createtime : Long , var accesstime : Long, val desc : String) {
+  case class GameMetaData(val version: Int, val createtime: Long, var accesstime: Long, val desc: String) {
 
-    def this(desc : String) {
+    def this(desc: String) {
       this(packageversion, Calendar.getInstance().getTime.getTime, Calendar.getInstance().getTime.getTime, desc)
     }
 
-    def okV : Boolean = version == packageversion
+    def okV: Boolean = version == packageversion
   }
 
-  case class GameBoard(val players: Seq[PlayerDeck], val map: Map, val market: Market ) {
+  case class GameBoard(val players: Seq[PlayerDeck], val map: Map, val market: Market) {
 
-    var metadata : GameMetaData = new GameMetaData("")
+    var metadata: GameMetaData = new GameMetaData("")
 
     // force command to execute next
     // TODO: I'm not happy with that
-    var forcednext : List[Command] = Nil
+    var forcednext: List[Command] = Nil
 
-    def addForcedCommand(com : Command) = forcednext = forcednext :+ com
+    def addForcedCommand(com: Command) = forcednext = forcednext :+ com
 
     def playerDeck(civ: Civilization.T): PlayerDeck = {
       // assuming exist
@@ -113,7 +114,6 @@ package object gameboard {
     var play: Play.Play = new Play.Play()
     var tech: Seq[Technology] = _
   }
-
 
 
 }

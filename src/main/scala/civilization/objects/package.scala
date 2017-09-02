@@ -19,7 +19,7 @@ package object objects {
   }
 
   case class Tile(val terrain: TileTerrain, val civ: Civilization.T, val suggestedcapital: P) {
-    def civhome : Boolean = civ != null
+    def civhome: Boolean = civ != null
   }
 
   case class Player(val player: Player.T, val civ: Civilization.T)

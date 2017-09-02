@@ -1,13 +1,17 @@
 {
-  "players" : [
+  "players": [
     {
-      "civ" : "Germany"
+      "civ": "Germany"
     }
   ],
-  "map" : [
+  "map": [
     {
-      "tname" : "TILEGERMANY.json", "p" : { "row" : 0, "col" : 0},
-      "squares" : [
+      "tname": "TILEGERMANY.json",
+      "p": {
+        "row": 0,
+        "col": 0
+      },
+      "squares": [
         [
           {},
           {},
@@ -35,8 +39,12 @@
       ]
     },
     {
-      "tname" : "TILE1.json", "p" : { "row" : 1, "col" : 0},
-      "squares" : [
+      "tname": "TILE1.json",
+      "p": {
+        "row": 1,
+        "col": 0
+      },
+      "squares": [
         [
           {},
           {},
@@ -64,28 +72,33 @@
       ]
     }
   ],
-  "market" : {
-    "hutvillages" : [
+  "market": {
+    "hutvillages": [
       {
-        "hv" : "Hut", "resource" : "Spy"
+        "hv": "Hut",
+        "resource": "Spy"
       },
       {
-        "hv" : "Hut", "resource" : "Iron"
+        "hv": "Hut",
+        "resource": "Iron"
       },
       {
-        "hv" : "Hut", "resource" : "Silk"
+        "hv": "Hut",
+        "resource": "Silk"
       },
       {
-        "hv" : "Village", "resource" : "Uranium"
+        "hv": "Village",
+        "resource": "Uranium"
       },
       {
-        "hv" : "Village", "resource" : "Spy"
+        "hv": "Village",
+        "resource": "Spy"
       },
       {
-        "hv" : "Village", "resource" : "Wheat"
+        "hv": "Village",
+        "resource": "Wheat"
       }
     ],
-    "hutvillagesused" : []
+    "hutvillagesused": []
   }
-
 }

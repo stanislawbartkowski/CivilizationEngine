@@ -9,7 +9,7 @@ object Main2 {
   def main(args: Array[String]): Unit = {
 
     println("Hello")
-    val l : List[(String,JsValue)] = readdirJSON("test/map/tiles")
+    val l: List[(String, JsValue)] = readdirJSON("test/map/tiles")
 
     l.foreach(println)
   }

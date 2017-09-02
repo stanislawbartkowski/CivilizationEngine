@@ -119,18 +119,18 @@ package object fromjson {
 
   implicit val pattermapReads: Reads[PatterMap] = new Reads[PatterMap] {
     def reads(json: JsValue): JsResult[PatterMap] = {
-      val p : P = (json \ S.p).as[P]
+      val p: P = (json \ S.p).as[P]
       val orientation: Orientation.T = (json \ S.orientation).asOpt[Orientation.T].getOrElse(null)
-      JsSuccess(PatterMap(p,orientation))
+      JsSuccess(PatterMap(p, orientation))
     }
   }
 
-    implicit val mapsquareReads: Reads[MapSquare] = new Reads[MapSquare] {
+  implicit val mapsquareReads: Reads[MapSquare] = new Reads[MapSquare] {
     def reads(json: JsValue): JsResult[MapSquare] = {
       val hv: HutVillage = (json \ S.hutvillage).asOpt[HutVillage].getOrElse(null)
       val figures: PlayerFigures = (json \ "figures").asOpt[PlayerFigures].getOrElse(null)
       val city: City = (json \ S.city).asOpt[City].getOrElse(null)
-      val ma : MapSquare = MapSquare(hv,city)
+      val ma: MapSquare = MapSquare(hv, city)
       if (figures != null) {
         ma.figures.civ = figures.civ
         ma.figures.numberofScouts = figures.numberofScouts
@@ -178,7 +178,7 @@ package object fromjson {
 
   implicit val gameboardReads: Reads[GameBoard] = new Reads[GameBoard] {
     def reads(json: JsValue): JsResult[GameBoard] = {
-      val  players: List[PlayerDeck] = (json \ S.players).as[List[PlayerDeck]]
+      val players: List[PlayerDeck] = (json \ S.players).as[List[PlayerDeck]]
       val map: Seq[MapTile] = (json \ S.map).as[Seq[MapTile]]
       val market: Market = (json \ S.market).as[Market]
       JsSuccess(GameBoard(players, Map(map), market))
@@ -187,9 +187,9 @@ package object fromjson {
 
   implicit val metadataReads: Reads[GameMetaData] = (
     (JsPath \ S.version).read[Int] and
-    (JsPath \ S.createtime).read[Long] and
-    (JsPath \ S.accesstime).read[Long] and
-    (JsPath \ S.desc).read[String]
+      (JsPath \ S.createtime).read[Long] and
+      (JsPath \ S.accesstime).read[Long] and
+      (JsPath \ S.desc).read[String]
     ) (GameMetaData.apply _)
 
   trait FromJson {
@@ -224,7 +224,7 @@ package object fromjson {
   }
 
   case class PlayerDeckJ(val j: JsValue) extends FromJson {
-   type Value = PlayerDeck
+    type Value = PlayerDeck
 
     def to: JsResult[PlayerDeck] = (JsPath).read[PlayerDeck].reads(j)
   }
@@ -318,22 +318,22 @@ package object fromjson {
 
   def toTurnPhase(j: JsValue): TurnPhase.T = convert[TurnPhaseJ](TurnPhaseJ(j))
 
-  def toOrientation(j : JsValue) : Orientation.T = convert[OrientationJ](OrientationJ(j))
+  def toOrientation(j: JsValue): Orientation.T = convert[OrientationJ](OrientationJ(j))
 
   def toFigure(j: JsValue): Figure.T = {
     j.as[Figure.T]
   }
 
-  def toFigures(j : JsValue) : Figures = convert[FiguresToMoveJ](FiguresToMoveJ(j))
+  def toFigures(j: JsValue): Figures = convert[FiguresToMoveJ](FiguresToMoveJ(j))
 
-  def toTechnologies(j : JsValue) : Seq[Technology] = convert[SeqTechnologyJ](SeqTechnologyJ(j))
+  def toTechnologies(j: JsValue): Seq[Technology] = convert[SeqTechnologyJ](SeqTechnologyJ(j))
 
-  def toTechnologName(j : JsValue) = j.as[TechnologyName.T]
+  def toTechnologName(j: JsValue) = j.as[TechnologyName.T]
 
-  def toSeqPatterMap(j : JsValue) : Seq[PatterMap] = convert[PatterMapSeqJ](PatterMapSeqJ(j))
+  def toSeqPatterMap(j: JsValue): Seq[PatterMap] = convert[PatterMapSeqJ](PatterMapSeqJ(j))
 
-  def toArrayHutVillages(j : JsValue) : Array[HutVillage] = j.as[Array[HutVillage]]
+  def toArrayHutVillages(j: JsValue): Array[HutVillage] = j.as[Array[HutVillage]]
 
-  def toMetaData(j : JsValue) : GameMetaData = j.as[GameMetaData]
+  def toMetaData(j: JsValue): GameMetaData = j.as[GameMetaData]
 
 }

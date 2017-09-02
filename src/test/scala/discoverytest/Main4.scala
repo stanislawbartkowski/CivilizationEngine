@@ -11,7 +11,9 @@ object Main4 {
 
     println(l)
 
-    l.productIterator.foreach(p => println({ val d: JsDefined = p.asInstanceOf[JsDefined]; }) )
+    l.productIterator.foreach(p => println({
+      val d: JsDefined = p.asInstanceOf[JsDefined];
+    }))
 
   }
 

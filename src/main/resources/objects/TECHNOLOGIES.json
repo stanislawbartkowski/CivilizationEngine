@@ -1,40 +1,154 @@
 [
-  { "name" : "Irigation", "level" : 2 },
-  { "name" : "Construction", "level" : 2 },
-  { "name" : "MetalCasting", "level" : 3 },
-  { "name" : "Communism", "level" : 3 },
-  { "name" : "MilitaryScience", "level" : 3 },
-  { "name" : "SteamPower", "level" : 3 },
-  { "name" : "GunPowder", "level" : 3 },
-  { "name" : "NuclearFusion", "level" : 4 },
-  { "name" : "ReplaceableParts", "level" : 4 },
-  { "name" : "Ballistics", "level" : 4 },
-  { "name" : "MessMedia", "level" : 4 },
-  { "name" : "Computers", "level" : 4 },
-  { "name" : "Flight", "level" : 4 },
-  { "name" : "PrintingPress", "level" : 2 },
-  { "name" : "Democracy", "level" : 2 },
-  { "name" : "Monarchy", "level" : 2 },
-  { "name" : "Sailing", "level" : 2 },
-  { "name" : "Mathematics", "level" : 2 },
-  { "name" : "CivilService", "level" : 2 },
-  { "name" : "Engineering", "level" : 2 },
-  { "name" : "Metallurgy", "level" : 1 },
-  { "name" : "CodeOfLaw", "level" : 1 },
-  { "name" : "HorsebackRiding", "level" : 1 },
-  { "name" : "Writing", "level" : 1 },
-  { "name" : "Pottery", "level" : 1 },
-  { "name" : "Philosophy", "level" : 1 },
-  { "name" : "Navigation", "level" : 1 },
-  { "name" : "AnimalHusbandry", "level" : 1 },
-  { "name" : "Currency", "level" : 1 },
-  { "name" : "Masonry", "level" : 1 },
-  { "name" : "Plastics", "level" : 4 },
-  { "name" : "Ecology", "level" : 3 },
-  { "name" : "Mysticism", "level" : 2 },
-  { "name" : "RailRoad", "level" : 3 },
-  { "name" : "Biology", "level" : 3 },
-  { "name" : "Theology", "level" : 3 },
-  { "name" : "Agriculture", "level" : 1 },
-  { "name" : "Banking", "level" : 3 }
+  {
+    "name": "Irigation",
+    "level": 2
+  },
+  {
+    "name": "Construction",
+    "level": 2
+  },
+  {
+    "name": "MetalCasting",
+    "level": 3
+  },
+  {
+    "name": "Communism",
+    "level": 3
+  },
+  {
+    "name": "MilitaryScience",
+    "level": 3
+  },
+  {
+    "name": "SteamPower",
+    "level": 3
+  },
+  {
+    "name": "GunPowder",
+    "level": 3
+  },
+  {
+    "name": "NuclearFusion",
+    "level": 4
+  },
+  {
+    "name": "ReplaceableParts",
+    "level": 4
+  },
+  {
+    "name": "Ballistics",
+    "level": 4
+  },
+  {
+    "name": "MessMedia",
+    "level": 4
+  },
+  {
+    "name": "Computers",
+    "level": 4
+  },
+  {
+    "name": "Flight",
+    "level": 4
+  },
+  {
+    "name": "PrintingPress",
+    "level": 2
+  },
+  {
+    "name": "Democracy",
+    "level": 2
+  },
+  {
+    "name": "Monarchy",
+    "level": 2
+  },
+  {
+    "name": "Sailing",
+    "level": 2
+  },
+  {
+    "name": "Mathematics",
+    "level": 2
+  },
+  {
+    "name": "CivilService",
+    "level": 2
+  },
+  {
+    "name": "Engineering",
+    "level": 2
+  },
+  {
+    "name": "Metallurgy",
+    "level": 1
+  },
+  {
+    "name": "CodeOfLaw",
+    "level": 1
+  },
+  {
+    "name": "HorsebackRiding",
+    "level": 1
+  },
+  {
+    "name": "Writing",
+    "level": 1
+  },
+  {
+    "name": "Pottery",
+    "level": 1
+  },
+  {
+    "name": "Philosophy",
+    "level": 1
+  },
+  {
+    "name": "Navigation",
+    "level": 1
+  },
+  {
+    "name": "AnimalHusbandry",
+    "level": 1
+  },
+  {
+    "name": "Currency",
+    "level": 1
+  },
+  {
+    "name": "Masonry",
+    "level": 1
+  },
+  {
+    "name": "Plastics",
+    "level": 4
+  },
+  {
+    "name": "Ecology",
+    "level": 3
+  },
+  {
+    "name": "Mysticism",
+    "level": 2
+  },
+  {
+    "name": "RailRoad",
+    "level": 3
+  },
+  {
+    "name": "Biology",
+    "level": 3
+  },
+  {
+    "name": "Theology",
+    "level": 3
+  },
+  {
+    "name": "Agriculture",
+    "level": 1
+  },
+  {
+    "name": "Banking",
+    "level": 3
+  }
 ]

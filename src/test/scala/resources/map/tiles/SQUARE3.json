@@ -1,1 +1,8 @@
-{"terrain" : "Mountain","tokens" : {"Production" : 1}, "naturalwonder" : true, "hv" : "Hut"}
+{
+  "terrain": "Mountain",
+  "tokens": {
+    "Production": 1
+  },
+  "naturalwonder": true,
+  "hv": "Hut"
+}

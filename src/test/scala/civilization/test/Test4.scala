@@ -43,8 +43,8 @@ class Test4 extends FunSuite {
     println(com2.verify(b))
     assert(com2.verify(b) != null)
 
-    val coms: Command = constructCommand(Command.FORCEDMOVEFIGURES, Civilization.Germany, P(5, 2),toJ("{ \"numberofArmies\" : 0, \"numberofScouts\" : 1}" ))
-    var m : Mess = playCommand(b,coms)
+    val coms: Command = constructCommand(Command.FORCEDMOVEFIGURES, Civilization.Germany, P(5, 2), toJ("{ \"numberofArmies\" : 0, \"numberofScouts\" : 1}"))
+    var m: Mess = playCommand(b, coms)
     println(m)
 
     val com3: Command = constructCommand(Command.SETCITY, Civilization.Germany, P(5, 2), null)

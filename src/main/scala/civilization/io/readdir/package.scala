@@ -26,17 +26,17 @@ package object readdir {
     Json.parse(s)
   }
 
-// TODO : not always work as expected, failing for Heroku
-//  private def getDirectory(resourcedir : String) : Seq[String] = Source.fromResource(resourcedir).getLines().toSeq
+  // TODO : not always work as expected, failing for Heroku
+  //  private def getDirectory(resourcedir : String) : Seq[String] = Source.fromResource(resourcedir).getLines().toSeq
 
-  private def getDirectory(resourcedir : String) : Seq[String] = {
-    val fullDirName : String  = getClass.getClassLoader.getResource(resourcedir).getPath
+  private def getDirectory(resourcedir: String): Seq[String] = {
+    val fullDirName: String = getClass.getClassLoader.getResource(resourcedir).getPath
     val d = new File(fullDirName)
     d.listFiles().map(_.getName)
   }
 
   def readdirJSON(resourcedir: String): List[(String, JsValue)] = {
-    val o : Seq[String] = getDirectory(resourcedir)
+    val o: Seq[String] = getDirectory(resourcedir)
     o.map(filename => (filename, readJSON(resourcedir, filename))).toList
   }
 

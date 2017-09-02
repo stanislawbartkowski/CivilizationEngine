@@ -105,7 +105,7 @@ package object tojson {
     )
   }
 
-  implicit val metadataWrites : Writes[GameMetaData] = new Writes[GameMetaData] {
+  implicit val metadataWrites: Writes[GameMetaData] = new Writes[GameMetaData] {
     def writes(m: GameMetaData) = Json.obj(
       S.version -> m.version,
       S.createtime -> m.createtime,
@@ -119,8 +119,12 @@ package object tojson {
     def writes(m: CommandValues) = Json.obj(
       S.command -> m.command,
       S.civ -> m.civ,
-      S.p -> { if (m.p == null) json.JsNull else m.p },
-      S.param -> { if (m.param == null) json.JsNull else m.param }
+      S.p -> {
+        if (m.p == null) json.JsNull else m.p
+      },
+      S.param -> {
+        if (m.param == null) json.JsNull else m.param
+      }
     )
   }
 
@@ -150,6 +154,6 @@ package object tojson {
 
   def writeCommandValues(m: CommandValues): JsValue = Json.toJson(m)
 
-  def writeMetaData(m : GameMetaData) : JsValue = Json.toJson(m)
+  def writeMetaData(m: GameMetaData): JsValue = Json.toJson(m)
 
 }

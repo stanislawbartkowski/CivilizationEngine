@@ -22,5 +22,6 @@ object Command extends Enumeration {
     return t == MOVE || t == REVEALTILE || t == ENDOFMOVE
   }
 }
+
 case class CommandValues(val command: Command.T, val civ: Civilization.T, val p: P, val param: JsValue)
 

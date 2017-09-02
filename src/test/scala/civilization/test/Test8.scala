@@ -90,12 +90,12 @@ class Test8 extends FunSuite {
     val o: String = itemizeCommand(token, "SETSCOUT")
     // double check
     println(o)
-    var p : Set[P] = a.map(_._2).toSet
+    var p: Set[P] = a.map(_._2).toSet
     assert(p.size == 6)
-    val re : JsArray = toJ(o).as[JsArray]
+    val re: JsArray = toJ(o).as[JsArray]
     re.value.foreach(e => {
       println(e)
-      val reco:P = toP((e \ "param").get.as[JsValue])
+      val reco: P = toP((e \ "param").get.as[JsValue])
       println(reco)
       p = p - reco
     })
@@ -108,23 +108,23 @@ class Test8 extends FunSuite {
     var s: String = executeCommand(token, "SETCAPITAL", 1, 2, null)
     println(s)
     assert(s == null)
-    s = getData(GETBOARDGAME,token)
-//    println(s)
-    val board : JsValue = toJ(s)
-    val map : JsArray = (board \ "board" \ "map").get.as[JsArray]
-//    println (map)
-    var found : Int = 0
+    s = getData(GETBOARDGAME, token)
+    //    println(s)
+    val board: JsValue = toJ(s)
+    val map: JsArray = (board \ "board" \ "map").get.as[JsArray]
+    //    println (map)
+    var found: Int = 0
     map.value.foreach(v => v.as[JsArray].value.foreach(s => {
-       //println(s)
-       val capciv : Option[JsString] = (s \ "civ").get.asOpt[JsString]
-       if (capciv.isDefined) {
-         println(capciv.get)
-         found = found+1
-         val production = (s \ "production").get.as[Int]
-         println(production)
-         assert(production == 6)
-       }
-//       println(capciv)
+      //println(s)
+      val capciv: Option[JsString] = (s \ "civ").get.asOpt[JsString]
+      if (capciv.isDefined) {
+        println(capciv.get)
+        found = found + 1
+        val production = (s \ "production").get.as[Int]
+        println(production)
+        assert(production == 6)
+      }
+      //       println(capciv)
     }))
     assert(found == 1)
   }

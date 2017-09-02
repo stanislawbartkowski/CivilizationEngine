@@ -1,39 +1,53 @@
 {
-  "players" : [
+  "players": [
     {
-      "civ" : "Germany"
+      "civ": "Germany"
     }
   ],
-  "map" : [
+  "map": [
     {
-      "tname" : "TILEGERMANY.json", "p" : { "row" : 0, "col" : 0},"orientation" : "Down"
+      "tname": "TILEGERMANY.json",
+      "p": {
+        "row": 0,
+        "col": 0
+      },
+      "orientation": "Down"
     },
     {
-      "tname" : "TILE2.json", "p" : { "row" : 1, "col" : 0}
+      "tname": "TILE2.json",
+      "p": {
+        "row": 1,
+        "col": 0
+      }
     }
   ],
-  "market" : {
-    "hutvillages" : [
+  "market": {
+    "hutvillages": [
       {
-        "hv" : "Hut", "resource" : "Spy"
+        "hv": "Hut",
+        "resource": "Spy"
       },
       {
-        "hv" : "Hut", "resource" : "Iron"
+        "hv": "Hut",
+        "resource": "Iron"
       },
       {
-        "hv" : "Hut", "resource" : "Silk"
+        "hv": "Hut",
+        "resource": "Silk"
       },
       {
-        "hv" : "Village", "resource" : "Uranium"
+        "hv": "Village",
+        "resource": "Uranium"
       },
       {
-        "hv" : "Village", "resource" : "Spy"
+        "hv": "Village",
+        "resource": "Spy"
       },
       {
-        "hv" : "Village", "resource" : "Wheat"
+        "hv": "Village",
+        "resource": "Wheat"
       }
     ],
-    "hutvillagesused" : []
+    "hutvillagesused": []
   }
-
 }

@@ -7,7 +7,7 @@ object Main1 {
 
     println("Hello")
 
-    val o :Iterator[String] = Source.fromResource("map/tiles").getLines()
+    val o: Iterator[String] = Source.fromResource("map/tiles").getLines()
     o.foreach(println)
     println(o)
   }
