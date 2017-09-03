@@ -10,7 +10,7 @@ case class CurrentGame(val gameid: Int, val civ: Civilization.T, val createtime:
 
 object CurrentGame {
 
-  implicit def converttoJ(g: CurrentGame): String = {
+  implicit def convert(g: CurrentGame): String = {
     val j: JsValue = Json.obj(
       S.gameid -> g.gameid,
       S.civ -> g.civ,
@@ -20,7 +20,7 @@ object CurrentGame {
     j.toString()
   }
 
-  implicit def convertFromJ(s: String): CurrentGame = {
+  implicit def convert(s: String): CurrentGame = {
     val j: JsValue = toJ(s)
     val gameid = (j \ S.gameid).get.as[Int]
     val civ = (j \ S.civ).get.as[Civilization.T]
@@ -28,5 +28,7 @@ object CurrentGame {
     val accesstime = (j \ S.accesstime).get.as[Long]
     CurrentGame(gameid, civ, createtime, accesstime)
   }
+
+  implicit def convert(s : Seq[String]) : Seq[CurrentGame] = s.map(convert(_))
 
 }

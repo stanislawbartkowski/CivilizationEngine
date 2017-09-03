@@ -2,6 +2,9 @@
   "players" : [
     {
       "civ" : "Rome"
+    },
+    {
+      "civ" : "China"
     }
   ],
   "map" : [
@@ -9,7 +12,10 @@
       "tname" : "TILEROME.json", "p" : { "row" : 0, "col" : 0},"orientation" : "Down"
     },
     {
-      "tname" : "TILE3.json", "p" : { "row" : 1, "col" : 0}
+      "tname" : "TILE4.json", "p" : { "row" : 1, "col" : 0}
+    },
+    {
+      "tname" : "TILECHINA.json", "p" : { "row" : 2, "col" : 0},"orientation" : "Up"
     }
   ],
   "market" : {

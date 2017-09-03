@@ -9,6 +9,10 @@ trait RAccess {
 
   def updateCurrentGame(token: String, content: String)
 
+  def getCurrentGames() : Seq[String]
+
+  def unregisterCurrentGame(token : String)
+
   // game
   def registerGame(value: String): Int
 

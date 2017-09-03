@@ -27,9 +27,16 @@ object Helper {
     readPlay(l)
   }
 
-  def readBoardAndPlayT(boardpath: String, playPath: String, civ: Civilization.T): (String, GameBoard) = {
+  def getBoardAndRegister(boardpath: String, civ: Civilization.T) : (String, GameBoard) = {
     val g: GameBoard = getBoard(boardpath)
     val token: String = civilization.I.registerGame(g, civ)
+    (token,g)
+  }
+
+  def readBoardAndPlayT(boardpath: String, playPath: String, civ: Civilization.T): (String, GameBoard) = {
+    val gg = getBoardAndRegister(boardpath,civ)
+    val g: GameBoard = gg._2
+    val token: String = gg._1
     val p: Seq[CommandValues] = getPlay(playPath)
     p.foreach(co => civilization.I.executeCommand(token, co))
     (token, civilization.I.getBoardForToken(token))

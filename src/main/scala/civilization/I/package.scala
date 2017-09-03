@@ -28,6 +28,7 @@ package object I {
   final val REGISTEROWNER: Int = 1
   final val GETBOARDGAME: Int = 2
   final val LISTOFGAMES: Int = 3
+  final val UNREGISTERTOKEN: Int = 4
 
   private val random = new SecureRandom()
 
@@ -49,6 +50,7 @@ package object I {
     g
   }
 
+
   private def getBoard(token: String): (CurrentGame, GameBoard) = {
     val game: CurrentGame = r.getCurrentGame(token)
     (game, getGameBoard(game.gameid))
@@ -63,6 +65,10 @@ package object I {
         case REGISTEROWNER => registerOwnerPlay(tokenorciv)
         case GETBOARDGAME => getBoardForCiv(tokenorciv)
         case LISTOFGAMES => listOfGames
+        case UNREGISTERTOKEN => {
+          r.unregisterCurrentGame(tokenorciv)
+          null
+        }
       }
     }
   }
@@ -72,7 +78,6 @@ package object I {
     Json.prettyPrint(writeListOfCiv(tiles contains _))
   }
 
-  //  private def toCiv(civ : String) : Civilization.T = Civilization.values.find(_.toString == civ).get
   private def toCiv(civ: String): Civilization.T = Civilization.withName(civ)
 
   private def registerOwnerPlay(civ: String): String = {
@@ -103,6 +108,10 @@ package object I {
     currentGame(civ, gameid)
   }
 
+  def joinGame(gameid: Int, c: String): String = {
+    val civ: Civilization.T = toCiv(c)
+    currentGame(civ, gameid)
+  }
 
   private def getBoardName(token: String): String = {
     val g = getBoard(token)
@@ -115,9 +124,9 @@ package object I {
     Json.prettyPrint(genboardj.genBoardGameJson(g._2, civ))
   }
 
-  private def touchGame(gameid : Int, g : GameBoard) = {
+  private def touchGame(gameid: Int, g: GameBoard) = {
     g.metadata.accesstime = Calendar.getInstance().getTime.getTime
-    r.updateMetaData(gameid,writeMetaData(g.metadata).toString())
+    r.updateMetaData(gameid, writeMetaData(g.metadata).toString())
   }
 
   private def executeCommand(gb: (CurrentGame, GameBoard), com: CommandValues): String = {
@@ -139,7 +148,7 @@ package object I {
     val civ: Civilization.T = gb._1.civ
     val command: Command.T = Command.withName(action)
     val coma: CommandValues = CommandValues(command, civ, if (row == -1) null else P(row, col), if (jsparam == null) null else toJ(jsparam))
-    touchGame(gb._1.gameid,g)
+    touchGame(gb._1.gameid, g)
     executeCommand(gb, coma)
   }
 
@@ -179,6 +188,7 @@ object II {
   val REGISTEROWNER = I.REGISTEROWNER
   val GETBOARDGAME = I.GETBOARDGAME
   val LISTOFGAMES = I.LISTOFGAMES
+  val UNREGISTERTOKEN = I.UNREGISTERTOKEN
 
   def getData(what: Int, tokenorciv: String = null): String = I.getData(what, tokenorciv)
 
@@ -189,6 +199,8 @@ object II {
   def setR(r: RAccess) = I.setR(r)
 
   def resumeGame(gameid: Int, civ: String): String = I.resumeGame(gameid, civ)
+
+  def joinGame(gameid: Int, civ: String): String = I.joinGame(gameid, civ)
 
 }
 
