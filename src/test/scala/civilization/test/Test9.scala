@@ -311,6 +311,8 @@ class Test9 extends FunSuite {
     val token: String = registerGame(b, Civilization.Rome)
     val js = II.getData(II.LISTOFGAMES)
     println(js)
+    var a: Seq[Command.T] = allowedCommands(b, Civilization.Rome)
+    println(a)
   }
 
 }

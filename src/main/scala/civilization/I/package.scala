@@ -129,18 +129,18 @@ package object I {
     r.updateMetaData(gameid, writeMetaData(g.metadata).toString())
   }
 
-  private def executeCommand(gb: (CurrentGame, GameBoard), com: CommandValues): String = {
+  def executeCommand(gb: (CurrentGame, GameBoard), com: CommandValues): Mess = {
     val co: Command = constructCommand(com)
     var mess: Mess = playCommand(gb._2, co, c => {
       val cv: CommandValues = toC(c)
       r.addMoveToPlay(gb._1.gameid, writeCommandValues(cv).toString())
     }
     )
-    return if (mess == null) return null else mess.toString
+    return mess
   }
 
   // for testing only
-  def executeCommand(token: String, com: CommandValues): String = executeCommand(getBoard(token), com)
+  def executeCommand(token: String, com: CommandValues): Mess = executeCommand(getBoard(token), com)
 
   def executeCommand(token: String, action: String, row: Int, col: Int, jsparam: String): String = {
     val gb = getBoard(token)
@@ -149,7 +149,8 @@ package object I {
     val command: Command.T = Command.withName(action)
     val coma: CommandValues = CommandValues(command, civ, if (row == -1) null else P(row, col), if (jsparam == null) null else toJ(jsparam))
     touchGame(gb._1.gameid, g)
-    executeCommand(gb, coma)
+    val m : Mess = executeCommand(gb, coma)
+    if (m == null) null else m.toString
   }
 
   def itemizeCommand(token: String, action: String): String = {

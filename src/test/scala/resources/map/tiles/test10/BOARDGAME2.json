@@ -1,0 +1,42 @@
+{
+  "players" : [
+    {
+      "civ" : "Rome"
+    },
+    {
+      "civ" : "China"
+    }
+  ],
+  "map" : [
+    {
+      "tname" : "TILEROME.json", "p" : { "row" : 0, "col" : 0},"orientation" : "Down"
+    },
+    {
+      "tname" : "TILECHINA.json", "p" : { "row" : 1, "col" : 0},"orientation" : "Up"
+    }
+  ],
+  "market" : {
+    "hutvillages" : [
+      {
+        "hv" : "Hut", "resource" : "Spy"
+      },
+      {
+        "hv" : "Hut", "resource" : "Iron"
+      },
+      {
+        "hv" : "Hut", "resource" : "Silk"
+      },
+      {
+        "hv" : "Village", "resource" : "Uranium"
+      },
+      {
+        "hv" : "Village", "resource" : "Spy"
+      },
+      {
+        "hv" : "Village", "resource" : "Wheat"
+      }
+    ],
+    "hutvillagesused" : []
+  }
+
+}
