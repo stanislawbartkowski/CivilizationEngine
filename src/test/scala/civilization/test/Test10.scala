@@ -1,12 +1,14 @@
 package civilization.test
 
-import civilization.I.{CurrentGame, WaitingGames}
+import civilization.I.{CurrentGame, WaitingGames, executeCommand}
 import civilization.gameboard.GameBoard
 import civilization.helper.AllowedCommands.allowedCommands
 import civilization.objects._
 import civilization.{I, II, RR}
 import org.scalatest.FunSuite
 import org.scalatest.Matchers._
+import play.api.libs.json.JsValue
+import civilization.io.fromjson.toJ
 
 
 class Test10 extends FunSuite {
@@ -53,6 +55,19 @@ class Test10 extends FunSuite {
     gamerome.gameid should equal(gamechina.gameid)
   }
 
+  private def activeciv(token : String, civ : String, phase : String): Unit = {
+    val s = II.getData(II.GETBOARDGAME,token)
+//        println(s)
+    val j : JsValue = toJ(s)
+    //println(j)
+    // both should be active at the beginning
+    val c = (j \ "board"\ "game" \ "active").as[String]
+//    println(c)
+    assert(c == civ)
+    val p = (j \ "board"\ "game" \ "phase").as[String]
+    assert(p == phase)
+  }
+
   test("Two players game") {
     val cu = Helper.getBoardAndRegister("test10/BOARDGAME2.json", Civilization.Rome)
     val token: String = cu._1
@@ -67,6 +82,38 @@ class Test10 extends FunSuite {
     a = allowedCommands(b, Civilization.China)
     println(a)
     assert(a.contains(Command.SETCAPITAL))
+    activeciv(token,"Rome","StartOfTurn")
+    activeciv(ctoken,"China","StartOfTurn")
+    var s: String = executeCommand(token, "ENDOFPHASE", -1, -1, "\"StartOfTurn\"")
+    assert (s == null)
+    // Rome completed already
+    activeciv(token,"China","StartOfTurn")
+    activeciv(ctoken,"China","StartOfTurn")
+    s = executeCommand(ctoken, "ENDOFPHASE", -1, -1, "\"StartOfTurn\"")
+    assert (s == null)
+    // now trade, both are active
+    activeciv(token,"Rome","Trade")
+    activeciv(ctoken,"China","Trade")
+    s = executeCommand(ctoken, "ENDOFPHASE", -1, -1, "\"Trade\"")
+    assert (s == null)
+    s = executeCommand(token, "ENDOFPHASE", -1, -1, "\"Trade\"")
+    assert (s == null)
+    // Rome active
+    activeciv(token,"Rome","CityManagement")
+    // Rome active, not China
+    activeciv(ctoken,"Rome","CityManagement")
+    s = executeCommand(token, "ENDOFPHASE", -1, -1, "\"CityManagement\"")
+    assert (s == null)
+    // China active
+    activeciv(token,"China","CityManagement")
+    // China active, not China
+    activeciv(ctoken,"China","CityManagement")
+    s = executeCommand(ctoken, "ENDOFPHASE", -1, -1, "\"CityManagement\"")
+    // now movement
+    // Rome active
+    activeciv(token,"Rome","Movement")
+    // Rome active, not China
+    activeciv(ctoken,"Rome","Movement")
   }
 
   test("Two players game, set capital") {

@@ -1,9 +1,9 @@
 package civilization
 
-import civilization.action.{Command, Play}
-import civilization.objects._
+import civilization.action.Command
 import civilization.gameboard._
 import civilization.message.{FatalError, M, Mess}
+import civilization.objects._
 
 import scala.util.control.Breaks._
 
@@ -193,7 +193,7 @@ package object helper {
       )
     }
     // not empty, current phase is executed, prepare list of active players in order, remove completed
-    if (!players.isEmpty) return CurrentPhase(allCivs(b).filter(c => !players(c)), currentphase, roundno)
+    if (!players.isEmpty) return CurrentPhase(allCivs(b).filter(c => players(c)), currentphase, roundno)
     // empty, next phase
     CurrentPhase(allCivs(b), nextPhase(currentphase), if (currentphase == TurnPhase.Research) roundno + 1 else roundno)
   }

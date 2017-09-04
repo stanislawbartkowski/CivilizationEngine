@@ -43,11 +43,18 @@ object genboardj {
     MapSquareJ(ss.revealed, t, trade, production, resource, cap, civ, city, numberofArmies, numberofScouts)
   }
 
-  private def genGame(g: GameBoard, civ: Civilization.T): Game = {
+  private def genGame(g: GameBoard, civrequesting: Civilization.T): Game = {
 
     val cu: CurrentPhase = currentPhase(g)
     // TODO: active civilization, later
-    val civ: Civilization.T = cu.notcompleted.head
+    var civ: Civilization.T = cu.notcompleted.head
+    cu.turnPhase match {
+        // for StartOfTurn and Trade all are active
+      case TurnPhase.StartOfTurn | TurnPhase.Trade => {
+        if (cu.notcompleted.contains(civrequesting)) civ = civrequesting
+      }
+      case _ =>
+    }
     Game(civ, cu.roundno, cu.turnPhase)
   }
 
