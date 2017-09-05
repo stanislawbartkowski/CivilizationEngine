@@ -29,6 +29,8 @@ package object I {
   final val GETBOARDGAME: Int = 2
   final val LISTOFGAMES: Int = 3
   final val UNREGISTERTOKEN: Int = 4
+  final val LISTOFWAITINGGAMES: Int = 5
+  final val REGISTEROWNERTWOGAME: Int = 6
 
   private val random = new SecureRandom()
 
@@ -62,13 +64,15 @@ package object I {
     synchronized {
       what match {
         case LISTOFCIV => getListOfCiv()
-        case REGISTEROWNER => registerOwnerPlay(tokenorciv)
+        case REGISTEROWNER => registerOwnerPlay(tokenorciv, "TEST1.json")
+        case REGISTEROWNERTWOGAME => registerOwnerPlay(tokenorciv, "TEST2.json")
         case GETBOARDGAME => getBoardForCiv(tokenorciv)
         case LISTOFGAMES => listOfGames
         case UNREGISTERTOKEN => {
           r.unregisterCurrentGame(tokenorciv)
           null
         }
+        case LISTOFWAITINGGAMES => listOfWaitingGames
       }
     }
   }
@@ -80,10 +84,10 @@ package object I {
 
   private def toCiv(civ: String): Civilization.T = Civilization.withName(civ)
 
-  private def registerOwnerPlay(civ: String): String = {
-    val c: Civilization.T = toCiv(civ)
-    val g: GameBoard = genBoard(List(c), "TEST1.json")
-    registerGame(g, c)
+  private def registerOwnerPlay(civ: String, game: String): String = {
+    val l : List[Civilization.T] = civ.split(",").toList.map(toCiv(_))
+    val g: GameBoard = genBoard(l, game)
+    registerGame(g, l.head)
   }
 
   private def currentGame(civ: Civilization.T, gameid: Int): String = {
@@ -149,7 +153,7 @@ package object I {
     val command: Command.T = Command.withName(action)
     val coma: CommandValues = CommandValues(command, civ, if (row == -1) null else P(row, col), if (jsparam == null) null else toJ(jsparam))
     touchGame(gb._1.gameid, g)
-    val m : Mess = executeCommand(gb, coma)
+    val m: Mess = executeCommand(gb, coma)
     if (m == null) null else m.toString
   }
 
@@ -177,19 +181,39 @@ package object I {
     currentGame(civ, gameid)
   }
 
+  def allPlayersReady(token: String): Boolean = {
+    val game: CurrentGame = r.getCurrentGame(token)
+    val w: Seq[Int] = WaitingGames.listofCurrentGames(r)
+    w.find(_ == game.gameid).isDefined
+  }
+
   /* for test only */
   def getBoardForToken(token: String): GameBoard = getBoard(token)._2
+
+  private def listOfWaitingGames(): String = {
+    val li: Seq[(Int, Seq[Civilization.T])] = WaitingGames.findListOfWaitingGames(r)
+    var games: Seq[JsValue] =
+      li.map(g => {
+        Json.obj(
+          S.gameid -> g._1,
+          S.civ -> g._2
+        )
+      })
+    Json.toJson(games).toString()
+  }
 
 }
 
 // to be visible from Java
 
 object II {
-  val LISTOFCIV = I.LISTOFCIV
-  val REGISTEROWNER = I.REGISTEROWNER
-  val GETBOARDGAME = I.GETBOARDGAME
-  val LISTOFGAMES = I.LISTOFGAMES
-  val UNREGISTERTOKEN = I.UNREGISTERTOKEN
+  final val LISTOFCIV = I.LISTOFCIV
+  final val REGISTEROWNER = I.REGISTEROWNER
+  final val GETBOARDGAME = I.GETBOARDGAME
+  final val LISTOFGAMES = I.LISTOFGAMES
+  final val UNREGISTERTOKEN = I.UNREGISTERTOKEN
+  final val LISTOFWAITINGGAMES = I.LISTOFWAITINGGAMES
+  final val REGISTEROWNERTWOGAME = I.REGISTEROWNERTWOGAME
 
   def getData(what: Int, tokenorciv: String = null): String = I.getData(what, tokenorciv)
 
@@ -202,6 +226,8 @@ object II {
   def resumeGame(gameid: Int, civ: String): String = I.resumeGame(gameid, civ)
 
   def joinGame(gameid: Int, civ: String): String = I.joinGame(gameid, civ)
+
+  def allPlayersReady(token: String): Boolean = I.allPlayersReady(token)
 
 }
 

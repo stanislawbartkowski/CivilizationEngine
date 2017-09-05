@@ -7,7 +7,7 @@ import civilization.objects._
 import civilization.{I, II, RR}
 import org.scalatest.FunSuite
 import org.scalatest.Matchers._
-import play.api.libs.json.JsValue
+import play.api.libs.json.{JsArray, JsValue}
 import civilization.io.fromjson.toJ
 
 
@@ -24,6 +24,27 @@ class Test10 extends FunSuite {
     II.getData(II.UNREGISTERTOKEN, token)
     // should throw exception
     an[Exception] should be thrownBy II.getData(II.GETBOARDGAME, token)
+  }
+
+  test("Waiting for player to join") {
+    val cu = Helper.getBoardAndRegister("test10/BOARDGAME1.json", Civilization.Rome)
+    val token: String = cu._1
+    val game: CurrentGame = RR.RA.getCurrentGame(token)
+    val gameid: Int = game.gameid
+    println(gameid)
+    assert(!II.allPlayersReady(token))
+    var s : String = II.getData(II.LISTOFWAITINGGAMES)
+    println(s)
+    val ctoken: String = II.joinGame(gameid, "China")
+    // joined, game ready
+    assert(II.allPlayersReady(token))
+    assert(II.allPlayersReady(ctoken))
+    s  = II.getData(II.LISTOFWAITINGGAMES)
+    println(s)
+    val w : JsArray = toJ(s).as[JsArray]
+//    val found : Boolean = w.value.find(j => j
+    w.value.foreach(println)
+    assert (! w.value.map(j => (j \ "gameid").as[Int]).toSet.contains(gameid))
   }
 
 
@@ -55,16 +76,16 @@ class Test10 extends FunSuite {
     gamerome.gameid should equal(gamechina.gameid)
   }
 
-  private def activeciv(token : String, civ : String, phase : String): Unit = {
-    val s = II.getData(II.GETBOARDGAME,token)
-//        println(s)
-    val j : JsValue = toJ(s)
+  private def activeciv(token: String, civ: String, phase: String): Unit = {
+    val s = II.getData(II.GETBOARDGAME, token)
+    //        println(s)
+    val j: JsValue = toJ(s)
     //println(j)
     // both should be active at the beginning
-    val c = (j \ "board"\ "game" \ "active").as[String]
-//    println(c)
+    val c = (j \ "board" \ "game" \ "active").as[String]
+    //    println(c)
     assert(c == civ)
-    val p = (j \ "board"\ "game" \ "phase").as[String]
+    val p = (j \ "board" \ "game" \ "phase").as[String]
     assert(p == phase)
   }
 
@@ -82,38 +103,38 @@ class Test10 extends FunSuite {
     a = allowedCommands(b, Civilization.China)
     println(a)
     assert(a.contains(Command.SETCAPITAL))
-    activeciv(token,"Rome","StartOfTurn")
-    activeciv(ctoken,"China","StartOfTurn")
+    activeciv(token, "Rome", "StartOfTurn")
+    activeciv(ctoken, "China", "StartOfTurn")
     var s: String = executeCommand(token, "ENDOFPHASE", -1, -1, "\"StartOfTurn\"")
-    assert (s == null)
+    assert(s == null)
     // Rome completed already
-    activeciv(token,"China","StartOfTurn")
-    activeciv(ctoken,"China","StartOfTurn")
+    activeciv(token, "China", "StartOfTurn")
+    activeciv(ctoken, "China", "StartOfTurn")
     s = executeCommand(ctoken, "ENDOFPHASE", -1, -1, "\"StartOfTurn\"")
-    assert (s == null)
+    assert(s == null)
     // now trade, both are active
-    activeciv(token,"Rome","Trade")
-    activeciv(ctoken,"China","Trade")
+    activeciv(token, "Rome", "Trade")
+    activeciv(ctoken, "China", "Trade")
     s = executeCommand(ctoken, "ENDOFPHASE", -1, -1, "\"Trade\"")
-    assert (s == null)
+    assert(s == null)
     s = executeCommand(token, "ENDOFPHASE", -1, -1, "\"Trade\"")
-    assert (s == null)
+    assert(s == null)
     // Rome active
-    activeciv(token,"Rome","CityManagement")
+    activeciv(token, "Rome", "CityManagement")
     // Rome active, not China
-    activeciv(ctoken,"Rome","CityManagement")
+    activeciv(ctoken, "Rome", "CityManagement")
     s = executeCommand(token, "ENDOFPHASE", -1, -1, "\"CityManagement\"")
-    assert (s == null)
+    assert(s == null)
     // China active
-    activeciv(token,"China","CityManagement")
+    activeciv(token, "China", "CityManagement")
     // China active, not China
-    activeciv(ctoken,"China","CityManagement")
+    activeciv(ctoken, "China", "CityManagement")
     s = executeCommand(ctoken, "ENDOFPHASE", -1, -1, "\"CityManagement\"")
     // now movement
     // Rome active
-    activeciv(token,"Rome","Movement")
+    activeciv(token, "Rome", "Movement")
     // Rome active, not China
-    activeciv(ctoken,"Rome","Movement")
+    activeciv(ctoken, "Rome", "Movement")
   }
 
   test("Two players game, set capital") {
@@ -140,4 +161,10 @@ class Test10 extends FunSuite {
     a = allowedCommands(b, Civilization.China)
     println(a)
   }
+
+  test("Check two players game") {
+    val token : String = II.getData(II.REGISTEROWNERTWOGAME,"Rome,China")
+    println(token)
+  }
+
 }

@@ -1,30 +1,12 @@
+
 {
-  "tname": "TILE1.json",
-  "p": {
-    "row": 5,
-    "col": 8
-  },
-  "orientation": "Left",
-  "squares": [
+  "tname" : "TILE1.json", "p" : { "row" : 5, "col" : 8},
+  "orientation" : "Left",
+  "squares" : [
     [
-      {
-        "hv": {
-          "hv": "Hut",
-          "resource": "Spy"
-        },
-        "figures": {
-          "civ": "Germany",
-          "numberofArmies": 1,
-          "numberofScouts": 2
-        },
-        "city": {
-          "civ": "Rome",
-          "citytype": "Normal"
-        }
-      },
-      {
-        "hv": null
-      },
+      { "hv" : { "hv" : "Hut", "resource" : "Spy" },
+       "figures" : { "civ" : "Germany", "numberofArmies" : 1, "numberofScouts" : 2}, "city" : { "civ" : "Rome", "citytype" : "Normal"}},
+      {"hv" : null},
       {},
       {}
     ],
