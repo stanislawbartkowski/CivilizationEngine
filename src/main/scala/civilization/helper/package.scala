@@ -11,7 +11,7 @@ package object helper {
 
   private val ra = scala.util.Random
 
-  case class MapSquareP(val s: MapSquare, val sm: Square, val p: P, val t: MapTile) {
+  case class MapSquareP(val s: MapSquare, val sm: Square, val p: P, val t: MapTile, val suggestedCapital : Boolean) {
     def revealed: Boolean = t.orientation != null
 
     def terrain: Terrain.T = sm.terrain
@@ -22,7 +22,7 @@ package object helper {
 
     def resource: Resource.T = sm.resource
 
-    def suggestedCapital: Boolean = (t.tile.civ != null) && (t.tile.suggestedcapital == p)
+//    def suggestedCapital: Boolean = (t.tile.civ != null) && (t.tile.suggestedcapital == p)
 
     def suggestedCapitalForCiv: Civilization.T = if (suggestedCapital) t.tile.civ else null
   }
@@ -55,7 +55,7 @@ package object helper {
     }) toSeq
 
   def allSquares(b: GameBoard): Seq[MapSquareP] =
-    allPoints(b).map(getSquare(b, _)).toSeq
+    allPoints(b).map(getSquare(b, _)) toSeq
 
   def isCapitalBuild(board: GameBoard, civ: Civilization.T): Boolean =
     citiesForCivilization(board, civ).exists(p => p.s.city.citytype == City.Capital || p.s.city.citytype == City.WalledCapital)
@@ -91,7 +91,9 @@ package object helper {
         row = TILESIZE - 1 - srow
       }
     }
-    MapSquareP(tile.mapsquares(row)(col), tile.tile.terrain(row)(col), p, tile)
+    val suggestedCapital: Boolean = (tile.tile.civ != null) && (tile.tile.suggestedcapital == P(row,col))
+
+    MapSquareP(tile.mapsquares(row)(col), tile.tile.terrain(row)(col), p, tile, suggestedCapital)
   }
 
   def isSquareForCity(board: GameBoard, p: P): Option[Mess] = {

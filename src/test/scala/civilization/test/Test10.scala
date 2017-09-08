@@ -55,7 +55,7 @@ class Test10 extends FunSuite {
     val gameid: Int = game.gameid
     println(gameid)
     var res = WaitingGames.findListOfWaitingGames(RR.RA)
-    assert(res.map(_._1).contains(gameid))
+    assert(res.map(_.gameid).contains(gameid))
     var res1 = WaitingGames.listofCurrentGames(RR.RA)
     println(res1)
     // should be on waiting list, not current in play
@@ -65,7 +65,7 @@ class Test10 extends FunSuite {
     res = WaitingGames.findListOfWaitingGames(RR.RA)
     println(res)
     // should be removed from waiting list
-    assert(!res.map(_._1).contains(gameid))
+    assert(!res.map(_.gameid).contains(gameid))
     // should be on the current game
     res1 = WaitingGames.listofCurrentGames(RR.RA)
     assert(res1.contains(gameid))
@@ -165,6 +165,19 @@ class Test10 extends FunSuite {
   test("Check two players game") {
     val token : String = II.getData(II.REGISTEROWNERTWOGAME,"Rome,China")
     println(token)
+    val res1 = WaitingGames.findListOfWaitingGames(RR.RA)
+    println(res1)
+    val game: CurrentGame = RR.RA.getCurrentGame(token)
+    val gameid: Int = game.gameid
+    println(game)
+    println(gameid)
+    val p = res1.find(_.gameid == gameid).get
+    println(p)
+    println(p.registeredplayers)
+    assert(p.registeredplayers.contains(Civilization.Rome))
+    assert(p.waiting.contains(Civilization.China))
+    val j = II.getData(II.LISTOFWAITINGGAMES)
+    println(j)
   }
 
 }

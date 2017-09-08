@@ -26,6 +26,9 @@ object genboardj {
     val production: Int = if (ss.revealed) (if (ss.s.city == null) ss.numberOfProduction else getProductionForCity(b, ss.p)) else -1;
     val resource: Resource.T = if (ss.revealed) ss.resource else null
     val cap: Civilization.T = ss.suggestedCapitalForCiv
+    if (cap != null) {
+      val a = 1;
+    }
     var civ: Civilization.T = null
     var city: City.T = null
     if (ss.s.city != null) {

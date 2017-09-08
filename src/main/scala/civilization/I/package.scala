@@ -191,14 +191,7 @@ package object I {
   def getBoardForToken(token: String): GameBoard = getBoard(token)._2
 
   private def listOfWaitingGames(): String = {
-    val li: Seq[(Int, Seq[Civilization.T])] = WaitingGames.findListOfWaitingGames(r)
-    var games: Seq[JsValue] =
-      li.map(g => {
-        Json.obj(
-          S.gameid -> g._1,
-          S.civ -> g._2
-        )
-      })
+    var games: Seq[JsValue] = WaitingGames.findListOfWaitingGames(r)
     Json.toJson(games).toString()
   }
 

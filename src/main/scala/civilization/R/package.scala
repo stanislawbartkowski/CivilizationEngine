@@ -28,7 +28,8 @@ package object R {
 
   class R extends RAccess {
 
-    private final val expireT: Int = 3600 * 24
+//    private final val expireT: Int = 3600 * 24
+    private final val expireT: Int = 3600
 
     private final val r: RedisClientPool = rr.get
 
