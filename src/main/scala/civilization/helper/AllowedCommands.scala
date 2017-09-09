@@ -112,6 +112,8 @@ object AllowedCommands {
   def allowedCommands(b: GameBoard, civ: Civilization.T): Seq[Command.T] = {
     var cu: CurrentPhase = currentPhase(b)
     var co: List[Command.T] = Nil
+    // if "turned" phase of the game, only current player has moves until completes
+    if (TurnPhase.turnAction(cu.turnPhase) && civ != cu.notcompleted.head) return Nil
     val count: (Int, Int) = getNumberOfArmies(b, civ)
     cu.turnPhase match {
       case TurnPhase.StartOfTurn => {

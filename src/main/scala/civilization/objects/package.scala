@@ -29,8 +29,6 @@ package object objects {
   object Resource extends Enumeration {
     type T = Value
     val Wheat, Silk, Incense, Iron, Coin, Spy, Uranium = Value
-
-    def onTitle(t: Value): Boolean = t != Spy && t != Uranium;
   }
 
   object Terrain extends Enumeration {
@@ -81,6 +79,8 @@ package object objects {
   object TurnPhase extends Enumeration {
     type T = Value
     val StartOfTurn, Trade, CityManagement, Movement, Research = Value
+
+    def turnAction(t: Value): Boolean = t != StartOfTurn && t != Trade
   }
 
   object TechnologyName extends Enumeration {
