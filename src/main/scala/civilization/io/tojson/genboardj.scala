@@ -11,14 +11,14 @@ object genboardj {
   // production:
   // if empty square : number of original production
   // if city: number of city production
-  case class MapSquareJ(val revealed: Boolean, val t: Terrain.T, val trade: Int, val production: Int, val resource: Resource.T, val capForCiv: Civilization.T,
-                        val civ: Civilization.T, val city: City.T, val numberofArmies: Int, val numberofScouts: Int)
+  case class MapSquareJ(revealed: Boolean, t: Terrain.T, trade: Int, production: Int, resource: Resource.T, capForCiv: Civilization.T,
+                        civ: Civilization.T, city: City.T, defence : Int, numberofArmies: Int, numberofScouts: Int)
 
-  case class PlayerDeckJ(val civ: Civilization.T, val numberofTrade: Int, val commands: Seq[Command.T], val limits: PlayerLimits)
+  case class PlayerDeckJ(civ: Civilization.T, numberofTrade: Int, commands: Seq[Command.T], limits: PlayerLimits)
 
-  case class Game(val active: Civilization.T, val roundno: Int, val phase: TurnPhase.T)
+  case class Game(active: Civilization.T, roundno: Int, phase: TurnPhase.T)
 
-  case class BoardGameJ(val g: Game, val map: Array[Array[MapSquareJ]], val you: PlayerDeckJ)
+  case class BoardGameJ(g: Game, map: Array[Array[MapSquareJ]], you: PlayerDeckJ, others : Seq[PlayerDeckJ])
 
   private def contructSquareJ(b: GameBoard, ss: MapSquareP): MapSquareJ = {
     val t: Terrain.T = if (ss.revealed) ss.terrain else null;
@@ -30,10 +30,12 @@ object genboardj {
       val a = 1;
     }
     var civ: Civilization.T = null
+    var defence : Int = 0
     var city: City.T = null
     if (ss.s.city != null) {
       civ = ss.s.city.civ
       city = ss.s.city.citytype
+      defence = ss.s.city.defenceStrength()
     }
     var numberofArmies: Int = -1
     var numberofScouts: Int = -1
@@ -43,7 +45,7 @@ object genboardj {
       numberofScouts = ss.s.figures.numberofScouts
     }
 
-    MapSquareJ(ss.revealed, t, trade, production, resource, cap, civ, city, numberofArmies, numberofScouts)
+    MapSquareJ(ss.revealed, t, trade, production, resource, cap, civ, city, defence, numberofArmies, numberofScouts)
   }
 
   private def genGame(g: GameBoard, civrequesting: Civilization.T): Game = {
@@ -84,12 +86,13 @@ object genboardj {
     // TODO: initialization to null maybe unnecessary, doublecheck
     for (i <- 0 to maxrow; j <- 0 to maxcol) map(i)(j) = null
     p.foreach(ss => map(ss.p.row)(ss.p.col) = contructSquareJ(g, ss))
-    BoardGameJ(genGame(g, civ), map, genPlayerDeckJ(g, civ))
+    val others : Seq[PlayerDeckJ] = g.players.filter(_.civ != civ).map(c => genPlayerDeckJ(g, c.civ))
+    BoardGameJ(genGame(g, civ), map, genPlayerDeckJ(g, civ),others)
   }
 
   private def mapSquareJ(m: MapSquareJ): JsValue = {
     Json.obj("revealed" -> m.revealed, "terrain" -> Option(m.t), S.trade -> m.trade, "production" -> m.production, "resource" -> Option(m.resource),
-      "capciv" -> Option(m.capForCiv), S.civ -> Option(m.civ), S.city -> Option(m.city), S.numberofArmies -> m.numberofArmies, S.numberofScouts -> m.numberofScouts)
+      "capciv" -> Option(m.capForCiv), S.civ -> Option(m.civ), S.city -> Option(m.city), "defence" -> m.defence, S.numberofArmies -> m.numberofArmies, S.numberofScouts -> m.numberofScouts)
   }
 
   private def gameToJ(g: Game): JsValue = {
@@ -107,10 +110,13 @@ object genboardj {
       }
       rows = rows :+ JsArray(cols)
     }
+    val o : Seq[JsValue] = b.others.map(genPlayerDeckJson(_))
+
     JsObject(Seq("board" -> JsObject(Seq(
       "map" -> JsArray(rows),
       "game" -> gameToJ(b.g),
-      "you" -> genPlayerDeckJson(b.you)
+      "you" -> genPlayerDeckJson(b.you),
+      "others" -> JsArray(o)
     ))))
   }
 

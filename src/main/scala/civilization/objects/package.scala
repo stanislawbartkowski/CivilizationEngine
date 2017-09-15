@@ -22,9 +22,18 @@ package object objects {
     def civhome: Boolean = civ != null
   }
 
-  case class Player(val player: Player.T, val civ: Civilization.T)
+  case class Player(player: Player.T, civ: Civilization.T)
 
-  case class City(val civ: Civilization.T, val citytype: City.T)
+  case class City(civ: Civilization.T, citytype: City.T) {
+    def defenceStrength(): Int = {
+      citytype match {
+        case City.Capital => 12
+        case City.Normal => 6
+        case City.WalledCapital => 16
+        case City.WalledNormal => 10
+      }
+    }
+  }
 
   object Resource extends Enumeration {
     type T = Value
