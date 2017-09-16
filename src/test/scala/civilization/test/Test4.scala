@@ -16,11 +16,11 @@ class Test4 extends FunSuite {
     val b: GameBoard = Helper.getBoard("test2/BOARDGAME1.json")
     revealTile(b, Orientation.Down, P(0, 0))
     assert(!isCapitalBuild(b, Civilization.Germany))
-    assert(isSquareForCity(b, P(2, 2)).isEmpty)
-    assert(isSquareForCity(b, P(2, 3)).isDefined)
-    assert(isSquareForCity(b, P(0, 0)).isDefined)
-    assert(isSquareForCity(b, P(3, 1)).isDefined)
-    assert(isSquareForCity(b, P(2, 1)).isEmpty)
+    assert(isSquareForCity(b, P(2, 2),Civilization.Germany).isEmpty)
+    assert(isSquareForCity(b, P(2, 3),Civilization.Germany).isDefined)
+    assert(isSquareForCity(b, P(0, 0),Civilization.Germany).isDefined)
+    assert(isSquareForCity(b, P(3, 1),Civilization.Germany).isDefined)
+    assert(isSquareForCity(b, P(2, 1),Civilization.Germany).isEmpty)
   }
 
   test("Check command") {

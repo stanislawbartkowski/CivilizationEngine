@@ -19,7 +19,7 @@ object SetCityAction {
         if (!mapp.s.figures.civOccupying(civ) || mapp.s.figures.numberofScouts == 0) return Some(Mess(M.CITYSHOULDBEBUILDONSCOUT, p))
       }
     }
-    isSquareForCity(board, p)
+    isSquareForCity(board, p,civ)
   }
 
   class SetCityAction extends AbstractCommand() {

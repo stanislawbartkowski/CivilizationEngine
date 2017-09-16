@@ -52,7 +52,7 @@ package object objects {
 
   object Civilization extends Enumeration {
     type T = Value
-    val America, China, Egypt, Germany, Rome, Russia = Value
+    val America, China, Egypt, Germany, Rome, Russia, Spain = Value
   }
 
   object City extends Enumeration {

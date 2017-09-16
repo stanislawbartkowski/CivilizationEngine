@@ -64,8 +64,8 @@ package object I {
     synchronized {
       what match {
         case LISTOFCIV => getListOfCiv()
-        case REGISTEROWNER => registerOwnerPlay(tokenorciv, "TEST1.json")
-        case REGISTEROWNERTWOGAME => registerOwnerPlay(tokenorciv, "TEST2.json")
+        case REGISTEROWNER => registerOwnerPlay(tokenorciv, "GAME1.json")
+        case REGISTEROWNERTWOGAME => registerOwnerPlay(tokenorciv, "GAME2.json")
         case GETBOARDGAME => getBoardForCiv(tokenorciv)
         case LISTOFGAMES => listOfGames
         case UNREGISTERTOKEN => {

@@ -12,13 +12,13 @@ object genboardj {
   // if empty square : number of original production
   // if city: number of city production
   case class MapSquareJ(revealed: Boolean, t: Terrain.T, trade: Int, production: Int, resource: Resource.T, capForCiv: Civilization.T,
-                        civ: Civilization.T, city: City.T, defence : Int, numberofArmies: Int, numberofScouts: Int)
+                        civ: Civilization.T, city: City.T, defence: Int, numberofArmies: Int, numberofScouts: Int, tile: String, hv: HutVillage.T)
 
   case class PlayerDeckJ(civ: Civilization.T, numberofTrade: Int, commands: Seq[Command.T], limits: PlayerLimits)
 
   case class Game(active: Civilization.T, roundno: Int, phase: TurnPhase.T)
 
-  case class BoardGameJ(g: Game, map: Array[Array[MapSquareJ]], you: PlayerDeckJ, others : Seq[PlayerDeckJ])
+  case class BoardGameJ(g: Game, map: Array[Array[MapSquareJ]], you: PlayerDeckJ, others: Seq[PlayerDeckJ])
 
   private def contructSquareJ(b: GameBoard, ss: MapSquareP): MapSquareJ = {
     val t: Terrain.T = if (ss.revealed) ss.terrain else null;
@@ -26,11 +26,8 @@ object genboardj {
     val production: Int = if (ss.revealed) (if (ss.s.city == null) ss.numberOfProduction else getProductionForCity(b, ss.p)) else -1;
     val resource: Resource.T = if (ss.revealed) ss.resource else null
     val cap: Civilization.T = ss.suggestedCapitalForCiv
-    if (cap != null) {
-      val a = 1;
-    }
     var civ: Civilization.T = null
-    var defence : Int = 0
+    var defence: Int = 0
     var city: City.T = null
     if (ss.s.city != null) {
       civ = ss.s.city.civ
@@ -45,7 +42,8 @@ object genboardj {
       numberofScouts = ss.s.figures.numberofScouts
     }
 
-    MapSquareJ(ss.revealed, t, trade, production, resource, cap, civ, city, defence, numberofArmies, numberofScouts)
+    MapSquareJ(ss.revealed, t, trade, production, resource, cap, civ, city, defence, numberofArmies, numberofScouts, ss.t.tname,
+      if (ss.s.hv != null) ss.s.hv.hv else null)
   }
 
   private def genGame(g: GameBoard, civrequesting: Civilization.T): Game = {
@@ -54,7 +52,7 @@ object genboardj {
     // TODO: active civilization, later
     var civ: Civilization.T = cu.notcompleted.head
     cu.turnPhase match {
-        // for StartOfTurn and Trade all are active
+      // for StartOfTurn and Trade all are active
       case TurnPhase.StartOfTurn | TurnPhase.Trade => {
         if (cu.notcompleted.contains(civrequesting)) civ = civrequesting
       }
@@ -86,13 +84,15 @@ object genboardj {
     // TODO: initialization to null maybe unnecessary, doublecheck
     for (i <- 0 to maxrow; j <- 0 to maxcol) map(i)(j) = null
     p.foreach(ss => map(ss.p.row)(ss.p.col) = contructSquareJ(g, ss))
-    val others : Seq[PlayerDeckJ] = g.players.filter(_.civ != civ).map(c => genPlayerDeckJ(g, c.civ))
-    BoardGameJ(genGame(g, civ), map, genPlayerDeckJ(g, civ),others)
+    val others: Seq[PlayerDeckJ] = g.players.filter(_.civ != civ).map(c => genPlayerDeckJ(g, c.civ))
+    BoardGameJ(genGame(g, civ), map, genPlayerDeckJ(g, civ), others)
   }
 
   private def mapSquareJ(m: MapSquareJ): JsValue = {
     Json.obj("revealed" -> m.revealed, "terrain" -> Option(m.t), S.trade -> m.trade, "production" -> m.production, "resource" -> Option(m.resource),
-      "capciv" -> Option(m.capForCiv), S.civ -> Option(m.civ), S.city -> Option(m.city), "defence" -> m.defence, S.numberofArmies -> m.numberofArmies, S.numberofScouts -> m.numberofScouts)
+      "capciv" -> Option(m.capForCiv), S.civ -> Option(m.civ), S.city -> Option(m.city), "defence" -> m.defence, S.numberofArmies -> m.numberofArmies, S.numberofScouts -> m.numberofScouts,
+      "tile" -> m.tile, S.hutvillage -> Option(m.hv)
+    )
   }
 
   private def gameToJ(g: Game): JsValue = {
@@ -110,7 +110,7 @@ object genboardj {
       }
       rows = rows :+ JsArray(cols)
     }
-    val o : Seq[JsValue] = b.others.map(genPlayerDeckJson(_))
+    val o: Seq[JsValue] = b.others.map(genPlayerDeckJson(_))
 
     JsObject(Seq("board" -> JsObject(Seq(
       "map" -> JsArray(rows),

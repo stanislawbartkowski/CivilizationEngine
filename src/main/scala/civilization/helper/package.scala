@@ -96,7 +96,7 @@ package object helper {
     MapSquareP(tile.mapsquares(row)(col), tile.tile.terrain(row)(col), p, tile, suggestedCapital)
   }
 
-  def isSquareForCity(board: GameBoard, p: P): Option[Mess] = {
+  def isSquareForCity(board: GameBoard, p: P, civ:Civilization.T): Option[Mess] = {
     val s: MapSquareP = getSquare(board, p)
     if (!s.revealed) return Some(Mess(M.POINTONHIDDENTILE, p))
     if (s.terrain == Terrain.Water) return Some(Mess(M.CITYONWATER, p))
@@ -117,6 +117,11 @@ package object helper {
         val common: Set[P] = sp.intersect(paround)
         if (!common.isEmpty) return Some(Mess(M.CITYISBORDERINGWITHANOTHER, common.head))
       }
+    })
+    paround.foreach(p => {
+      val s: MapSquareP = getSquare(board, p)
+      if (s.s.hv != null) return Some(Mess(M.HUTORVILLAGEATCITYOUTSKIRTS,p))
+      if (!s.s.figures.empty && !s.s.figures.civOccupying(civ)) return Some(Mess(M.FOREIGNFIGURESATCITYOUTSKIRTS,p))
     })
     None
   }
