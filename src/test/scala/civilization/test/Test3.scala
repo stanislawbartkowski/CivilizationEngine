@@ -23,7 +23,7 @@ class Test3 extends FunSuite {
   }
 
   test("reveal tile down") {
-    val b: GameBoard = Helper.getBoard("test2/BOARDGAME1.json")
+    val b: GameBoard = Helper.getBoard("test2/BOARDGAME2.json")
     val ma: MapSquareP = getSquare(b, P(0, 0))
     assert(!ma.revealed)
     revealTile(b, Orientation.Left, P(0, 0))
@@ -46,7 +46,7 @@ class Test3 extends FunSuite {
   }
 
   test("reveal tile left") {
-    val b: GameBoard = Helper.getBoard("test2/BOARDGAME1.json")
+    val b: GameBoard = Helper.getBoard("test2/BOARDGAME2.json")
     println("---------------")
     revealTile(b, Orientation.Left, P(1, 0))
     val ma3: MapSquareP = getSquare(b, P(7, 0))
@@ -61,7 +61,7 @@ class Test3 extends FunSuite {
   }
 
   test("reveal tile up") {
-    val b: GameBoard = Helper.getBoard("test2/BOARDGAME1.json")
+    val b: GameBoard = Helper.getBoard("test2/BOARDGAME2.json")
     println("---------------")
     revealTile(b, Orientation.Up, P(1, 0))
     val ma3: MapSquareP = getSquare(b, P(7, 3))
@@ -76,7 +76,7 @@ class Test3 extends FunSuite {
   }
 
   test("reveal tile right") {
-    val b: GameBoard = Helper.getBoard("test2/BOARDGAME1.json")
+    val b: GameBoard = Helper.getBoard("test2/BOARDGAME2.json")
     println("---------------")
     revealTile(b, Orientation.Right, P(1, 0))
     val ma3: MapSquareP = getSquare(b, P(4, 3))
