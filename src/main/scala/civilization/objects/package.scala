@@ -33,6 +33,7 @@ package object objects {
         case City.WalledNormal => 10
       }
     }
+    def belongsTo(civ: Civilization.T) : Boolean = this.civ == civ
   }
 
   object Resource extends Enumeration {

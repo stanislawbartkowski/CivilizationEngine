@@ -3,12 +3,11 @@ package civilization.test
 import civilization.I._
 import civilization.gameboard.GameBoard
 import civilization.helper.AllowedCommands
-import civilization.helper.AllowedCommands.allowedCommands
+import civilization.io.fromjson.toJ
 import civilization.objects._
-import civilization.{I, II, RR}
+import civilization.{I, II}
 import org.scalatest.FunSuite
 import play.api.libs.json.{JsArray, JsString, JsValue}
-import civilization.io.fromjson.toJ
 
 
 class Test11 extends FunSuite {
@@ -141,8 +140,27 @@ class Test11 extends FunSuite {
     println(a)
     val o: String = itemizeCommand(token, "SETCITY")
     println(o)
-
-
   }
 
-}
+  test("cannot exceed the hand size") {
+    var b: GameBoard = Helper.readBoardAndPlay("test11/BOARDGAME1.json", "test11/GAME3.json", Civilization.Rome)
+    val token: String = registerGame(b, Civilization.Rome)
+    var g: GameBoard = I.getBoardForToken(token)
+    var a: Seq[Command.T] = AllowedCommands.allowedCommands(g, Civilization.Rome)
+    println(a)
+    val o: String = itemizeCommand(token, "MOVE")
+    println(o)
+    val j: JsValue = toJ(o)
+    println(j)
+    val am = (j \ "moves").get.as[JsArray]
+    println(am)
+    val res: Option[JsValue] = am.value.toStream.find(p => {
+      val row : Int = (p \ "row").as[Int]
+      val col : Int = (p \ "col").as[Int]
+      ( row == 3 && col == 1)
+    }
+    )
+    assert(res.isEmpty)
+  }
+
+  }

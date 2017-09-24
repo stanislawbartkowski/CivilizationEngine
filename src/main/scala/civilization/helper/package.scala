@@ -11,7 +11,7 @@ package object helper {
 
   private val ra = scala.util.Random
 
-  case class MapSquareP(val s: MapSquare, val sm: Square, val p: P, val t: MapTile, val suggestedCapital : Boolean) {
+  case class MapSquareP(val s: MapSquare, val sm: Square, val p: P, val t: MapTile, val suggestedCapital: Boolean) {
     def revealed: Boolean = t.orientation != null
 
     def terrain: Terrain.T = sm.terrain
@@ -22,7 +22,7 @@ package object helper {
 
     def resource: Resource.T = sm.resource
 
-//    def suggestedCapital: Boolean = (t.tile.civ != null) && (t.tile.suggestedcapital == p)
+    //    def suggestedCapital: Boolean = (t.tile.civ != null) && (t.tile.suggestedcapital == p)
 
     def suggestedCapitalForCiv: Civilization.T = if (suggestedCapital) t.tile.civ else null
   }
@@ -91,12 +91,12 @@ package object helper {
         row = TILESIZE - 1 - srow
       }
     }
-    val suggestedCapital: Boolean = (tile.tile.civ != null) && (tile.tile.suggestedcapital == P(row,col))
+    val suggestedCapital: Boolean = (tile.tile.civ != null) && (tile.tile.suggestedcapital == P(row, col))
 
     MapSquareP(tile.mapsquares(row)(col), tile.tile.terrain(row)(col), p, tile, suggestedCapital)
   }
 
-  def isSquareForCity(board: GameBoard, p: P, civ:Civilization.T): Option[Mess] = {
+  def isSquareForCity(board: GameBoard, p: P, civ: Civilization.T): Option[Mess] = {
     val s: MapSquareP = getSquare(board, p)
     if (!s.revealed) return Some(Mess(M.POINTONHIDDENTILE, p))
     if (s.terrain == Terrain.Water) return Some(Mess(M.CITYONWATER, p))
@@ -120,8 +120,8 @@ package object helper {
     })
     paround.foreach(p => {
       val s: MapSquareP = getSquare(board, p)
-      if (s.s.hv != null) return Some(Mess(M.HUTORVILLAGEATCITYOUTSKIRTS,p))
-      if (!s.s.figures.empty && !s.s.figures.civOccupying(civ)) return Some(Mess(M.FOREIGNFIGURESATCITYOUTSKIRTS,p))
+      if (s.s.hv != null) return Some(Mess(M.HUTORVILLAGEATCITYOUTSKIRTS, p))
+      if (!s.s.figures.empty && !s.s.figures.civOccupying(civ)) return Some(Mess(M.FOREIGNFIGURESATCITYOUTSKIRTS, p))
     })
     None
   }
@@ -360,6 +360,17 @@ package object helper {
   def getNumberOfArmies(b: GameBoard, civ: Civilization.T): (Int, Int) =
     getFigures(b, civ).foldLeft((0, 0))((s1, s2) => (s1._1 + s2.s.figures.numberofArmies, s1._2 + s2.s.figures.numberofScouts))
 
+  def isSquareForFigures(b: GameBoard, civ: Civilization.T, f: Figures, s: MapSquare, li: PlayerLimits): Option[Mess] = {
+    if (!s.figures.empty) {
+      if (!s.figures.civOccupying(civ)) return Some(Mess(M.CANNOTSETFIGUREONALIENCIV, s))
+      if (s.figures.numberofArmies + s.figures.numberofScouts + f.numberofScouts + f.numberofArmies > li.stackinglimit) return Some(Mess(M.STACKINGSIZEEXCEEDED, s))
+    }
+    if (s.city != null)
+      if (!s.city.belongsTo(civ)) return Some(Mess(M.CANNOTSETFGUREONALIENCITY, s))
+    if (!s.hvtaken) return Some(Mess(M.CANNOTSETFIGUREONHUTORVILLAGE, s))
+    None
+  }
+
   def isSquareForFigure(b: GameBoard, civ: Civilization.T, f: Figure.T, p: P): Option[Mess] = {
     val li: PlayerLimits = getLimits(b, civ)
     val count: (Int, Int) = getNumberOfArmies(b, civ)
@@ -370,10 +381,12 @@ package object helper {
     val s: MapSquareP = getSquare(b, p)
     if (s.s.city != null) return Some(Mess(M.CANNOTSETFIGUREONCITY, p))
     if (s.sm.terrain == Terrain.Water && !li.waterstopallowed) return Some(Mess(M.CANNOTPUTFIGUREONWATER, p))
-    if (s.s.figures.civ == null) return None
-    if (f == Figure.Scout && s.s.figures.numberofScouts > 0) return Some(Mess(M.ONLYONESCIUTALLOWED, p))
-    if (s.s.figures.numberofScouts + s.s.figures.numberofArmies + 1 > li.stackinglimit) return Some(Mess(M.STACKINGSIZEEXCEEDED, p))
-    None
+    val fig : Figures = if (f == Figure.Scout) Figures(0,1) else Figures(1,0)
+    isSquareForFigures(b,civ,fig,s.s,li)
+//    if (s.s.figures.civ == null) return None
+//    if (f == Figure.Scout && s.s.figures.numberofScouts > 0) return Some(Mess(M.ONLYONESCIUTALLOWED, p))
+  //  if (s.s.figures.numberofScouts + s.s.figures.numberofArmies + 1 > li.stackinglimit) return Some(Mess(M.STACKINGSIZEEXCEEDED, p))
+  //  None
   }
 
   def canBuyFigure(b: GameBoard, civ: Civilization.T, p: P, f: Figure.T): Option[Mess] = {

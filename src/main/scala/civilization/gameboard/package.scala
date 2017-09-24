@@ -58,7 +58,7 @@ package object gameboard {
   case class MapSquare(var hv: HutVillage, var city: City) {
     val figures: PlayerFigures = new PlayerFigures(null, 0, 0)
 
-    def hvtaken: Boolean = hv != null
+    def hvtaken: Boolean = hv == null
   }
 
   def genEmptySquares: Array[Array[MapSquare]] = {

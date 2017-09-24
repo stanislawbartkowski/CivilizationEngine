@@ -65,6 +65,8 @@ object MoveAction {
     val s: MapSquareP = getSquare(b, p)
     if (!s.revealed) return Some(Mess(M.POINTNOTREVEALED, p))
     if (s.sm.terrain == Terrain.Water && !li.watercrossingallowed) return Some(Mess(M.CANNOTCROSSWATER, figdesc))
+    val mess : Option[Mess] = isSquareForFigures(b,civ,fig.f.toFigures,s.s,li)
+    if (mess.isDefined) return mess
     if (endofmove) checkFinalPoint(b, civ, s, fig.f.toFigures) else None
   }
 
