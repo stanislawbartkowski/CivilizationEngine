@@ -24,7 +24,7 @@ package object helper {
 
     //    def suggestedCapital: Boolean = (t.tile.civ != null) && (t.tile.suggestedcapital == p)
 
-    def suggestedCapitalForCiv: Civilization.T = if (suggestedCapital) t.tile.civ else null
+    def suggestedCapitalForCiv: Option[Civilization.T] = if (suggestedCapital) Some(t.tile.civ) else None
   }
 
   def pointsAround(board: GameBoard, p: P): Seq[P] = {
@@ -42,7 +42,7 @@ package object helper {
   }
 
   def checkCity(b: GameBoard, p: P): Option[Mess] = {
-    if (getSquare(b, p).s.city == null) Some(Mess(M.NOTCITY, p))
+    if (!getSquare(b, p).s.cityhere) Some(Mess(M.NOTCITY, p))
     None
   }
 
@@ -58,10 +58,10 @@ package object helper {
     allPoints(b).map(getSquare(b, _)) toSeq
 
   def isCapitalBuild(board: GameBoard, civ: Civilization.T): Boolean =
-    citiesForCivilization(board, civ).exists(p => p.s.city.citytype == City.Capital || p.s.city.citytype == City.WalledCapital)
+    citiesForCivilization(board, civ).exists(p => p.s.city.get.citytype == City.Capital || p.s.city.get.citytype == City.WalledCapital)
 
   def citiesForCivilization(board: GameBoard, civ: Civilization.T): Seq[MapSquareP] =
-    allPoints(board).map(getSquare(board, _)).filter(s => s.s.city != null && s.s.city.civ == civ).toList
+    allPoints(board).map(getSquare(board, _)).filter(s => s.s.cityhere && s.s.city.get.belongsTo(civ)).toList
 
   def pointtoTile(p: P): P = P(p.row / TILESIZE, p.col / TILESIZE)
 
@@ -104,14 +104,14 @@ package object helper {
     if (saround.length != 8) return Some(Mess(M.POINTONBORDER, p))
     saround.foreach(pp => {
       if (!pp.revealed) return Some(Mess(M.POINTONHIDDENTILE, p))
-      if (pp.sm.hv != null && !pp.s.hvtaken) return Some(Mess(M.POINTISBORDERINGWITHHUTORVIALLAGE, pp.p))
+      if (pp.s.hvhere) return Some(Mess(M.POINTISBORDERINGWITHHUTORVIALLAGE, pp.p))
     }
     );
     // check other cities
     val paround: Set[P] = pointsAround(board, p).toSet
     allPoints(board).foreach(p => {
       val s: MapSquareP = getSquare(board, p)
-      if (s.s.city != null) {
+      if (s.s.cityhere) {
         val sp: Set[P] = pointsAround(board, p).toSet
         // intersection
         val common: Set[P] = sp.intersect(paround)
@@ -120,7 +120,7 @@ package object helper {
     })
     paround.foreach(p => {
       val s: MapSquareP = getSquare(board, p)
-      if (s.s.hv != null) return Some(Mess(M.HUTORVILLAGEATCITYOUTSKIRTS, p))
+      if (s.s.hvhere) return Some(Mess(M.HUTORVILLAGEATCITYOUTSKIRTS, p))
       if (!s.s.figures.empty && !s.s.figures.civOccupying(civ)) return Some(Mess(M.FOREIGNFIGURESATCITYOUTSKIRTS, p))
     })
     None
@@ -132,7 +132,7 @@ package object helper {
     m.orientation = o
     // put huts and villages
     for (row <- 0 until m.mapsquares.length; col <- 0 until m.mapsquares(row).length)
-      if (m.tile.terrain(row)(col).hv != null) m.mapsquares(row)(col).hv = getRandomHutVillage(board, m.tile.terrain(row)(col).hv)
+      if (m.tile.terrain(row)(col).hv != null) m.mapsquares(row)(col).hv = Some(getRandomHutVillage(board, m.tile.terrain(row)(col).hv))
   }
 
   def getTile(board: GameBoard, p: P): MapTile =
@@ -280,7 +280,7 @@ package object helper {
     if (phase != null && phase == TurnPhase.CityManagement) {
       // check if city correct
       val ss: MapSquareP = getSquare(b, command.p)
-      if (ss.s.city == null || ss.s.city.civ != command.civ) return (Mess(M.THEREISNOCIVLIZATIONCITYATTHISPOINT, (command)))
+      if (!ss.s.cityhere || ss.s.city.get.civ != command.civ) return (Mess(M.THEREISNOCIVLIZATIONCITYATTHISPOINT, (command)))
       // duplicate CityManagement for the same city
       val cities: Seq[P] = CityAvailableForAction(b, command.civ)
       if (cities.find(_ == command.p).isEmpty) return Mess(M.DUPLICATECITYACTIONINTHISCITY, (command))
@@ -332,11 +332,48 @@ package object helper {
 
   def gameStart(b: GameBoard): Boolean = currentPhase(b).roundno == 0
 
-  def numberofTrade(b: GameBoard, civ: Civilization.T): Integer = {
+  // ====================================
+  // TRADE
+  // ====================================
+
+  case class TradeForCiv(val terrain: Int, val noresearch: Int, val toprod: Int) {
+    def trade: Int = terrain + noresearch - toprod
+  }
+
+  private def numberofTradeTerrain(b: GameBoard, civ: Civilization.T): Integer = {
     val num: Int = citiesForCivilization(b, civ).flatMap(p => squaresAround(b, p.p)).map(_.numberOfTrade).foldLeft(0)(_ + _)
     if (gameStart(b)) num * 2 else num
   }
 
+  private def numberofTradenoresearch(b: GameBoard, civ: Civilization.T): Integer = {
+    // commands : reverse
+    val rlist: Seq[Command] = b.play.commands.reverse.filter(_.civ == civ)
+
+    var lasttrade: Int = 0
+    var wasresearch: Boolean = false
+    breakable {
+      rlist.foreach(c => {
+        val pha: Option[TurnPhase.T] = getPhase(c)
+        if (pha.isDefined)
+          if (pha.get == TurnPhase.Research) {
+            lasttrade = c.param1.asInstanceOf[Int]
+            wasresearch = true
+          }
+          else if (wasresearch) break
+
+        if (c.command == Command.RESEARCH) {
+          lasttrade = 0
+          break
+        }
+      }
+      )
+    }
+    if (lasttrade > TRADEMAX) TRADEMAX else lasttrade
+  }
+
+  def numberofTrade(b: GameBoard, civ: Civilization.T): TradeForCiv = TradeForCiv(numberofTradeTerrain(b, civ), numberofTradenoresearch(b, civ), 0)
+
+  // ===================================
 
   def getProductionForCity(b: GameBoard, p: P): Integer = {
     val num: Int = squaresAround(b, p).map(s => getSquare(b, s.p).numberOfProduction).foldLeft(0)(_ + _)
@@ -365,9 +402,9 @@ package object helper {
       if (!s.figures.civOccupying(civ)) return Some(Mess(M.CANNOTSETFIGUREONALIENCIV, s))
       if (s.figures.numberofArmies + s.figures.numberofScouts + f.numberofScouts + f.numberofArmies > li.stackinglimit) return Some(Mess(M.STACKINGSIZEEXCEEDED, s))
     }
-    if (s.city != null)
-      if (!s.city.belongsTo(civ)) return Some(Mess(M.CANNOTSETFGUREONALIENCITY, s))
-    if (!s.hvtaken) return Some(Mess(M.CANNOTSETFIGUREONHUTORVILLAGE, s))
+    if (s.cityhere)
+      if (!s.city.get.belongsTo(civ)) return Some(Mess(M.CANNOTSETFGUREONALIENCITY, s))
+    if (s.hvhere) return Some(Mess(M.CANNOTSETFIGUREONHUTORVILLAGE, s))
     None
   }
 
@@ -379,14 +416,14 @@ package object helper {
       case Figure.Scout => if (li.scoutslimit < 1) return Some(Mess(M.LIMITFORSCOUTSEXCEEDED, (count._2, li.scoutslimit)))
     }
     val s: MapSquareP = getSquare(b, p)
-    if (s.s.city != null) return Some(Mess(M.CANNOTSETFIGUREONCITY, p))
+    if (s.s.cityhere) return Some(Mess(M.CANNOTSETFIGUREONCITY, p))
     if (s.sm.terrain == Terrain.Water && !li.waterstopallowed) return Some(Mess(M.CANNOTPUTFIGUREONWATER, p))
-    val fig : Figures = if (f == Figure.Scout) Figures(0,1) else Figures(1,0)
-    isSquareForFigures(b,civ,fig,s.s,li)
-//    if (s.s.figures.civ == null) return None
-//    if (f == Figure.Scout && s.s.figures.numberofScouts > 0) return Some(Mess(M.ONLYONESCIUTALLOWED, p))
-  //  if (s.s.figures.numberofScouts + s.s.figures.numberofArmies + 1 > li.stackinglimit) return Some(Mess(M.STACKINGSIZEEXCEEDED, p))
-  //  None
+    val fig: Figures = if (f == Figure.Scout) Figures(0, 1) else Figures(1, 0)
+    isSquareForFigures(b, civ, fig, s.s, li)
+    //    if (s.s.figures.civ == null) return None
+    //    if (f == Figure.Scout && s.s.figures.numberofScouts > 0) return Some(Mess(M.ONLYONESCIUTALLOWED, p))
+    //  if (s.s.figures.numberofScouts + s.s.figures.numberofArmies + 1 > li.stackinglimit) return Some(Mess(M.STACKINGSIZEEXCEEDED, p))
+    //  None
   }
 
   def canBuyFigure(b: GameBoard, civ: Civilization.T, p: P, f: Figure.T): Option[Mess] = {

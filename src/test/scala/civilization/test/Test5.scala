@@ -18,7 +18,7 @@ class Test5 extends FunSuite {
     assert(isCapitalBuild(b, Civilization.Germany))
     assert(citiesForCivilization(b, Civilization.Germany).length == 1)
     //    squaresAround(b,P(2,2)).foreach(println)
-    val num: Int = numberofTrade(b, Civilization.Germany)
+    val num: Int = numberofTrade(b, Civilization.Germany).trade
     println(num)
     assert(num == 6)
     // try to set figure

@@ -1,14 +1,11 @@
 package civilization.test
 
+import civilization.gameboard._
+import civilization.io.fromjson._
 import civilization.io.readdir._
+import civilization.objects._
 import org.scalatest.FunSuite
 import play.api.libs.json.{JsPath, JsValue}
-import civilization.io.fromjson._
-import civilization.objects._
-import civilization.gameboard._
-
-import scala.reflect.io.File
-import scala.io.Source
 
 
 class Test1 extends FunSuite {
@@ -140,13 +137,13 @@ class Test1 extends FunSuite {
     assert(Orientation.Left == t.orientation)
     val ma: MapSquare = t.mapsquares(0)(0)
     println(ma)
-    assert(ma.hvtaken)
+    assert(ma.hvhere)
     assert(ma.figures.civ == Civilization.Germany)
     assert(1 == ma.figures.numberofArmies)
     assert(2 == ma.figures.numberofScouts)
-    assert(ma.city != null)
-    assert(City.Normal == ma.city.citytype)
-    assert(Civilization.Rome == ma.city.civ)
+    assert(ma.city.isDefined)
+    assert(City.Normal == ma.city.get.citytype)
+    assert(Civilization.Rome == ma.city.get.civ)
     println("-------------------")
     for (i <- 0 until 4)
       for (j <- 0 until 4) println(t.mapsquares(i)(j))

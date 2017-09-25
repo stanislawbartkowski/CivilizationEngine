@@ -2,9 +2,11 @@ package civilization
 
 package object objects {
 
+  val TILESIZE: Int = 4
+  val TRADEMAX = 27
+
 
   type TileTerrain = Array[Array[Square]]
-  val TILESIZE: Int = 4
 
   case class HutVillage(var hv: HutVillage.T, var resource: Resource.T)
 
@@ -22,7 +24,7 @@ package object objects {
     def civhome: Boolean = civ != null
   }
 
-  case class Player(player: Player.T, civ: Civilization.T)
+  case class Player(civ: Civilization.T)
 
   case class City(civ: Civilization.T, citytype: City.T) {
     def defenceStrength(): Int = {
@@ -79,11 +81,6 @@ package object objects {
   object Orientation extends Enumeration {
     type T = Value
     val Left, Up, Down, Right = Value
-  }
-
-  object Player extends Enumeration {
-    type T = Value
-    val A, B, C, D, E, F = Value
   }
 
   object TurnPhase extends Enumeration {

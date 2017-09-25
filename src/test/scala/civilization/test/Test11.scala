@@ -2,7 +2,7 @@ package civilization.test
 
 import civilization.I._
 import civilization.gameboard.GameBoard
-import civilization.helper.AllowedCommands
+import civilization.helper._
 import civilization.io.fromjson.toJ
 import civilization.objects._
 import civilization.{I, II}
@@ -155,12 +155,62 @@ class Test11 extends FunSuite {
     val am = (j \ "moves").get.as[JsArray]
     println(am)
     val res: Option[JsValue] = am.value.toStream.find(p => {
-      val row : Int = (p \ "row").as[Int]
-      val col : Int = (p \ "col").as[Int]
-      ( row == 3 && col == 1)
+      val row: Int = (p \ "row").as[Int]
+      val col: Int = (p \ "col").as[Int]
+      (row == 3 && col == 1)
     }
     )
     assert(res.isEmpty)
+  }
+
+  test("test production not consumed") {
+    var b: GameBoard = Helper.readBoardAndPlay("test11/BOARDGAME1.json", "test11/GAME4.json", Civilization.Rome)
+    val token: String = registerGame(b, Civilization.Rome)
+    var g: GameBoard = I.getBoardForToken(token)
+    var prod = numberofTrade(b,Civilization.Rome)
+    println(prod)
+    assert (4 == prod.trade)
+    var s = executeCommand(token, "ENDOFPHASE", -1, -1, "\"Research\"")
+    assert (s == null)
+    // next turn
+    g = I.getBoardForToken(token)
+    prod = numberofTrade(g,Civilization.Rome)
+    println(prod)
+    assert(2 == prod.terrain)
+    assert(4 == prod.noresearch)
+    s = executeCommand(token, "ENDOFPHASE", -1, -1, "\"StartOfTurn\"")
+    assert (s == null)
+    s = executeCommand(token, "ENDOFPHASE", -1, -1, "\"Trade\"")
+    assert (s == null)
+    s = executeCommand(token, "ENDOFPHASE", -1, -1, "\"CityManagement\"")
+    assert (s == null)
+    s = executeCommand(token, "ENDOFPHASE", -1, -1, "\"Movement\"")
+    assert (s == null)
+    s = executeCommand(token, "ENDOFPHASE", -1, -1, "\"Research\"")
+    assert (s == null)
+    g = I.getBoardForToken(token)
+    prod = numberofTrade(g,Civilization.Rome)
+    println(prod)
+    assert(2 == prod.terrain)
+    assert(6 == prod.noresearch)
+    assert (8 == prod.trade)
+    s = executeCommand(token, "ENDOFPHASE", -1, -1, "\"StartOfTurn\"")
+    assert (s == null)
+    s = executeCommand(token, "ENDOFPHASE", -1, -1, "\"Trade\"")
+    assert (s == null)
+    s = executeCommand(token, "ENDOFPHASE", -1, -1, "\"CityManagement\"")
+    assert (s == null)
+    s = executeCommand(token, "ENDOFPHASE", -1, -1, "\"Movement\"")
+    assert (s == null)
+    // now research, trade should reset
+    s = executeCommand(token, "RESEARCH", -1, -1, "\"HorsebackRiding\"")
+    assert (s == null)
+    s = executeCommand(token, "ENDOFPHASE", -1, -1, "\"Research\"")
+    assert (s == null)
+    g = I.getBoardForToken(token)
+    prod = numberofTrade(g,Civilization.Rome)
+    println(prod)
+    assert (2 == prod.trade)
   }
 
   }

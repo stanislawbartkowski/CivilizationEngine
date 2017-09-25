@@ -55,15 +55,17 @@ package object gameboard {
     def toFigures: Figures = Figures(numberofArmies, numberofScouts)
   }
 
-  case class MapSquare(var hv: HutVillage, var city: City) {
+  case class MapSquare(var hv: Option[HutVillage] = None, var city: Option[City] = None ) {
+    require(hv != null && city != null)
     val figures: PlayerFigures = new PlayerFigures(null, 0, 0)
 
-    def hvtaken: Boolean = hv == null
+    def hvhere: Boolean = hv.isDefined
+    def cityhere: Boolean = city.isDefined
   }
 
   def genEmptySquares: Array[Array[MapSquare]] = {
     val squares: Array[Array[MapSquare]] = Array.ofDim(TILESIZE, TILESIZE)
-    for (i <- 0 until TILESIZE; j <- 0 until TILESIZE) squares(i)(j) = MapSquare(null, null)
+    for (i <- 0 until TILESIZE; j <- 0 until TILESIZE) squares(i)(j) = MapSquare()
     squares
   }
 

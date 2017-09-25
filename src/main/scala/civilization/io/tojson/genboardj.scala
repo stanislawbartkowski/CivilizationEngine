@@ -11,8 +11,8 @@ object genboardj {
   // production:
   // if empty square : number of original production
   // if city: number of city production
-  case class MapSquareJ(revealed: Boolean, t: Terrain.T, trade: Int, production: Int, resource: Resource.T, capForCiv: Civilization.T,
-                        civ: Civilization.T, city: City.T, defence: Int, numberofArmies: Int, numberofScouts: Int, tile: String, hv: HutVillage.T)
+  case class MapSquareJ(revealed: Boolean, t: Terrain.T, trade: Int, production: Int, resource: Resource.T, capForCiv: Option[Civilization.T],
+                        civ: Civilization.T, city: City.T, defence: Int, numberofArmies: Int, numberofScouts: Int, tile: String, hv: Option[HutVillage.T])
 
   case class PlayerDeckJ(civ: Civilization.T, numberofTrade: Int, commands: Seq[Command.T], limits: PlayerLimits)
 
@@ -23,16 +23,16 @@ object genboardj {
   private def contructSquareJ(b: GameBoard, ss: MapSquareP): MapSquareJ = {
     val t: Terrain.T = if (ss.revealed) ss.terrain else null;
     val trade: Int = if (ss.revealed) ss.numberOfTrade else -1;
-    val production: Int = if (ss.revealed) (if (ss.s.city == null) ss.numberOfProduction else getProductionForCity(b, ss.p)) else -1;
+    val production: Int = if (ss.revealed) (if (!ss.s.cityhere) ss.numberOfProduction else getProductionForCity(b, ss.p)) else -1;
     val resource: Resource.T = if (ss.revealed) ss.resource else null
-    val cap: Civilization.T = ss.suggestedCapitalForCiv
+    val cap: Option[Civilization.T] = ss.suggestedCapitalForCiv
     var civ: Civilization.T = null
     var defence: Int = 0
     var city: City.T = null
-    if (ss.s.city != null) {
-      civ = ss.s.city.civ
-      city = ss.s.city.citytype
-      defence = ss.s.city.defenceStrength()
+    if (ss.s.cityhere) {
+      civ = ss.s.city.get.civ
+      city = ss.s.city.get.citytype
+      defence = ss.s.city.get.defenceStrength()
     }
     var numberofArmies: Int = -1
     var numberofScouts: Int = -1
@@ -43,7 +43,7 @@ object genboardj {
     }
 
     MapSquareJ(ss.revealed, t, trade, production, resource, cap, civ, city, defence, numberofArmies, numberofScouts, ss.t.tname,
-      if (ss.s.hv != null) ss.s.hv.hv else null)
+      if (ss.s.hv.isDefined) Some(ss.s.hv.get.hv) else None)
   }
 
   private def genGame(g: GameBoard, civrequesting: Civilization.T): Game = {
@@ -61,7 +61,7 @@ object genboardj {
     Game(civ, cu.roundno, cu.turnPhase)
   }
 
-  private def genPlayerDeckJ(g: GameBoard, civ: Civilization.T): PlayerDeckJ = PlayerDeckJ(civ, numberofTrade(g, civ), allowedCommands(g, civ), getLimits(g, civ))
+  private def genPlayerDeckJ(g: GameBoard, civ: Civilization.T): PlayerDeckJ = PlayerDeckJ(civ, numberofTrade(g, civ).trade, allowedCommands(g, civ), getLimits(g, civ))
 
   private def commandToArray(l: Seq[Command.T]): JsArray = {
     JsArray(l.map(c => Json.obj(S.command -> c)).foldLeft(List[JsObject]())(_ :+ _))

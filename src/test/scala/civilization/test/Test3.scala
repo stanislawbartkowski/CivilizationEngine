@@ -37,12 +37,12 @@ class Test3 extends FunSuite {
     val ma3: MapSquareP = getSquare(b, P(4, 0))
     println(ma3)
     assert(ma3.revealed)
-    assert(ma3.s.hv != null)
-    assert(ma3.s.hv.hv == HutVillage.Village)
+    assert(ma3.s.hv.isDefined)
+    assert(ma3.s.hv.get.hv == HutVillage.Village)
     val ma4: MapSquareP = getSquare(b, P(6, 3))
     println(ma4)
-    assert(ma4.s.hv != null)
-    assert(ma4.s.hv.hv == HutVillage.Hut)
+    assert(ma4.s.hv.isDefined)
+    assert(ma4.s.hv.get.hv == HutVillage.Hut)
   }
 
   test("reveal tile left") {
@@ -52,12 +52,12 @@ class Test3 extends FunSuite {
     val ma3: MapSquareP = getSquare(b, P(7, 0))
     println(ma3)
     assert(ma3.revealed)
-    assert(ma3.s.hv != null)
-    assert(ma3.s.hv.hv == HutVillage.Village)
+    assert(ma3.s.hv.isDefined)
+    assert(ma3.s.hv.get.hv == HutVillage.Village)
     val ma4: MapSquareP = getSquare(b, P(4, 2))
     println(ma4)
-    assert(ma4.s.hv != null)
-    assert(ma4.s.hv.hv == HutVillage.Hut)
+    assert(ma4.s.hv.isDefined)
+    assert(ma4.s.hv.get.hv == HutVillage.Hut)
   }
 
   test("reveal tile up") {
@@ -67,12 +67,12 @@ class Test3 extends FunSuite {
     val ma3: MapSquareP = getSquare(b, P(7, 3))
     println(ma3)
     assert(ma3.revealed)
-    assert(ma3.s.hv != null)
-    assert(ma3.s.hv.hv == HutVillage.Village)
+    assert(ma3.s.hv.isDefined)
+    assert(ma3.s.hv.get.hv == HutVillage.Village)
     val ma4: MapSquareP = getSquare(b, P(5, 0))
     println(ma4)
-    assert(ma4.s.hv != null)
-    assert(ma4.s.hv.hv == HutVillage.Hut)
+    assert(ma4.s.hv.isDefined)
+    assert(ma4.s.hv.get.hv == HutVillage.Hut)
   }
 
   test("reveal tile right") {
@@ -82,12 +82,12 @@ class Test3 extends FunSuite {
     val ma3: MapSquareP = getSquare(b, P(4, 3))
     println(ma3)
     assert(ma3.revealed)
-    assert(ma3.s.hv != null)
-    assert(ma3.s.hv.hv == HutVillage.Village)
+    assert(ma3.s.hv.isDefined)
+    assert(ma3.s.hv.get.hv == HutVillage.Village)
     val ma4: MapSquareP = getSquare(b, P(7, 1))
     println(ma4)
-    assert(ma4.s.hv != null)
-    assert(ma4.s.hv.hv == HutVillage.Hut)
+    assert(ma4.s.hv.isDefined)
+    assert(ma4.s.hv.get.hv == HutVillage.Hut)
   }
 
 }

@@ -31,10 +31,10 @@ object SetCityAction {
     private def setcitycommandexecute(board: GameBoard, civ: Civilization.T, p: P, command: Command.T) = {
       val sq: MapSquareP = getSquare(board, p)
       // build city
-      if (command == Command.SETCAPITAL) sq.s.city = City(civ, City.Capital)
+      if (command == Command.SETCAPITAL) sq.s.city = Some(City(civ, City.Capital))
       else {
         // only for regular city
-        sq.s.city = City(civ, City.Normal)
+        sq.s.city = Option(City(civ, City.Normal))
         // remove scout
         val f: Figures = sq.s.figures.toFigures
         // kill all figures at the place of the city

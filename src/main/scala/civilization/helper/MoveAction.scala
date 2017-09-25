@@ -44,7 +44,7 @@ object MoveAction {
     val li: PlayerLimits = getLimits(b, civ)
     val figdesc: (P, Figures) = (s.p, fig)
     if (s.sm.terrain == Terrain.Water && li.waterstopallowed) return Some(Mess(M.CANNOTSTOPINWATER, figdesc))
-    if (s.s.city != null && s.s.city.civ == civ) return Some(Mess(M.CANNOTSTOPINCITY, figdesc))
+    if (s.s.cityhere && s.s.city.get.belongsTo(civ)) return Some(Mess(M.CANNOTSTOPINCITY, figdesc))
     // 2017/08/28 figures already on the point
     //    val numb = fig.numberofArmies + fig.numberofScouts + s.s.figures.numberofArmies + s.s.figures.numberofScouts
     //    if (numb > li.stackinglimit) return Some(Mess(M.STACKINGSIZEEXCEEDED, (figdesc, li.stackinglimit, numb)))

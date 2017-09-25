@@ -71,10 +71,12 @@ package object tojson {
   implicit val mapsqaureWrites: Writes[MapSquare] = new Writes[MapSquare] {
     def writes(m: MapSquare) = Json.obj(
       S.hutvillage -> {
-        if (m.hv == null) json.JsNull else m.hv
+//        if (m.hv == null) json.JsNull else m.hv
+        m.hv
       },
       S.city -> {
-        if (m.city == null) json.JsNull else m.city
+//        if (m.city == null) json.JsNull else m.city
+        m.city
       }
     )
   }

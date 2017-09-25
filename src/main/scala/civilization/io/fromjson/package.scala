@@ -35,7 +35,6 @@ package object fromjson {
   implicit val resourceReads: Reads[Resource.Value] = EnumUtils.enumReads(Resource)
   implicit val terrainReads: Reads[Terrain.Value] = EnumUtils.enumReads(Terrain)
   implicit val hutvillageReads: Reads[HutVillage.Value] = EnumUtils.enumReads(HutVillage)
-  implicit val playerReads: Reads[Player.Value] = EnumUtils.enumReads(Player)
   implicit val cityTypeReads: Reads[City.Value] = EnumUtils.enumReads(City)
   implicit val orientationReads: Reads[Orientation.Value] = EnumUtils.enumReads(Orientation)
   implicit val commandReads: Reads[Command.Value] = EnumUtils.enumReads(Command)
@@ -127,9 +126,9 @@ package object fromjson {
 
   implicit val mapsquareReads: Reads[MapSquare] = new Reads[MapSquare] {
     def reads(json: JsValue): JsResult[MapSquare] = {
-      val hv: HutVillage = (json \ S.hutvillage).asOpt[HutVillage].getOrElse(null)
+      val hv: Option[HutVillage] = (json \ S.hutvillage).asOpt[Option[HutVillage]].getOrElse(None)
       val figures: PlayerFigures = (json \ "figures").asOpt[PlayerFigures].getOrElse(null)
-      val city: City = (json \ S.city).asOpt[City].getOrElse(null)
+      val city: Option[City]= (json \ S.city).asOpt[Option[City]].getOrElse(None)
       val ma: MapSquare = MapSquare(hv, city)
       if (figures != null) {
         ma.figures.civ = figures.civ
@@ -171,6 +170,15 @@ package object fromjson {
   implicit val hutvillagekReads: Reads[HutVillage] = (
     (JsPath \ S.hutvillage).read[HutVillage.T] and (JsPath \ S.resource).read[Resource.T]
     ) (HutVillage.apply _)
+
+  implicit val hutvillagekOptionReads: Reads[Option[HutVillage]] = (
+      JsPath.readNullable[HutVillage]
+    )
+
+  implicit val cityOptionReads: Reads[Option[City]] = (
+    JsPath.readNullable[City]
+    )
+
 
   implicit val markdetReads: Reads[Market] = (
     (JsPath \ S.hutvillages).read[Array[HutVillage]] and (JsPath \ S.hutvillagesused).read[Seq[HutVillage]]

@@ -17,7 +17,7 @@ class ResearchTechnologyAction(override val param: TechnologyName.T) extends Abs
     val deck: PlayerDeck = b.playerDeck(civ)
     if (playerTech(deck) contains tech) return Mess(M.TECHNOLOGYRESEARCHEDALREADY, tech)
     val leveltr: Int = levelTrade(techLevel(b, tech))
-    val civTrade: Int = numberofTrade(b, civ)
+    val civTrade: Int = numberofTrade(b, civ).trade
     if (leveltr > civTrade) return Mess(M.CANNOTAFFORDTHISTECHNOLOGY, (tech, leveltr, civTrade))
     val level: Int = techLevel(b, tech)
     if (level > 1 && listofLevel(b, deck, level - 1).length + 1 >= listofLevel(b, deck, level).length) return Mess(M.NOPLACEINTECHNOLOGYTREE, tech)
