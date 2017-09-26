@@ -13,6 +13,8 @@ trait RAccess {
 
   def unregisterCurrentGame(token : String)
 
+  def touchCurrentGame(token : String)
+
   // game
   def registerGame(value: String): Int
 

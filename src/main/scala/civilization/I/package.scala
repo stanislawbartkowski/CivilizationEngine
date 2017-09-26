@@ -55,6 +55,7 @@ package object I {
 
   private def getBoard(token: String): (CurrentGame, GameBoard) = {
     val game: CurrentGame = r.getCurrentGame(token)
+    r.touchCurrentGame(token)
     (game, getGameBoard(game.gameid))
   }
 

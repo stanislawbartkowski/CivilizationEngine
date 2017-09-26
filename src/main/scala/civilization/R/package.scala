@@ -37,10 +37,11 @@ package object R {
 
     override def getCurrentGame(token: String): String = r.withClient(r => r.get(currentKey(token)).get)
 
+    private def renewexpireT(token: String) = r.withClient(r => r.expire(currentKey(token), expireT))
+
     override def registerCurrentGame(token: String, content: String): Unit = {
       r.withClient(r => r.set(currentKey(token), content))
-      // remove after one day
-      r.withClient(r => r.expire(currentKey(token), expireT))
+      renewexpireT(token)
     }
 
     override def updateCurrentGame(token: String, content: String): Unit = registerCurrentGame(token, content)
@@ -54,6 +55,9 @@ package object R {
     }
 
     override def unregisterCurrentGame(token: String): Unit = r.withClient(r => r.del(currentKey(token)))
+
+    override def touchCurrentGame(token: String): Unit = renewexpireT(token)
+
 
     // ===================
 
