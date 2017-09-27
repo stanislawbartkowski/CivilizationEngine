@@ -74,7 +74,7 @@ package object gameboard {
     var tile: Tile = _
   }
 
-  case class Map(val map: Seq[MapTile])
+  case class BoardMap(val map: Seq[MapTile])
 
   case class Market(var hv: Array[HutVillage], var hvused: Seq[HutVillage])
 
@@ -98,7 +98,7 @@ package object gameboard {
     def okV: Boolean = version == packageversion
   }
 
-  case class GameBoard(val players: Seq[PlayerDeck], val map: Map, val market: Market) {
+  case class GameBoard(val players: Seq[PlayerDeck], val map: BoardMap, val market: Market) {
 
     var metadata: GameMetaData = new GameMetaData("")
 

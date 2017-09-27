@@ -13,6 +13,8 @@ object AllowedCommands {
     var cu: Seq[Command.T] = Nil
     if (!itemizeForSetBuyFigures(b, civ, Command.BUYSCOUT).isEmpty) cu = cu :+ Command.BUYSCOUT
     if (!itemizeForSetBuyFigures(b, civ, Command.BUYARMY).isEmpty) cu = cu :+ Command.BUYARMY
+    if (!SpendTrade.itemizeCommandsForSpendTrade(b,civ).isEmpty) cu = cu :+ Command.SPENDTRADE
+    if (!SpendTrade.itemizeCommandsForUndoSpendTrade(b,civ).isEmpty) cu = cu :+ Command.UNDOSPENDTRADE
     cu
   }
 
@@ -24,7 +26,7 @@ object AllowedCommands {
     if (com == Command.BUYSCOUT || com == Command.BUYARMY) {
       // remove all cities already used in CityManagement
       val cities: Set[P] = CityAvailableForAction(b, civ).toSet
-      alist = alist.filter(ci => cities contains ci._1).filter(city => (getProductionForCity(b, city._1) >= ObjectCost.getCost(fi)))
+      alist = alist.filter(ci => cities contains ci._1).filter(city => (getProductionForCity(b, civ, city._1).prod >= ObjectCost.getCost(fi)))
     }
     alist
   }
@@ -45,7 +47,8 @@ object AllowedCommands {
     //    val current: Seq[(Figures, P)] = allSquares(b).filter(p => p.s.figures.civOccupying.isDefined && p.s.figures.civOccupying.get == civ).map(m => (m.s.figures.toFigures, m.p))
     // sum all figures finishing at given point
     val lastm: Map[P, Figures] = lastp.groupBy(_._3).map(e => e._1 -> e._2.foldLeft[Figures](Figures(0, 0))((f, p) => {
-      f + p._1; f
+      f + p._1;
+      f
     }))
     val current: Seq[(Figures, P)] = getFigures(b, civ).map(m => (m.s.figures.toFigures, m.p))
     // remove all figures which has moved already
@@ -169,6 +172,12 @@ object AllowedCommands {
       }
       case Command.SETCAPITAL => {
         l = itemizeForSetCapital(b, civ).map(writesP(_))
+      }
+      case Command.SPENDTRADE => {
+        l = SpendTrade.itemizeCommandsForSpendTrade(b,civ).map(writesP(_))
+      }
+      case Command.UNDOSPENDTRADE => {
+        l = SpendTrade.itemizeCommandsForUndoSpendTrade(b,civ).map(writesP(_))
       }
       case _ => None
     }

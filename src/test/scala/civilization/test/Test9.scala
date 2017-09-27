@@ -22,7 +22,7 @@ class Test9 extends FunSuite {
     val cu: CurrentPhase = currentPhase(b)
     println(cu)
     assert(cu.turnPhase == TurnPhase.CityManagement)
-    val prod: Int = getProductionForCity(b, P(1, 2))
+    val prod: Int = getProductionForCity(b,  Civilization.Rome, P(1, 2)).prod
     println(prod)
     var l: Seq[Command.T] = allowedCommands(b, Civilization.Rome)
     println(l)

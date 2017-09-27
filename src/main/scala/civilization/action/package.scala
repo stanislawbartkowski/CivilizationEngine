@@ -60,9 +60,16 @@ package object action {
 
     case Command.ENDOFMOVE => new MoveAction.EndOfMoveAction()
 
+    case Command.SPENDTRADE => new SpendTrade.SpendTrade(toInt(param))
+
+    case Command.UNDOSPENDTRADE =>
+      new AbstractCommandNone() {
+        override def execute(board: GameBoard) = Unit
+
+        override def verify(board: GameBoard): Mess = null
+      }
 
     case Command.REVEALTILE => new RevealTileAction(toOrientation(param))
-
 
     case Command.RESEARCH => new ResearchTechnologyAction(toTechnologName(param))
 
@@ -94,6 +101,8 @@ package object action {
 
     def execute(board: GameBoard)
   }
+
+  abstract class AbstractCommandNone(val param: Any = null, val param1: Any = null) extends Command
 
   abstract class AbstractCommand[T](val param: T = null, val param1: Any = null) extends Command
 

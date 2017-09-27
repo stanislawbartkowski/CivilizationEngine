@@ -189,7 +189,7 @@ package object fromjson {
       val players: List[PlayerDeck] = (json \ S.players).as[List[PlayerDeck]]
       val map: Seq[MapTile] = (json \ S.map).as[Seq[MapTile]]
       val market: Market = (json \ S.market).as[Market]
-      JsSuccess(GameBoard(players, Map(map), market))
+      JsSuccess(GameBoard(players, BoardMap(map), market))
     }
   }
 
@@ -343,5 +343,7 @@ package object fromjson {
   def toArrayHutVillages(j: JsValue): Array[HutVillage] = j.as[Array[HutVillage]]
 
   def toMetaData(j: JsValue): GameMetaData = j.as[GameMetaData]
+
+  def toInt(j : JsValue) : Int = j.as[Int]
 
 }

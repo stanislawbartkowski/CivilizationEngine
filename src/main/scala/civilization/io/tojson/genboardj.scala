@@ -23,14 +23,13 @@ object genboardj {
   private def contructSquareJ(b: GameBoard, ss: MapSquareP): MapSquareJ = {
     val t: Terrain.T = if (ss.revealed) ss.terrain else null;
     val trade: Int = if (ss.revealed) ss.numberOfTrade else -1;
-    val production: Int = if (ss.revealed) (if (!ss.s.cityhere) ss.numberOfProduction else getProductionForCity(b, ss.p)) else -1;
+    var civ: Civilization.T = if (ss.s.cityhere) ss.s.city.get.civ else null
+    val production: Int = if (ss.revealed) (if (!ss.s.cityhere) ss.numberOfProduction else getProductionForCity(b, civ,ss.p).prod) else -1;
     val resource: Resource.T = if (ss.revealed) ss.resource else null
     val cap: Option[Civilization.T] = ss.suggestedCapitalForCiv
-    var civ: Civilization.T = null
     var defence: Int = 0
     var city: City.T = null
     if (ss.s.cityhere) {
-      civ = ss.s.city.get.civ
       city = ss.s.city.get.citytype
       defence = ss.s.city.get.defenceStrength()
     }

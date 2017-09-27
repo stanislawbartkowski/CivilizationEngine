@@ -4,6 +4,7 @@ package object objects {
 
   val TILESIZE: Int = 4
   val TRADEMAX = 27
+  val TRADEFORPROD = 3
 
 
   type TileTerrain = Array[Array[Square]]
@@ -134,4 +135,6 @@ package object objects {
   }
 
   def levelTrade(level: Int): Int = 6 + (level - 1) * 5
+
+  def prodForTrade(prod : Int) : Int = prod*TRADEFORPROD
 }

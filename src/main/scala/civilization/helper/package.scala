@@ -218,7 +218,7 @@ package object helper {
   }
 
   def CityAvailableForAction(b: GameBoard, civ: Civilization.T): Seq[P] = {
-    val p: Seq[Command] = lastPhaseCommandsReverse(b, civ, TurnPhase.CityManagement)
+    val p: Seq[Command] = lastPhaseCommandsReverse(b, civ, TurnPhase.CityManagement).filter(co =>Command.cityActionUnique(co.command))
     // all cities
     var cities: Set[P] = citiesForCivilization(b, civ).map(_.p).toSet
     p.foreach(c => cities = cities - c.p)
@@ -268,6 +268,11 @@ package object helper {
   }
 
 
+  def isCityAvailableForAction(b: GameBoard, civ: Civilization.T, p: P): Boolean = {
+    val cities: Seq[P] = CityAvailableForAction(b, civ)
+    cities.find(_ == p).isDefined
+  }
+
   def getCurrentMove(b: GameBoard, civ: Civilization.T): Option[PlayerMove] = {
     val l: Seq[PlayerMove] = civLastMoves(b, civ)
     if (l.isEmpty) None else Some(l.last)
@@ -279,11 +284,15 @@ package object helper {
     if (phase != null && phase != current.turnPhase) return Mess(M.ACTIONCANNOTBEEXECUTEDINTHISPHASE, (command, current.turnPhase, phase))
     if (phase != null && phase == TurnPhase.CityManagement) {
       // check if city correct
+      checkP(b,command.p)
+      var res : Option[Mess] = checkCity(b,command.p)
+      if (res.isDefined) return res.get
       val ss: MapSquareP = getSquare(b, command.p)
       if (!ss.s.cityhere || ss.s.city.get.civ != command.civ) return (Mess(M.THEREISNOCIVLIZATIONCITYATTHISPOINT, (command)))
       // duplicate CityManagement for the same city
-      val cities: Seq[P] = CityAvailableForAction(b, command.civ)
-      if (cities.find(_ == command.p).isEmpty) return Mess(M.DUPLICATECITYACTIONINTHISCITY, (command))
+      //      val cities: Seq[P] = CityAvailableForAction(b, command.civ)
+      //      if (cities.find(_ == command.p).isEmpty) return Mess(M.DUPLICATECITYACTIONINTHISCITY, (command))
+      if (Command.cityActionUnique(command.command) && !isCityAvailableForAction(b, command.civ, command.p)) return Mess(M.DUPLICATECITYACTIONINTHISCITY, (command))
     }
     // check if end of move setup correctly
     if (phase == TurnPhase.Movement) {
@@ -336,6 +345,37 @@ package object helper {
   // TRADE
   // ====================================
 
+  private def spendProdForCity(c: Seq[Command]): Int = {
+   val no = c.foldLeft(0) { (sum, i) =>
+      if (i.command == Command.UNDOSPENDTRADE) 0 else {
+        val prod: Int = i.param.asInstanceOf[Int]
+        sum + prod
+      }
+    }
+    no
+  }
+
+
+  private def spendTradeCommands(b: GameBoard, civ: Civilization.T): Map[P, Seq[Command]] = {
+    val p: Seq[Command] = lastPhaseCommandsReverse(b, civ, TurnPhase.CityManagement).reverse
+    //    val res: scala.collection.mutable.Map[P, Seq[Command]] = scala.collection.mutable.Map[P, Seq[Command]]()
+    //    p.foreach(c => {
+    //      c.command match {
+    //        case Command.SPENDTRADE | Command.UNDOSPENDTRADE => {
+    //          if (!res.contains(c.p)) res += (c.p -> Nil)
+    //          res(c.p) = res(c.p) :+ c
+    //        }
+    //        case _ => Unit
+    //      }
+    //    }
+    //    )
+    //    res
+    p.filter(c => c.command == Command.UNDOSPENDTRADE || c.command == Command.SPENDTRADE).groupBy(_.p)
+  }
+
+  def spendProdForCities(b: GameBoard, civ: Civilization.T): Map[P, Int] =
+    spendTradeCommands(b, civ) map { case (p, seq) => (p, spendProdForCity(seq)) }
+
   case class TradeForCiv(val terrain: Int, val noresearch: Int, val toprod: Int) {
     def trade: Int = terrain + noresearch - toprod
   }
@@ -343,6 +383,10 @@ package object helper {
   private def numberofTradeTerrain(b: GameBoard, civ: Civilization.T): Integer = {
     val num: Int = citiesForCivilization(b, civ).flatMap(p => squaresAround(b, p.p)).map(_.numberOfTrade).foldLeft(0)(_ + _)
     if (gameStart(b)) num * 2 else num
+  }
+
+  private def reduceTradeBySpend(b: GameBoard, civ: Civilization.T): Int = {
+    prodForTrade(spendProdForCities(b, civ).foldLeft(0) { (sum, i) => sum + i._2 })
   }
 
   private def numberofTradenoresearch(b: GameBoard, civ: Civilization.T): Integer = {
@@ -371,14 +415,24 @@ package object helper {
     if (lasttrade > TRADEMAX) TRADEMAX else lasttrade
   }
 
-  def numberofTrade(b: GameBoard, civ: Civilization.T): TradeForCiv = TradeForCiv(numberofTradeTerrain(b, civ), numberofTradenoresearch(b, civ), 0)
+  def numberofTrade(b: GameBoard, civ: Civilization.T): TradeForCiv = TradeForCiv(numberofTradeTerrain(b, civ), numberofTradenoresearch(b, civ), reduceTradeBySpend(b, civ))
 
   // ===================================
+  // production for city
+  // ===================================
 
-  def getProductionForCity(b: GameBoard, p: P): Integer = {
-    val num: Int = squaresAround(b, p).map(s => getSquare(b, s.p).numberOfProduction).foldLeft(0)(_ + _)
-    return num
+  case class ProdForCity(val terrain: Int, val fromtrade: Int) {
+    def prod: Int = terrain + fromtrade
   }
+
+  def getProductionForCity(b: GameBoard, civ: Civilization.T, p: P): ProdForCity = {
+    val num: Int = squaresAround(b, p).map(s => getSquare(b, s.p).numberOfProduction).foldLeft(0)(_ + _)
+    val prod: Option[Int] = spendProdForCities(b, civ).get(p)
+    if (prod.isDefined) ProdForCity(num, prod.get)
+    else ProdForCity(num, 0)
+  }
+
+  // ==============================================
 
   case class PlayerLimits(val citieslimit: Int, val stackinglimit: Integer, val watercrossingallowed: Boolean, val waterstopallowed: Boolean, val armieslimit: Int, val scoutslimit: Int, val travelSpeed: Int)
 
@@ -428,7 +482,7 @@ package object helper {
 
   def canBuyFigure(b: GameBoard, civ: Civilization.T, p: P, f: Figure.T): Option[Mess] = {
     val cost: Int = ObjectCost.getCost(f)
-    val prod: Int = getProductionForCity(b, p)
+    val prod: Int = getProductionForCity(b, civ, p).prod
     if (cost > prod) Some(Mess(M.CANNOTAFFORDOBJECT, (f, cost, prod))) else None
   }
 

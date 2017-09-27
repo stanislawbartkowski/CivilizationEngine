@@ -51,7 +51,7 @@ object GenBoard {
     })
     if (!sciv.isEmpty) throw FatalError(Mess(M.TOOMANYCIVREQUESTED))
     val players: List[PlayerDeck] = l.map(PlayerDeck(_))
-    val g: GameBoard = GameBoard(players, Map(map), Market(readHutVillages, Nil))
+    val g: GameBoard = GameBoard(players, BoardMap(map), Market(readHutVillages, Nil))
     g.tech = readTechnologies
     // reveal tiles
     lpatt.foreach(p => if (p.o != null) revealTile(g, p.o, p.p))
