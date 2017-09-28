@@ -100,6 +100,24 @@ package object gameboard {
 
   case class GameBoard(val players: Seq[PlayerDeck], val map: BoardMap, val market: Market) {
 
+    // optimization, gen all points
+    val allpoints : Seq[P] = genAllPoints
+    val setallpoints : Set[P] = allpoints.toSet
+    val pointsaround : Map[P,Seq[P]] = genpointsAround
+
+    private def genpointsAround : Map[P,Seq[P]] =
+      allpoints.map(p => (p ->pointsAround(p))) toMap
+
+    private def pointsAround(p: P): Seq[P] = {
+      val all: Seq[P] = List(P(p.row - 1, p.col - 1), P(p.row - 1, p.col), P(p.row - 1, p.col + 1), P(p.row + 1, p.col - 1), P(p.row + 1, p.col), P(p.row + 1, p.col + 1), P(p.row, p.col - 1), P(p.row, p.col + 1))
+      all.filter(setallpoints.contains(_))
+    }
+
+    private def genAllPoints: Seq[P] =
+      map.map.flatMap(p =>
+        (for (row <- 0 until TILESIZE; col <- 0 until TILESIZE) yield (P(p.p.row * TILESIZE + row, p.p.col * TILESIZE + col))) toSeq
+      )
+
     var metadata: GameMetaData = new GameMetaData("")
 
     // force command to execute next

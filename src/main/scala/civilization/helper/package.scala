@@ -22,40 +22,43 @@ package object helper {
 
     def resource: Resource.T = sm.resource
 
-    //    def suggestedCapital: Boolean = (t.tile.civ != null) && (t.tile.suggestedcapital == p)
-
     def suggestedCapitalForCiv: Option[Civilization.T] = if (suggestedCapital) Some(t.tile.civ) else None
   }
 
-  def pointsAround(board: GameBoard, p: P): Seq[P] = {
-    val all: Seq[P] = List(P(p.row - 1, p.col - 1), P(p.row - 1, p.col), P(p.row - 1, p.col + 1), P(p.row + 1, p.col - 1), P(p.row + 1, p.col), P(p.row + 1, p.col + 1), P(p.row, p.col - 1), P(p.row, p.col + 1))
-    all.filter(isPointOnBoard(board, _))
-  }
+  //  def pointsAround(board: GameBoard, p: P): Seq[P] = {
+  //    val all: Seq[P] = List(P(p.row - 1, p.col - 1), P(p.row - 1, p.col), P(p.row - 1, p.col + 1), P(p.row + 1, p.col - 1), P(p.row + 1, p.col), P(p.row + 1, p.col + 1), P(p.row, p.col - 1), P(p.row, p.col + 1))
+  //    all.filter(isPointOnBoard(board, _))
+  //  }
+
+  def pointsAround(board: GameBoard, p: P): Seq[P] = board.pointsaround.get(p).get
 
   def squaresAround(board: GameBoard, p: P): Seq[MapSquareP] = {
     val allp: Seq[P] = pointsAround(board, p)
     allp.map(getSquare(board, _))
   }
 
-  def checkP(board: GameBoard, p: P) = {
+  def checkP(board: GameBoard, p: P) =
     if (!isPointOnBoard(board, p)) throw FatalError(Mess(M.POINTOUTSIDEBOARD, p))
-  }
 
   def checkCity(b: GameBoard, p: P): Option[Mess] = {
     if (!getSquare(b, p).s.cityhere) Some(Mess(M.NOTCITY, p))
     None
   }
 
-  def isPointOnBoard(board: GameBoard, p: P): Boolean =
-    allPoints(board).exists(_ == p)
+  //  def isPointOnBoard(board: GameBoard, p: P): Boolean =
+  //    allPoints(board).exists(_ == p)
 
-  def allPoints(board: GameBoard): Seq[P] =
-    board.map.map.flatMap(p => {
-      (for (row <- 0 until TILESIZE; col <- 0 until TILESIZE) yield (P(p.p.row * TILESIZE + row, p.p.col * TILESIZE + col))) toSeq
-    }) toSeq
+  def isPointOnBoard(board: GameBoard, p: P): Boolean = board.setallpoints.contains(p)
+
+  def allPoints(board: GameBoard): Seq[P] = board.allpoints
+
+  //  def allPoints(board: GameBoard): Seq[P] =
+  //    board.map.map.flatMap(p =>
+  //      (for (row <- 0 until TILESIZE; col <- 0 until TILESIZE) yield (P(p.p.row * TILESIZE + row, p.p.col * TILESIZE + col))) toSeq
+  //    )
 
   def allSquares(b: GameBoard): Seq[MapSquareP] =
-    allPoints(b).map(getSquare(b, _)) toSeq
+    allPoints(b).map(getSquare(b, _))
 
   def isCapitalBuild(board: GameBoard, civ: Civilization.T): Boolean =
     citiesForCivilization(board, civ).exists(p => p.s.city.get.citytype == City.Capital || p.s.city.get.citytype == City.WalledCapital)
@@ -426,7 +429,7 @@ package object helper {
   }
 
 
-//  private def sendProdCommands(b: GameBoard, civ: Civilization.T): Map[P, Seq[Command]] = filterspendCommands(b, civ, c => c.command == Command.UNDOSENDPRODUCTION || c.command == Command.SENDPRODUCTION)
+  //  private def sendProdCommands(b: GameBoard, civ: Civilization.T): Map[P, Seq[Command]] = filterspendCommands(b, civ, c => c.command == Command.UNDOSENDPRODUCTION || c.command == Command.SENDPRODUCTION)
 
   // City => sendProd
   private def sendprodForCities(b: GameBoard, civ: Civilization.T): Map[P, Int] = {
