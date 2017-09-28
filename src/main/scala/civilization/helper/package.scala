@@ -164,7 +164,7 @@ package object helper {
 
   private def getPhase(c: Command): Option[TurnPhase.T] = if (c.command == Command.ENDOFPHASE) Some(c.param.asInstanceOf[TurnPhase.T]) else None
 
-  private def allCivs(b: GameBoard): Seq[Civilization.T] = b.players.map(_.civ).toSeq
+  private def allCivs(b: GameBoard): Seq[Civilization.T] = b.players.map(_.civ)
 
   private def nextPhase(pha: TurnPhase.T): TurnPhase.T = if (pha == TurnPhase.Research) TurnPhase.StartOfTurn else TurnPhase.apply(pha.id + 1)
 
@@ -218,7 +218,7 @@ package object helper {
   }
 
   def CityAvailableForAction(b: GameBoard, civ: Civilization.T): Seq[P] = {
-    val p: Seq[Command] = lastPhaseCommandsReverse(b, civ, TurnPhase.CityManagement).filter(co =>Command.cityActionUnique(co.command))
+    val p: Seq[Command] = lastPhaseCommandsReverse(b, civ, TurnPhase.CityManagement).filter(co => Command.cityActionUnique(co.command))
     // all cities
     var cities: Set[P] = citiesForCivilization(b, civ).map(_.p).toSet
     p.foreach(c => cities = cities - c.p)
@@ -284,8 +284,8 @@ package object helper {
     if (phase != null && phase != current.turnPhase) return Mess(M.ACTIONCANNOTBEEXECUTEDINTHISPHASE, (command, current.turnPhase, phase))
     if (phase != null && phase == TurnPhase.CityManagement) {
       // check if city correct
-      checkP(b,command.p)
-      var res : Option[Mess] = checkCity(b,command.p)
+      checkP(b, command.p)
+      var res: Option[Mess] = checkCity(b, command.p)
       if (res.isDefined) return res.get
       val ss: MapSquareP = getSquare(b, command.p)
       if (!ss.s.cityhere || ss.s.city.get.civ != command.civ) return (Mess(M.THEREISNOCIVLIZATIONCITYATTHISPOINT, (command)))
@@ -345,8 +345,14 @@ package object helper {
   // TRADE
   // ====================================
 
+  private def filterspendCommands(b: GameBoard, civ: Civilization.T, pfilt: (Command) => Boolean): Map[P, Seq[Command]] = {
+    val p: Seq[Command] = lastPhaseCommandsReverse(b, civ, TurnPhase.CityManagement).reverse
+    p.filter(pfilt).groupBy(_.p)
+  }
+
+
   private def spendProdForCity(c: Seq[Command]): Int = {
-   val no = c.foldLeft(0) { (sum, i) =>
+    val no = c.foldLeft(0) { (sum, i) =>
       if (i.command == Command.UNDOSPENDTRADE) 0 else {
         val prod: Int = i.param.asInstanceOf[Int]
         sum + prod
@@ -356,22 +362,13 @@ package object helper {
   }
 
 
-  private def spendTradeCommands(b: GameBoard, civ: Civilization.T): Map[P, Seq[Command]] = {
-    val p: Seq[Command] = lastPhaseCommandsReverse(b, civ, TurnPhase.CityManagement).reverse
-    //    val res: scala.collection.mutable.Map[P, Seq[Command]] = scala.collection.mutable.Map[P, Seq[Command]]()
-    //    p.foreach(c => {
-    //      c.command match {
-    //        case Command.SPENDTRADE | Command.UNDOSPENDTRADE => {
-    //          if (!res.contains(c.p)) res += (c.p -> Nil)
-    //          res(c.p) = res(c.p) :+ c
-    //        }
-    //        case _ => Unit
-    //      }
-    //    }
-    //    )
-    //    res
-    p.filter(c => c.command == Command.UNDOSPENDTRADE || c.command == Command.SPENDTRADE).groupBy(_.p)
-  }
+  //  private def spendTradeCommands(b: GameBoard, civ: Civilization.T): Map[P, Seq[Command]] = {
+  //    val p: Seq[Command] = lastPhaseCommandsReverse(b, civ, TurnPhase.CityManagement).reverse
+  //    p.filter(c => c.command == Command.UNDOSPENDTRADE || c.command == Command.SPENDTRADE).groupBy(_.p)
+  //  }
+
+  private def spendTradeCommands(b: GameBoard, civ: Civilization.T): Map[P, Seq[Command]] = filterspendCommands(b, civ, c => c.command == Command.UNDOSPENDTRADE || c.command == Command.SPENDTRADE)
+
 
   def spendProdForCities(b: GameBoard, civ: Civilization.T): Map[P, Int] =
     spendTradeCommands(b, civ) map { case (p, seq) => (p, spendProdForCity(seq)) }
@@ -421,15 +418,40 @@ package object helper {
   // production for city
   // ===================================
 
-  case class ProdForCity(val terrain: Int, val fromtrade: Int) {
-    def prod: Int = terrain + fromtrade
+  // scout => city
+  def sendprodForScouts(b: GameBoard, civ: Civilization.T): Map[P, P] = {
+    val p: Seq[Command] = lastPhaseCommandsReverse(b, civ, TurnPhase.CityManagement).reverse.filter(co => co.command == Command.SENDPRODUCTION || co.command == Command.UNDOSENDPRODUCTION)
+    val ma: Map[P, Seq[Command]] = p.groupBy(_.param.asInstanceOf[P]).filter(_._2.last.command == Command.SENDPRODUCTION)
+    ma.map(pp => pp._1 -> pp._2.last.p)
+  }
+
+
+//  private def sendProdCommands(b: GameBoard, civ: Civilization.T): Map[P, Seq[Command]] = filterspendCommands(b, civ, c => c.command == Command.UNDOSENDPRODUCTION || c.command == Command.SENDPRODUCTION)
+
+  // City => sendProd
+  private def sendprodForCities(b: GameBoard, civ: Civilization.T): Map[P, Int] = {
+    val ma: Map[P, P] = sendprodForScouts(b, civ)
+    ma.foldLeft(Map.empty[P, Int])({
+      (ma, p) =>
+        val c: Option[Int] = ma.get(p._2)
+        val prod: Int = getSquare(b, p._1).numberOfProduction
+        if (c.isEmpty) ma + (p._2 -> prod)
+        else ma + (p._2 -> (prod + c.get))
+    })
+  }
+
+  case class ProdForCity(val terrain: Int, val fromtrade: Int, val fromscouts: Int) {
+    def prod: Int = terrain + fromtrade + fromscouts
   }
 
   def getProductionForCity(b: GameBoard, civ: Civilization.T, p: P): ProdForCity = {
     val num: Int = squaresAround(b, p).map(s => getSquare(b, s.p).numberOfProduction).foldLeft(0)(_ + _)
     val prod: Option[Int] = spendProdForCities(b, civ).get(p)
-    if (prod.isDefined) ProdForCity(num, prod.get)
-    else ProdForCity(num, 0)
+    val prodfromtrade: Int = if (prod.isDefined) prod.get else 0
+    val prodFromScouts: Map[P, Int] = sendprodForCities(b, civ)
+    val prodfromS: Option[Int] = prodFromScouts.get(p)
+    val prodfromscouts: Int = if (prodfromS.isEmpty) 0 else prodfromS.get
+    ProdForCity(num, prodfromtrade, prodfromscouts)
   }
 
   // ==============================================
@@ -445,6 +467,11 @@ package object helper {
     PlayerLimits(citieslimit, deck.defaultstackinglimit, false, false, armieslimit, scoutslimit, deck.defaulttravelspeed)
 
   }
+
+  // =====================================
+  // Figures
+  // =====================================
+
 
   def getFigures(b: GameBoard, civ: Civilization.T): Seq[MapSquareP] = allSquares(b).filter(s => s.s.figures.civOccupying(civ))
 

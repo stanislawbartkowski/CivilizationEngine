@@ -5,7 +5,6 @@ import civilization.message.{M, Mess}
 import civilization.objects._
 import civilization.{gameboard, message}
 
-
 object SpendTrade {
 
   def itemizeCommandsForSpendTrade(b : gameboard.GameBoard, civ:Civilization.T) : Seq[P] = {

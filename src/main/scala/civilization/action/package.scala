@@ -69,6 +69,15 @@ package object action {
         override def verify(board: GameBoard): Mess = null
       }
 
+    case Command.UNDOSENDPRODUCTION =>
+      new AbstractCommand(toP(param)) {
+        override def execute(board: GameBoard) = Unit
+
+        override def verify(board: GameBoard): Mess = null
+      }
+
+    case Command.SENDPRODUCTION => new SendProduction.SendProduction(toP(param))
+
     case Command.REVEALTILE => new RevealTileAction(toOrientation(param))
 
     case Command.RESEARCH => new ResearchTechnologyAction(toTechnologName(param))

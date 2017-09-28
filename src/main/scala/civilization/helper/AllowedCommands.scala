@@ -15,6 +15,8 @@ object AllowedCommands {
     if (!itemizeForSetBuyFigures(b, civ, Command.BUYARMY).isEmpty) cu = cu :+ Command.BUYARMY
     if (!SpendTrade.itemizeCommandsForSpendTrade(b,civ).isEmpty) cu = cu :+ Command.SPENDTRADE
     if (!SpendTrade.itemizeCommandsForUndoSpendTrade(b,civ).isEmpty) cu = cu :+ Command.UNDOSPENDTRADE
+    if (!SendProduction.itemizeCommandsForSendProduction(b,civ).isEmpty) cu = cu :+ Command.SENDPRODUCTION
+    if (!SendProduction.itemizeCommandsForUndoSendProduction(b,civ).isEmpty) cu = cu :+ Command.UNDOSENDPRODUCTION
     cu
   }
 
@@ -178,6 +180,12 @@ object AllowedCommands {
       }
       case Command.UNDOSPENDTRADE => {
         l = SpendTrade.itemizeCommandsForUndoSpendTrade(b,civ).map(writesP(_))
+      }
+      case Command.SENDPRODUCTION => {
+        l = SendProduction.itemizeCommandsForSendProduction(b,civ).map(writesCityScout(_))
+      }
+      case Command.UNDOSENDPRODUCTION => {
+        l = SendProduction.itemizeCommandsForUndoSendProduction(b,civ).map(writesCityScout(_))
       }
       case _ => None
     }

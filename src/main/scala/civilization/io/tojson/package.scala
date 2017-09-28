@@ -71,11 +71,11 @@ package object tojson {
   implicit val mapsqaureWrites: Writes[MapSquare] = new Writes[MapSquare] {
     def writes(m: MapSquare) = Json.obj(
       S.hutvillage -> {
-//        if (m.hv == null) json.JsNull else m.hv
+        //        if (m.hv == null) json.JsNull else m.hv
         m.hv
       },
       S.city -> {
-//        if (m.city == null) json.JsNull else m.city
+        //        if (m.city == null) json.JsNull else m.city
         m.city
       }
     )
@@ -146,6 +146,11 @@ package object tojson {
   def writesGameBoard(d: GameBoard): JsValue = Json.toJson(d)
 
   def writesP(p: P): JsValue = Json.toJson(p)
+
+  def writesCityScout(p: (P, P)): JsValue = Json.obj(
+    S.city -> p._1,
+    "scout" -> p._2)
+
 
   def writesFigures(f: Figures) = Json.toJson(f)
 
