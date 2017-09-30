@@ -49,3 +49,22 @@ IMPORTANT: seems not working properly, IntelliJ ant build does not generate scal
 | getData(GETBOARDGAME | token, string | Current state of game as JSON object | val board:String = getData(GETBOARDGAME,"xxx") | Returns the gameboard reflecting the current state. 
 | executeCommand | token: String, action:String command to execute, row,col : Int: position on map, jsparam : additional parameters for command to execute. Content is specific for a particular command | null if success otherwise the error description | Executes command and moves game from one state to another. After success call getData(GETBOARDGAME) to receive current game state.
 | itemizeCommand | token :String, command String | Returns list of possible parameters for the command. The content depends on a particular command | val l : String = itemizeCommand("xxxx","SETCAPITAL") | Returns more detailed information. For instance: if the command is SETCAPITAL the command will return a list of all points where the capital can be built. Can be used by user interface to customize screen.
+
+# Itemize command
+
+For every command the engine can return itemization, list of possible moves. The format is different for every command.
+
+## SETCAPITAL, SETCITY, SPENDTRADE
+ 
+List of points where city can be build or cities where trade can be spend to beef up production
+
+Format:
+
+\[ { "row" : int, "col" : int } \]
+
+Sample
+ \[{"row" : 1, "col" : 2}, { "row" : 2, "col: 2"} \]
+ 
+ For SETCITY it is a list points where new city be build.
+
+ 
