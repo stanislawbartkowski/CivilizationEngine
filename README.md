@@ -56,7 +56,7 @@ For every command the engine can return itemization, list of possible moves. The
 
 ## SETCAPITAL, SETCITY, SPENDTRADE
  
-List of points where city can be build or cities where trade can be spend to beef up production
+List of points where a city or capital can be build or cities where trade can be spend to beef up production
 
 Format:
 
@@ -65,6 +65,6 @@ Format:
 Sample
  \[{"row" : 1, "col" : 2}, { "row" : 2, "col: 2"} \]
  
- For SETCITY it is a list points where new city be build.
+ For SETCITY it is a list points where new city can be build.
 
  
