@@ -53,7 +53,7 @@ package object fromjson {
 
   implicit val squareReads: Reads[Square] = new Reads[Square] {
     def reads(json: JsValue): JsResult[Square] = {
-      val terrain: Terrain.T = (json \ "terrain").as[Terrain.T]
+      val terrain: Terrain.T = (json \ S.terrain).as[Terrain.T]
       val hv: HutVillage.T = (json \ S.hutvillage).asOpt[HutVillage.T].getOrElse(null)
       val resource: Resource.T = (json \ S.resource).asOpt[Resource.T].getOrElse(null)
       val naturalwonder: Boolean = (json \ "naturalwonder").asOpt[Boolean].getOrElse(false)

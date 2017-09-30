@@ -4,10 +4,9 @@ import civilization.I
 import civilization.I.{executeCommand, registerGame}
 import civilization.gameboard.GameBoard
 import civilization.helper.AllowedCommands.allowedCommands
-import civilization.helper.{getProductionForCity, numberofTrade}
+import civilization.helper._
 import civilization.objects.{Civilization, Command, P}
 import org.scalatest.FunSuite
-
 
 
 class Test12 extends FunSuite {
@@ -21,7 +20,7 @@ class Test12 extends FunSuite {
     var prod = numberofTrade(b, Civilization.Rome)
     println(prod)
     assert(4 == prod.trade)
-    var prodc = getProductionForCity(g, Civilization.Rome, P(2,2))
+    var prodc = getProductionForCity(g, Civilization.Rome, P(2, 2))
     println(prodc)
     assert(6 == prodc.prod)
     Helper.executeCommandH(token, "SPENDTRADE", 2, 2, "1")
@@ -34,7 +33,7 @@ class Test12 extends FunSuite {
     var s = executeCommand(token, "SPENDTRADE", 2, 2, "1")
     println(s)
     assert(s != null)
-    prodc = getProductionForCity(b, Civilization.Rome, P(2,2))
+    prodc = getProductionForCity(b, Civilization.Rome, P(2, 2))
     println(prodc)
     assert(7 == prodc.prod)
     assert(1 == prodc.fromtrade)
@@ -43,7 +42,7 @@ class Test12 extends FunSuite {
     prod = numberofTrade(b, Civilization.Rome)
     println(prod)
     assert(4 == prod.trade)
-    prodc = getProductionForCity(b, Civilization.Rome, P(2,2))
+    prodc = getProductionForCity(b, Civilization.Rome, P(2, 2))
     println(prodc)
     assert(6 == prodc.prod)
     // again
@@ -52,7 +51,7 @@ class Test12 extends FunSuite {
     prod = numberofTrade(b, Civilization.Rome)
     println(prod)
     assert(1 == prod.trade)
-    prodc = getProductionForCity(b, Civilization.Rome, P(2,2))
+    prodc = getProductionForCity(b, Civilization.Rome, P(2, 2))
     println(prodc)
     assert(7 == prodc.prod)
   }
@@ -85,20 +84,36 @@ class Test12 extends FunSuite {
     var l: Seq[Command.T] = allowedCommands(b, Civilization.Germany)
     assert(l.find(_ == Command.BUYSCOUT).isEmpty)
     println(l)
-    var prodc = getProductionForCity(b, Civilization.Germany, P(2,2))
+    var prodc = getProductionForCity(b, Civilization.Germany, P(2, 2))
     println(prodc)
     Helper.executeCommandH(token, "SPENDTRADE", 2, 2, "1")
-    g  = I.getBoardForToken(token)
-    l  = allowedCommands(g, Civilization.Germany)
-    var s : String = I.itemizeCommand(token,"SPENDTRADE")
+    g = I.getBoardForToken(token)
+    l = allowedCommands(g, Civilization.Germany)
+    var s: String = I.itemizeCommand(token, "SPENDTRADE")
     assert(s != null)
     println(s)
     // can buy scout
     println(l)
     assert(l.find(_ == Command.BUYSCOUT).isDefined)
-    s  = I.itemizeCommand(token,"UNDOSPENDTRADE")
+    s = I.itemizeCommand(token, "UNDOSPENDTRADE")
     println(s)
     assert(s != null)
   }
 
+  test("Check trade in RESEARCH") {
+    val b: GameBoard = Helper.readBoardAndPlay("test5/BOARDGAME1.json", "test12/GAME3.json", Civilization.Germany)
+    val token: String = registerGame(b, Civilization.Germany)
+    var g: GameBoard = I.getBoardForToken(token)
+    var tra : TradeForCiv = numberofTrade(g, Civilization.Germany)
+    println(tra)
+    // trade spending should be included
+    assert(6 == tra.trade)
+    assert(3 == tra.toprod)
+    Helper.executeCommandH(token, "ENDOFPHASE", -1, -1, "\"Research\"")
+    // reset spending at then beginning of next round
+    g = I.getBoardForToken(token)
+    tra  = numberofTrade(g, Civilization.Germany)
+    println(tra)
+    assert(9 == tra.trade)
   }
+}

@@ -72,7 +72,8 @@ object genboardj {
     "commands" -> commandToArray(p.commands),
     "citylimit" -> p.limits.citieslimit,
     "armieslimit" -> p.limits.armieslimit,
-    "scoutslimit" -> p.limits.scoutslimit
+    "scoutslimit" -> p.limits.scoutslimit,
+    "tradeforprod" -> p.limits.tradeforProd
   )
 
   private def genBoardGameJ(g: GameBoard, civ: Civilization.T): BoardGameJ = {
@@ -88,7 +89,7 @@ object genboardj {
   }
 
   private def mapSquareJ(m: MapSquareJ): JsValue = {
-    Json.obj("revealed" -> m.revealed, "terrain" -> Option(m.t), S.trade -> m.trade, "production" -> m.production, "resource" -> Option(m.resource),
+    Json.obj("revealed" -> m.revealed, S.terrain -> Option(m.t), S.trade -> m.trade, "production" -> m.production, S.resource -> Option(m.resource),
       "capciv" -> Option(m.capForCiv), S.civ -> Option(m.civ), S.city -> Option(m.city), "defence" -> m.defence, S.numberofArmies -> m.numberofArmies, S.numberofScouts -> m.numberofScouts,
       "tile" -> m.tile, S.hutvillage -> Option(m.hv)
     )

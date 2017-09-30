@@ -30,4 +30,5 @@ object S {
   final val accesstime = "accesstime"
   final val desc = "desc"
   final val gameid = "gameid"
+  final val terrain = "terrain"
 }

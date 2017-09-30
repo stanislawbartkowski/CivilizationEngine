@@ -30,7 +30,7 @@ package object helper {
   //    all.filter(isPointOnBoard(board, _))
   //  }
 
-  def pointsAround(board: GameBoard, p: P): Seq[P] = board.pointsaround.get(p).get
+  def pointsAround(board: GameBoard, p: P): Seq[P] = board.map.pointsaround.get(p).get
 
   def squaresAround(board: GameBoard, p: P): Seq[MapSquareP] = {
     val allp: Seq[P] = pointsAround(board, p)
@@ -48,9 +48,9 @@ package object helper {
   //  def isPointOnBoard(board: GameBoard, p: P): Boolean =
   //    allPoints(board).exists(_ == p)
 
-  def isPointOnBoard(board: GameBoard, p: P): Boolean = board.setallpoints.contains(p)
+  def isPointOnBoard(board: GameBoard, p: P): Boolean = board.map.setallpoints.contains(p)
 
-  def allPoints(board: GameBoard): Seq[P] = board.allpoints
+  def allPoints(board: GameBoard): Seq[P] = board.map.allpoints
 
   //  def allPoints(board: GameBoard): Seq[P] =
   //    board.map.map.flatMap(p =>
@@ -211,10 +211,18 @@ package object helper {
   private def lastPhaseCommandsReverse(b: GameBoard, civ: Civilization.T, pha: TurnPhase.T): Seq[Command] = {
     val rlist: Seq[Command] = b.play.commands.reverse
     var clist: Seq[Command] = Nil
+    val prevP: TurnPhase.T = prevPhase(pha)
     breakable {
       rlist.foreach(c => {
-        if (getPhase(c) != None && getPhase(c).get != pha) break
-        if (c.civ == civ) clist = clist :+ c
+        val p: Option[TurnPhase.T] = getPhase(c)
+        if (p.isDefined) {
+          // break at the beginning of trade
+          if (p.get == TurnPhase.Research) break
+          // break at the beginning of phase
+          if (p.get == prevP) break
+          clist = Nil
+        }
+        else if (c.civ == civ) clist = clist :+ c
       })
     }
     clist
@@ -245,7 +253,7 @@ package object helper {
     if (cu.turnPhase != TurnPhase.Movement) return Nil
     if (cu.notcompleted.head != civ) return Nil
     // proper order again
-    val p: Seq[Command] = lastPhaseCommandsReverse(b, civ, TurnPhase.CityManagement).reverse
+    val p: Seq[Command] = lastPhaseCommandsReverse(b, civ, TurnPhase.Movement).reverse
     // start collecting moves
     var li: Seq[PlayerMove] = Nil
     var fig: PlayerFigures = null
@@ -385,8 +393,8 @@ package object helper {
     if (gameStart(b)) num * 2 else num
   }
 
-  private def reduceTradeBySpend(b: GameBoard, civ: Civilization.T): Int = {
-    prodForTrade(spendProdForCities(b, civ).foldLeft(0) { (sum, i) => sum + i._2 })
+  private def reduceTradeBySpend(b: GameBoard, civ: Civilization.T, playerLimits: PlayerLimits): Int = {
+    playerLimits.prodForTrade(spendProdForCities(b, civ).foldLeft(0) { (sum, i) => sum + i._2 })
   }
 
   private def numberofTradenoresearch(b: GameBoard, civ: Civilization.T): Integer = {
@@ -415,7 +423,10 @@ package object helper {
     if (lasttrade > TRADEMAX) TRADEMAX else lasttrade
   }
 
-  def numberofTrade(b: GameBoard, civ: Civilization.T): TradeForCiv = TradeForCiv(numberofTradeTerrain(b, civ), numberofTradenoresearch(b, civ), reduceTradeBySpend(b, civ))
+  def numberofTrade(b: GameBoard, civ: Civilization.T): TradeForCiv = {
+    val li: PlayerLimits = getLimits(b, civ)
+    TradeForCiv(numberofTradeTerrain(b, civ), numberofTradenoresearch(b, civ), reduceTradeBySpend(b, civ, li))
+  }
 
   // ===================================
   // production for city
@@ -459,7 +470,9 @@ package object helper {
 
   // ==============================================
 
-  case class PlayerLimits(val citieslimit: Int, val stackinglimit: Integer, val watercrossingallowed: Boolean, val waterstopallowed: Boolean, val armieslimit: Int, val scoutslimit: Int, val travelSpeed: Int)
+  case class PlayerLimits(val citieslimit: Int, val stackinglimit: Integer, val watercrossingallowed: Boolean, val waterstopallowed: Boolean, val armieslimit: Int, val scoutslimit: Int, val travelSpeed: Int, val tradeforProd: Int) {
+    def prodForTrade(prod: Int): Int = prod * tradeforProd
+  }
 
   def getLimits(b: GameBoard, civ: Civilization.T): PlayerLimits = {
     val deck: PlayerDeck = b.playerDeck(civ)
@@ -467,8 +480,7 @@ package object helper {
     val count: (Int, Int) = getNumberOfArmies(b, civ)
     val armieslimit: Int = deck.defaultarmieslimit - count._1
     val scoutslimit: Int = deck.defaultscoutslimit - count._2
-    PlayerLimits(citieslimit, deck.defaultstackinglimit, false, false, armieslimit, scoutslimit, deck.defaulttravelspeed)
-
+    PlayerLimits(citieslimit, deck.defaultstackinglimit, false, false, armieslimit, scoutslimit, deck.defaulttravelspeed, DEFAULTTRADEFORPROD)
   }
 
   // =====================================

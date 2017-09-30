@@ -9,7 +9,8 @@ object SpendTrade {
 
   def itemizeCommandsForSpendTrade(b : gameboard.GameBoard, civ:Civilization.T) : Seq[P] = {
     var trade = numberofTrade(b, civ)
-    if (trade.trade < TRADEFORPROD) return Nil
+    val li: PlayerLimits = getLimits(b, civ)
+    if (trade.trade < li.tradeforProd) return Nil
     CityAvailableForAction(b, civ)
   }
 
@@ -24,7 +25,8 @@ object SpendTrade {
 
     override def verify(board: gameboard.GameBoard): message.Mess = {
       val trade: TradeForCiv = numberofTrade(board, civ)
-      if (prodForTrade(param) > trade.trade) return Mess(M.NOTENOUGHTRADETOSPENDFORPROD, (command, trade.trade))
+      val li: PlayerLimits = getLimits(board, civ)
+      if (li.prodForTrade(param) > trade.trade) return Mess(M.NOTENOUGHTRADETOSPENDFORPROD, (command, trade.trade))
       null
     }
 
