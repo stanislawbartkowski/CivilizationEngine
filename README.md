@@ -54,7 +54,7 @@ IMPORTANT: seems not working properly, IntelliJ ant build does not generate scal
 
 For every command the engine can return itemization, list of possible moves. The format is different for every command.
 
-## SETCAPITAL, SETCITY, SPENDTRADE
+## SETCAPITAL, SETCITY, SPENDTRADE, UNDOSPENDTRADE
  
 List of points where a city or capital can be build or cities where trade can be spend to beef up production
 
