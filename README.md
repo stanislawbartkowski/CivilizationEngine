@@ -67,4 +67,16 @@ Sample
  
  For SETCITY it is a list points where new city can be build.
 
- 
+## SENDPRODUCTION
+
+List of pairs, city and scout. City, where production can be sent and scout, a square to be harvested.
+
+Format:
+\[ { "city" : {"row" : int, "col" : int}, "scout" : { "row" : int, "col" : int } } \]
+
+Sample
+
+\[ { "city" : { "row" : 2, "col" : 2 }, "scout" : { "row" : 1, "col" : 5 } } \]
+
+Production from square (1,5) can be sent to city (2.2)
+
