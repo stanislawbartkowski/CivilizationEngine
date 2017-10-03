@@ -90,12 +90,13 @@ IMPORTANT: seems not working properly, IntelliJ ant build does not generate scal
   * Send production from square (5,3) to city/capital (2,2)
   
 ## UNDOSENDPRODUCTION
-* executeCommand(token,"UNDOSENDPRODUCTION",row,col,jsparam : null)
+* executeCommand(token,"UNDOSENDPRODUCTION",row,col,jsparam : jsparam: { "row" : int, "col" : int })
 * Parameters:
   * row,col : city to undo last send production command
+  * jsparam : scout square to be undone
 * Usage example:  
-  * executeCommand("secret token","UNSENDPRODUCTION",2,2,null)
-  * Undo send production in citu (2,2)
+  * executeCommand("secret token","UNSENDPRODUCTION",2,2,"{"row" : 5, "col" : 3})
+  * Undo send production in city (2,2) from square (5,3)
 
 # itemizeCommand format
 
@@ -114,9 +115,9 @@ Sample
  
  For SETCITY it is a list points where new city can be build.
 
-## SENDPRODUCTION
+## SENDPRODUCTION, UNDOSENDPRODUCTION
 
-List of pairs, city and scout. City, where production can be sent and scout, a square to be harvested.
+List of pairs, city and scout. City, where production can be sent and scout, a square to be harvested or undone
 
 Format:
 \[ { "city" : {"row" : int, "col" : int}, "scout" : { "row" : int, "col" : int } } \]
