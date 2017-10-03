@@ -85,15 +85,23 @@ IMPORTANT: seems not working properly, IntelliJ ant build does not generate scal
 * Parameters
   * row,col : city position where production is to be sent
   * jsparam : scout square coordinates to be harvested
-* Usage example"
+* Usage example:
   * executeCommand("secret token","SENDPRODUCTION",2,2,"{"row" : 5, "col" : 3})
   * Send production from square (5,3) to city/capital (2,2)
+  
+## UNDOSENDPRODUCTION
+* executeCommand(token,"UNDOSENDPRODUCTION",row,col,jsparam : null)
+* Parameters:
+  * row,col : city to undo last send production command
+* Usage example:  
+  * executeCommand("secret token","UNSENDPRODUCTION",2,2,null)
+  * Undo send production in citu (2,2)
 
 # itemizeCommand format
 
 For every command the engine can return itemization, list of possible moves. The format is different for every command.
 
-## SETCAPITAL, SETCITY, SPENDTRADE, UNDOSPENDTRADE
+## SETCAPITAL, SETCITY, SPENDTRADE, UNDOSPENDTRADE, UNDOSENDPRODUCTION
  
 List of points where a city or capital can be build or cities where trade can be spend to beef up production
 
@@ -118,4 +126,5 @@ Sample
 \[ { "city" : { "row" : 2, "col" : 2 }, "scout" : { "row" : 1, "col" : 5 } } \]
 
 Production from square (1,5) can be sent to city (2.2)
+
 
