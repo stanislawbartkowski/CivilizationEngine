@@ -40,17 +40,56 @@ IMPORTANT: seems not working properly, IntelliJ ant build does not generate scal
 
 # Brief interface description
 
-* package civilization.I. All parameters and result are passed as JSON objects
+* package civilization.II. All parameters and result are passed as JSON objects
+* 
 
-| Method | Parameters | Result | Example | Description |
-| -------|:----------:| :-----:|:-------:|:------------|
-| getData(LISTOFCIV | null | List of civilizations available | val l : String = getData(LISTOFCIV,null) | Should be called at then beginning of game to allow players to choose civilization they want to run
-| getData(REGISTERGAME | civilization, string | Token, string | val token:String = getData(REGISTERGAME,"Germany") | The command initialize map, register civilization as game owner and return the unique token. The token should be used in the next calls
-| getData(GETBOARDGAME | token, string | Current state of game as JSON object | val board:String = getData(GETBOARDGAME,"xxx") | Returns the gameboard reflecting the current state. 
-| executeCommand | token: String, action:String command to execute, row,col : Int: position on map, jsparam : additional parameters for command to execute. Content is specific for a particular command | null if success otherwise the error description | Executes command and moves game from one state to another. After success call getData(GETBOARDGAME) to receive current game state.
-| itemizeCommand | token :String, command String | Returns list of possible parameters for the command. The content depends on a particular command | val l : String = itemizeCommand("xxxx","SETCAPITAL") | Returns more detailed information. For instance: if the command is SETCAPITAL the command will return a list of all points where the capital can be built. Can be used by user interface to customize screen.
+## getData(LISTOFCIV,null)
 
-# Itemize command
+* Result : List of civilizations available
+* Result format: JSON Array, ['civ1','civ2','civ3'...]
+* Usage example : val l : String = getData(LISTOFCIV,null)
+* Description: Should be called at then beginning of game to allow players to choose civilization they want to run.
+
+## getData(REGISTERGAME,civilization)
+* Result: Token
+* Result format: string
+* Usage example: val token:String = getData(REGISTERGAME,"Germany")
+* Description: The command initialize map, register civilization as game owner and return the unique token. The token should be used in the next calls
+
+## getData(GETBOARDGAME,token)
+* Parameter: token returned by REGISTER game
+* Result: Current state of game as JSON object
+* Usage example: val board:String = getData(GETBOARDGAME,"secret token")
+* Description : Returns the gameboard reflecting the current state. 
+
+## executeCommand(token,actionname,row,col,jsparam)
+* Parameters
+  * token : Returned by REGISTERGAME
+  * action : Command to execute: SETCAPITAL, SETSITY, SPENDPRODUCTION
+  * row,col : Square position identyfying the object. Depends on the action. For instance: SETCITY - square where city is supposed to be built
+  * jsparam : Additional parameter in JSON format. Depends on the action. For instance: STARTMODE - fugures or armies to move moved. Null if parameter is not required.
+* Result: if null then command executed succesfully. If not null, the command failed and the result contains failure description
+* Usage example: executeCommand("secret token","SETCITY",2,2,null)
+* Description: Executes command and moves game from one state to another. After success call getData(GETBOARDGAME) to receive current game state. 
+
+## itemizeCommand(token,command)
+* Parameters: token and command name
+* Returns: List of possible parameters for the command. The content depends on a particular command
+* Usage example: val l : String = itemizeCommand("secret token","SETCAPITAL")
+* Description: Returns more detailed information. For instance: if the command is SETCAPITAL the command will return a list of all points where the capital can be built. Can be used by user interface to customize screen.
+
+# executeCommand format
+
+## SENDPRODUCTION
+* executeCommand(token,"SENDPRODUCTION",row,col,jsparam: { "row" : int, "col" : int })
+* Parameters
+  * row,col : city position where production is to be sent
+  * jsparam : scout square coordinates to be harvested
+* Usage example"
+  * executeCommand("secret token","SENDPRODUCTION",2,2,"{"row" : 5, "col" : 3})
+  * Send production from square (5,3) to city/capital (2,2)
+
+# itemizeCommand format
 
 For every command the engine can return itemization, list of possible moves. The format is different for every command.
 
