@@ -41,7 +41,7 @@ IMPORTANT: seems not working properly, IntelliJ ant build does not generate scal
 # Brief interface description
 
 * package civilization.II. All parameters and result are passed as JSON objects
-* 
+
 
 ## getData(LISTOFCIV,null)
 
