@@ -1,7 +1,9 @@
 {
   "players": [
     {
-      "civ": "Germany"
+      "civ": "Germany",
+      "tech" : [],
+      "units" : []
     }
   ],
   "map": [
@@ -21,7 +23,7 @@
       }
     }
   ],
-  "market": {
+  "resources": {
     "hutvillages": [
       {
         "hv": "Hut",
@@ -49,5 +51,11 @@
       }
     ],
     "hutvillagesused": []
+  },
+
+  "market" : {
+    "units" : [],
+    "killedunits" : []
   }
+
 }

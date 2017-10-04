@@ -1,7 +1,9 @@
 {
   "players" : [
     {
-      "civ" : "Rome"
+      "civ" : "Rome",
+      "tech" : [],
+      "units" : []
     }
   ],
   "map" : [
@@ -12,7 +14,7 @@
       "tname" : "TILE3.json", "p" : { "row" : 1, "col" : 0}
     }
   ],
-  "market" : {
+  "resources" : {
     "hutvillages" : [
       {
         "hv" : "Hut", "resource" : "Spy"
@@ -34,6 +36,12 @@
       }
     ],
     "hutvillagesused" : []
+  },
+
+  "market" : {
+    "units" : [],
+    "killedunits" : []
   }
+
 
 }

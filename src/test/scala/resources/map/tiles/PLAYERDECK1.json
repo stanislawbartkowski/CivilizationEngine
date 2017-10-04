@@ -2,5 +2,7 @@
   "civ": "Germany",
   "numberofArmies": 6,
   "numberofCities": 4,
-  "numberofScouts": 2
+  "numberofScouts": 2,
+  "tech" : [],
+  "units" : []
 }

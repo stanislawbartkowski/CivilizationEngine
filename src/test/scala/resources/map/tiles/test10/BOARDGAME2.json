@@ -1,10 +1,14 @@
 {
   "players" : [
     {
-      "civ" : "Rome"
+      "civ" : "Rome",
+      "tech" : [],
+      "units" : []
     },
     {
-      "civ" : "China"
+      "civ" : "China",
+      "tech" : [],
+      "units" : []
     }
   ],
   "map" : [
@@ -15,7 +19,7 @@
       "tname" : "TILECHINA.json", "p" : { "row" : 1, "col" : 0},"orientation" : "Up"
     }
   ],
-  "market" : {
+  "resources" : {
     "hutvillages" : [
       {
         "hv" : "Hut", "resource" : "Spy"
@@ -37,6 +41,12 @@
       }
     ],
     "hutvillagesused" : []
+  },
+
+  "market" : {
+    "units" : [],
+    "killedunits" : []
   }
+
 
 }

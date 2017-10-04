@@ -1,10 +1,13 @@
 package civilization
 
+import civilization.objects.TurnPhase.Value
+
 package object objects {
 
   val TILESIZE: Int = 4
   val TRADEMAX = 27
   val DEFAULTTRADEFORPROD = 3
+  val UNITLEVELSIZE = 4
 
 
   type TileTerrain = Array[Array[Square]]
@@ -27,7 +30,7 @@ package object objects {
 
   case class Player(civ: Civilization.T)
 
-  case class City(civ: Civilization.T, citytype: City.T) {
+  case class City(val civ: Civilization.T, val citytype: City.T) {
     def defenceStrength(): Int = {
       citytype match {
         case City.Capital => 12
@@ -91,10 +94,17 @@ package object objects {
     def turnAction(t: Value): Boolean = t != StartOfTurn && t != Trade
   }
 
+  object CombatUnitType extends Enumeration {
+    type T = Value
+    val Artillery, Infantry, Mounted, Aircraft = Value
+  }
+
+  case class CombatUnit(val utype:CombatUnitType.T, val strength:Array[Int] )
+
   object TechnologyName extends Enumeration {
     type T = Value
     val
-    Irigation,
+    Irrigation,
     Construction,
     MetalCasting,
     Communism,

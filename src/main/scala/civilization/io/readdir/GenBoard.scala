@@ -1,10 +1,10 @@
 package civilization.io.readdir
 
 import civilization.gameboard._
-import civilization.helper.revealTile
+import civilization.helper.{revealTile,getThreeRandomUnits}
 import civilization.io.fromjson.{toArrayHutVillages, toSeqPatterMap}
 import civilization.message.{FatalError, M, Mess}
-import civilization.objects.{Civilization, HutVillage, TilesRead}
+import civilization.objects.{Civilization, HutVillage, TilesRead, CombatUnit}
 import play.api.libs.json.JsValue
 
 import scala.collection.mutable.Buffer
@@ -50,11 +50,15 @@ object GenBoard {
       map = map :+ t
     })
     if (!sciv.isEmpty) throw FatalError(Mess(M.TOOMANYCIVREQUESTED))
-    val players: List[PlayerDeck] = l.map(PlayerDeck(_))
-    val g: GameBoard = GameBoard(players, BoardMap(map), Market(readHutVillages, Nil))
+    val players: List[PlayerDeck] = l.map(PlayerDeck(_,Nil,Nil))
+    val units : Seq[CombatUnit] = readListOfUnits
+    val market : Market = Market(units.toArray,Nil)
+    val g: GameBoard = GameBoard(players, BoardMap(map), Resources(readHutVillages, Nil),market)
     g.tech = readTechnologies
     // reveal tiles
     lpatt.foreach(p => if (p.o != null) revealTile(g, p.o, p.p))
+    // attach random three units
+    g.players.foreach(p => p.units = getThreeRandomUnits(g))
     g
   }
 

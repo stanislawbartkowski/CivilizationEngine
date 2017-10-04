@@ -2,9 +2,12 @@ package civilization.io
 
 import java.io.File
 
-import civilization.io.fromjson._
+import play.api.libs.json.Reads._
 import play.api.libs.json._
-import civilization.objects.{Civilization, Command, CommandValues, HutVillage, TilesRead, TurnPhase}
+import play.api.libs.functional.syntax._
+
+import civilization.io.fromjson._
+import civilization.objects._
 import civilization.gameboard._
 import civilization.action._
 import civilization.helper._
@@ -63,6 +66,19 @@ package object readdir {
 
     val j: JsValue = readJSON("objects", "TECHNOLOGIES.json")
     toTechnologies(j)
+  }
+
+  case class NumCombatUnit(val no:Int, val unit:CombatUnit)
+
+  implicit val nocombatunitReads: Reads[NumCombatUnit] = (
+    (JsPath \ "no").read[Int] and (JsPath \ "unit").read[CombatUnit]
+    ) (NumCombatUnit.apply _)
+
+
+  def readListOfUnits : Seq[CombatUnit] = {
+    val j: JsValue = readJSON("map/market", "UNITS.json")
+    val list : Seq[NumCombatUnit] = j.as[Seq[NumCombatUnit]]
+    list.map( se => for (i <- 0 to se.no) yield se.unit) flatten
   }
 
 }

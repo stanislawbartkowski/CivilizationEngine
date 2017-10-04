@@ -41,6 +41,7 @@ package object fromjson {
   implicit val figuresReads: Reads[Figure.Value] = EnumUtils.enumReads(Figure)
   implicit val phaseReads: Reads[TurnPhase.Value] = EnumUtils.enumReads(TurnPhase)
   implicit val technologyNameReads: Reads[TechnologyName.Value] = EnumUtils.enumReads(TechnologyName)
+  implicit val inittypeNameReads: Reads[CombatUnitType.Value] = EnumUtils.enumReads(CombatUnitType)
 
   implicit val tokensReads: Reads[Tokens] = new Reads[Tokens] {
     def reads(json: JsValue): JsResult[Tokens] = {
@@ -100,6 +101,16 @@ package object fromjson {
     (JsPath \ "name").read[TechnologyName.T] and (JsPath \ "level").read[Int]
     ) (Technology.apply _)
 
+  def listReads[T](length: Int)(implicit anyListReads: Reads[Array[T]]) : Reads[Array[T]] =
+    {
+       js:JsValue =>
+       anyListReads.reads(js).filter(JsError(JsonValidationError(s"Length of the list must be $length")))(_.size == length)
+  }
+
+
+  implicit val combatunitReads: Reads[CombatUnit] = (
+    (JsPath \ S.unitname).read[CombatUnitType.T] and (JsPath \ S.unitstrength).read[Array[Int]](listReads[Int](UNITLEVELSIZE))
+    ) (CombatUnit.apply _)
 
   implicit val tileReads: Reads[Tile] = new Reads[Tile] {
     def reads(json: JsValue): JsResult[Tile] = {
@@ -158,16 +169,26 @@ package object fromjson {
   //    (JsPath \ "civ").read[Civilization.T]
   //    ) (PlayerDeck.apply _)
 
-  implicit val playerdeskReads: Reads[PlayerDeck] = new Reads[PlayerDeck] {
+  implicit val readsPlayerTechnology: Reads[PlayerTechnology] = new Reads[PlayerTechnology] {
+    def reads(json: JsValue): JsResult[PlayerTechnology] = {
+      val te = (json \ S.tech).as[TechnologyName.T]
+      JsSuccess(PlayerTechnology(te))
+    }
+  }
+
+
+  implicit val playerdeckReads: Reads[PlayerDeck] = new Reads[PlayerDeck] {
     def reads(json: JsValue): JsResult[PlayerDeck] = {
       val civ: Civilization.T = (json \ S.civ).as[Civilization.T]
-      JsSuccess(PlayerDeck(civ))
+      val tech : Seq[PlayerTechnology] = (json \ S.tech).as[Seq[PlayerTechnology]]
+      val units : Seq[CombatUnit] = (json \ S.units).as[Seq[CombatUnit]]
+      JsSuccess(PlayerDeck(civ,tech,units))
     }
 
   }
 
 
-  implicit val hutvillagekReads: Reads[HutVillage] = (
+  implicit val hutvillageMyReads: Reads[HutVillage] = (
     (JsPath \ S.hutvillage).read[HutVillage.T] and (JsPath \ S.resource).read[Resource.T]
     ) (HutVillage.apply _)
 
@@ -180,16 +201,23 @@ package object fromjson {
     )
 
 
-  implicit val markdetReads: Reads[Market] = (
-    (JsPath \ S.hutvillages).read[Array[HutVillage]] and (JsPath \ S.hutvillagesused).read[Seq[HutVillage]]
+  implicit val markdetReads: Reads[Resources] = (
+    (JsPath \ S.hutvillages).read[Seq[HutVillage]] and (JsPath \ S.hutvillagesused).read[Seq[HutVillage]]
+    ) (Resources.apply _)
+
+
+  implicit val marketReads : Reads[Market] = (
+    (JsPath \ S.units).read[Array[CombatUnit]] and (JsPath \ S.killedunits).read[Seq[CombatUnit]]
     ) (Market.apply _)
+
 
   implicit val gameboardReads: Reads[GameBoard] = new Reads[GameBoard] {
     def reads(json: JsValue): JsResult[GameBoard] = {
       val players: List[PlayerDeck] = (json \ S.players).as[List[PlayerDeck]]
       val map: Seq[MapTile] = (json \ S.map).as[Seq[MapTile]]
-      val market: Market = (json \ S.market).as[Market]
-      JsSuccess(GameBoard(players, BoardMap(map), market))
+      val resources: Resources = (json \ S.resources).as[Resources]
+      val market : Market = (json \ S.market).as[Market]
+      JsSuccess(GameBoard(players, BoardMap(map), resources,market))
     }
   }
 
@@ -273,12 +301,19 @@ package object fromjson {
     def to: JsResult[CommandValues] = (JsPath).read[CommandValues].reads(j)
   }
 
+  case class CombatUnitJ(val j: JsValue) extends FromJson {
+    type Value = CombatUnit
+
+    def to: JsResult[CombatUnit] = (JsPath).read[CombatUnit].reads(j)
+  }
+
 
   case class SeqCommandValuesJ(val j: JsValue) extends FromJson {
     type Value = Seq[CommandValues]
 
     def to: JsResult[Seq[CommandValues]] = (JsPath).read[Seq[CommandValues]].reads(j)
   }
+
 
   case class PatterMapSeqJ(val j: JsValue) extends FromJson {
     type Value = Seq[PatterMap]
@@ -345,5 +380,7 @@ package object fromjson {
   def toMetaData(j: JsValue): GameMetaData = j.as[GameMetaData]
 
   def toInt(j : JsValue) : Int = j.as[Int]
+
+  def toCombatUnit(j : JsValue) : CombatUnit = convert[CombatUnitJ](CombatUnitJ(j))
 
 }

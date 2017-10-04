@@ -1,0 +1,66 @@
+package civilization.test
+
+import org.scalatest.FunSuite
+import civilization.I
+import civilization.I.registerGame
+import civilization.gameboard.GameBoard
+import civilization.helper._
+import civilization.objects._
+import civilization.io.fromjson._
+import civilization.io.readdir.GenBoard.genBoard
+import civilization.io.tojson._
+import civilization.io.readdir._
+import play.api.libs.json.{JsArray, JsValue}
+
+
+
+class Test14   extends FunSuite {
+
+    Helper.I
+
+    test("Test JSON combat units") {
+      val s : String = """{ "name" : "Infantry", "strength": [1,2,3,4] }""";
+      val j : JsValue = toJ(s);
+      val u : CombatUnit = toCombatUnit(j)
+      assert (CombatUnitType.Infantry == u.utype)
+      assert( 4 == u.strength.length)
+    }
+
+     test("Write JSON combat unit") {
+       val u : CombatUnit = CombatUnit(CombatUnitType.Aircraft, Array[Int](7,8,9,15))
+       val j : JsValue = writeCombatUnit(u)
+       println(j)
+       val uu = toCombatUnit(j)
+       assert(CombatUnitType.Aircraft == uu.utype)
+       assert(15 == uu.strength(3))
+     }
+
+     test("Read list of units") {
+       val l : Seq[CombatUnit] = readListOfUnits
+       println(l)
+       assert (l.length > 0)
+     }
+
+  private def numof(g: GameBoard,u : CombatUnitType.T) : Int = g.market.units.filter(_.utype == u).length
+
+  test("Test gen board") {
+    println("Test gen")
+    val g: GameBoard = genBoard(List(Civilization.Germany), "TEST1.json")
+    assert(g != null)
+    assert (!g.market.units.isEmpty)
+    assert(g.market.killedunits.isEmpty)
+    g.playerDeck(Civilization.Germany).units.foreach(println)
+    assert(3 == g.playerDeck(Civilization.Germany).units.length)
+    val numofI = numof(g,CombatUnitType.Infantry)
+    val numofM = numof(g,CombatUnitType.Mounted)
+    val numofA = numof(g,CombatUnitType.Artillery)
+    println(numofI)
+    val l : Seq[CombatUnit] = getThreeRandomUnits(g)
+    assert(numof(g,CombatUnitType.Infantry) + 1 == numofI)
+    assert(numof(g,CombatUnitType.Mounted) + 1 == numofM)
+    assert(numof(g,CombatUnitType.Artillery) + 1 == numofA)
+  }
+
+
+
+}

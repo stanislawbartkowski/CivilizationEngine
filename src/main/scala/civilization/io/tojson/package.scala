@@ -8,10 +8,6 @@ import play.api.libs.json._
 
 package object tojson {
 
-  //  class EnumerationWrites[E <: Enumeration] extends Writes[E#Value] {
-  //    def writes(value:E#Value):JsValue = if (value == null) JsNull else JsString(value.toString)
-  //  }
-
 
   implicit val hutVillageWrites: Writes[HutVillage] = (
     (JsPath \ S.hutvillage).write[HutVillage.T] and
@@ -28,18 +24,9 @@ package object tojson {
       (JsPath \ S.citytype).write[City.T]
     ) (unlift(City.unapply))
 
+  implicit val resourceWrites: Writes[Resources] = new Writes[Resources] {
 
-  //  implicit val hutVillageWrites: Writes[HutVillage] = new Writes[HutVillage] {
-  //
-  //    def writes(m : HutVillage) = Json.obj(
-  //      "hv" -> m.hv,
-  //      "resource" -> {if (m.resource == null) JsNull else m.resource }
-  //    )
-  //  }
-
-  implicit val marketWrites: Writes[Market] = new Writes[Market] {
-
-    def writes(m: Market) = Json.obj(
+    def writes(m: Resources) = Json.obj(
       S.hutvillages -> m.hv,
       S.hutvillagesused -> m.hvused
     )
@@ -54,7 +41,8 @@ package object tojson {
   implicit val playerdeckWrites: Writes[PlayerDeck] = new Writes[PlayerDeck] {
     def writes(m: PlayerDeck) = Json.obj(
       S.civ -> m.civ,
-      S.tech -> m.tech
+      S.tech -> m.tech,
+      S.units -> m.units
     )
   }
 
@@ -71,20 +59,27 @@ package object tojson {
   implicit val mapsqaureWrites: Writes[MapSquare] = new Writes[MapSquare] {
     def writes(m: MapSquare) = Json.obj(
       S.hutvillage -> {
-        //        if (m.hv == null) json.JsNull else m.hv
         m.hv
       },
       S.city -> {
-        //        if (m.city == null) json.JsNull else m.city
         m.city
       }
     )
   }
 
+  implicit val marketWrites: Writes[Market] = new Writes[Market] {
+    def writes(m: Market) = Json.obj(
+      S.units -> m.units,
+      S.killedunits -> m.killedunits
+    )
+  }
+
+
   implicit val gameboardWrites: Writes[GameBoard] = new Writes[GameBoard] {
     def writes(m: GameBoard) = Json.obj(
       S.players -> m.players,
       S.map -> m.map.map,
+      S.resources -> m.resources,
       S.market -> m.market
     )
   }
@@ -130,12 +125,19 @@ package object tojson {
     )
   }
 
+  implicit val commandparamCombatUnit: Writes[CombatUnit] = new Writes[CombatUnit] {
+    def writes(m: CombatUnit ) = Json.obj(
+      S.unitname -> m.utype,
+      S.unitstrength -> m.strength
+    )
+  }
+
 
   def writeCivilizationT(c: Civilization.T): JsValue = Json.toJson(c)
 
   def writeHutVillage(h: HutVillage): JsValue = Json.toJson(h)
 
-  def writeMarket(m: Market): JsValue = Json.toJson(m)
+  def writeResources(m: Resources): JsValue = Json.toJson(m)
 
   def writePlayerTechnology(t: PlayerTechnology): JsValue = Json.toJson(t)
 
@@ -162,5 +164,7 @@ package object tojson {
   def writeCommandValues(m: CommandValues): JsValue = Json.toJson(m)
 
   def writeMetaData(m: GameMetaData): JsValue = Json.toJson(m)
+
+  def writeCombatUnit(m: CombatUnit): JsValue = Json.toJson(m)
 
 }

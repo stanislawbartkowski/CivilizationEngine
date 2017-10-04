@@ -25,11 +25,6 @@ package object helper {
     def suggestedCapitalForCiv: Option[Civilization.T] = if (suggestedCapital) Some(t.tile.civ) else None
   }
 
-  //  def pointsAround(board: GameBoard, p: P): Seq[P] = {
-  //    val all: Seq[P] = List(P(p.row - 1, p.col - 1), P(p.row - 1, p.col), P(p.row - 1, p.col + 1), P(p.row + 1, p.col - 1), P(p.row + 1, p.col), P(p.row + 1, p.col + 1), P(p.row, p.col - 1), P(p.row, p.col + 1))
-  //    all.filter(isPointOnBoard(board, _))
-  //  }
-
   def pointsAround(board: GameBoard, p: P): Seq[P] = board.map.pointsaround.get(p).get
 
   def squaresAround(board: GameBoard, p: P): Seq[MapSquareP] = {
@@ -45,17 +40,9 @@ package object helper {
     None
   }
 
-  //  def isPointOnBoard(board: GameBoard, p: P): Boolean =
-  //    allPoints(board).exists(_ == p)
-
   def isPointOnBoard(board: GameBoard, p: P): Boolean = board.map.setallpoints.contains(p)
 
   def allPoints(board: GameBoard): Seq[P] = board.map.allpoints
-
-  //  def allPoints(board: GameBoard): Seq[P] =
-  //    board.map.map.flatMap(p =>
-  //      (for (row <- 0 until TILESIZE; col <- 0 until TILESIZE) yield (P(p.p.row * TILESIZE + row, p.p.col * TILESIZE + col))) toSeq
-  //    )
 
   def allSquares(b: GameBoard): Seq[MapSquareP] =
     allPoints(b).map(getSquare(b, _))
@@ -109,7 +96,7 @@ package object helper {
       if (!pp.revealed) return Some(Mess(M.POINTONHIDDENTILE, p))
       if (pp.s.hvhere) return Some(Mess(M.POINTISBORDERINGWITHHUTORVIALLAGE, pp.p))
     }
-    );
+    )
     // check other cities
     val paround: Set[P] = pointsAround(board, p).toSet
     allPoints(board).foreach(p => {
@@ -142,26 +129,50 @@ package object helper {
     board.map.map.find(_.p == p).get
 
   def getRandomHutVillage(board: GameBoard, hv: HutVillage.T): HutVillage = {
-    val a: Array[Int] = board.market.hv.zipWithIndex.filter(p => p._1.hv == hv).map(p => p._2).toList.toArray
+    val a: Seq[HutVillage] = board.resources.hv.filter(_.hv == hv)
     // throws if empty, unexpected here
-    //a.foreach(println)
     if (a.isEmpty) throw FatalError(Mess(M.NOUNUSEDHUTORVILLAGES, hv))
-    // generate random
-    val i: Int = ra.nextInt(a.length)
-    // index in used
-    val pos: Int = a(i)
-    val hvreturn: HutVillage = board.market.hv(pos)
-    // remove from used
-    // convert to ArrayBuffer
-    // TODO: very bad, replace hv type with mutable.Buffer
-    val buf = board.market.hv.toBuffer
-    buf.remove(pos)
-    // convert to buffer again
-    board.market.hv = buf.toArray
-    hvreturn
+    val removed = getRandomRemove[HutVillage](a)
+    board.resources.hv = board.resources.hv.filter(_.hv != hv) ++ removed._2
+    removed._1
   }
 
-  //def playList(b: GameBoard): Unit = playList(b, b.play)
+
+  // ==============================
+  // CombatUnits handling
+  // ==============================
+
+  private def getRandomRemove[T](a: Seq[T]): (T, Seq[T]) = {
+    val b = a.toBuffer
+    val randI: Int = ra.nextInt(b.size)
+    val t: T = b(randI)
+    b.remove(randI)
+    return (t, b)
+  }
+
+  private def reuseKilledUnits(b: GameBoard, unitt: CombatUnitType.T) = {
+    // add killed units to units
+    b.market.units = b.market.units ++ b.market.killedunits.filter(_.utype == unitt)
+    // remove units from killed units
+    val newkilledunits: Seq[CombatUnit] = b.market.killedunits.filter(_.utype != unitt)
+    b.market.killedunits = newkilledunits
+  }
+
+  private def getRandomUnit(b: GameBoard, unitt: CombatUnitType.T): CombatUnit = {
+    var units: Seq[CombatUnit] = b.market.units.filter(_.utype == unitt)
+    if (units.isEmpty) reuseKilledUnits(b, unitt)
+    // again
+    units = b.market.units.filter(_.utype == unitt)
+    if (units.isEmpty)
+      throw new FatalError(Mess(M.ALLUNITSUSED, (unitt)))
+    val removed = getRandomRemove[CombatUnit](units)
+    b.market.units = b.market.units.filter(_.utype != unitt) ++ removed._2
+    removed._1
+  }
+
+  def getThreeRandomUnits(b: GameBoard): Seq[CombatUnit] = Seq(getRandomUnit(b, CombatUnitType.Infantry), getRandomUnit(b, CombatUnitType.Artillery), getRandomUnit(b, CombatUnitType.Mounted))
+
+  // ========================================
 
   case class CurrentPhase(val notcompleted: Seq[Civilization.T], val turnPhase: TurnPhase.T, val roundno: Int)
 
@@ -373,13 +384,7 @@ package object helper {
   }
 
 
-  //  private def spendTradeCommands(b: GameBoard, civ: Civilization.T): Map[P, Seq[Command]] = {
-  //    val p: Seq[Command] = lastPhaseCommandsReverse(b, civ, TurnPhase.CityManagement).reverse
-  //    p.filter(c => c.command == Command.UNDOSPENDTRADE || c.command == Command.SPENDTRADE).groupBy(_.p)
-  //  }
-
   private def spendTradeCommands(b: GameBoard, civ: Civilization.T): Map[P, Seq[Command]] = filterspendCommands(b, civ, c => c.command == Command.UNDOSPENDTRADE || c.command == Command.SPENDTRADE)
-
 
   def spendProdForCities(b: GameBoard, civ: Civilization.T): Map[P, Int] =
     spendTradeCommands(b, civ) map { case (p, seq) => (p, spendProdForCity(seq)) }
@@ -438,9 +443,6 @@ package object helper {
     val ma: Map[P, Seq[Command]] = p.groupBy(_.param.asInstanceOf[P]).filter(_._2.last.command == Command.SENDPRODUCTION)
     ma.map(pp => pp._1 -> pp._2.last.p)
   }
-
-
-  //  private def sendProdCommands(b: GameBoard, civ: Civilization.T): Map[P, Seq[Command]] = filterspendCommands(b, civ, c => c.command == Command.UNDOSENDPRODUCTION || c.command == Command.SENDPRODUCTION)
 
   // City => sendProd
   private def sendprodForCities(b: GameBoard, civ: Civilization.T): Map[P, Int] = {
@@ -516,10 +518,6 @@ package object helper {
     if (s.sm.terrain == Terrain.Water && !li.waterstopallowed) return Some(Mess(M.CANNOTPUTFIGUREONWATER, p))
     val fig: Figures = if (f == Figure.Scout) Figures(0, 1) else Figures(1, 0)
     isSquareForFigures(b, civ, fig, s.s, li)
-    //    if (s.s.figures.civ == null) return None
-    //    if (f == Figure.Scout && s.s.figures.numberofScouts > 0) return Some(Mess(M.ONLYONESCIUTALLOWED, p))
-    //  if (s.s.figures.numberofScouts + s.s.figures.numberofArmies + 1 > li.stackinglimit) return Some(Mess(M.STACKINGSIZEEXCEEDED, p))
-    //  None
   }
 
   def canBuyFigure(b: GameBoard, civ: Civilization.T, p: P, f: Figure.T): Option[Mess] = {

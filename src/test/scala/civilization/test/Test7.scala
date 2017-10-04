@@ -35,7 +35,7 @@ class Test7 extends FunSuite {
       assert(!(se contains (mm.tname)))
       se = se + mm.tname
     })
-    j = writeMarket(g.market)
+    j = writeResources(g.resources)
     println(j)
     println(Json.prettyPrint(j))
 

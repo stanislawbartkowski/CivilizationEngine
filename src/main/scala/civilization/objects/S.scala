@@ -19,7 +19,7 @@ object S {
   final val citytype = "citytype"
   final val players = "players"
   final val map = "map"
-  final val market = "market"
+  final val resources = "resources"
   final val p = "p"
   final val param = "param"
   final val trade = "trade"
@@ -31,4 +31,9 @@ object S {
   final val desc = "desc"
   final val gameid = "gameid"
   final val terrain = "terrain"
+  final val unitname = "name"
+  final val unitstrength = "strength"
+  final val market = "market"
+  final val units = "units"
+  final val killedunits = "killedunits"
 }

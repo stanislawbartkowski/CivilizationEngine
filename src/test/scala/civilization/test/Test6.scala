@@ -18,7 +18,7 @@ class Test6 extends FunSuite {
     val b: GameBoard = Helper.readBoardAndPlay("test5/BOARDGAME1.json", "test6/GAME1.json", Civilization.Germany)
     val trade: Int = numberofTrade(b, Civilization.Germany).trade
     println(trade)
-    var com: Command = constructCommand(Command.RESEARCH, Civilization.Germany, null, toJ("\"Irigation\""))
+    var com: Command = constructCommand(Command.RESEARCH, Civilization.Germany, null, toJ("\"Irrigation\""))
     var m: Mess = com.verify(b)
     println(m)
     assert(m.m == M.CANNOTAFFORDTHISTECHNOLOGY)

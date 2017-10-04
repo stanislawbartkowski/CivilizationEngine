@@ -8,7 +8,7 @@ import civilization.action.{Command, Play}
 
 package object gameboard {
 
-  private final val packageversion: Int = 0;
+  private final val packageversion: Int = 1;
 
   case class PatterMap(val p: P, val o: Orientation.T)
 
@@ -96,9 +96,9 @@ package object gameboard {
 
   }
 
-  case class Market(var hv: Array[HutVillage], var hvused: Seq[HutVillage])
+  case class Resources(var hv: Seq[HutVillage], var hvused: Seq[HutVillage])
 
-  case class PlayerDeck(val civ: Civilization.T) {
+  case class PlayerDeck(val civ: Civilization.T,var tech: Seq[PlayerTechnology],var units : Seq[CombatUnit]) {
 
     val defaultcitylimit: Int = 2
     val defaultarmieslimit: Int = 6
@@ -106,8 +106,9 @@ package object gameboard {
     val defaultculturehandsize: Int = 2
     val defaultstackinglimit: Int = 2
     val defaulttravelspeed: Int = 2
-    var tech: Seq[PlayerTechnology] = Nil
   }
+
+  case class Market(var units : Array[CombatUnit], var killedunits : Seq[CombatUnit])
 
   case class GameMetaData(val version: Int, val createtime: Long, var accesstime: Long, val desc: String) {
 
@@ -118,7 +119,7 @@ package object gameboard {
     def okV: Boolean = version == packageversion
   }
 
-  case class GameBoard(val players: Seq[PlayerDeck], val map: BoardMap, val market: Market) {
+  case class GameBoard(val players: Seq[PlayerDeck], val map: BoardMap, val resources: Resources, val market : Market) {
 
     var metadata: GameMetaData = new GameMetaData("")
 

@@ -11,15 +11,15 @@ class Test3 extends FunSuite {
 
   test("Test get hut from market") {
     val b: GameBoard = Helper.getBoard("test2/BOARDGAME1.json")
-    val prev: Int = b.market.hv.length
+    val prev: Int = b.resources.hv.length
     println(prev)
     assert(prev > 0)
-    val prevu: Int = b.market.hvused.length
+    val prevu: Int = b.resources.hvused.length
     val hv: HutVillage = getRandomHutVillage(b, HutVillage.Hut)
     println(hv)
     assert(hv.hv == HutVillage.Hut)
-    assert(b.market.hvused.length == prevu)
-    assert(b.market.hv.length == (prev - 1))
+    assert(b.resources.hvused.length == prevu)
+    assert(b.resources.hv.length == (prev - 1))
   }
 
   test("reveal tile down") {
