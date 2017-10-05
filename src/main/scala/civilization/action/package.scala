@@ -5,13 +5,13 @@ import civilization.objects._
 import civilization.message.{FatalError, M, Mess}
 import civilization.io.fromjson._
 import civilization.helper._
-import play.api.libs.json.JsValue
+import play.api.libs.json.{JsArray, JsValue}
 
 package object action {
 
-  def constructCommand(c: CommandValues): Command = {
+  def constructCommand(c: CommandValues): Command =
     constructCommand(c.command, c.civ, c.p, c.param)
-  }
+
 
   def constructCommand(command: Command.T, civ: Civilization.T, p: P, param: JsValue = null): Command = {
     assert(civ != null && command != null)
@@ -116,5 +116,15 @@ package object action {
   abstract class AbstractCommand[T](val param: T = null, val param1: Any = null) extends Command
 
   abstract class AbstractCommand1[T, T1](val param: T = null, var param1: T1 = null) extends Command
+
+  trait CommandPackage {
+    def getSet: Set[Command.T]
+
+    def commandsAvail(b: GameBoard, civ: Civilization.T): Seq[Command.T]
+
+    def itemize(b: GameBoard, civ: Civilization.T, com: Command.T): JsArray
+
+    def produceCommand(par: JsValue): Command
+  }
 
 }

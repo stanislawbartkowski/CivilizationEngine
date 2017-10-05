@@ -6,7 +6,8 @@ import org.scalatest.FunSuite
 import civilization.helper._
 import civilization.objects._
 import civilization.message._
-import civilization.helper.AllowedCommands.{allowedCommands, itemizeForSetBuyFigures}
+import civilization.helper.AllowedCommands.{allowedCommands}
+import civilization.helper.SetFigureAction.itemizeForSetBuyFigures
 import civilization.io.fromjson.toJ
 import play.api.libs.json.JsValue
 import play.api.libs.json._

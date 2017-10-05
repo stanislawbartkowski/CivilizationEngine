@@ -4,11 +4,11 @@ import civilization.gameboard.{Figures, GameBoard}
 import civilization.io.tojson._
 import civilization.message._
 import civilization.objects._
+import civilization.helper.SetFigureAction.itemizeForSetBuyFigures
 import play.api.libs.json.{JsArray, JsValue, Json}
 
 object AllowedCommands {
 
-  // City Management, BUTSCOUT, BUYARMY
   private def allowedActionForCityManagement(b: GameBoard, civ: Civilization.T): Seq[Command.T] = {
     var cu: Seq[Command.T] = Nil
     if (!itemizeForSetBuyFigures(b, civ, Command.BUYSCOUT).isEmpty) cu = cu :+ Command.BUYSCOUT
@@ -18,19 +18,6 @@ object AllowedCommands {
     if (!SendProduction.itemizeCommandsForSendProduction(b,civ).isEmpty) cu = cu :+ Command.SENDPRODUCTION
     if (!SendProduction.itemizeCommandsForUndoSendProduction(b,civ).isEmpty) cu = cu :+ Command.UNDOSENDPRODUCTION
     cu
-  }
-
-  def itemizeForSetBuyFigures(b: GameBoard, civ: Civilization.T, com: Command.T): Seq[(P, P)] = {
-    val li: Seq[MapSquareP] = citiesForCivilization(b, civ)
-    val fi: Figure.T = if (com == Command.SETARMY || com == Command.BUYARMY) Figure.Army else Figure.Scout
-
-    var alist: Seq[(P, P)] = li.flatMap(s => pointsAround(b, s.p).map(p => (s.p, p)).filter(po => isSquareForFigure(b, civ, fi, po._2).isEmpty))
-    if (com == Command.BUYSCOUT || com == Command.BUYARMY) {
-      // remove all cities already used in CityManagement
-      val cities: Set[P] = CityAvailableForAction(b, civ).toSet
-      alist = alist.filter(ci => cities contains ci._1).filter(city => (getProductionForCity(b, civ, city._1).prod >= ObjectCost.getCost(fi)))
-    }
-    alist
   }
 
   // Figure Movement

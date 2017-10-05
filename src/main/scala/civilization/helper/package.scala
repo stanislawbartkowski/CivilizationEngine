@@ -247,6 +247,9 @@ package object helper {
     cities.toSeq
   }
 
+  def CitiesCanAfford(b: GameBoard, civ: Civilization.T, cost: Integer): Seq[P] =
+    CityAvailableForAction(b, civ).filter(city => getProductionForCity(b, civ, city).prod >= cost)
+
   case class Move(val command: Command.T, val p: Option[P])
 
   case class PlayerMove(val f: PlayerFigures, val moves: Seq[Move]) {
@@ -472,7 +475,9 @@ package object helper {
 
   // ==============================================
 
-  case class PlayerLimits(val citieslimit: Int, val stackinglimit: Integer, val watercrossingallowed: Boolean, val waterstopallowed: Boolean, val armieslimit: Int, val scoutslimit: Int, val travelSpeed: Int, val tradeforProd: Int) {
+  case class PlayerLimits(val citieslimit: Int, val stackinglimit: Integer, val watercrossingallowed: Boolean, val waterstopallowed: Boolean, val armieslimit: Int, val scoutslimit: Int, val travelSpeed: Int, val tradeforProd: Int, val playerStrength: Int) {
+    require(playerStrength >= 0 && playerStrength < UNITLEVELSIZE)
+
     def prodForTrade(prod: Int): Int = prod * tradeforProd
   }
 
@@ -482,7 +487,7 @@ package object helper {
     val count: (Int, Int) = getNumberOfArmies(b, civ)
     val armieslimit: Int = deck.defaultarmieslimit - count._1
     val scoutslimit: Int = deck.defaultscoutslimit - count._2
-    PlayerLimits(citieslimit, deck.defaultstackinglimit, false, false, armieslimit, scoutslimit, deck.defaulttravelspeed, DEFAULTTRADEFORPROD)
+    PlayerLimits(citieslimit, deck.defaultstackinglimit, false, false, armieslimit, scoutslimit, deck.defaulttravelspeed, DEFAULTTRADEFORPROD, 0)
   }
 
   // =====================================
