@@ -24,30 +24,28 @@ object BuyUnit extends CommandPackage with ImplicitMiximFromJson with ImplicitMi
 
   private def itemizeI(b: gameboard.GameBoard, civ: Civilization.T, com: Command.T, limit: PlayerLimits): Seq[P] = {
     val u: CombatUnitType.T = toU(com)
+    if (u == CombatUnitType.Aircraft && !limit.aircraftUnlocked) return Nil
     val cost: Int = ObjectCost.getCost(u, limit.playerStrength)
     CitiesCanAfford(b, civ, cost)
   }
 
-  override def commandsAvail(b: gameboard.GameBoard, civ: Civilization.T): Seq[Command.T] = {
+  override def itemizeP(b: gameboard.GameBoard, civ: Civilization.T, com: Command.T): Seq[CommandParams] = {
     val limit: PlayerLimits = getLimits(b, civ)
-    (if (itemizeI(b, civ, Command.BUYARTILLERY, limit).isEmpty) Nil else Seq(Command.BUYARTILLERY)) ++
-      (if (itemizeI(b, civ, Command.BUYARTILLERY, limit).isEmpty) Nil else Seq(Command.BUYARTILLERY)) ++
-      (if (itemizeI(b, civ, Command.BUYARTILLERY, limit).isEmpty) Nil else Seq(Command.BUYARTILLERY)) ++
-      (if (itemizeI(b, civ, Command.BUYARTILLERY, limit).isEmpty) Nil else Seq(Command.BUYARTILLERY))
+    val cities : Seq[P] = itemizeI(b, civ, com, limit)
+    cities.map(p => CommandParams(Some(p),None))
   }
 
-  override def itemize(b: gameboard.GameBoard, civ: Civilization.T, com: Command.T): JsArray = {
-    val limit: PlayerLimits = getLimits(b, civ)
-    itemizeI(b, civ, com, limit)
-  }
+  class BuyUnitAction extends AbstractCommandNone {
+    def execute(board: GameBoard) = {
+      val u: CombatUnitType.T = toU(command)
+      val co: CombatUnit = getRandomUnit(board, u)
+      board.playerDeck(civ).units = board.playerDeck(civ).units :+ co
+    }
 
-  class BuyUnitAction(override val param: P) extends AbstractCommand(param) {
-    def execute(board: GameBoard) = ???
-
-    def verify(board: GameBoard): Mess = ???
+    def verify(board: GameBoard): Mess = defaultverify(board, civ, command, p, j)
   }
 
 
   override def produceCommand(par: JsValue) =
-    new BuyUnitAction(par)
+    new BuyUnitAction()
 }

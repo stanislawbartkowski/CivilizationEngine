@@ -161,8 +161,6 @@ class Test5 extends FunSuite {
     com2 = constructCommand(Command.MOVE, Civilization.Germany, P(0, 0))
     m = playCommand(b, com2)
     println(m)
-    //    assert(m != null)
-    //    assert (m.m == M.SHOULDBEDNFOFMOVENOW)
     println("============")
     com2 = constructCommand(Command.STARTMOVE, Civilization.Germany, P(3, 1), toJ("{\"numberofArmies\" : 1, \"numberofScouts\" : 0}"))
     m = playCommand(b, com2)
@@ -216,9 +214,6 @@ class Test5 extends FunSuite {
     assert(count._1 == 2)
     assert(count._2 == 1)
     com = constructCommand(Command.MOVE, Civilization.Germany, P(4, 1))
-    //    m  = playCommand(b,com)
-    //    println(m)
-    //    assert(m.m == M.FIGURESSTACKINGSHOULDEND)
   }
 
   test("Start game 6") {

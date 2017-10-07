@@ -22,6 +22,7 @@ package object objects {
 
   case class P(val row: Int, val col: Int) {
     def +(that: P) = row == that.row && col == that.col
+    def empty : Boolean = row == -1 && col == -1
   }
 
   case class Tile(val terrain: TileTerrain, val civ: Civilization.T, val suggestedcapital: P) {

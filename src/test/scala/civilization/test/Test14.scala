@@ -12,13 +12,11 @@ import civilization.io.tojson._
 import civilization.io.readdir._
 import play.api.libs.json.{JsArray, JsValue}
 
-
-
 class Test14   extends FunSuite {
 
     Helper.I
 
-    test("Test JSON combat units") {
+  test("Test JSON combat units") {
       val s : String = """{ "name" : "Infantry", "strength": [1,2,3,4] }""";
       val j : JsValue = toJ(s);
       val u : CombatUnit = toCombatUnit(j)

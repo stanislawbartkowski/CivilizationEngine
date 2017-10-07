@@ -117,15 +117,6 @@ class Test1 extends FunSuite {
     l.foreach(l => println(l.name + " " + l.tile))
   }
 
-  //  test("Read player from test ") {
-  //    val l: JsValue = readTestJSON("resources/map/tiles/PLAYER.json")
-  //    println(l)
-  //    val t: Player = convert[PlayerJ](PlayerJ(l))
-  //    println(t)
-  //    assert(Player.A == t.player)
-  //    assert(Civilization.Germany == t.civ)
-  //  }
-
   test("Read single map tile ") {
     val l: JsValue = readTestJSON("resources/map/tiles/MAP1.json")
     println(l)

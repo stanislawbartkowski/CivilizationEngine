@@ -63,10 +63,18 @@ object Helper {
     return (token, ctoken)
   }
 
-  def executeCommandH(token: String, action: String, row: Int, col: Int, jsparam: String): Unit = {
+  private def e(token: String, action: String, row: Int, col: Int, jsparam: String) : String = {
     val s : String = II.executeCommand(token,action,row,col,jsparam)
     if (s != null) println(s)
-    assert (s == null)
+    s
+  }
+
+  def executeCommandH(token: String, action: String, row: Int, col: Int, jsparam: String): Unit = {
+    assert (e(token,action,row,col,jsparam) == null)
+  }
+
+  def executeCommandFail(token: String, action: String, row: Int, col: Int, jsparam: String): Unit = {
+    assert (e(token,action,row,col,jsparam) != null)
   }
 
 }

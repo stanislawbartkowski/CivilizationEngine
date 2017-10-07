@@ -158,7 +158,7 @@ package object helper {
     b.market.killedunits = newkilledunits
   }
 
-  private def getRandomUnit(b: GameBoard, unitt: CombatUnitType.T): CombatUnit = {
+  def getRandomUnit(b: GameBoard, unitt: CombatUnitType.T): CombatUnit = {
     var units: Seq[CombatUnit] = b.market.units.filter(_.utype == unitt)
     if (units.isEmpty) reuseKilledUnits(b, unitt)
     // again
@@ -475,7 +475,7 @@ package object helper {
 
   // ==============================================
 
-  case class PlayerLimits(val citieslimit: Int, val stackinglimit: Integer, val watercrossingallowed: Boolean, val waterstopallowed: Boolean, val armieslimit: Int, val scoutslimit: Int, val travelSpeed: Int, val tradeforProd: Int, val playerStrength: Int) {
+  case class PlayerLimits(val citieslimit: Int, val stackinglimit: Integer, val watercrossingallowed: Boolean, val waterstopallowed: Boolean, val armieslimit: Int, val scoutslimit: Int, val travelSpeed: Int, val tradeforProd: Int, val playerStrength: Int, aircraftUnlocked: Boolean) {
     require(playerStrength >= 0 && playerStrength < UNITLEVELSIZE)
 
     def prodForTrade(prod: Int): Int = prod * tradeforProd
@@ -487,7 +487,7 @@ package object helper {
     val count: (Int, Int) = getNumberOfArmies(b, civ)
     val armieslimit: Int = deck.defaultarmieslimit - count._1
     val scoutslimit: Int = deck.defaultscoutslimit - count._2
-    PlayerLimits(citieslimit, deck.defaultstackinglimit, false, false, armieslimit, scoutslimit, deck.defaulttravelspeed, DEFAULTTRADEFORPROD, 0)
+    PlayerLimits(citieslimit, deck.defaultstackinglimit, false, false, armieslimit, scoutslimit, deck.defaulttravelspeed, DEFAULTTRADEFORPROD, 0, false)
   }
 
   // =====================================

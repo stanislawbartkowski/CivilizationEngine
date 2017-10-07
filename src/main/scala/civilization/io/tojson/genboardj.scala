@@ -14,7 +14,7 @@ object genboardj {
   case class MapSquareJ(revealed: Boolean, t: Terrain.T, trade: Int, production: Int, resource: Resource.T, capForCiv: Option[Civilization.T],
                         civ: Civilization.T, city: City.T, defence: Int, numberofArmies: Int, numberofScouts: Int, tile: String, hv: Option[HutVillage.T])
 
-  case class PlayerDeckJ(civ: Civilization.T, numberofTrade: Int, commands: Seq[Command.T], limits: PlayerLimits)
+  case class PlayerDeckJ(civ: Civilization.T, numberofTrade: Int, commands: Seq[Command.T], limits: PlayerLimits, pl: PlayerDeck)
 
   case class Game(active: Civilization.T, roundno: Int, phase: TurnPhase.T)
 
@@ -24,7 +24,7 @@ object genboardj {
     val t: Terrain.T = if (ss.revealed) ss.terrain else null;
     val trade: Int = if (ss.revealed) ss.numberOfTrade else -1;
     var civ: Civilization.T = if (ss.s.cityhere) ss.s.city.get.civ else null
-    val production: Int = if (ss.revealed) (if (!ss.s.cityhere) ss.numberOfProduction else getProductionForCity(b, civ,ss.p).prod) else -1;
+    val production: Int = if (ss.revealed) (if (!ss.s.cityhere) ss.numberOfProduction else getProductionForCity(b, civ, ss.p).prod) else -1;
     val resource: Resource.T = if (ss.revealed) ss.resource else null
     val cap: Option[Civilization.T] = ss.suggestedCapitalForCiv
     var defence: Int = 0
@@ -60,20 +60,41 @@ object genboardj {
     Game(civ, cu.roundno, cu.turnPhase)
   }
 
-  private def genPlayerDeckJ(g: GameBoard, civ: Civilization.T): PlayerDeckJ = PlayerDeckJ(civ, numberofTrade(g, civ).trade, allowedCommands(g, civ), getLimits(g, civ))
+  private def genPlayerDeckJ(g: GameBoard, civ: Civilization.T): PlayerDeckJ = PlayerDeckJ(civ, numberofTrade(g, civ).trade, allowedCommands(g, civ), getLimits(g, civ), g.playerDeck(civ))
 
   private def commandToArray(l: Seq[Command.T]): JsArray = {
     JsArray(l.map(c => Json.obj(S.command -> c)).foldLeft(List[JsObject]())(_ :+ _))
   }
 
-  private def genPlayerDeckJson(p: PlayerDeckJ): JsValue = Json.obj(
+  private def unitstoJSON(li: Seq[CombatUnit], detail: Boolean): JsValue = {
+    val utype: Map[CombatUnitType.T, Seq[CombatUnit]] = li.groupBy(_.utype)
+    //    val ulist : Seq[(CombatUnitType.T,Int)] = utype.map(u => (u._1,u._2.length)
+    val ulist: Seq[(CombatUnitType.T, Int)] = CombatUnitType.values.map(u => (u, if (utype.get(u).isDefined) utype.get(u).get.length else 0)) toSeq
+    val useq: Seq[JsValue] = ulist.map(j => Json.obj(
+      S.unitname -> j._1,
+      "num" -> j._2
+    ));
+    if (detail)
+      Json.obj(
+        S.units -> useq,
+        "list" -> li
+      )
+    else
+      Json.obj(
+        S.units -> useq
+      )
+  }
+
+  private def genPlayerDeckJson(p: PlayerDeckJ, you: Boolean): JsValue = Json.obj(
     S.civ -> p.civ,
     "trade" -> p.numberofTrade,
     "commands" -> commandToArray(p.commands),
     "citylimit" -> p.limits.citieslimit,
     "armieslimit" -> p.limits.armieslimit,
     "scoutslimit" -> p.limits.scoutslimit,
-    "tradeforprod" -> p.limits.tradeforProd
+    "tradeforprod" -> p.limits.tradeforProd,
+    "militarytech" -> p.limits.playerStrength,
+    S.units -> unitstoJSON(p.pl.units, you)
   )
 
   private def genBoardGameJ(g: GameBoard, civ: Civilization.T): BoardGameJ = {
@@ -110,12 +131,14 @@ object genboardj {
       }
       rows = rows :+ JsArray(cols)
     }
-    val o: Seq[JsValue] = b.others.map(genPlayerDeckJson(_))
+    val o: Seq[JsValue] = b.others.map(genPlayerDeckJson(_, false))
 
     JsObject(Seq("board" -> JsObject(Seq(
       "map" -> JsArray(rows),
       "game" -> gameToJ(b.g),
-      "you" -> genPlayerDeckJson(b.you),
+      S.units -> unitstoJSON(g.market.units,false),
+      S.killedunits -> unitstoJSON(g.market.killedunits,true),
+      "you" -> genPlayerDeckJson(b.you, true),
       "others" -> JsArray(o)
     ))))
   }

@@ -6,8 +6,7 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json
 import play.api.libs.json._
 
-package object tojson {
-
+package object tojson extends ImplicitMiximToJson {
 
   implicit val hutVillageWrites: Writes[HutVillage] = (
     (JsPath \ S.hutvillage).write[HutVillage.T] and
@@ -147,7 +146,7 @@ package object tojson {
 
   def writesGameBoard(d: GameBoard): JsValue = Json.toJson(d)
 
-  def writesP(p: P): JsValue = Json.toJson(p)
+  def writesP(p: P): JsValue = writesPoint(p)
 
   def writesCityScout(p: (P, P)): JsValue = Json.obj(
     S.city -> p._1,

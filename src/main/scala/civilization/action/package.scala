@@ -4,18 +4,16 @@ import civilization.gameboard.GameBoard
 import civilization.objects._
 import civilization.message.{FatalError, M, Mess}
 import civilization.io.fromjson._
+import civilization.io.tojson._
 import civilization.helper._
-import play.api.libs.json.{JsArray, JsValue}
+import play.api.libs.json.{JsArray, JsNull, JsUndefined, JsValue}
 
-package object action {
+package object action extends ImplicitMiximToJson with ImplicitMiximFromJson  {
 
   def constructCommand(c: CommandValues): Command =
     constructCommand(c.command, c.civ, c.p, c.param)
 
-
-  def constructCommand(command: Command.T, civ: Civilization.T, p: P, param: JsValue = null): Command = {
-    assert(civ != null && command != null)
-    val c: Command = produceCommand(command, civ, p, param)
+  def enrich(c: Command, command: Command.T, civ: Civilization.T, p: P, param: JsValue): Command = {
     c.command = command
     c.p = p
     c.civ = civ
@@ -23,7 +21,15 @@ package object action {
     c
   }
 
+
+  def constructCommand(command: Command.T, civ: Civilization.T, p: P, param: JsValue = null): Command = {
+    assert(civ != null && command != null)
+    val c: Command = if (CommandContainer.isCommandCovered(command)) CommandContainer.produceCommand(command, civ, p, param) else produceCommand(command, civ, p, param)
+    enrich(c, command, civ, p, param)
+  }
+
   private def produceCommand(command: Command.T, civ: Civilization.T, p: P, param: JsValue): Command = command match {
+
 
     case Command.SETCAPITAL | Command.SETCITY => new SetCityAction.SetCityAction()
 
@@ -38,7 +44,6 @@ package object action {
     }
 
     case Command.FORCEDMOVEFIGURES => new MoveAction.ForceMoveAction(toFigures(param))
-
 
     case Command.ENDOFPHASE => {
 
@@ -120,11 +125,22 @@ package object action {
   trait CommandPackage {
     def getSet: Set[Command.T]
 
-    def commandsAvail(b: GameBoard, civ: Civilization.T): Seq[Command.T]
+    def commandsAvail(b: GameBoard, civ: Civilization.T): Seq[Command.T] = getSet.filter(!itemize(b, civ, _).isEmpty) toSeq
 
-    def itemize(b: GameBoard, civ: Civilization.T, com: Command.T): JsArray
+    def itemize(b: GameBoard, civ: Civilization.T, com: Command.T): Seq[JsValue] = itemizeP(b, civ, com)
+
+    // can be called only by itemize
+    protected def itemizeP(b: GameBoard, civ: Civilization.T, com: Command.T): Seq[CommandParams] = ???
 
     def produceCommand(par: JsValue): Command
+
+    protected def defaultverify(board: GameBoard, civ: Civilization.T, com: Command.T, p: P, j: JsValue): Mess = {
+      val itemi: Seq[JsValue] = itemize(board, civ, com)
+      val par: CommandParams = CommandParams(if (p == null || p.empty ) None else Some(p), if (j == null || j == JsNull) None else Some(j))
+      if (itemi.find(eqJsParam(_, par)).isDefined) null else Mess(M.COMMANDPARAMETERDOESNOTMATCH, (civ, com, p, j))
+    }
+
   }
+
 
 }

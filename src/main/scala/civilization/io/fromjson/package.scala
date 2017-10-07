@@ -6,7 +6,7 @@ import play.api.libs.functional.syntax._
 import civilization.objects._
 import civilization.gameboard._
 
-package object fromjson {
+package object fromjson extends ImplicitMiximFromJson {
 
   implicit val pointReads: Reads[P] = (
     (JsPath \ S.row).read[Int] and (JsPath \ S.col).read[Int]
@@ -68,7 +68,7 @@ package object fromjson {
       val civ: Civilization.T = (json \ S.civ).as[Civilization.T]
       val numberofarmies: Int = (json \ S.numberofArmies).asOpt[Int].getOrElse(0)
       val numberofscouts: Int = (json \ S.numberofScouts).asOpt[Int].getOrElse(0)
-      if (numberofarmies == 0 && numberofscouts == 0) return JsError(json + " (playerfigures) either numberofArmies or numberofScouts should be greater then 0")
+      if (numberofarmies == 0 && numberofscouts == 0) return JsError(json.toString() + " (playerfigures) either numberofArmies or numberofScouts should be greater then 0")
       JsSuccess(PlayerFigures(civ, numberofarmies, numberofscouts))
     }
   }
@@ -77,7 +77,7 @@ package object fromjson {
     def reads(json: JsValue): JsResult[Figures] = {
       val numberofarmies: Int = (json \ S.numberofArmies).asOpt[Int].getOrElse(0)
       val numberofscouts: Int = (json \ S.numberofScouts).asOpt[Int].getOrElse(0)
-      if (numberofarmies == 0 && numberofscouts == 0) return JsError(json + " (figurestomove) either numberofArmies or numberofScouts should be greater then 0")
+      if (numberofarmies == 0 && numberofscouts == 0) return JsError(json.toString() + " (figurestomove) either numberofArmies or numberofScouts should be greater then 0")
       JsSuccess(Figures(numberofarmies, numberofscouts))
     }
   }
@@ -164,10 +164,6 @@ package object fromjson {
       JsSuccess(MapTile(tname, p, orientation, squares))
     }
   }
-
-  //  implicit val playerdeskReads: Reads[PlayerDeck] = (
-  //    (JsPath \ "civ").read[Civilization.T]
-  //    ) (PlayerDeck.apply _)
 
   implicit val readsPlayerTechnology: Reads[PlayerTechnology] = new Reads[PlayerTechnology] {
     def reads(json: JsValue): JsResult[PlayerTechnology] = {
@@ -345,7 +341,19 @@ package object fromjson {
     }
   }
 
-  def toP(j: JsValue): P = convert[PJ](PJ(j))
+  def eqJsParam(j1 : JsValue, j2 : CommandParams) : Boolean = {
+    val p : Option[P] = (j1 \ S.p).asOpt[P]
+    if (p.isEmpty && j2.p.isDefined) return false
+    if (p.isDefined && j2.p.isEmpty) return false
+    if (p.isDefined && j2.p.isDefined)
+       if (!(p == j2.p)) return false
+    val jpar : Option[JsObject] = (j1 \ S.param).asOpt[JsObject]
+    assert(!jpar.isDefined && !j2.param.isDefined,"Not implemented for JSON")
+    true
+  }
+
+
+  def toP(j: JsValue): P = toPoint(j)
 
   def toGameBoard(j: JsValue): GameBoard = convert[GameBoardJ](GameBoardJ(j))
 

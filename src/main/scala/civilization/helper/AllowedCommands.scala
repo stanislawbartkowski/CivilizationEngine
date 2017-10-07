@@ -6,6 +6,7 @@ import civilization.message._
 import civilization.objects._
 import civilization.helper.SetFigureAction.itemizeForSetBuyFigures
 import play.api.libs.json.{JsArray, JsValue, Json}
+import civilization.action.CommandContainer
 
 object AllowedCommands {
 
@@ -13,10 +14,10 @@ object AllowedCommands {
     var cu: Seq[Command.T] = Nil
     if (!itemizeForSetBuyFigures(b, civ, Command.BUYSCOUT).isEmpty) cu = cu :+ Command.BUYSCOUT
     if (!itemizeForSetBuyFigures(b, civ, Command.BUYARMY).isEmpty) cu = cu :+ Command.BUYARMY
-    if (!SpendTrade.itemizeCommandsForSpendTrade(b,civ).isEmpty) cu = cu :+ Command.SPENDTRADE
-    if (!SpendTrade.itemizeCommandsForUndoSpendTrade(b,civ).isEmpty) cu = cu :+ Command.UNDOSPENDTRADE
-    if (!SendProduction.itemizeCommandsForSendProduction(b,civ).isEmpty) cu = cu :+ Command.SENDPRODUCTION
-    if (!SendProduction.itemizeCommandsForUndoSendProduction(b,civ).isEmpty) cu = cu :+ Command.UNDOSENDPRODUCTION
+    if (!SpendTrade.itemizeCommandsForSpendTrade(b, civ).isEmpty) cu = cu :+ Command.SPENDTRADE
+    if (!SpendTrade.itemizeCommandsForUndoSpendTrade(b, civ).isEmpty) cu = cu :+ Command.UNDOSPENDTRADE
+    if (!SendProduction.itemizeCommandsForSendProduction(b, civ).isEmpty) cu = cu :+ Command.SENDPRODUCTION
+    if (!SendProduction.itemizeCommandsForUndoSendProduction(b, civ).isEmpty) cu = cu :+ Command.UNDOSENDPRODUCTION
     cu
   }
 
@@ -103,9 +104,10 @@ object AllowedCommands {
 
   def allowedCommands(b: GameBoard, civ: Civilization.T): Seq[Command.T] = {
     var cu: CurrentPhase = currentPhase(b)
-    var co: List[Command.T] = Nil
+    var co: Seq[Command.T] = Nil
     // if "turned" phase of the game, only current player has moves until completes
     if (TurnPhase.turnAction(cu.turnPhase) && civ != cu.notcompleted.head) return Nil
+    co = CommandContainer.commandsAvail(b, civ, cu.turnPhase)
     val count: (Int, Int) = getNumberOfArmies(b, civ)
     cu.turnPhase match {
       case TurnPhase.StartOfTurn => {
@@ -132,6 +134,8 @@ object AllowedCommands {
     var pp: P = null
     var name: String = null
     var l: Seq[JsValue] = Nil
+    if (CommandContainer.isCommandCovered(command))
+      return Json.prettyPrint(JsArray(CommandContainer.itemize(b, civ, command)))
     command match {
       case Command.SETARMY | Command.SETSCOUT | Command.BUYARMY | Command.BUYSCOUT => {
         val a: Seq[(P, P)] = itemizeForSetBuyFigures(b, civ, command)
@@ -163,16 +167,16 @@ object AllowedCommands {
         l = itemizeForSetCapital(b, civ).map(writesP(_))
       }
       case Command.SPENDTRADE => {
-        l = SpendTrade.itemizeCommandsForSpendTrade(b,civ).map(writesP(_))
+        l = SpendTrade.itemizeCommandsForSpendTrade(b, civ).map(writesP(_))
       }
       case Command.UNDOSPENDTRADE => {
-        l = SpendTrade.itemizeCommandsForUndoSpendTrade(b,civ).map(writesP(_))
+        l = SpendTrade.itemizeCommandsForUndoSpendTrade(b, civ).map(writesP(_))
       }
       case Command.SENDPRODUCTION => {
-        l = SendProduction.itemizeCommandsForSendProduction(b,civ).map(writesCityScout(_))
+        l = SendProduction.itemizeCommandsForSendProduction(b, civ).map(writesCityScout(_))
       }
       case Command.UNDOSENDPRODUCTION => {
-        l = SendProduction.itemizeCommandsForUndoSendProduction(b,civ).map(writesCityScout(_))
+        l = SendProduction.itemizeCommandsForUndoSendProduction(b, civ).map(writesCityScout(_))
       }
       case _ => None
     }

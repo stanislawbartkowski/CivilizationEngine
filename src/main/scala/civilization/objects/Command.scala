@@ -27,5 +27,8 @@ object Command extends Enumeration {
   }
 }
 
+case class CommandParams(val p: Option[P], val param: Option[JsValue])
+
 case class CommandValues(val command: Command.T, val civ: Civilization.T, val p: P, val param: JsValue)
+
 
