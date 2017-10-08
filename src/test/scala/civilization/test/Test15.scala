@@ -2,14 +2,13 @@ package civilization.test
 
 import civilization.gameboard.GameBoard
 import civilization.helper.AllowedCommands.allowedCommands
+import civilization.helper._
 import civilization.io.fromjson.toJ
-import civilization.objects.{Civilization, Command}
+import civilization.objects._
 import org.scalatest.FunSuite
 import civilization.message._
 import civilization.{I, II, RR}
 import play.api.libs.json.{JsArray, JsObject, JsValue}
-
-import scala.xml.parsing.FatalError
 
 class Test15 extends FunSuite {
 
@@ -45,7 +44,6 @@ class Test15 extends FunSuite {
   private def runtest(): String = {
     val reg = Helper.readBoardAndPlayT("test15/BOARDGAME1.json", "test15/GAME1.json", Civilization.Rome)
     val token: String = reg._1
-    val bb: GameBoard = reg._2
     var g: GameBoard = I.getBoardForToken(token)
     assert(1 == g.playerDeck(Civilization.Rome).units.length)
     assert (!g.market.killedunits.isEmpty)
@@ -86,5 +84,40 @@ class Test15 extends FunSuite {
     println(uni)
   }
 
+  test("Test round no") {
+      val reg = Helper.readBoardAndPlayT("test11/BOARDGAME1.json", "test13/GAME2.json", Civilization.Rome)
+      val token: String = reg._1
+      var g: GameBoard = I.getBoardForToken(token)
+      val pha : CurrentPhase = currentPhase(g)
+      println(pha)
+      assert(0 == pha.roundno)
+    }
 
-}
+  test("Test round no with start game") {
+    val token: String = II.getData(II.REGISTEROWNER, "China")
+    println(token)
+    val s = II.getData(II.GETBOARDGAME, token)
+    Helper.executeCommandH(token, "SETCAPITAL", 2, 2, null)
+    Helper.executeCommandH(token, "ENDOFPHASE", -1, -1, """"StartOfTurn"""")
+    var g: GameBoard = I.getBoardForToken(token)
+    val pha : CurrentPhase = currentPhase(g)
+    println(pha)
+    assert(0 == pha.roundno)
+    assert(TurnPhase.Trade == pha.turnPhase)
+    val bs : String = II.getData(II.GETBOARDGAME,token)
+    println(bs)
+  }
+
+  test("Test round no get from game") {
+    val reg = Helper.readBoardAndPlayT("test15/BOARDTEST.json", "test15/GAME2.json", Civilization.America)
+    val token = reg._1
+    Helper.executeCommandH(token, "ENDOFPHASE", -1, -1, """"StartOfTurn"""")
+    var g: GameBoard = I.getBoardForToken(token)
+    val pha : CurrentPhase = currentPhase(g)
+    println(pha)
+    assert(0 == pha.roundno)
+    assert(TurnPhase.Trade == pha.turnPhase)
+  }
+
+
+  }
