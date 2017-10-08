@@ -98,6 +98,16 @@ IMPORTANT: seems not working properly, IntelliJ ant build does not generate scal
   * executeCommand("secret token","UNSENDPRODUCTION",2,2,"{"row" : 5, "col" : 3})
   * Undo send production in city (2,2) from square (5,3)
 
+## BUYARTILLERY,BUYMOUNTED,BUYINFANTRY,BUYAIRCRAFT
+
+* executeCommand(token,"BUYARTILLERY",row,col,null)
+* Parameters:
+  * row,col : city where the unit specifield by command name is to be bought
+  * jsparam : not used
+* Usage example:  
+  * executeCommand("secret token","BUYARTILLERY",2,2,null)
+  * Buy Artillery in city (2,2)
+
 # itemizeCommand format
 
 For every command the engine can return itemization, list of possible moves. The format is different for every command.
@@ -127,5 +137,18 @@ Sample
 \[ { "city" : { "row" : 2, "col" : 2 }, "scout" : { "row" : 1, "col" : 5 } } \]
 
 Production from square (1,5) can be sent to city (2.2)
+
+## BUYARTILLERY,BUYMOUNTED,BUYINFANTRY,BUYAIRCRAFT
+
+List of cities where unit can be bought. 
+
+Format:
+\[ {"row" : int,"col" : int} \]
+
+Sampe:
+
+\[ {"row" : 2,"col" : 2},{{"row" : 5,"col" : 3} \]
+
+A unit can be bought in two cities : (2,2) and (5,3)
 
 
