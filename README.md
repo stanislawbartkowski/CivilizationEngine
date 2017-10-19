@@ -120,22 +120,25 @@ IMPORTANT: seems not working properly, IntelliJ ant build does not generate scal
       "armieslimit" : 6,
       "scoutslimit" : 2,
       "tradeforprod" : 3,
-      "militarytech" : 0,
       
       "units" : {
         "units" : [ {
           "name" : "Artillery",
-          "num" : 1
+          "num" : 2,
+          "militarystrength" : 0
         }, {
           "name" : "Infantry",
-          "num" : 1
+          "num" : 0,
+          "militarystrength" : 0
         }, {
           "name" : "Mounted",
-          "num" : 1
+          "num" : 0,
+          "militarystrength" : 0
         }, {
           "name" : "Aircraft",
-          "num" : 0
-        } ],
+          "num" : 0,
+          "militarystrength" : 0
+        } ],      
         
         "list" : [ {
           "name" : "Infantry",
@@ -157,10 +160,11 @@ Example
 ```JSON
      {
       "name" : "Artillery",
-       "num" : 1
+       "num" : 1,
+       "militarystrength" : 0
       }
 ```
-Single artillery unit.
+Single artillery unit. militarystrenght : current tech advancement for this type of unit, number 0-3
 
 You receive also detailed list of units.
 ```JSON
