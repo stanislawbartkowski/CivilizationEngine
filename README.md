@@ -62,6 +62,115 @@ IMPORTANT: seems not working properly, IntelliJ ant build does not generate scal
 * Usage example: val board:String = getData(GETBOARDGAME,"secret token")
 * Description : Returns the gameboard reflecting the current state. 
 
+# Format, JSON
+```JSON
+{ {
+  "board" : {
+    "map" : [ [
+       .....
+    ]]
+   },
+   
+   "game" : {
+      "roundno" : 0,
+      "phase" : "Trade",
+      "active" : "China"
+    },
+    
+   "units" : {
+      "units" : [ {
+        "name" : "Artillery",
+        "num" : 23
+      }, {
+        "name" : "Infantry",
+        "num" : 23
+      }, {
+        "name" : "Mounted",
+        "num" : 23
+      }, {
+        "name" : "Aircraft",
+        "num" : 26
+      } ]
+    },
+    
+    "killedunits" : {
+      "units" : [ {
+        "name" : "Artillery",
+        "num" : 0
+      }, {
+        "name" : "Infantry",
+        "num" : 0
+      }, {
+        "name" : "Mounted",
+        "num" : 0
+      }, {
+        "name" : "Aircraft",
+        "num" : 0
+      } ],
+      "list" : [ ]
+    },
+      "you" : {
+      "civ" : "China",
+      "trade" : 6,
+      "commands" : [ {
+        "command" : "ENDOFPHASE"
+      } ],
+      
+      "citylimit" : 1,
+      "armieslimit" : 6,
+      "scoutslimit" : 2,
+      "tradeforprod" : 3,
+      "militarytech" : 0,
+      
+      "units" : {
+        "units" : [ {
+          "name" : "Artillery",
+          "num" : 1
+        }, {
+          "name" : "Infantry",
+          "num" : 1
+        }, {
+          "name" : "Mounted",
+          "num" : 1
+        }, {
+          "name" : "Aircraft",
+          "num" : 0
+        } ],
+        
+        "list" : [ {
+          "name" : "Infantry",
+          "strength" : [ 1, 2, 3, 4 ]
+        }, {
+          "name" : "Artillery",
+          "strength" : [ 1, 3, 4, 6 ]
+        }, {
+          "name" : "Mounted",
+          "strength" : [ 2, 3, 4, 5 ]
+        } ]
+      }
+    },
+  }
+```
+# Units
+Summary, number of units. Opposite players exposes only this information to you
+Example
+```JSON
+     {
+      "name" : "Artillery",
+       "num" : 1
+      }
+```
+Single artillery unit.
+
+You receive also detailed list of units.
+```JSON
+       {
+          "name" : "Infantry",
+          "strength" : [ 1, 2, 3, 4 ]
+        },
+```
+Infantry unit with power specified.
+
 ## executeCommand(token,actionname,row,col,jsparam)
 * Parameters
   * token : Returned by REGISTERGAME
@@ -150,5 +259,4 @@ Sampe:
 \[ {"row" : 2,"col" : 2},{{"row" : 5,"col" : 3} \]
 
 A unit can be bought in two cities : (2,2) and (5,3)
-
 
