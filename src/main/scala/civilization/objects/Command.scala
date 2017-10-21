@@ -20,7 +20,8 @@ object Command extends Enumeration {
     }
   }
 
-  def cityActionUnique(t: Value): Boolean = (t == BUYARMY || t == BUYSCOUT)
+  def cityActionUnique(t: Value): Boolean = (t == BUYARMY || t == BUYSCOUT || t == BUYARTILLERY ||
+        t == BUYAIRCRAFT || t == BUYINFANTRY || t == BUYMOUNTED)
 
   def actionMove(t: Value): Boolean = {
     return t == MOVE || t == REVEALTILE || t == ENDOFMOVE

@@ -66,14 +66,22 @@ object genboardj {
     JsArray(l.map(c => Json.obj(S.command -> c)).foldLeft(List[JsObject]())(_ :+ _))
   }
 
-  private def unitstoJSON(li: Seq[CombatUnit], detail: Boolean): JsValue = {
+  private def unitstoJSON(li: Seq[CombatUnit], detail: Boolean, s: CombatUnitStrength): JsValue = {
     val utype: Map[CombatUnitType.T, Seq[CombatUnit]] = li.groupBy(_.utype)
     //    val ulist : Seq[(CombatUnitType.T,Int)] = utype.map(u => (u._1,u._2.length)
     val ulist: Seq[(CombatUnitType.T, Int)] = CombatUnitType.values.map(u => (u, if (utype.get(u).isDefined) utype.get(u).get.length else 0)) toSeq
-    val useq: Seq[JsValue] = ulist.map(j => Json.obj(
-      S.unitname -> j._1,
-      "num" -> j._2
-    ));
+    val useq: Seq[JsValue] = ulist.map(j =>
+      if (s == null) Json.obj(
+        S.unitname -> j._1,
+        S.num -> j._2
+      ) else
+        Json.obj(
+          S.unitname -> j._1,
+          S.num -> j._2,
+          "militarystrength" -> s.getStrength(j._1)
+        )
+    )
+
     if (detail)
       Json.obj(
         S.units -> useq,
@@ -93,8 +101,7 @@ object genboardj {
     "armieslimit" -> p.limits.armieslimit,
     "scoutslimit" -> p.limits.scoutslimit,
     "tradeforprod" -> p.limits.tradeforProd,
-    "militarytech" -> p.limits.playerStrength,
-    S.units -> unitstoJSON(p.pl.units, you)
+    S.units -> unitstoJSON(p.pl.units, you, p.pl.combatlevel)
   )
 
   private def genBoardGameJ(g: GameBoard, civ: Civilization.T): BoardGameJ = {
@@ -136,8 +143,8 @@ object genboardj {
     JsObject(Seq("board" -> JsObject(Seq(
       "map" -> JsArray(rows),
       "game" -> gameToJ(b.g),
-      S.units -> unitstoJSON(g.market.units,false),
-      S.killedunits -> unitstoJSON(g.market.killedunits,true),
+      S.units -> unitstoJSON(g.market.units, false, null),
+      S.killedunits -> unitstoJSON(g.market.killedunits, true, null),
       "you" -> genPlayerDeckJson(b.you, true),
       "others" -> JsArray(o)
     ))))

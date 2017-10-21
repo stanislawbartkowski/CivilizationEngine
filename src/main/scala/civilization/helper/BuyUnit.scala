@@ -25,7 +25,7 @@ object BuyUnit extends CommandPackage with ImplicitMiximFromJson with ImplicitMi
   private def itemizeI(b: gameboard.GameBoard, civ: Civilization.T, com: Command.T, limit: PlayerLimits): Seq[P] = {
     val u: CombatUnitType.T = toU(com)
     if (u == CombatUnitType.Aircraft && !limit.aircraftUnlocked) return Nil
-    val cost: Int = ObjectCost.getCost(u, limit.playerStrength)
+    val cost: Int = ObjectCost.getCost(u, limit.playerStrength.getStrength(u))
     CitiesCanAfford(b, civ, cost)
   }
 

@@ -100,6 +100,15 @@ package object objects {
     val Artillery, Infantry, Mounted, Aircraft = Value
   }
 
+  case class CombatUnitStrength() {
+    private val s : Array[Int] = Array(0,0,0,0)
+    def getStrength(c : CombatUnitType.T) : Int = s(c.id)
+    def setStrength(c : CombatUnitType.T, newval : Int) = {
+      require(newval >=0 && newval <=3)
+      s(c.id) = newval
+    }
+  }
+
   case class CombatUnit(val utype:CombatUnitType.T, val strength:Array[Int] )
 
   object TechnologyName extends Enumeration {

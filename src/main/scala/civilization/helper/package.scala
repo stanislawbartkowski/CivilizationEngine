@@ -475,8 +475,7 @@ package object helper {
 
   // ==============================================
 
-  case class PlayerLimits(val citieslimit: Int, val stackinglimit: Integer, val watercrossingallowed: Boolean, val waterstopallowed: Boolean, val armieslimit: Int, val scoutslimit: Int, val travelSpeed: Int, val tradeforProd: Int, val playerStrength: Int, aircraftUnlocked: Boolean) {
-    require(playerStrength >= 0 && playerStrength < UNITLEVELSIZE)
+  case class PlayerLimits(val citieslimit: Int, val stackinglimit: Integer, val watercrossingallowed: Boolean, val waterstopallowed: Boolean, val armieslimit: Int, val scoutslimit: Int, val travelSpeed: Int, val tradeforProd: Int, val playerStrength: CombatUnitStrength, aircraftUnlocked: Boolean) {
 
     def prodForTrade(prod: Int): Int = prod * tradeforProd
   }
@@ -487,7 +486,7 @@ package object helper {
     val count: (Int, Int) = getNumberOfArmies(b, civ)
     val armieslimit: Int = deck.defaultarmieslimit - count._1
     val scoutslimit: Int = deck.defaultscoutslimit - count._2
-    PlayerLimits(citieslimit, deck.defaultstackinglimit, false, false, armieslimit, scoutslimit, deck.defaulttravelspeed, DEFAULTTRADEFORPROD, 0, false)
+    PlayerLimits(citieslimit, deck.defaultstackinglimit, false, false, armieslimit, scoutslimit, deck.defaulttravelspeed, DEFAULTTRADEFORPROD, deck.combatlevel, false)
   }
 
   // =====================================

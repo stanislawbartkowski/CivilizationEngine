@@ -106,6 +106,7 @@ package object gameboard {
     val defaultculturehandsize: Int = 2
     val defaultstackinglimit: Int = 2
     val defaulttravelspeed: Int = 2
+    val combatlevel : CombatUnitStrength = CombatUnitStrength()
   }
 
   case class Market(var units : Array[CombatUnit], var killedunits : Seq[CombatUnit])

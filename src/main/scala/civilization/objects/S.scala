@@ -36,4 +36,5 @@ object S {
   final val market = "market"
   final val units = "units"
   final val killedunits = "killedunits"
+  final val num = "num"
 }
