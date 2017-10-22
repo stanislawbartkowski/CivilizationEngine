@@ -225,7 +225,7 @@ Infantry unit with power specified.
 
 For every command the engine can return itemization, list of possible moves. The format is different for every command.
 
-## SETCAPITAL, SETCITY, SPENDTRADE, UNDOSPENDTRADE, UNDOSENDPRODUCTION
+## SETCAPITAL, SETCITY, SPENDTRADE
  
 List of points where a city or capital can be build or cities where trade can be spend to beef up production
 
@@ -251,16 +251,16 @@ Sample
 
 Production from square (1,5) can be sent to city (2.2)
 
-## BUYARTILLERY,BUYMOUNTED,BUYINFANTRY,BUYAIRCRAFT
+## BUYARTILLERY,BUYMOUNTED,BUYINFANTRY,BUYAIRCRAFT, UNDOSPENDTRADE, UNDOSPENDTRADE
 
 List of cities where unit can be bought. 
 
 Format:
-\[ {"row" : int,"col" : int} \]
+\[ {"p": {"row" : int,"col" : int}} \]
 
 Sampe:
 
-\[ {"row" : 2,"col" : 2},{{"row" : 5,"col" : 3} \]
+\[ {"p: : {"row" : 2,"col" : 2}},{ "p" : {"row" : 5,"col" : 3}} \]
 
 A unit can be bought in two cities : (2,2) and (5,3)
 
