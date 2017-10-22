@@ -224,7 +224,8 @@ package object helper {
     var clist: Seq[Command] = Nil
     val prevP: TurnPhase.T = prevPhase(pha)
     breakable {
-      rlist.foreach(c => {
+      // 2017/10/22 - filter out not belonging to civilization
+      rlist.filter(co => co.civ == civ).foreach(c => {
         val p: Option[TurnPhase.T] = getPhase(c)
         if (p.isDefined) {
           // break at the beginning of trade
@@ -240,10 +241,13 @@ package object helper {
   }
 
   def CityAvailableForAction(b: GameBoard, civ: Civilization.T): Seq[P] = {
+    // selects cities where city action is already executed
     val p: Seq[Command] = lastPhaseCommandsReverse(b, civ, TurnPhase.CityManagement).filter(co => Command.cityActionUnique(co.command))
     // all cities
     var cities: Set[P] = citiesForCivilization(b, civ).map(_.p).toSet
+    // from the list of all cities remove cities where city action is already done
     p.foreach(c => cities = cities - c.p)
+    // cities availables for action
     cities.toSeq
   }
 

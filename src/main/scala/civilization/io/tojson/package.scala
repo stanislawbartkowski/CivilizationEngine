@@ -148,11 +148,6 @@ package object tojson extends ImplicitMiximToJson {
 
   def writesP(p: P): JsValue = writesPoint(p)
 
-  def writesCityScout(p: (P, P)): JsValue = Json.obj(
-    S.city -> p._1,
-    "scout" -> p._2)
-
-
   def writesFigures(f: Figures) = Json.toJson(f)
 
   def writeListOfCiv(filt: Civilization.T => Boolean): JsValue = {

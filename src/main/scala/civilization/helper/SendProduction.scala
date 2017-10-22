@@ -1,12 +1,19 @@
 package civilization.helper
 
-import civilization.action.AbstractCommand
+import civilization.action.{AbstractCommand, CommandPackage}
+import civilization.gameboard.GameBoard
+import civilization.helper.SpendTrade.{SpendTrade, toInt}
+import civilization.io.fromjson.ImplicitMiximFromJson
+import civilization.io.tojson.ImplicitMiximToJson
 import civilization.message.{M, Mess}
 import civilization.objects._
 import civilization.{gameboard, message}
+import play.api.libs.json.JsValue
 
 
-object SendProduction {
+object SendProduction extends CommandPackage with ImplicitMiximFromJson with ImplicitMiximToJson {
+
+  override def getSet: Set[Command.T] = Set(Command.SENDPRODUCTION, Command.UNDOSENDPRODUCTION)
 
   private def allScouts(b: gameboard.GameBoard, civ: Civilization.T) : Seq[MapSquareP] = getFigures(b, civ).filter(_.s.figures.numberofScouts > 0)
 
@@ -14,7 +21,7 @@ object SendProduction {
     citiesForCivilization(b, civ).map(p => squaresAround(b, p.p)).flatten
 
   // (city, scout)
-  def itemizeCommandsForSendProduction(b: gameboard.GameBoard, civ: Civilization.T): Seq[(P, P)] = {
+  private def itemizeCommandsForSendProduction(b: gameboard.GameBoard, civ: Civilization.T): Seq[(P, P)] = {
     val out: Seq[MapSquareP] = allOutSkirts(b, civ)
     // filter out scout on outskirts
     // filter also all on squares without production
@@ -28,7 +35,7 @@ object SendProduction {
   }
 
   // (city,scout)
-  def itemizeCommandsForUndoSendProduction(b: gameboard.GameBoard, civ: Civilization.T): Seq[(P, P)] = {
+  private def itemizeCommandsForUndoSendProduction(b: gameboard.GameBoard, civ: Civilization.T): Seq[(P, P)] = {
     // scout => city
     val ma: Map[P, P] = sendprodForScouts(b, civ)
     val c : Seq[P] = CityAvailableForAction(b,civ)
@@ -36,7 +43,7 @@ object SendProduction {
     ma.filter(pp => c.find(_ == pp._2).isDefined).map(pp => (pp._2,pp._1)) toSeq
   }
 
-  class SendProduction(override val param: P) extends AbstractCommand(param) {
+  protected class SendProduction(override val param: P) extends AbstractCommand(param) {
 
     override def verify(board: gameboard.GameBoard): message.Mess = {
       val fig: Seq[MapSquareP] = allScouts(board,civ)
@@ -54,5 +61,12 @@ object SendProduction {
     override def execute(board: gameboard.GameBoard): Unit = Unit
   }
 
+  override def produceCommand(command: Command.T, civ: Civilization.T, p: P, param: JsValue) =
+    if (command == Command.SENDPRODUCTION) new SendProduction (param) else emptyCommandPoint(param)
+
+  override def itemize(b: GameBoard, civ: Civilization.T, com: Command.T): Seq[JsValue] = {
+    val li : Seq[(P, P)] = if (com == Command.SENDPRODUCTION) itemizeCommandsForSendProduction(b,civ) else itemizeCommandsForUndoSendProduction(b,civ)
+    li.map(writesCityScout)
+  }
 
 }

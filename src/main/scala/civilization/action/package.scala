@@ -8,7 +8,7 @@ import civilization.io.tojson._
 import civilization.helper._
 import play.api.libs.json.{JsArray, JsNull, JsUndefined, JsValue}
 
-package object action extends ImplicitMiximToJson with ImplicitMiximFromJson  {
+package object action extends ImplicitMiximToJson with ImplicitMiximFromJson {
 
   def constructCommand(c: CommandValues): Command =
     constructCommand(c.command, c.civ, c.p, c.param)
@@ -65,23 +65,23 @@ package object action extends ImplicitMiximToJson with ImplicitMiximFromJson  {
 
     case Command.ENDOFMOVE => new MoveAction.EndOfMoveAction()
 
-    case Command.SPENDTRADE => new SpendTrade.SpendTrade(toInt(param))
+    //    case Command.SPENDTRADE => new SpendTrade.SpendTrade(toInt(param))
 
-    case Command.UNDOSPENDTRADE =>
-      new AbstractCommandNone() {
-        override def execute(board: GameBoard) = Unit
+    //    case Command.UNDOSPENDTRADE =>
+    //      new AbstractCommandNone() {
+    //        override def execute(board: GameBoard) = Unit
 
-        override def verify(board: GameBoard): Mess = null
-      }
+    //        override def verify(board: GameBoard): Mess = null
+    //      }
 
-    case Command.UNDOSENDPRODUCTION =>
-      new AbstractCommand(toP(param)) {
-        override def execute(board: GameBoard) = Unit
+    //    case Command.UNDOSENDPRODUCTION =>
+    //      new AbstractCommand(toP(param)) {
+    //        override def execute(board: GameBoard) = Unit
 
-        override def verify(board: GameBoard): Mess = null
-      }
+    //        override def verify(board: GameBoard): Mess = null
+    //      }
 
-    case Command.SENDPRODUCTION => new SendProduction.SendProduction(toP(param))
+    //    case Command.SENDPRODUCTION => new SendProduction.SendProduction(toP(param))
 
     case Command.REVEALTILE => new RevealTileAction(toOrientation(param))
 
@@ -130,13 +130,31 @@ package object action extends ImplicitMiximToJson with ImplicitMiximFromJson  {
     def itemize(b: GameBoard, civ: Civilization.T, com: Command.T): Seq[JsValue] = itemizeP(b, civ, com)
 
     // can be called only by itemize
-    protected def itemizeP(b: GameBoard, civ: Civilization.T, com: Command.T): Seq[CommandParams] = ???
+    protected def itemizeP(b: GameBoard, civ: Civilization.T, com: Command.T): Seq[CommandParams] =
+      itemizePP(b, civ, com).map(p => CommandParams(Some(p), None))
 
-    def produceCommand(par: JsValue): Command
+    protected def itemizePP(b: GameBoard, civ: Civilization.T, com: Command.T): Seq[P] = ???
+
+    protected def emptyCommandPoint(param: JsValue): Command =
+      new AbstractCommand(toP(param)) {
+        override def execute(board: GameBoard) = Unit
+
+        override def verify(board: GameBoard): Mess = null
+      }
+
+    protected def emptyCommand(): Command =
+      new AbstractCommandNone() {
+        override def execute(board: GameBoard) = Unit
+
+        override def verify(board: GameBoard): Mess = null
+      }
+
+
+    def produceCommand(command: Command.T, civ: Civilization.T, p: P, param: JsValue): Command
 
     protected def defaultverify(board: GameBoard, civ: Civilization.T, com: Command.T, p: P, j: JsValue): Mess = {
       val itemi: Seq[JsValue] = itemize(board, civ, com)
-      val par: CommandParams = CommandParams(if (p == null || p.empty ) None else Some(p), if (j == null || j == JsNull) None else Some(j))
+      val par: CommandParams = CommandParams(if (p == null || p.empty) None else Some(p), if (j == null || j == JsNull) None else Some(j))
       if (itemi.find(eqJsParam(_, par)).isDefined) null else Mess(M.COMMANDPARAMETERDOESNOTMATCH, (civ, com, p, j))
     }
 

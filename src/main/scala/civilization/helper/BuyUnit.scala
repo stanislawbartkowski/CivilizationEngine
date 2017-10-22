@@ -29,13 +29,12 @@ object BuyUnit extends CommandPackage with ImplicitMiximFromJson with ImplicitMi
     CitiesCanAfford(b, civ, cost)
   }
 
-  override def itemizeP(b: gameboard.GameBoard, civ: Civilization.T, com: Command.T): Seq[CommandParams] = {
+  override def itemizePP(b: gameboard.GameBoard, civ: Civilization.T, com: Command.T): Seq[P] = {
     val limit: PlayerLimits = getLimits(b, civ)
-    val cities : Seq[P] = itemizeI(b, civ, com, limit)
-    cities.map(p => CommandParams(Some(p),None))
+    itemizeI(b, civ, com, limit)
   }
 
-  class BuyUnitAction extends AbstractCommandNone {
+  protected class BuyUnitAction extends AbstractCommandNone {
     def execute(board: GameBoard) = {
       val u: CombatUnitType.T = toU(command)
       val co: CombatUnit = getRandomUnit(board, u)
@@ -46,6 +45,6 @@ object BuyUnit extends CommandPackage with ImplicitMiximFromJson with ImplicitMi
   }
 
 
-  override def produceCommand(par: JsValue) =
+  override def produceCommand(command: Command.T, civ: Civilization.T, p: P, param: JsValue) =
     new BuyUnitAction()
 }

@@ -7,4 +7,6 @@ trait ImplicitMiximFromJson {
 
   implicit def toPoint(j: JsValue): P = convert[PJ](PJ(j))
 
+  implicit def toInt(j : JsValue) : Int = j.as[Int]
+
 }

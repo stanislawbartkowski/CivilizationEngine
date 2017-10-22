@@ -1,13 +1,13 @@
 package civilization.action
 
 import civilization.gameboard.GameBoard
-import civilization.helper.BuyUnit
+import civilization.helper.{ BuyUnit, SpendTrade,SendProduction}
 import civilization.objects.{TurnPhase, _}
 import play.api.libs.json.JsValue
 
 object CommandContainer {
 
-  val commands: Seq[CommandPackage] = Seq(BuyUnit)
+  val commands: Seq[CommandPackage] = Seq(BuyUnit,SpendTrade,SendProduction)
 
   val comset: Map[Command.T, CommandPackage] = commands.map(c => c.getSet.map(co => (co, c))).flatten.map(c => c._1 -> c._2) toMap
 
@@ -19,6 +19,6 @@ object CommandContainer {
   def itemize(b: GameBoard, civ: Civilization.T, com: Command.T): Seq[JsValue] =
     comset.get(com).get.itemize(b, civ, com)
 
-  def produceCommand(command: Command.T, civ: Civilization.T, p: P, param: JsValue): Command = comset.get(command).get.produceCommand(param)
+  def produceCommand(command: Command.T, civ: Civilization.T, p: P, param: JsValue): Command = comset.get(command).get.produceCommand(command,civ,p,param)
 
 }
