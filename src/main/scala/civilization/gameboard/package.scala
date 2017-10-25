@@ -8,7 +8,7 @@ import civilization.action.{Command, Play}
 
 package object gameboard {
 
-  private final val packageversion: Int = 1;
+  private final val packageversion: Int = 2;
 
   case class PatterMap(val p: P, val o: Orientation.T)
 
@@ -96,9 +96,26 @@ package object gameboard {
 
   }
 
-  case class Resources(var hv: Seq[HutVillage], var hvused: Seq[HutVillage])
+  class GameResources {
 
-  case class PlayerDeck(val civ: Civilization.T,var tech: Seq[PlayerTechnology],var units : Seq[CombatUnit]) {
+    //    val table : scala.collection.mutable.Map[Resource.T,Int] = Resource.values.map(v => (v,0)).toMap
+    val table: scala.collection.mutable.Map[Resource.T, Int] = scala.collection.mutable.Map(
+      Resource.Coin -> 0, Resource.Spy -> 0, Resource.Silk -> 0, Resource.Incense -> 0,
+      Resource.Iron -> 0, Resource.Uranium -> 0, Resource.Wheat -> 0)
+
+    def setResNum(r: Resource.T, num: Int) = table.put(r, num)
+    def incr(r:Resource.T) = table(r) = table(r) + 1
+    def decr(r:Resource.T) = {
+      require(table(r) > 0)
+      table(r) = table(r) - 1
+    }
+    def nof(r : Resource.T) : Int = table(r)
+
+  }
+
+  case class Resources(var hv: Seq[HutVillage], var hvused: Seq[HutVillage], val resou: GameResources)
+
+  case class PlayerDeck(val civ: Civilization.T, var tech: Seq[PlayerTechnology], var units: Seq[CombatUnit],val resou: GameResources) {
 
     val defaultcitylimit: Int = 2
     val defaultarmieslimit: Int = 6
@@ -106,10 +123,11 @@ package object gameboard {
     val defaultculturehandsize: Int = 2
     val defaultstackinglimit: Int = 2
     val defaulttravelspeed: Int = 2
-    val combatlevel : CombatUnitStrength = CombatUnitStrength()
+    val combatlevel: CombatUnitStrength = CombatUnitStrength()
+    var hvlist: Seq[HutVillage] = Nil
   }
 
-  case class Market(var units : Array[CombatUnit], var killedunits : Seq[CombatUnit])
+  case class Market(var units: Array[CombatUnit], var killedunits: Seq[CombatUnit])
 
   case class GameMetaData(val version: Int, val createtime: Long, var accesstime: Long, val desc: String) {
 
@@ -120,7 +138,7 @@ package object gameboard {
     def okV: Boolean = version == packageversion
   }
 
-  case class GameBoard(val players: Seq[PlayerDeck], val map: BoardMap, val resources: Resources, val market : Market) {
+  case class GameBoard(val players: Seq[PlayerDeck], val map: BoardMap, val resources: Resources, val market: Market) {
 
     var metadata: GameMetaData = new GameMetaData("")
 

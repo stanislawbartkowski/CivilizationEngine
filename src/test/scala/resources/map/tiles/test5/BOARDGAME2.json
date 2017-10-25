@@ -3,7 +3,8 @@
     {
       "civ": "Germany",
       "tech" : [],
-      "units" : []
+      "units" : [],
+      "resources" : []
     }
   ],
   "map": [
@@ -50,7 +51,8 @@
         "resource": "Wheat"
       }
     ],
-    "hutvillagesused": []
+    "hutvillagesused": [],
+    "resources" : []
   },
 
   "market" : {

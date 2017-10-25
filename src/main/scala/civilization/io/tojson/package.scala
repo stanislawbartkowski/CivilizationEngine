@@ -27,7 +27,8 @@ package object tojson extends ImplicitMiximToJson {
 
     def writes(m: Resources) = Json.obj(
       S.hutvillages -> m.hv,
-      S.hutvillagesused -> m.hvused
+      S.hutvillagesused -> m.hvused,
+      S.resources -> m.resou
     )
   }
 
@@ -41,7 +42,8 @@ package object tojson extends ImplicitMiximToJson {
     def writes(m: PlayerDeck) = Json.obj(
       S.civ -> m.civ,
       S.tech -> m.tech,
-      S.units -> m.units
+      S.units -> m.units,
+      S.resources -> m.resou
     )
   }
 
@@ -110,6 +112,15 @@ package object tojson extends ImplicitMiximToJson {
     )
   }
 
+  implicit val gameresourcesWrites : Writes[GameResources] = new Writes[GameResources]  {
+    def writes(m: GameResources) = {
+       var l: Seq[JsValue] = m.table.map(e => Json.obj(
+         S.resource -> e._1,
+         S.num -> e._2
+       )).toSeq
+      JsArray(l)
+    }
+  }
 
   implicit val commandparamWrites: Writes[CommandValues] = new Writes[CommandValues] {
     def writes(m: CommandValues) = Json.obj(

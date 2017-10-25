@@ -56,7 +56,7 @@ package object fromjson extends ImplicitMiximFromJson {
     def reads(json: JsValue): JsResult[Square] = {
       val terrain: Terrain.T = (json \ S.terrain).as[Terrain.T]
       val hv: HutVillage.T = (json \ S.hutvillage).asOpt[HutVillage.T].getOrElse(null)
-      val resource: Resource.T = (json \ S.resource).asOpt[Resource.T].getOrElse(null)
+      val resource: Option[Resource.T] = (json \ S.resource).asOpt[Resource.T]
       val naturalwonder: Boolean = (json \ "naturalwonder").asOpt[Boolean].getOrElse(false)
       val token: Tokens = (json \ "tokens").asOpt[Tokens].getOrElse(Tokens(0, 0, 0))
       JsSuccess(Square(terrain, hv, resource, naturalwonder, token))
@@ -178,9 +178,9 @@ package object fromjson extends ImplicitMiximFromJson {
       val civ: Civilization.T = (json \ S.civ).as[Civilization.T]
       val tech : Seq[PlayerTechnology] = (json \ S.tech).as[Seq[PlayerTechnology]]
       val units : Seq[CombatUnit] = (json \ S.units).as[Seq[CombatUnit]]
-      JsSuccess(PlayerDeck(civ,tech,units))
+      var resou : GameResources = (json \ S.resources).as[GameResources]
+      JsSuccess(PlayerDeck(civ,tech,units,resou))
     }
-
   }
 
 
@@ -197,12 +197,12 @@ package object fromjson extends ImplicitMiximFromJson {
     )
 
 
-  implicit val markdetReads: Reads[Resources] = (
-    (JsPath \ S.hutvillages).read[Seq[HutVillage]] and (JsPath \ S.hutvillagesused).read[Seq[HutVillage]]
+  implicit val marketReads: Reads[Resources] = (
+    (JsPath \ S.hutvillages).read[Seq[HutVillage]] and (JsPath \ S.hutvillagesused).read[Seq[HutVillage]] and
+    (JsPath \ S.resources).read[GameResources]
     ) (Resources.apply _)
 
-
-  implicit val marketReads : Reads[Market] = (
+  implicit val markettReads : Reads[Market] = (
     (JsPath \ S.units).read[Array[CombatUnit]] and (JsPath \ S.killedunits).read[Seq[CombatUnit]]
     ) (Market.apply _)
 
@@ -348,8 +348,16 @@ package object fromjson extends ImplicitMiximFromJson {
     if (p.isDefined && j2.p.isDefined)
        if (!(p == j2.p)) return false
     val jpar : Option[JsObject] = (j1 \ S.param).asOpt[JsObject]
-    assert(!jpar.isDefined && !j2.param.isDefined,"Not implemented for JSON")
-    true
+    if (jpar.isEmpty && j2.param.isEmpty) return true
+    if (!jpar.isDefined || !j2.param.isDefined) return false
+//    if (jpar.isDefined)
+//      if (j2.param.isEmpty) return false
+//    if (j2.param.isEmpty) return false
+
+//    assert(!jpar.isDefined && !j2.param.isDefined,"Not implemented for JSON")
+//    true
+    // TODO: json comparison, review
+    return jpar.get == j2.param.get
   }
 
 

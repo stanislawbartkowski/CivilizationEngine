@@ -1,13 +1,13 @@
 package civilization.action
 
 import civilization.gameboard.GameBoard
-import civilization.helper.{ BuyUnit, SpendTrade,SendProduction}
+import civilization.helper.{ BuyUnit, SpendTrade,SendProduction, HarvestResource}
 import civilization.objects.{TurnPhase, _}
 import play.api.libs.json.JsValue
 
 object CommandContainer {
 
-  val commands: Seq[CommandPackage] = Seq(BuyUnit,SpendTrade,SendProduction)
+  val commands: Seq[CommandPackage] = Seq(BuyUnit, SpendTrade, SendProduction, HarvestResource)
 
   val comset: Map[Command.T, CommandPackage] = commands.map(c => c.getSet.map(co => (co, c))).flatten.map(c => c._1 -> c._2) toMap
 

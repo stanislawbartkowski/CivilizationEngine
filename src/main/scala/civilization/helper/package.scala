@@ -4,6 +4,7 @@ import civilization.action.Command
 import civilization.gameboard._
 import civilization.message.{FatalError, M, Mess}
 import civilization.objects._
+import play.api.libs.json.JsValue
 
 import scala.util.control.Breaks._
 
@@ -20,7 +21,7 @@ package object helper {
 
     def numberOfProduction: Int = sm.token.numofProduction
 
-    def resource: Resource.T = sm.resource
+    def resource: Option[Resource.T] = sm.resource
 
     def suggestedCapitalForCiv: Option[Civilization.T] = if (suggestedCapital) Some(t.tile.civ) else None
   }
@@ -449,6 +450,49 @@ package object helper {
     val p: Seq[Command] = lastPhaseCommandsReverse(b, civ, TurnPhase.CityManagement).reverse.filter(co => co.command == Command.SENDPRODUCTION || co.command == Command.UNDOSENDPRODUCTION)
     val ma: Map[P, Seq[Command]] = p.groupBy(_.param.asInstanceOf[P]).filter(_._2.last.command == Command.SENDPRODUCTION)
     ma.map(pp => pp._1 -> pp._2.last.p)
+  }
+
+  // list of scouts used already for harvesting
+  private def scoutForHarvest(b : GameBoard, civ:Civilization.T) : Set[P] =
+    lastPhaseCommandsReverse(b, civ, TurnPhase.CityManagement).filter(_.civ == Command.HARVESTRESOURCE).
+      map(_.param.asInstanceOf[P]) toSet
+
+  // all scouts used for harvesting and sending production
+  private def scoutsUsedAlready(b: GameBoard, civ: Civilization.T) : Set[P] = {
+    val harv : Set[P] = scoutForHarvest(b,civ)
+    val sends : Set[P] = sendprodForScouts(b,civ).map(_._1) toSet
+
+    harv.union(sends)
+  }
+
+  private def allScouts(b: gameboard.GameBoard, civ: Civilization.T) : Seq[MapSquareP] = getFigures(b, civ).filter(_.s.figures.numberofScouts > 0)
+
+  private def allOutSkirts(b: gameboard.GameBoard, civ: Civilization.T): Seq[MapSquareP] =
+    citiesForCivilization(b, civ).map(p => squaresAround(b, p.p)).flatten
+
+  def scoutsAvailableForAction(b: GameBoard, civ: Civilization.T,pfilt: (MapSquareP) => Boolean) : Seq[(P,P)] = {
+    val out: Seq[MapSquareP] = allOutSkirts(b, civ)
+    // filter out scout on outskirts
+    // filter also all on squares without production
+    val fig: Seq[MapSquareP] = allScouts(b,civ).filter(sc => out.find(_.p == sc.p).isEmpty).filter(pfilt)
+    val c : Seq[P] = CityAvailableForAction(b,civ)
+    //    val scoutsused : Map[P,P] = sendprodForScouts(b,civ)
+    val scoutsused : Set[P] = scoutsUsedAlready(b,civ)
+    // filter out all scouts used already
+    val scouts : Seq[P] = fig.filter(sc => !scoutsused.contains(sc.p)).map(_.p)
+    // all cities x all scouts, cartesian product
+    c.map(cit => scouts.map(sc => (cit,sc))).flatten
+  }
+
+  def verifyScoutForAction(b: GameBoard, civ: Civilization.T, param : P) : Option[Mess] = {
+    val fig: Seq[MapSquareP] = allScouts(b,civ)
+    val scout: P = param
+    if (fig.find(_.p == param).isEmpty) return Some(Mess(M.NOSCOUTATTHISPOINT, (scout)))
+    val out: Seq[MapSquareP] = allOutSkirts(b, civ)
+    if (out.find(_.p == scout).isDefined)
+      return return Some(Mess(M.SCOUTISONCITYOUTSKIRT, (scout)))
+    return None
+
   }
 
   // City => sendProd

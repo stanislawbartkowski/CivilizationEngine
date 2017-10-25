@@ -4,5 +4,6 @@
   "numberofCities": 4,
   "numberofScouts": 2,
   "tech" : [],
-  "units" : []
+  "units" : [],
+  "resources" : []
 }

@@ -3,6 +3,7 @@
     {
       "civ": "America",
       "tech": [],
+      "resources" : [],
       "units": [
         {
           "name": "Infantry",
@@ -791,7 +792,8 @@
         "resource": "Silk"
       }
     ],
-    "hutvillagesused": []
+    "hutvillagesused": [],
+    "resources" : []
   },
   "market": {
     "units": [

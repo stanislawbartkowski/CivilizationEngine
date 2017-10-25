@@ -3,12 +3,14 @@
     {
       "civ" : "Rome",
       "tech" : [],
-      "units" : []
+      "units" : [],
+      "resources" : []
     },
     {
       "civ" : "China",
       "tech" : [],
-      "units" : []
+      "units" : [],
+      "resources" : []
     }
   ],
   "map" : [
@@ -40,7 +42,8 @@
         "hv" : "Village", "resource" : "Wheat"
       }
     ],
-    "hutvillagesused" : []
+    "hutvillagesused" : [],
+    "resources" : []
   },
 
   "market" : {

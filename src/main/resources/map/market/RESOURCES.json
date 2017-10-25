@@ -1,0 +1,7 @@
+[
+  { "num" : 25, "resource" : "Wheat" },
+  { "num" : 25, "resource" : "Incense" },
+  { "num" : 2, "resource" : "Iron" },
+  { "num" : 25, "resource" : "Coin" },
+  { "num" : 25, "resource" : "Silk"}
+]

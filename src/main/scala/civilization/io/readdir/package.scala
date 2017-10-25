@@ -71,7 +71,7 @@ package object readdir {
   case class NumCombatUnit(val no:Int, val unit:CombatUnit)
 
   implicit val nocombatunitReads: Reads[NumCombatUnit] = (
-    (JsPath \ "no").read[Int] and (JsPath \ "unit").read[CombatUnit]
+    (JsPath \ S.num).read[Int] and (JsPath \ "unit").read[CombatUnit]
     ) (NumCombatUnit.apply _)
 
 

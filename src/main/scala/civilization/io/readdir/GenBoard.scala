@@ -6,14 +6,20 @@ import civilization.io.fromjson.{toArrayHutVillages, toSeqPatterMap}
 import civilization.message.{FatalError, M, Mess}
 import civilization.objects.{Civilization, HutVillage, TilesRead, CombatUnit}
 import play.api.libs.json.JsValue
+import civilization.io.fromjson.ImplicitMiximFromJson
 
 import scala.collection.mutable.Buffer
 
-object GenBoard {
+object GenBoard extends  ImplicitMiximFromJson {
 
   private def readHutVillages: Array[HutVillage] = {
     val j: JsValue = readJSON("map/market", "HUTVILLAGES.json")
     toArrayHutVillages(j)
+  }
+
+  private def readResources : GameResources = {
+    val j: JsValue = readJSON("map/market", "RESOURCES.json")
+    j.as[GameResources]
   }
 
   def genBoard(l: List[Civilization.T], patt: String): GameBoard = {
@@ -50,10 +56,10 @@ object GenBoard {
       map = map :+ t
     })
     if (!sciv.isEmpty) throw FatalError(Mess(M.TOOMANYCIVREQUESTED))
-    val players: List[PlayerDeck] = l.map(PlayerDeck(_,Nil,Nil))
+    val players: List[PlayerDeck] = l.map(PlayerDeck(_,Nil,Nil, new GameResources()))
     val units : Seq[CombatUnit] = readListOfUnits
     val market : Market = Market(units.toArray,Nil)
-    val g: GameBoard = GameBoard(players, BoardMap(map), Resources(readHutVillages, Nil),market)
+    val g: GameBoard = GameBoard(players, BoardMap(map), Resources(readHutVillages, Nil,readResources),market)
     g.tech = readTechnologies
     // reveal tiles
     lpatt.foreach(p => if (p.o != null) revealTile(g, p.o, p.p))

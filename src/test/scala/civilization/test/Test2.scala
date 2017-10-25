@@ -31,12 +31,14 @@ class Test2 extends FunSuite {
     assert(3 == po2.length)
   }
 
+  private def eqr(r : Resource.T,sq1: Square) = sq1.resource.isDefined && sq1.resource.get == r
+
   test("Test board content") {
     val b: GameBoard = Helper.getBoard("test2/BOARDGAME1.json")
     val m: MapSquareP = getSquare(b, P(0, 0))
     println(m)
     assert(!m.revealed)
-    assert(Resource.Coin == m.sm.resource)
+    assert(eqr(Resource.Coin,m.sm))
     val m1: MapSquareP = getSquare(b, P(4, 0))
     println("4:0 -----------------------")
     println(m1)

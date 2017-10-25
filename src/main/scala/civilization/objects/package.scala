@@ -16,7 +16,7 @@ package object objects {
 
   case class Tokens(val numofTrade: Int, val numofProduction: Int, val numofCulture: Int)
 
-  case class Square(val terrain: Terrain.T, val hv: HutVillage.T, val resource: Resource.T, val naturalwonder: Boolean, val token: Tokens)
+  case class Square(val terrain: Terrain.T, val hv: HutVillage.T, val resource: Option[Resource.T], val naturalwonder: Boolean, val token: Tokens)
 
   case class TilesRead(val name: String, val tile: Tile)
 

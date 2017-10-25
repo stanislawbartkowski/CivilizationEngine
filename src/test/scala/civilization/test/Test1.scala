@@ -34,7 +34,7 @@ class Test1 extends FunSuite {
     println(l)
     val t: Square = convert[SquareJ](SquareJ(l))
     println(t)
-    assert(Resource.Incense == t.resource)
+    assert(eqr(Resource.Incense,t))
     assert(Terrain.Desert == t.terrain)
     assert(!t.naturalwonder)
     assert(t.hv == null)
@@ -47,7 +47,7 @@ class Test1 extends FunSuite {
     println(l)
     val t: Square = convert[SquareJ](SquareJ(l))
     println(t)
-    assert(t.resource == null)
+    assert(t.resource.isEmpty)
     assert(Terrain.Mountain == t.terrain)
   }
 
@@ -56,7 +56,7 @@ class Test1 extends FunSuite {
     println(l)
     val t: Square = convert[SquareJ](SquareJ(l))
     println(t)
-    assert(t.resource == null)
+    assert(t.resource.isEmpty)
     assert(Terrain.Mountain == t.terrain)
     assert(t.naturalwonder)
     assert(HutVillage.Hut == t.hv)
@@ -74,6 +74,8 @@ class Test1 extends FunSuite {
     assert(1 == ss.token.numofProduction)
   }
 
+  private def eqr(r : Resource.T,sq1: Square) = sq1.resource.isDefined && sq1.resource.get == r
+
   test("Read seq[seq] square") {
     val l: JsValue = readTestJSON("resources/map/tiles/SEQ2.json")
     println(l)
@@ -89,9 +91,9 @@ class Test1 extends FunSuite {
       }
     }
     val sq1: Square = s(0)(1)
-    assert(Resource.Incense == sq1.resource)
+    assert(eqr(Resource.Incense,sq1))
     val sq2: Square = s(0)(3)
-    assert(Resource.Silk == sq2.resource)
+    assert(eqr(Resource.Silk,sq2))
   }
 
   test("Read tile from JSON ") {

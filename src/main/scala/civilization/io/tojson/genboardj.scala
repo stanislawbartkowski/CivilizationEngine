@@ -11,7 +11,7 @@ object genboardj {
   // production:
   // if empty square : number of original production
   // if city: number of city production
-  case class MapSquareJ(revealed: Boolean, t: Terrain.T, trade: Int, production: Int, resource: Resource.T, capForCiv: Option[Civilization.T],
+  case class MapSquareJ(revealed: Boolean, t: Terrain.T, trade: Int, production: Int, resource: Option[Resource.T], capForCiv: Option[Civilization.T],
                         civ: Civilization.T, city: City.T, defence: Int, numberofArmies: Int, numberofScouts: Int, tile: String, hv: Option[HutVillage.T])
 
   case class PlayerDeckJ(civ: Civilization.T, numberofTrade: Int, commands: Seq[Command.T], limits: PlayerLimits, pl: PlayerDeck)
@@ -25,7 +25,7 @@ object genboardj {
     val trade: Int = if (ss.revealed) ss.numberOfTrade else -1;
     var civ: Civilization.T = if (ss.s.cityhere) ss.s.city.get.civ else null
     val production: Int = if (ss.revealed) (if (!ss.s.cityhere) ss.numberOfProduction else getProductionForCity(b, civ, ss.p).prod) else -1;
-    val resource: Resource.T = if (ss.revealed) ss.resource else null
+    val resource: Option[Resource.T] = if (ss.revealed) ss.resource else None
     val cap: Option[Civilization.T] = ss.suggestedCapitalForCiv
     var defence: Int = 0
     var city: City.T = null
@@ -117,7 +117,7 @@ object genboardj {
   }
 
   private def mapSquareJ(m: MapSquareJ): JsValue = {
-    Json.obj("revealed" -> m.revealed, S.terrain -> Option(m.t), S.trade -> m.trade, "production" -> m.production, S.resource -> Option(m.resource),
+    Json.obj("revealed" -> m.revealed, S.terrain -> Option(m.t), S.trade -> m.trade, "production" -> m.production, S.resource -> m.resource,
       "capciv" -> Option(m.capForCiv), S.civ -> Option(m.civ), S.city -> Option(m.city), "defence" -> m.defence, S.numberofArmies -> m.numberofArmies, S.numberofScouts -> m.numberofScouts,
       "tile" -> m.tile, S.hutvillage -> Option(m.hv)
     )

@@ -1,12 +1,27 @@
 package civilization.io.fromjson
 
-import civilization.objects.{P, CommandParams}
-import play.api.libs.json.{JsArray, JsValue, Json}
+import civilization.gameboard.GameResources
+import civilization.objects.{CommandParams, P, Resource, S}
+import play.api.libs.json._
 
 trait ImplicitMiximFromJson {
 
   implicit def toPoint(j: JsValue): P = convert[PJ](PJ(j))
 
   implicit def toInt(j : JsValue) : Int = j.as[Int]
+
+  implicit val gameResourcesReads : Reads[GameResources] = new Reads[GameResources] {
+    def reads(json: JsValue): JsResult[GameResources] = {
+      val r : GameResources = new GameResources()
+      val a : JsArray = json.as[JsArray]
+      a.value.foreach( i => {
+        val j : JsValue = i
+        val re : Resource.T = (i \ S.resource).get.as[Resource.T]
+        val num : Int = (i \ S.num).get.as[Int]
+        r.setResNum(re,num)
+      })
+      JsSuccess(r)
+    }
+  }
 
 }

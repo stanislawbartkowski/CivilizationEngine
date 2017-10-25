@@ -17,6 +17,8 @@ class Test7 extends FunSuite {
 
   Helper.I
 
+  private def eqr(r : Resource.T,sq1: Square) = sq1.resource.isDefined && sq1.resource.get == r
+
   test("Write basic") {
     var j: JsValue = writeCivilizationT(Civilization.Rome)
     println(j)
@@ -28,7 +30,7 @@ class Test7 extends FunSuite {
     val ss = getSquare(g, P(0, 0))
     println(ss)
     assert(Terrain.Mountain == ss.terrain)
-    assert(Resource.Coin == ss.sm.resource)
+    assert(eqr(Resource.Coin,ss.sm))
     // verify
     var se: Set[String] = Set()
     g.map.map.foreach(mm => {
