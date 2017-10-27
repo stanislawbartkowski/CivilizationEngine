@@ -1,15 +1,16 @@
 package civilization.test
 
-import civilization.I
+import civilization.{I, II}
 import civilization.objects._
 import civilization.gameboard.GameBoard
 import civilization.helper.AllowedCommands.allowedCommands
 import civilization.objects.{Civilization, Command}
 import org.scalatest.FunSuite
 import civilization.helper._
-import play.api.libs.json.JsArray
+import play.api.libs.json.{JsArray, JsValue}
 import civilization.io.fromjson.toJ
-
+import play.api.libs.json
+import play.api.libs.json._
 
 class Test16  extends FunSuite {
 
@@ -59,6 +60,11 @@ class Test16  extends FunSuite {
     println(reso.table)
     assert(1 == reso.nof(Resource.Iron))
     assert(1 == g.resources.resou.nof(Resource.Iron))
+    val bs: String = II.getData(II.GETBOARDGAME, token)
+    val j : JsValue = toJ(bs)
+    println(Json.prettyPrint(j))
+    val r : JsValue = (j \ "board" \ "resources").get
+    println(r)
   }
 
 }

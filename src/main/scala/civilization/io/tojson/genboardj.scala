@@ -101,7 +101,8 @@ object genboardj {
     "armieslimit" -> p.limits.armieslimit,
     "scoutslimit" -> p.limits.scoutslimit,
     "tradeforprod" -> p.limits.tradeforProd,
-    S.units -> unitstoJSON(p.pl.units, you, p.pl.combatlevel)
+    S.units -> unitstoJSON(p.pl.units, you, p.pl.combatlevel),
+    S.resources -> p.pl.resou
   )
 
   private def genBoardGameJ(g: GameBoard, civ: Civilization.T): BoardGameJ = {
@@ -141,10 +142,11 @@ object genboardj {
     val o: Seq[JsValue] = b.others.map(genPlayerDeckJson(_, false))
 
     JsObject(Seq("board" -> JsObject(Seq(
-      "map" -> JsArray(rows),
+      S.map -> JsArray(rows),
       "game" -> gameToJ(b.g),
       S.units -> unitstoJSON(g.market.units, false, null),
       S.killedunits -> unitstoJSON(g.market.killedunits, true, null),
+      S.resources -> Json.toJson(g.resources.resou),
       "you" -> genPlayerDeckJson(b.you, true),
       "others" -> JsArray(o)
     ))))
