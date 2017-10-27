@@ -109,6 +109,17 @@ IMPORTANT: seems not working properly, IntelliJ ant build does not generate scal
       } ],
       "list" : [ ]
     },
+    
+    [
+       {"resource":"Incense","num":25},
+       {"resource":"Spy","num":0},
+       {"resource":"Coin","num":25},
+       {"resource":"Silk","num":25}, 
+       {"resource":"Iron","num":1},
+       {"resource":"Uranium","num":0},
+       {"resource":"Wheat","num":25}
+     ]
+
       "you" : {
       "civ" : "China",
       "trade" : 6,
@@ -149,7 +160,31 @@ IMPORTANT: seems not working properly, IntelliJ ant build does not generate scal
         }, {
           "name" : "Mounted",
           "strength" : [ 2, 3, 4, 5 ]
-        } ]
+        } ],
+        
+      "resources" : [ {
+        "resource" : "Incense",
+        "num" : 0
+      }, {
+        "resource" : "Spy",
+        "num" : 0
+      }, {
+        "resource" : "Coin",
+        "num" : 0
+      }, {
+        "resource" : "Silk",
+        "num" : 0
+      }, {
+        "resource" : "Iron",
+        "num" : 1
+      }, {
+        "resource" : "Uranium",
+        "num" : 0
+      }, {
+        "resource" : "Wheat",
+        "num" : 0
+      } 
+      ]
       }
     },
   }
