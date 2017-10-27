@@ -228,8 +228,9 @@ Infantry unit with power specified.
 
 # executeCommand format
 
-## SENDPRODUCTION
+## SENDPRODUCTION,HARVESTRESOURCE
 * executeCommand(token,"SENDPRODUCTION",row,col,jsparam: { "row" : int, "col" : int })
+* executeCommand(token,"HARVESTRESOURCE",row,col,jsparam: { "row" : int, "col" : int })
 * Parameters
   * row,col : city position where production is to be sent
   * jsparam : scout square coordinates to be harvested
