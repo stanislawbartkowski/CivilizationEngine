@@ -47,7 +47,7 @@ object AllowedCommands {
   }
 
   // reveal: figure point, tile point, orientation
-  case class PossibleMove(var p: P, val reveal: Seq[(P, Orientation.T)], val move: Seq[P])
+  case class PossibleMove(var p: P, val reveal: Seq[(P, Orientation.T)], val move: Seq[P], val hut: Option[P])
 
   // return
   //  None : no move
@@ -68,15 +68,22 @@ object AllowedCommands {
     // prepare answer
     var reveal: Seq[(P, Orientation.T)] = Nil
     var move: Seq[P] = Nil
+    var hut: Option[P] = None
     points.foreach(pp =>
       pp._2 match {
         case None => {
           move = move :+ pp._1.p
         }
-        case Some(mess) => if (mess.m == M.POINTNOTREVEALED) reveal = reveal :+ (pointtoTile(pp._1.p), getOrientation(pp._1.p, p))
+        case Some(mess) =>
+          if (mess.m == M.POINTNOTREVEALED) reveal = reveal :+ (pointtoTile(pp._1.p), getOrientation(pp._1.p, p))
+          if (mess.m == M.CANNOTSETFIGUREONHUT) {
+            val figo: Option[PlayerMove] = getCurrentMove(b, civ)
+            if (figo.get.f.numberofArmies > 0 || (figo.get.f.numberofScouts > 0 && lim.scoutscanExplore))
+              hut = Some(pp._1.p)
+          }
       }
     )
-    Some(PossibleMove(p, reveal, move))
+    Some(PossibleMove(p, reveal, move, hut))
   }
 
   private def toActions(m: PossibleMove): Seq[Command.T] = {
@@ -84,6 +91,7 @@ object AllowedCommands {
     if (m == null) return li
     if (!m.reveal.isEmpty) li = li :+ Command.REVEALTILE
     if (!m.move.isEmpty) li = li :+ Command.MOVE
+    if (m.hut.isDefined) li = li :+ Command.EXPLOREHUT
     li
   }
 

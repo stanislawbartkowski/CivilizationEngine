@@ -67,6 +67,8 @@ package object action extends ImplicitMiximToJson with ImplicitMiximFromJson {
 
     case Command.REVEALTILE => new RevealTileAction(toOrientation(param))
 
+    case Command.EXPLOREHUT => new ExploreHutCommand.ExploreHutCommand()
+
     case Command.RESEARCH => new ResearchTechnologyAction(toTechnologName(param))
 
     case _ => throw FatalError(Mess(M.NOTIMPLELEMENTEDYET, command))

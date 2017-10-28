@@ -377,7 +377,7 @@ package object fromjson extends ImplicitMiximFromJson {
 
   def toTurnPhase(j: JsValue): TurnPhase.T = convert[TurnPhaseJ](TurnPhaseJ(j))
 
-  def toOrientation(j: JsValue): Orientation.T = convert[OrientationJ](OrientationJ(j))
+//  def toOrientation(j: JsValue): Orientation.T = convert[OrientationJ](OrientationJ(j))
 
   def toFigure(j: JsValue): Figure.T = {
     j.as[Figure.T]

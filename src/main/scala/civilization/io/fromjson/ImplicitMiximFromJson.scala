@@ -1,7 +1,7 @@
 package civilization.io.fromjson
 
 import civilization.gameboard.GameResources
-import civilization.objects.{CommandParams, P, Resource, S}
+import civilization.objects._
 import play.api.libs.json._
 
 trait ImplicitMiximFromJson {
@@ -23,5 +23,8 @@ trait ImplicitMiximFromJson {
       JsSuccess(r)
     }
   }
+
+  implicit def toOrientation(j: JsValue): Orientation.T = convert[OrientationJ](OrientationJ(j))
+
 
 }

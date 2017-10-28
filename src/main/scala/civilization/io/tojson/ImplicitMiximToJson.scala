@@ -24,10 +24,6 @@ trait ImplicitMiximToJson {
 
   implicit def toJSArrayParams(li: Seq[CommandParams]): Seq[JsValue] = li.map(CPtoJS)
 
-  implicit def writesCityScout(p: (P, P)): JsValue = Json.obj(
-    S.city -> p._1,
-    "scout" -> p._2)
-
   implicit def writesCityPoint(p: (P, P)): JsValue = Json.obj(
     S.p -> p._1,
     S.param -> p._2)

@@ -262,7 +262,7 @@ package object helper {
 
     def len: Int = moves.filter(_.p.isDefined).length - 1
 
-    def isFinished = moves.last.command == Command.ENDOFMOVE
+    def isFinished = moves.last.command == Command.ENDOFMOVE || moves.last.command == Command.EXPLOREHUT
 
     def lastp: P = begstop._2.p.get
   }
@@ -281,7 +281,7 @@ package object helper {
     p.foreach(co => co.command match {
       case Command.MOVE | Command.ENDOFMOVE =>
         moves = moves :+ Move(co.command, if (co.p == null) None else Some(co.p))
-      case Command.REVEALTILE => moves = moves :+ moves.last // for reveal repeat last, figure is stanng
+      case Command.REVEALTILE => moves = moves :+ moves.last // for reveal repeat last
       case _ => {
         if (fig != null) li = li :+ PlayerMove(fig, moves)
         fig = null
@@ -453,39 +453,39 @@ package object helper {
   }
 
   // list of scouts used already for harvesting
-  private def scoutForHarvest(b : GameBoard, civ:Civilization.T) : Set[P] =
+  private def scoutForHarvest(b: GameBoard, civ: Civilization.T): Set[P] =
     lastPhaseCommandsReverse(b, civ, TurnPhase.CityManagement).filter(_.civ == Command.HARVESTRESOURCE).
       map(_.param.asInstanceOf[P]) toSet
 
   // all scouts used for harvesting and sending production
-  private def scoutsUsedAlready(b: GameBoard, civ: Civilization.T) : Set[P] = {
-    val harv : Set[P] = scoutForHarvest(b,civ)
-    val sends : Set[P] = sendprodForScouts(b,civ).map(_._1) toSet
+  private def scoutsUsedAlready(b: GameBoard, civ: Civilization.T): Set[P] = {
+    val harv: Set[P] = scoutForHarvest(b, civ)
+    val sends: Set[P] = sendprodForScouts(b, civ).map(_._1) toSet
 
     harv.union(sends)
   }
 
-  private def allScouts(b: gameboard.GameBoard, civ: Civilization.T) : Seq[MapSquareP] = getFigures(b, civ).filter(_.s.figures.numberofScouts > 0)
+  private def allScouts(b: gameboard.GameBoard, civ: Civilization.T): Seq[MapSquareP] = getFigures(b, civ).filter(_.s.figures.numberofScouts > 0)
 
   private def allOutSkirts(b: gameboard.GameBoard, civ: Civilization.T): Seq[MapSquareP] =
     citiesForCivilization(b, civ).map(p => squaresAround(b, p.p)).flatten
 
-  def scoutsAvailableForAction(b: GameBoard, civ: Civilization.T,pfilt: (MapSquareP) => Boolean) : Seq[(P,P)] = {
+  def scoutsAvailableForAction(b: GameBoard, civ: Civilization.T, pfilt: (MapSquareP) => Boolean): Seq[(P, P)] = {
     val out: Seq[MapSquareP] = allOutSkirts(b, civ)
     // filter out scout on outskirts
     // filter also all on squares without production
-    val fig: Seq[MapSquareP] = allScouts(b,civ).filter(sc => out.find(_.p == sc.p).isEmpty).filter(pfilt)
-    val c : Seq[P] = CityAvailableForAction(b,civ)
+    val fig: Seq[MapSquareP] = allScouts(b, civ).filter(sc => out.find(_.p == sc.p).isEmpty).filter(pfilt)
+    val c: Seq[P] = CityAvailableForAction(b, civ)
     //    val scoutsused : Map[P,P] = sendprodForScouts(b,civ)
-    val scoutsused : Set[P] = scoutsUsedAlready(b,civ)
+    val scoutsused: Set[P] = scoutsUsedAlready(b, civ)
     // filter out all scouts used already
-    val scouts : Seq[P] = fig.filter(sc => !scoutsused.contains(sc.p)).map(_.p)
+    val scouts: Seq[P] = fig.filter(sc => !scoutsused.contains(sc.p)).map(_.p)
     // all cities x all scouts, cartesian product
-    c.map(cit => scouts.map(sc => (cit,sc))).flatten
+    c.map(cit => scouts.map(sc => (cit, sc))).flatten
   }
 
-  def verifyScoutForAction(b: GameBoard, civ: Civilization.T, param : P) : Option[Mess] = {
-    val fig: Seq[MapSquareP] = allScouts(b,civ)
+  def verifyScoutForAction(b: GameBoard, civ: Civilization.T, param: P): Option[Mess] = {
+    val fig: Seq[MapSquareP] = allScouts(b, civ)
     val scout: P = param
     if (fig.find(_.p == param).isEmpty) return Some(Mess(M.NOSCOUTATTHISPOINT, (scout)))
     val out: Seq[MapSquareP] = allOutSkirts(b, civ)
@@ -523,7 +523,9 @@ package object helper {
 
   // ==============================================
 
-  case class PlayerLimits(val citieslimit: Int, val stackinglimit: Integer, val watercrossingallowed: Boolean, val waterstopallowed: Boolean, val armieslimit: Int, val scoutslimit: Int, val travelSpeed: Int, val tradeforProd: Int, val playerStrength: CombatUnitStrength, aircraftUnlocked: Boolean) {
+  case class PlayerLimits(val citieslimit: Int, val stackinglimit: Integer, val watercrossingallowed: Boolean, val waterstopallowed: Boolean,
+                          val armieslimit: Int, val scoutslimit: Int, val travelSpeed: Int, val tradeforProd: Int,
+                          val playerStrength: CombatUnitStrength, val aircraftUnlocked: Boolean, val scoutscanExplore: Boolean) {
 
     def prodForTrade(prod: Int): Int = prod * tradeforProd
   }
@@ -534,7 +536,7 @@ package object helper {
     val count: (Int, Int) = getNumberOfArmies(b, civ)
     val armieslimit: Int = deck.defaultarmieslimit - count._1
     val scoutslimit: Int = deck.defaultscoutslimit - count._2
-    PlayerLimits(citieslimit, deck.defaultstackinglimit, false, false, armieslimit, scoutslimit, deck.defaulttravelspeed, DEFAULTTRADEFORPROD, deck.combatlevel, false)
+    PlayerLimits(citieslimit, deck.defaultstackinglimit, false, false, armieslimit, scoutslimit, deck.defaulttravelspeed, DEFAULTTRADEFORPROD, deck.combatlevel, false, false)
   }
 
   // =====================================
@@ -554,7 +556,8 @@ package object helper {
     }
     if (s.cityhere)
       if (!s.city.get.belongsTo(civ)) return Some(Mess(M.CANNOTSETFGUREONALIENCITY, s))
-    if (s.hvhere) return Some(Mess(M.CANNOTSETFIGUREONHUTORVILLAGE, s))
+    if (s.hvhere)
+      if (s.hv.get == HutVillage.Hut) return Some(Mess(M.CANNOTSETFIGUREONHUT)) else return Some(Mess(M.CANNOTSETFIGUREONVILLAGE))
     None
   }
 
@@ -592,6 +595,14 @@ package object helper {
     val s: MapSquareP = getSquare(b, p)
     s.s.figures.civ = civ
     s.s.figures + f
+  }
+
+  def exploreHutOrVillage(b: GameBoard, civ: Civilization.T, p: P)  = {
+    val m: MapSquareP = getSquare(b, p)
+    val h: HutVillage = m.s.hv.get
+    m.s.hv = None
+    val pl: PlayerDeck = b.playerDeck(civ)
+    pl.hvlist = pl.hvlist :+ h
   }
 
 }
