@@ -274,16 +274,16 @@ Sample
  
  For SETCITY it is a list points where new city can be build.
 
-## SENDPRODUCTION, UNDOSENDPRODUCTION
+## SENDPRODUCTION, UNDOSENDPRODUCTION, HARVESTRESOURCES
 
-List of pairs, city and scout. City, where production can be sent and scout, a square to be harvested or undone
+List of pairs, city and scout or square. City, where production can be sent and scout, a square to be harvested or undone
 
 Format:
-\[ { "city" : {"row" : int, "col" : int}, "scout" : { "row" : int, "col" : int } } \]
+\[ { "p" : {"row" : int, "col" : int}, "param" : { "row" : int, "col" : int } } \]
 
 Sample
 
-\[ { "city" : { "row" : 2, "col" : 2 }, "scout" : { "row" : 1, "col" : 5 } } \]
+\[ { "p" : { "row" : 2, "col" : 2 }, "param" : { "row" : 1, "col" : 5 } } \]
 
 Production from square (1,5) can be sent to city (2.2)
 
