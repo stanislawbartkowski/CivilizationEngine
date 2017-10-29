@@ -37,4 +37,5 @@ object S {
   final val units = "units"
   final val killedunits = "killedunits"
   final val num = "num"
+  final val list = "list"
 }

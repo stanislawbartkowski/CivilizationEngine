@@ -8,7 +8,7 @@ import civilization.io.readdir.{readGameBoard, readPlay, readTestJSON}
 import civilization.message.{FatalError, Mess}
 import civilization.objects.{CommandValues, _}
 import play.api.libs.json.JsValue
-import civilization.II
+import civilization.I.II
 
 object Helper {
 

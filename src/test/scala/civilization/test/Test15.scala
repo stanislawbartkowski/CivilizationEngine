@@ -1,14 +1,15 @@
 package civilization.test
 
+import civilization.I
+import civilization.I.II
 import civilization.gameboard.GameBoard
 import civilization.helper.AllowedCommands.allowedCommands
 import civilization.helper._
 import civilization.io.fromjson.toJ
+import civilization.message._
 import civilization.objects._
 import org.scalatest.FunSuite
-import civilization.message._
-import civilization.{I, II, RR}
-import play.api.libs.json.{JsArray, JsObject, JsValue}
+import play.api.libs.json.{JsArray, JsValue}
 
 class Test15 extends FunSuite {
 

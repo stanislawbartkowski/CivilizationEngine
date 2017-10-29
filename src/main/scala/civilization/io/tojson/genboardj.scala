@@ -3,8 +3,11 @@ package civilization.io.tojson
 import civilization.gameboard._
 import civilization.helper._
 import civilization.objects._
-import play.api.libs.json.{JsArray, JsObject, JsValue, Json}
+import play.api.libs.json._
 import civilization.helper.AllowedCommands.allowedCommands
+import com.fasterxml.jackson.annotation.JsonValue
+
+/** Generates game board in JSON to be picked up by UI. */
 
 object genboardj {
 
@@ -19,6 +22,18 @@ object genboardj {
   case class Game(active: Civilization.T, roundno: Int, phase: TurnPhase.T)
 
   case class BoardGameJ(g: Game, map: Array[Array[MapSquareJ]], you: PlayerDeckJ, others: Seq[PlayerDeckJ])
+
+  private def producehv(hvcount : Map[HutVillage.T, Seq[HutVillage]], h : HutVillage.T) : JsObject =
+    if (hvcount.contains(h)) JsObject(Seq(h.toString ->JsNumber(hvcount(h).length))) else JsObject.empty
+
+  private def hvtojson(hv : Seq[HutVillage], you : Boolean) : JsValue = {
+    // calculate the number of Hut and Villages
+    val hvcount : Map[HutVillage.T, Seq[HutVillage]] = hv.groupBy(_.hv)
+    val jhut : JsObject = producehv(hvcount,HutVillage.Village)
+    val jvillage : JsObject = producehv(hvcount,HutVillage.Hut)
+    val l : JsObject = if (you) Json.obj(S.list -> hv) else JsObject.empty
+    return jhut ++ jvillage ++ l
+  }
 
   private def contructSquareJ(b: GameBoard, ss: MapSquareP): MapSquareJ = {
     val t: Terrain.T = if (ss.revealed) ss.terrain else null;
@@ -85,7 +100,7 @@ object genboardj {
     if (detail)
       Json.obj(
         S.units -> useq,
-        "list" -> li
+        S.list -> li
       )
     else
       Json.obj(
@@ -102,7 +117,8 @@ object genboardj {
     "scoutslimit" -> p.limits.scoutslimit,
     "tradeforprod" -> p.limits.tradeforProd,
     S.units -> unitstoJSON(p.pl.units, you, p.pl.combatlevel),
-    S.resources -> p.pl.resou
+    S.resources -> p.pl.resou,
+    S.hutvillages -> hvtojson(p.pl.hvlist, you)
   )
 
   private def genBoardGameJ(g: GameBoard, civ: Civilization.T): BoardGameJ = {
@@ -147,6 +163,7 @@ object genboardj {
       S.units -> unitstoJSON(g.market.units, false, null),
       S.killedunits -> unitstoJSON(g.market.killedunits, true, null),
       S.resources -> Json.toJson(g.resources.resou),
+      S.hutvillages -> hvtojson(g.resources.hvused,true),
       "you" -> genPlayerDeckJson(b.you, true),
       "others" -> JsArray(o)
     ))))

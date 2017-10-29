@@ -25,7 +25,7 @@ object Command extends Enumeration {
         t == BUYAIRCRAFT || t == BUYINFANTRY || t == BUYMOUNTED || t == HARVESTRESOURCE)
 
   def actionMove(t: Value): Boolean = {
-    return t == MOVE || t == REVEALTILE || t == ENDOFMOVE
+    return t == MOVE || t == REVEALTILE || t == ENDOFMOVE || t == EXPLOREHUT
   }
 }
 

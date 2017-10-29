@@ -24,7 +24,7 @@ object GenBoard extends  ImplicitMiximFromJson {
 
   def genBoard(l: List[Civilization.T], patt: String): GameBoard = {
     val j: JsValue = readJSON("map/pattern", patt)
-    val lpatt: Seq[PatterMap] = toSeqPatterMap(j)
+    val lpatt: Seq[PatternMap] = toSeqPatterMap(j)
     val tiles: Seq[TilesRead] = readListOfTiles
     val ra = scala.util.Random
     // extract only normal tiles
@@ -34,7 +34,7 @@ object GenBoard extends  ImplicitMiximFromJson {
     var map: Seq[MapTile] = Nil
     lpatt.foreach(p => {
       var tile: TilesRead = null
-      if (p.o != null) {
+      if (p.o.isDefined) {
         if (sciv.isEmpty) throw FatalError(Mess(M.MORECIVTTILESTHENCIVDECLARED))
         // take first civ
         val civ: Civilization.T = sciv.head
@@ -51,7 +51,7 @@ object GenBoard extends  ImplicitMiximFromJson {
         //ntile = H.removeElement(ntile,i)
         ntile.remove(i)
       }
-      val t: MapTile = MapTile(tile.name, p.p, null, genEmptySquares)
+      val t: MapTile = MapTile(tile.name, p.p, None, genEmptySquares)
       t.tile = tile.tile
       map = map :+ t
     })
@@ -62,7 +62,7 @@ object GenBoard extends  ImplicitMiximFromJson {
     val g: GameBoard = GameBoard(players, BoardMap(map), Resources(readHutVillages, Nil,readResources),market)
     g.tech = readTechnologies
     // reveal tiles
-    lpatt.foreach(p => if (p.o != null) revealTile(g, p.o, p.p))
+    lpatt.foreach(p => if (p.o.isDefined) revealTile(g, p.o.get, p.p))
     // attach random three units
     g.players.foreach(p => p.units = getThreeRandomUnits(g))
     g

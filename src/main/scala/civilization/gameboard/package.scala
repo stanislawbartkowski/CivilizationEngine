@@ -6,12 +6,28 @@ import civilization.objects._
 import civilization.action.{Command, Play}
 
 
+/** Placeholder for objects and definitions related to the gameboard. */
 package object gameboard {
 
+  /** Version: used during storing and retrieving gameboard from datastore.
+    * Ignore games which does not fit to avoid runtime errors
+    */
   private final val packageversion: Int = 2;
 
-  case class PatterMap(val p: P, val o: Orientation.T)
+  /** Part of map pattern. Position of the tile and orientation.
+    * Initially only civilication tiles have orientation specified.
+    * The tile is revealed if o isDefine  otherwise still hidden
+    * @param p Position in the map pattern, row and column, (0,0) means (bottom, left)
+    * @param o Orienation. If isDefine the tile is revealed
+    */
+  case class PatternMap(val p: P, val o: Option[Orientation.T])
 
+
+  /** Technology dictionary
+    *
+    * @param tech  Technology name
+    * @param level Level of this technology
+    */
   case class Technology(val tech: TechnologyName.T, val level: Int)
 
   case class PlayerTechnology(val tech: TechnologyName.T)
@@ -71,7 +87,9 @@ package object gameboard {
   }
 
   // tile is var, enriched later by tname
-  case class MapTile(val tname: String, val p: P, var orientation: Orientation.T, val mapsquares: Array[Array[MapSquare]]) {
+  case class MapTile(val tname: String, val p: P, var orientation: Option[Orientation.T], val mapsquares: Array[Array[MapSquare]]) {
+    assert(orientation != null)
+    assert(orientation != Some(null))
     var tile: Tile = _
   }
 

@@ -6,6 +6,9 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json
 import play.api.libs.json._
 
+
+/** Helper methods to convert objects into JSON */
+
 package object tojson extends ImplicitMiximToJson {
 
   implicit val hutVillageWrites: Writes[HutVillage] = (
@@ -141,7 +144,6 @@ package object tojson extends ImplicitMiximToJson {
       S.unitstrength -> m.strength
     )
   }
-
 
   def writeCivilizationT(c: Civilization.T): JsValue = Json.toJson(c)
 

@@ -1,7 +1,7 @@
 package civilization.test
 
 import civilization.I._
-import civilization.II
+import civilization.I.II
 import civilization.gameboard.{Figures, GameBoard}
 import civilization.helper.AllowedCommands.{PossibleMove, allowedCommands, itemizeForMove, itemizeforStartOfMove}
 import civilization.helper._

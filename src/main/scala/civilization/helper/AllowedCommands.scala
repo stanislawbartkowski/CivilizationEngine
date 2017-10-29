@@ -144,7 +144,7 @@ object AllowedCommands {
       case Command.SETARMY | Command.SETSCOUT | Command.BUYARMY | Command.BUYSCOUT => {
         val a: Seq[(P, P)] = itemizeForSetBuyFigures(b, civ, command)
         l = a.map(o => Json.obj(S.p -> writesP(o._1), S.param -> writesP(o._2)))
-        Json.prettyPrint(JsArray(l))
+//        Json.prettyPrint(JsArray(l))
       }
       case Command.STARTMOVE => {
         var a: Seq[(Figures, P)] = itemizeforStartOfMove(b, civ)
@@ -163,6 +163,14 @@ object AllowedCommands {
         pp = o.get.p
         name = "tiles"
         l = o.get.reveal.map(r => Json.obj(S.p -> writesP(r._1), S.orientation -> r._2))
+      }
+      case Command.EXPLOREHUT => {
+        val o: Option[PossibleMove] = itemizeForMove(b, civ)
+        assert(o.isDefined && o.get != null)
+        assert(o.get.hut.isDefined)
+        name = "explore"
+        pp = o.get.p
+        l = List(writesP(o.get.hut.get))
       }
       case Command.SETCITY => {
         l = itemizeForSetSity(b, civ).map(writesP(_))

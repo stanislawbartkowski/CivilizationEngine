@@ -79,16 +79,17 @@ object MoveAction {
   }
 
   private def figureMoveExecute(b: GameBoard, civ: Civilization.T, p: P, endofmove: Boolean) = {
-    val fig: PlayerMove = getCurrentMove(b, civ).get
-    val last: P = fig.lastp
 
     if (endofmove && p == null) None
-    else {
-      // remove from last
-      putFigures(b, civ, last, -(fig.f.toFigures))
+    else
+//      val fig: PlayerMove = getCurrentMove(b, civ).get
+//      val last: P = fig.lastp
+//      // remove from last
+//      putFigures(b, civ, last, -(fig.f.toFigures))
       // new position
-      putFigures(b, civ, p, fig.f.toFigures)
-    }
+//      putFigures(b, civ, p, fig.f.toFigures)
+      moveFigures(b,civ,p)
+
   }
 
 

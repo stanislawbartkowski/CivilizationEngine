@@ -13,7 +13,7 @@ package object helper {
   private val ra = scala.util.Random
 
   case class MapSquareP(val s: MapSquare, val sm: Square, val p: P, val t: MapTile, val suggestedCapital: Boolean) {
-    def revealed: Boolean = t.orientation != null
+    def revealed: Boolean = t.orientation.isDefined
 
     def terrain: Terrain.T = sm.terrain
 
@@ -65,19 +65,19 @@ package object helper {
     //    if (tile == null || !tile.revealed) return null
     if (tile == null) return null
     tile.orientation match {
-      case Orientation.Left => {
+      case Some(Orientation.Left) => {
         col = TILESIZE - 1 - srow
         row = scol;
       }
-      case null | Orientation.Down => {
+      case None | Some(Orientation.Down) => {
         col = scol;
         row = srow
       }
-      case Orientation.Right => {
+      case Some(Orientation.Right) => {
         col = srow
         row = TILESIZE - 1 - scol
       }
-      case Orientation.Up => {
+      case Some(Orientation.Up) => {
         col = TILESIZE - 1 - scol;
         row = TILESIZE - 1 - srow
       }
@@ -117,10 +117,10 @@ package object helper {
     None
   }
 
-  def revealTile(board: GameBoard, o: Orientation.T, p: P) {
+  def revealTile(board: GameBoard, o :Orientation.T, p: P) {
     val m: MapTile = getTile(board, p)
-    if (m.orientation != null) throw FatalError(Mess(M.TILEALREADYREVEALED, p))
-    m.orientation = o
+    if (m.orientation.isDefined) throw FatalError(Mess(M.TILEALREADYREVEALED, p))
+    m.orientation = Some(o)
     // put huts and villages
     for (row <- 0 until m.mapsquares.length; col <- 0 until m.mapsquares(row).length)
       if (m.tile.terrain(row)(col).hv != null) m.mapsquares(row)(col).hv = Some(getRandomHutVillage(board, m.tile.terrain(row)(col).hv))
@@ -557,7 +557,7 @@ package object helper {
     if (s.cityhere)
       if (!s.city.get.belongsTo(civ)) return Some(Mess(M.CANNOTSETFGUREONALIENCITY, s))
     if (s.hvhere)
-      if (s.hv.get == HutVillage.Hut) return Some(Mess(M.CANNOTSETFIGUREONHUT)) else return Some(Mess(M.CANNOTSETFIGUREONVILLAGE))
+      if (s.hv.get.hv == HutVillage.Hut) return Some(Mess(M.CANNOTSETFIGUREONHUT)) else return Some(Mess(M.CANNOTSETFIGUREONVILLAGE))
     None
   }
 
@@ -603,6 +603,17 @@ package object helper {
     m.s.hv = None
     val pl: PlayerDeck = b.playerDeck(civ)
     pl.hvlist = pl.hvlist :+ h
+    // final, move figures to point
+    moveFigures(b,civ,p)
+  }
+
+  def moveFigures(b: GameBoard, civ: Civilization.T, p: P) = {
+    val fig: PlayerMove = getCurrentMove(b, civ).get
+    val last: P = fig.lastp
+    // remove from last
+    putFigures(b, civ, last, -(fig.f.toFigures))
+    // new position
+    putFigures(b, civ, p, fig.f.toFigures)
   }
 
 }

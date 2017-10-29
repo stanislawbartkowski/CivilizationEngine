@@ -127,7 +127,7 @@ class Test1 extends FunSuite {
     assert("TILE1.json" == t.tname)
     assert(5 == t.p.row)
     assert(8 == t.p.col)
-    assert(Orientation.Left == t.orientation)
+    assert(Orientation.Left == t.orientation.get)
     val ma: MapSquare = t.mapsquares(0)(0)
     println(ma)
     assert(ma.hvhere)

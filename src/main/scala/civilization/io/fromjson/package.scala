@@ -127,11 +127,11 @@ package object fromjson extends ImplicitMiximFromJson {
     }
   }
 
-  implicit val pattermapReads: Reads[PatterMap] = new Reads[PatterMap] {
-    def reads(json: JsValue): JsResult[PatterMap] = {
+  implicit val pattermapReads: Reads[PatternMap] = new Reads[PatternMap] {
+    def reads(json: JsValue): JsResult[PatternMap] = {
       val p: P = (json \ S.p).as[P]
-      val orientation: Orientation.T = (json \ S.orientation).asOpt[Orientation.T].getOrElse(null)
-      JsSuccess(PatterMap(p, orientation))
+      val orientation: Option[Orientation.T] = (json \ S.orientation).asOpt[Orientation.T]
+      JsSuccess(PatternMap(p, orientation))
     }
   }
 
@@ -154,7 +154,9 @@ package object fromjson extends ImplicitMiximFromJson {
     def reads(json: JsValue): JsResult[MapTile] = {
       val tname: String = (json \ S.tilename).as[String]
       val p: P = (json \ S.p).as[P]
-      val orientation: Orientation.T = (json \ S.orientation).asOpt[Orientation.T].getOrElse(null)
+      var orientation: Option[Orientation.T] = (json \ S.orientation).asOpt[Orientation.T]
+      // 2017/10/29 : very strange but null transformed to Some(null)
+      if (orientation == Some(null)) orientation = None
       var squares: Array[Array[MapSquare]] = (json \ S.squares).asOpt[Array[Array[MapSquare]]].getOrElse(null)
       if (squares == null) squares = genEmptySquares
       if (squares.length != TILESIZE) return JsError("squares size should be " + TILESIZE + " x " + TILESIZE + " matrix. Found " + squares.length)
@@ -312,9 +314,9 @@ package object fromjson extends ImplicitMiximFromJson {
 
 
   case class PatterMapSeqJ(val j: JsValue) extends FromJson {
-    type Value = Seq[PatterMap]
+    type Value = Seq[PatternMap]
 
-    def to: JsResult[Seq[PatterMap]] = (JsPath).read[Seq[PatterMap]].reads(j)
+    def to: JsResult[Seq[PatternMap]] = (JsPath).read[Seq[PatternMap]].reads(j)
   }
 
   case class SeqTechnologyJ(val j: JsValue) extends FromJson {
@@ -389,7 +391,7 @@ package object fromjson extends ImplicitMiximFromJson {
 
   def toTechnologName(j: JsValue) = j.as[TechnologyName.T]
 
-  def toSeqPatterMap(j: JsValue): Seq[PatterMap] = convert[PatterMapSeqJ](PatterMapSeqJ(j))
+  def toSeqPatterMap(j: JsValue): Seq[PatternMap] = convert[PatterMapSeqJ](PatterMapSeqJ(j))
 
   def toArrayHutVillages(j: JsValue): Array[HutVillage] = j.as[Array[HutVillage]]
 

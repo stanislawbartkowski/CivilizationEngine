@@ -16,6 +16,7 @@ import civilization.message._
 import scala.collection.mutable.Buffer
 import scala.io.Source
 
+/** Helper for reading resource data as JSON */
 package object readdir {
 
   def readTestJSON(resourcefile: String): JsValue =

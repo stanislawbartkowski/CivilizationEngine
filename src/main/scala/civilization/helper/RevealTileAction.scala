@@ -29,13 +29,12 @@ class RevealTileAction(override val param: Orientation.T) extends AbstractComman
     if (figo.isEmpty) return Mess(M.CANNOTFINDSTARTOFMOVE, p)
     val fig: PlayerMove = figo.get
     val m: MapTile = getTile(b, p)
-    if (m.orientation != null) return (Mess(M.TILEALREADYREVEALED, p))
+    if (m.orientation.isDefined) return (Mess(M.TILEALREADYREVEALED, p))
     if (!generatePoints(b, p, o).exists(_ == fig.lastp)) return (Mess(M.CANNOTREVEALFROMTHISPOINT, (fig.lastp, p)))
     null
   }
 
   def revealTileExecute(b: GameBoard, civ: Civilization.T, p: P, o: Orientation.T): Unit = revealTile(b, o, p)
-
 
   override def execute(board: GameBoard) = revealTileExecute(board, civ, p, param)
 
