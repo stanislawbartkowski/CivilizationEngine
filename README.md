@@ -10,6 +10,8 @@ It is the beginning, for the time being only the following actions are implement
 * buying figures: armies and scouts
 * figures movement
 * tile revealing
+* explore hut
+* harvest resource
 
 The engine does not contain any user interface, the user interface is developed as a separate project. [https://github.com/stanislawbartkowski/CivilizationUI] It keeps all game logic and state and executes commands to move from one game stage to another and provides the current state to the clients to keep user interface synchronized.
 Only single player test game is available.
@@ -294,9 +296,22 @@ List of cities where unit can be bought.
 Format:
 \[ {"p": {"row" : int,"col" : int}} \]
 
-Sampe:
+Sample:
 
 \[ {"p: : {"row" : 2,"col" : 2}},{ "p" : {"row" : 5,"col" : 3}} \]
 
 A unit can be bought in two cities : (2,2) and (5,3)
 
+## EXPLOREHUT
+
+List of huts (always single) ready to be exlored
+
+Format:
+
+ {"p" : { "row" : int, "col" : int}, "explore" : \[{ "row" : int, "col" : int }\] }
+
+Sample
+
+ {"p" : { "row" : 2, "col" : 5}, "explore" : \[{ "row" : 2, "col" : 4 }\] }
+ 
+ Scout or figure at point (2,5) can explore hit (2,4)
