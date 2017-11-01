@@ -187,6 +187,13 @@ IMPORTANT: seems not working properly, IntelliJ ant build does not generate scal
         "num" : 0
       } 
       ]
+      },
+    "hutvillages" : {
+        "Hut" : 1,
+        "list" : [ {
+          "hv" : "Hut",
+          "resource" : "Spy"
+        } ]
       }
     },
   }
@@ -211,6 +218,20 @@ You receive also detailed list of units.
         },
 ```
 Infantry unit with power specified.
+
+# Hut and Villages explored
+```JSON
+  "hutvillages" : {
+        "Hut" : 1,
+        "list" : [ {
+          "hv" : "Hut",
+          "resource" : "Spy"
+        } ]
+      }
+```
+Number of units (Hut or Villages) and detailed list of discovered resources.
+In this example:
+One Hut and Spy discovered
 
 ## executeCommand(token,actionname,row,col,jsparam)
 * Parameters
