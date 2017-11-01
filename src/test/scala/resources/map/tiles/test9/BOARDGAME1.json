@@ -12,7 +12,33 @@
       "tname" : "TILEROME.json", "p" : { "row" : 0, "col" : 0},"orientation" : "Down"
     },
     {
-      "tname" : "TILE3.json", "p" : { "row" : 1, "col" : 0}
+      "tname" : "TILE3.json", "p" : { "row" : 1, "col" : 0},
+      "squares": [
+        [
+          {"hv" :  { "hv" : "Hut", "resource" : "Silk" }},
+          {},
+          {},
+          {}
+        ],
+        [
+          {},
+          {},
+          {},
+          {}
+        ],
+        [
+          {},
+          {},
+          {"hv" :  { "hv" : "Hut", "resource" : "Silk" }},
+          {}
+        ],
+        [
+          {},
+          {},
+          {},
+          {}
+        ]
+      ]
     }
   ],
   "resources" : {

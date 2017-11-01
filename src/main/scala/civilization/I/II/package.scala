@@ -2,7 +2,7 @@ package civilization.I
 
 import civilization.I
 
-package object II {
+object II {
 
   final val LISTOFCIV = I.LISTOFCIV
   final val REGISTEROWNER = I.REGISTEROWNER

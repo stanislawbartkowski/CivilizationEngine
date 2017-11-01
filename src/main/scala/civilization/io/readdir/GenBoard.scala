@@ -1,7 +1,7 @@
 package civilization.io.readdir
 
 import civilization.gameboard._
-import civilization.helper.{revealTile,getThreeRandomUnits}
+import civilization.helper.{revealTile, getThreeRandomUnits, getRandomHutVillage}
 import civilization.io.fromjson.{toArrayHutVillages, toSeqPatterMap}
 import civilization.message.{FatalError, M, Mess}
 import civilization.objects.{Civilization, HutVillage, TilesRead, CombatUnit}
@@ -10,16 +10,22 @@ import civilization.io.fromjson.ImplicitMiximFromJson
 
 import scala.collection.mutable.Buffer
 
-object GenBoard extends  ImplicitMiximFromJson {
+object GenBoard extends ImplicitMiximFromJson {
 
   private def readHutVillages: Array[HutVillage] = {
     val j: JsValue = readJSON("map/market", "HUTVILLAGES.json")
     toArrayHutVillages(j)
   }
 
-  private def readResources : GameResources = {
+  private def readResources: GameResources = {
     val j: JsValue = readJSON("map/market", "RESOURCES.json")
     j.as[GameResources]
+  }
+
+
+  private def assignResources(b: GameBoard, m: MapTile) = {
+    for (row <- 0 until m.mapsquares.length; col <- 0 until m.mapsquares(row).length)
+      if (m.tile.terrain(row)(col).hv != null) m.mapsquares(row)(col).hv = Some(getRandomHutVillage(b, m.tile.terrain(row)(col).hv))
   }
 
   def genBoard(l: List[Civilization.T], patt: String): GameBoard = {
@@ -56,15 +62,17 @@ object GenBoard extends  ImplicitMiximFromJson {
       map = map :+ t
     })
     if (!sciv.isEmpty) throw FatalError(Mess(M.TOOMANYCIVREQUESTED))
-    val players: List[PlayerDeck] = l.map(PlayerDeck(_,Nil,Nil, new GameResources()))
-    val units : Seq[CombatUnit] = readListOfUnits
-    val market : Market = Market(units.toArray,Nil)
-    val g: GameBoard = GameBoard(players, BoardMap(map), Resources(readHutVillages, Nil,readResources),market)
+    val players: List[PlayerDeck] = l.map(PlayerDeck(_, Nil, Nil, new GameResources()))
+    val units: Seq[CombatUnit] = readListOfUnits
+    val market: Market = Market(units.toArray, Nil)
+    val g: GameBoard = GameBoard(players, BoardMap(map), Resources(readHutVillages, Nil, readResources), market)
     g.tech = readTechnologies
     // reveal tiles
     lpatt.foreach(p => if (p.o.isDefined) revealTile(g, p.o.get, p.p))
     // attach random three units
     g.players.foreach(p => p.units = getThreeRandomUnits(g))
+    // assing resources to hut and villages
+    map.foreach(m => assignResources(g,m))
     g
   }
 

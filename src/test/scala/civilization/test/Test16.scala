@@ -78,7 +78,7 @@ class Test16  extends FunSuite {
     assert(l.find(_ == Command.EXPLOREHUT).isEmpty)
   }
 
-  test("Test explore huts, sarmy explore hut") {
+  test("Test explore huts, army explore hut") {
     val reg = Helper.readBoardAndPlayT("test9/BOARDGAME1.json", "test16/GAME4.json", Civilization.Rome)
     val token: String = reg._1
     var g: GameBoard = I.getBoardForToken(token)

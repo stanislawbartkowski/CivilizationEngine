@@ -122,8 +122,8 @@ package object helper {
     if (m.orientation.isDefined) throw FatalError(Mess(M.TILEALREADYREVEALED, p))
     m.orientation = Some(o)
     // put huts and villages
-    for (row <- 0 until m.mapsquares.length; col <- 0 until m.mapsquares(row).length)
-      if (m.tile.terrain(row)(col).hv != null) m.mapsquares(row)(col).hv = Some(getRandomHutVillage(board, m.tile.terrain(row)(col).hv))
+//    for (row <- 0 until m.mapsquares.length; col <- 0 until m.mapsquares(row).length)
+//      if (m.tile.terrain(row)(col).hv != null) m.mapsquares(row)(col).hv = Some(getRandomHutVillage(board, m.tile.terrain(row)(col).hv))
   }
 
   def getTile(board: GameBoard, p: P): MapTile =
@@ -279,7 +279,7 @@ package object helper {
     // if null then Reveal
     var moves: Seq[Move] = Nil
     p.foreach(co => co.command match {
-      case Command.MOVE | Command.ENDOFMOVE =>
+      case Command.MOVE | Command.ENDOFMOVE | Command.EXPLOREHUT =>
         moves = moves :+ Move(co.command, if (co.p == null) None else Some(co.p))
       case Command.REVEALTILE => moves = moves :+ moves.last // for reveal repeat last
       case _ => {

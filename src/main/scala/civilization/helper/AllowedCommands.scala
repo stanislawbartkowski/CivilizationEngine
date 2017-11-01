@@ -144,7 +144,6 @@ object AllowedCommands {
       case Command.SETARMY | Command.SETSCOUT | Command.BUYARMY | Command.BUYSCOUT => {
         val a: Seq[(P, P)] = itemizeForSetBuyFigures(b, civ, command)
         l = a.map(o => Json.obj(S.p -> writesP(o._1), S.param -> writesP(o._2)))
-//        Json.prettyPrint(JsArray(l))
       }
       case Command.STARTMOVE => {
         var a: Seq[(Figures, P)] = itemizeforStartOfMove(b, civ)

@@ -30,18 +30,30 @@ package object gameboard {
     */
   case class Technology(val tech: TechnologyName.T, val level: Int)
 
+  /** TODO : consider
+    * @param tech
+    */
   case class PlayerTechnology(val tech: TechnologyName.T)
 
+  /** Figures on the square, can be staked
+    *
+    * @param numberofArmies number of armies
+    * @param numberofScouts number of scouts
+    */
   case class Figures(var numberofArmies: Int, var numberofScouts: Int) {
+    /** Not occupied by any army */
     def empty: Boolean = (numberofArmies == 0 && numberofScouts == 0)
 
+    /** Adds figures, move figures over stationing */
     def +(that: Figures) = {
       this.numberofScouts = this.numberofScouts + that.numberofScouts
       this.numberofArmies = this.numberofArmies + that.numberofArmies
     }
 
+    /** Minus, move figures from squre */
     def -(that: Figures) = this + Figures(0 - that.numberofArmies, 0 - that.numberofScouts)
 
+    /** Minus, auxiliary */
     def unary_- : Figures = Figures(0 - numberofArmies, 0 - numberofScouts)
   }
 
