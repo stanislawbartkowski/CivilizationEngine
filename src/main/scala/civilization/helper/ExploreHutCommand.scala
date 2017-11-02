@@ -9,6 +9,7 @@ import civilization.objects._
 object ExploreHutCommand {
 
   class ExploreHutCommand extends AbstractCommand {
+
     override def verify(b: gameboard.GameBoard): message.Mess = {
       val figo: Option[PlayerMove] = getCurrentMove(b, civ)
       if (figo.isEmpty) return Mess(M.CANNOTFINDSTARTOFMOVE, p)

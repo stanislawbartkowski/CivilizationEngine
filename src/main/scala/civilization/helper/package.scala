@@ -121,9 +121,6 @@ package object helper {
     val m: MapTile = getTile(board, p)
     if (m.orientation.isDefined) throw FatalError(Mess(M.TILEALREADYREVEALED, p))
     m.orientation = Some(o)
-    // put huts and villages
-//    for (row <- 0 until m.mapsquares.length; col <- 0 until m.mapsquares(row).length)
-//      if (m.tile.terrain(row)(col).hv != null) m.mapsquares(row)(col).hv = Some(getRandomHutVillage(board, m.tile.terrain(row)(col).hv))
   }
 
   def getTile(board: GameBoard, p: P): MapTile =

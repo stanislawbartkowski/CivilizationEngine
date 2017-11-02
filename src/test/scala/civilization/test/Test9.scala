@@ -1,14 +1,14 @@
 package civilization.test
 
-import civilization.I._
-import civilization.I.II
+import civilization.I.{II, _}
 import civilization.gameboard.{Figures, GameBoard}
-import civilization.helper.AllowedCommands.{PossibleMove, allowedCommands, itemizeForMove, itemizeforStartOfMove}
+import civilization.helper.AllowedCommands.allowedCommands
 import civilization.helper._
 import civilization.io.fromjson._
 import civilization.objects._
 import org.scalatest.FunSuite
 import play.api.libs.json._
+import civilization.helper.MoveItemize.{PossibleMove,itemizeForMove}
 
 
 class Test9 extends FunSuite {
@@ -66,7 +66,7 @@ class Test9 extends FunSuite {
     val a: Seq[Command.T] = allowedCommands(b, Civilization.Rome)
     println(a)
     assert(a.find(_ == Command.STARTMOVE).isDefined)
-    var i: Seq[(Figures, P)] = itemizeforStartOfMove(b, Civilization.Rome)
+    var i: Seq[(Figures, P)] = MoveItemize.itemizeforStartOfMove(b, Civilization.Rome)
     println(i)
     assert(i.length == 2)
     val s: String = itemizeCommand(token, "STARTMOVE")
