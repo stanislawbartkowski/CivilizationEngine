@@ -27,4 +27,7 @@ trait ImplicitMiximToJson {
   implicit def writesCityPoint(p: (P, P)): JsValue = Json.obj(
     S.p -> p._1,
     S.param -> p._2)
+
+  implicit def toJSonStartParam(p  : BattleStart) : JsValue = Json.toJson(p)
+
 }

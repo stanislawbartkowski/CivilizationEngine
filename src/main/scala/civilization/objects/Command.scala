@@ -10,13 +10,13 @@ object Command extends Enumeration {
   val SETCAPITAL, SETCITY, ENDOFPHASE, STARTMOVE, MOVE, REVEALTILE, ENDOFMOVE,
   SETARMY, SETSCOUT, BUYARMY, BUYSCOUT, RESEARCH, FORCEDMOVEFIGURES, SPENDTRADE, UNDOSPENDTRADE,
   SENDPRODUCTION, UNDOSENDPRODUCTION, BUYINFANTRY, BUYMOUNTED, BUYARTILLERY, BUYAIRCRAFT,
-  HARVESTRESOURCE, EXPLOREHUT, ATTACK = Value
+  HARVESTRESOURCE, EXPLOREHUT, ATTACK, STARTBATTLE = Value
 
   /** Assign action to game phases */
   def actionPhase(t: Value): TurnPhase.T = {
     t match {
       case SETCAPITAL | SETCAPITAL | SETARMY | SETSCOUT => TurnPhase.StartOfTurn
-      case STARTMOVE | MOVE | ENDOFMOVE | REVEALTILE | EXPLOREHUT | ATTACK => TurnPhase.Movement
+      case STARTMOVE | MOVE | ENDOFMOVE | REVEALTILE | EXPLOREHUT | ATTACK | STARTBATTLE => TurnPhase.Movement
       case BUYARMY | BUYSCOUT | SPENDTRADE | UNDOSPENDTRADE | SENDPRODUCTION | UNDOSENDPRODUCTION |
            BUYMOUNTED | BUYINFANTRY | BUYAIRCRAFT | BUYARTILLERY | HARVESTRESOURCE => TurnPhase.CityManagement
       case RESEARCH => TurnPhase.Research
@@ -30,7 +30,7 @@ object Command extends Enumeration {
 
   /** Movement action after strating the move */
   def actionMove(t: Value): Boolean = {
-    return t == MOVE || t == REVEALTILE || t == ENDOFMOVE || t == EXPLOREHUT || t == ATTACK
+    return t == MOVE || t == REVEALTILE || t == ENDOFMOVE || t == EXPLOREHUT || t == ATTACK || t == STARTBATTLE
   }
 }
 

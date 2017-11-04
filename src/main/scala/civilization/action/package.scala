@@ -71,6 +71,10 @@ package object action extends ImplicitMiximToJson with ImplicitMiximFromJson {
 
     case Command.RESEARCH => new ResearchTechnologyAction(toTechnologName(param))
 
+    case Command.ATTACK => new AttackCommand.AttackCommand()
+
+    case Command.STARTBATTLE => new AttackCommand.StartBattleCommand(param)
+
     case _ => throw FatalError(Mess(M.NOTIMPLELEMENTEDYET, command))
   }
 
@@ -83,7 +87,7 @@ package object action extends ImplicitMiximToJson with ImplicitMiximFromJson {
 
     var civ: Civilization.T = _
 
-    var canceled: Boolean = false
+    private var canceled: Boolean = false
     var p: P = _
     var j: JsValue = _
 
@@ -92,6 +96,13 @@ package object action extends ImplicitMiximToJson with ImplicitMiximFromJson {
     def param: Any
 
     def param1: Any
+
+    private var replay : Boolean = false
+
+    def setReplay = replay = true
+
+    def isReplay : Boolean = replay
+    def isExecute : Boolean = !replay
 
     // TODO: should return Option[Mess], not null
     // null : success, Mess : failure and failure info

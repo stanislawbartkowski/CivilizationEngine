@@ -1,12 +1,11 @@
 package civilization.helper
 
-import civilization.gameboard.{Figures, GameBoard}
-import civilization.io.tojson._
-import civilization.message._
-import civilization.objects._
-import civilization.helper.SetFigureAction.itemizeForSetBuyFigures
-import play.api.libs.json.{JsArray, JsValue, Json}
 import civilization.action.CommandContainer
+import civilization.gameboard.GameBoard
+import civilization.helper.SetFigureAction.itemizeForSetBuyFigures
+import civilization.io.tojson._
+import civilization.objects._
+import play.api.libs.json.{JsArray, JsValue, Json}
 
 object AllowedCommands {
 
@@ -54,7 +53,7 @@ object AllowedCommands {
       case _ => {}
     }
     if (cu.notcompleted.find(_ == civ).isDefined) co = co ++ List(Command.ENDOFPHASE)
-    return co
+    co
   }
 
   def itemizeCommandS(b: GameBoard, civ: Civilization.T, command: Command.T): String = {

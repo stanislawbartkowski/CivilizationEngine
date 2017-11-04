@@ -145,6 +145,25 @@ package object tojson extends ImplicitMiximToJson {
     )
   }
 
+  implicit val battleUnitWrite: Writes[BattleUnit] = new Writes[BattleUnit] {
+    def writes(m: BattleUnit ) = Json.obj(
+      S.unit -> m.unit,
+      S.iron -> m.iron
+    )
+  }
+
+  implicit val battleArmyWrite : Writes[BattleArmy] = new Writes[BattleArmy] {
+    override def writes(o: BattleArmy) = Json.toJson(o.army)
+  }
+
+  implicit val battleStart : Writes[BattleStart] = new Writes[BattleStart] {
+    override def writes(o: BattleStart) = Json.obj(
+      S.attacker -> o.attacker,
+      S.defender -> o.defender
+    )
+  }
+
+
   def writeCivilizationT(c: Civilization.T): JsValue = Json.toJson(c)
 
   def writeHutVillage(h: HutVillage): JsValue = Json.toJson(h)

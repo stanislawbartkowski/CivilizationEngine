@@ -24,6 +24,8 @@ package object helper {
     def resource: Option[Resource.T] = sm.resource
 
     def suggestedCapitalForCiv: Option[Civilization.T] = if (suggestedCapital) Some(t.tile.civ) else None
+
+    def civHere: Option[Civilization.T] = if (s.cityhere) Some(s.city.get.civ) else if (!s.figures.empty) Some(s.figures.civ) else None
   }
 
   def pointsAround(board: GameBoard, p: P): Seq[P] = board.map.pointsaround.get(p).get
@@ -117,7 +119,7 @@ package object helper {
     None
   }
 
-  def revealTile(board: GameBoard, o :Orientation.T, p: P) {
+  def revealTile(board: GameBoard, o: Orientation.T, p: P) {
     val m: MapTile = getTile(board, p)
     if (m.orientation.isDefined) throw FatalError(Mess(M.TILEALREADYREVEALED, p))
     m.orientation = Some(o)
@@ -140,7 +142,7 @@ package object helper {
   // CombatUnits handling
   // ==============================
 
-  private def getRandomRemove[T](a: Seq[T]): (T, Seq[T]) = {
+  def getRandomRemove[T](a: Seq[T]): (T, Seq[T]) = {
     val b = a.toBuffer
     val randI: Int = ra.nextInt(b.size)
     val t: T = b(randI)
@@ -169,8 +171,6 @@ package object helper {
   }
 
   def getThreeRandomUnits(b: GameBoard): Seq[CombatUnit] = Seq(getRandomUnit(b, CombatUnitType.Infantry), getRandomUnit(b, CombatUnitType.Artillery), getRandomUnit(b, CombatUnitType.Mounted))
-
-  // ========================================
 
   case class CurrentPhase(val notcompleted: Seq[Civilization.T], val turnPhase: TurnPhase.T, val roundno: Int)
 
@@ -276,7 +276,7 @@ package object helper {
     // if null then Reveal
     var moves: Seq[Move] = Nil
     p.foreach(co => co.command match {
-      case Command.MOVE | Command.ENDOFMOVE | Command.EXPLOREHUT =>
+      case Command.MOVE | Command.ENDOFMOVE | Command.EXPLOREHUT | Command.ATTACK | Command.STARTBATTLE =>
         moves = moves :+ Move(co.command, if (co.p == null) None else Some(co.p))
       case Command.REVEALTILE => moves = moves :+ moves.last // for reveal repeat last
       case _ => {
@@ -522,7 +522,7 @@ package object helper {
 
   case class PlayerLimits(val citieslimit: Int, val stackinglimit: Integer, val watercrossingallowed: Boolean, val waterstopallowed: Boolean,
                           val armieslimit: Int, val scoutslimit: Int, val travelSpeed: Int, val tradeforProd: Int,
-                          val playerStrength: CombatUnitStrength, val aircraftUnlocked: Boolean, val scoutscanExplore: Boolean) {
+                          val playerStrength: CombatUnitStrength, val aircraftUnlocked: Boolean, val scoutscanExplore: Boolean, val isFundametialism: Boolean) {
 
     def prodForTrade(prod: Int): Int = prod * tradeforProd
   }
@@ -533,7 +533,7 @@ package object helper {
     val count: (Int, Int) = getNumberOfArmies(b, civ)
     val armieslimit: Int = deck.defaultarmieslimit - count._1
     val scoutslimit: Int = deck.defaultscoutslimit - count._2
-    PlayerLimits(citieslimit, deck.defaultstackinglimit, false, false, armieslimit, scoutslimit, deck.defaulttravelspeed, DEFAULTTRADEFORPROD, deck.combatlevel, false, false)
+    PlayerLimits(citieslimit, deck.defaultstackinglimit, false, false, armieslimit, scoutslimit, deck.defaulttravelspeed, DEFAULTTRADEFORPROD, deck.combatlevel, false, false, false)
   }
 
   // =====================================
@@ -594,14 +594,14 @@ package object helper {
     s.s.figures + f
   }
 
-  def exploreHutOrVillage(b: GameBoard, civ: Civilization.T, p: P)  = {
+  def exploreHutOrVillage(b: GameBoard, civ: Civilization.T, p: P) = {
     val m: MapSquareP = getSquare(b, p)
     val h: HutVillage = m.s.hv.get
     m.s.hv = None
     val pl: PlayerDeck = b.playerDeck(civ)
     pl.hvlist = pl.hvlist :+ h
     // final, move figures to point
-    moveFigures(b,civ,p)
+    moveFigures(b, civ, p)
   }
 
   def moveFigures(b: GameBoard, civ: Civilization.T, p: P) = {

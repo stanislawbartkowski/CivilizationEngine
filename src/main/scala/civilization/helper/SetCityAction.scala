@@ -22,7 +22,7 @@ object SetCityAction {
     isSquareForCity(board, p,civ)
   }
 
-  class SetCityAction extends AbstractCommand() {
+  class SetCityAction extends AbstractCommand {
 
     private def setcitycommandverify(board: GameBoard, civ: Civilization.T, p: P, command: Command.T): Mess = {
       verifySetCity(board, civ, p, command).getOrElse(null)

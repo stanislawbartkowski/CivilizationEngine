@@ -64,7 +64,7 @@ object GenBoard extends ImplicitMiximFromJson {
     if (!sciv.isEmpty) throw FatalError(Mess(M.TOOMANYCIVREQUESTED))
     val players: List[PlayerDeck] = l.map(PlayerDeck(_, Nil, Nil, new GameResources()))
     val units: Seq[CombatUnit] = readListOfUnits
-    val market: Market = Market(units.toArray, Nil)
+    val market: Market = Market(units, Nil)
     val g: GameBoard = GameBoard(players, BoardMap(map), Resources(readHutVillages, Nil, readResources), market)
     g.tech = readTechnologies
     // reveal tiles

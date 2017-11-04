@@ -157,7 +157,7 @@ package object gameboard {
     var hvlist: Seq[HutVillage] = Nil
   }
 
-  case class Market(var units: Array[CombatUnit], var killedunits: Seq[CombatUnit])
+  case class Market(var units: Seq[CombatUnit], var killedunits: Seq[CombatUnit])
 
   case class GameMetaData(val version: Int, val createtime: Long, var accesstime: Long, val desc: String) {
 

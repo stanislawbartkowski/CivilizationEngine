@@ -8,6 +8,7 @@ package object objects {
   val TRADEMAX = 27
   val DEFAULTTRADEFORPROD = 3
   val UNITLEVELSIZE = 4
+  val UNITSBATTLE = 3
 
 
   type TileTerrain = Array[Array[Square]]
@@ -19,6 +20,10 @@ package object objects {
   case class Square(val terrain: Terrain.T, val hv: HutVillage.T, val resource: Option[Resource.T], val naturalwonder: Boolean, val token: Tokens)
 
   case class TilesRead(val name: String, val tile: Tile)
+
+  object P {
+    def constructEmpty : P = P(-1,-1)
+  }
 
   case class P(val row: Int, val col: Int) {
     def +(that: P) = row == that.row && col == that.col
@@ -109,7 +114,20 @@ package object objects {
     }
   }
 
-  case class CombatUnit(val utype:CombatUnitType.T, val strength:Array[Int] )
+  case class CombatUnit(val utype:CombatUnitType.T, val strength:Array[Int] ) {
+    def ==(v : CombatUnit) : Boolean = {
+      if (this.utype != v.utype) return false
+      for (i <- 0 until this.strength.length)
+        if (this.strength(i) != v.strength(i)) return false
+      true
+    }
+  }
+
+  case class BattleUnit(var unit : Option[CombatUnit], var iron : Int)
+
+  case class BattleArmy(val army : Array[BattleUnit])
+
+  case class BattleStart(val attacker : BattleArmy, val defender : BattleArmy)
 
   object TechnologyName extends Enumeration {
     type T = Value

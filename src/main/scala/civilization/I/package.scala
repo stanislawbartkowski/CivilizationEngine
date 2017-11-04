@@ -46,6 +46,7 @@ package object I {
     p.foreach(s => {
       val co: CommandValues = toParams(toJ(s));
       val comm: Command = action.constructCommand(co)
+      comm.setReplay
       playsingleCommand(g, comm)
     }
     )

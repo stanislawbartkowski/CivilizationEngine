@@ -26,5 +26,6 @@ trait ImplicitMiximFromJson {
 
   implicit def toOrientation(j: JsValue): Orientation.T = convert[OrientationJ](OrientationJ(j))
 
+  implicit def toBattleStart(j : JsValue) :BattleStart = j.as[BattleStart]
 
 }
