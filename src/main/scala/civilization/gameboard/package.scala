@@ -168,6 +168,14 @@ package object gameboard {
     def okV: Boolean = version == packageversion
   }
 
+  type BattleArmy = Array[Option[CombatUnit]]
+
+  case class BattleFieldSide(val fighting : BattleArmy, val waiting : Seq[CombatUnit], val killed : Seq[CombatUnit], val strength:CombatUnitStrength, val combatBonus : Int) {
+    var iron : Int = -1
+  }
+
+  case class BattleField(val attacker : BattleFieldSide,val defender : BattleFieldSide)
+
   case class GameBoard(val players: Seq[PlayerDeck], val map: BoardMap, val resources: Resources, val market: Market) {
 
     var metadata: GameMetaData = new GameMetaData("")
@@ -185,6 +193,7 @@ package object gameboard {
 
     var play: Play.Play = new Play.Play()
     var tech: Seq[Technology] = _
+    var battle : Option[BattleField] = None
   }
 
 

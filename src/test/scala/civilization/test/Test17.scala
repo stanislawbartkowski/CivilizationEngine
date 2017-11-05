@@ -5,13 +5,14 @@ import civilization.I.II
 import civilization.gameboard._
 import civilization.helper.AllowedCommands.allowedCommands
 import civilization.io.fromjson._
+import civilization.io.tojson._
 import civilization.io.readdir.GenBoard.genBoard
 import civilization.objects.{Civilization, Command}
 import org.scalatest.FunSuite
-import play.api.libs.json.{JsArray, JsValue}
+import play.api.libs.json.{JsArray, JsValue, Json}
 import civilization.objects._
 
-class Test17 extends FunSuite {
+class Test17 extends FunSuite with ImplicitMiximToJson {
 
   Helper.I
 
@@ -75,16 +76,24 @@ class Test17 extends FunSuite {
     val i: String = II.itemizeCommand(token, "ATTACK")
     val j: JsValue = toJ(i)
     println(i)
-    val a : JsArray = (j \ "attack").as[JsArray]
+    val a: JsArray = (j \ "attack").as[JsArray]
     println(a)
-    val p : P = a.value.head.as[P]
-    assert(P(4,0) == p)
+    val p: P = a.value.head.as[P]
+    assert(P(4, 0) == p)
     Helper.executeCommandH(token, "ATTACK", 4, 0, null)
     // all units in battle
     g = I.getBoardForToken(token)
     assert(g.market.units.isEmpty)
-    val pl : PlayerDeck = g.playerDeck(Civilization.Rome)
-    assert (pl.units.isEmpty)
+    val pl: PlayerDeck = g.playerDeck(Civilization.Rome)
+    assert(pl.units.isEmpty)
+    val com = g.play.commands.last
+    val n: BattleStart = com.param.asInstanceOf[BattleStart]
+    val jj: JsValue = n
+    println(jj)
+  }
+
+  test("Test Attack Village and STart") {
+    val reg = Helper.readBoardAndPlayT("test17/BOARD2.json", "test17/GAME3.json", Civilization.Rome)
   }
 
 }

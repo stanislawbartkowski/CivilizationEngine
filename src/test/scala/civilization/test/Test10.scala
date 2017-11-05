@@ -1,15 +1,14 @@
 package civilization.test
 
-import civilization.I.{CurrentGame, WaitingGames, executeCommand}
+import civilization.I.{CurrentGame, II, WaitingGames, executeCommand}
 import civilization.gameboard.GameBoard
 import civilization.helper.AllowedCommands.allowedCommands
+import civilization.io.fromjson.toJ
 import civilization.objects._
 import civilization.{I, RR}
-import civilization.I.II
 import org.scalatest.FunSuite
 import org.scalatest.Matchers._
 import play.api.libs.json.{JsArray, JsValue}
-import civilization.io.fromjson.toJ
 
 
 class Test10 extends FunSuite {

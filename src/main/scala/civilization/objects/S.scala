@@ -38,8 +38,6 @@ object S {
   final val killedunits = "killedunits"
   final val num = "num"
   final val list = "list"
-  final val unit = "unit"
-  final val iron = "iron"
   final val attacker = "attacker"
   final val defender = "defender"
 }

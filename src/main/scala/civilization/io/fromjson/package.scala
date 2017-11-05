@@ -198,23 +198,8 @@ package object fromjson extends ImplicitMiximFromJson {
     JsPath.readNullable[City]
     )
 
-  implicit val battleUnitReads : Reads[BattleUnit] = new Reads[BattleUnit] {
-    override def reads(json: JsValue) = {
-      val u : Option[CombatUnit] = (json \ S.unit).asOpt[CombatUnit]
-      val iron : Int = (json \ S.iron).asOpt[Int].getOrElse(0)
-      JsSuccess(BattleUnit(u,iron))
-    }
-  }
-
-  implicit val readBattleArmy : Reads[BattleArmy] = new Reads[BattleArmy] {
-    override def reads(json: JsValue) = {
-      val army : Array[BattleUnit] = json.as[Array[BattleUnit]]
-      JsSuccess(BattleArmy(army))
-    }
-  }
-
   implicit val readBattleStart : Reads[BattleStart] = (
-    (JsPath \ S.attacker).read[BattleArmy] and (JsPath \ S.defender).read[BattleArmy]
+    (JsPath \ S.attacker).read[Seq[CombatUnit]] and (JsPath \ S.defender).read[Seq[CombatUnit]]
   ) (BattleStart.apply _)
 
   implicit val marketReads: Reads[Resources] = (

@@ -41,6 +41,9 @@ object AllowedCommands {
         if (gameStart(b)) {
           if (count._1 == 0) co = co :+ Command.SETARMY
           if (count._2 == 0) co = co :+ Command.SETSCOUT
+          // do not allow end of phase unless army and scout is deployed
+          if (count._1 == 0 || count._2 == 0) return co
+
         } else if (!itemizeForSetSity(b, civ).isEmpty) co = co :+ Command.SETCITY
 
       }

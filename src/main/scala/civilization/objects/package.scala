@@ -123,11 +123,7 @@ package object objects {
     }
   }
 
-  case class BattleUnit(var unit : Option[CombatUnit], var iron : Int)
-
-  case class BattleArmy(val army : Array[BattleUnit])
-
-  case class BattleStart(val attacker : BattleArmy, val defender : BattleArmy)
+  case class BattleStart(val attacker : Seq[CombatUnit], val defender : Seq[CombatUnit])
 
   object TechnologyName extends Enumeration {
     type T = Value

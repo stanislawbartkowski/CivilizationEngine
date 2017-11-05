@@ -1,9 +1,14 @@
 package civilization.test
 
+import civilization.I
+import civilization.action.{Command, constructCommand}
 import org.scalatest.FunSuite
 import civilization.gameboard._
+import civilization.helper.AllowedCommands.allowedCommands
 import civilization.objects._
 import civilization.helper._
+import civilization.io.fromjson.toJ
+import play.api.libs.json.JsValue
 
 class Test2 extends FunSuite {
 
@@ -43,5 +48,22 @@ class Test2 extends FunSuite {
     println("4:0 -----------------------")
     println(m1)
     assert(m1.sm.hv == HutVillage.Village)
+  }
+
+  test("Beginning Deploy Scout and Army") {
+    val reg = Helper.readBoardAndPlayT("test2/BOARDGAME3.json", "test2/GAME1.json", Civilization.Germany)
+    val token: String = reg._1
+    var g: GameBoard = I.getBoardForToken(token)
+    var l: Seq[Command.T] = allowedCommands(g, Civilization.Germany)
+    println(l)
+    assert(l.find(_ == Command.ENDOFPHASE).isEmpty)
+    var js: String = "{\"row\":1, \"col\" : 1}"
+    Helper.executeCommandH(token, "SETSCOUT", 2, 2, js)
+    g = I.getBoardForToken(token)
+    l = allowedCommands(g, Civilization.Germany)
+    println(l)
+    assert(l.find(_ == Command.ENDOFPHASE).isDefined)
+    assert(l.find(_ == Command.SETSCOUT).isEmpty)
+    assert(l.find(_ == Command.SETARMY).isEmpty)
   }
 }

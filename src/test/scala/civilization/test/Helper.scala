@@ -37,7 +37,7 @@ object Helper {
   }
 
   private def executeC(gb: (CurrentGame, GameBoard), com: CommandValues) = {
-    val m: Mess = executeCommand(gb, com)
+    val m: Mess = executeCommand(gb, com,true)
     if (m != null) throw new FatalError(m)
   }
 
@@ -47,8 +47,7 @@ object Helper {
     val token: String = gg._1
     val p: Seq[CommandValues] = getPlay(playPath)
     val game: CurrentGame = RR.RA.getCurrentGame(token)
-    //    p.foreach(co => civilization.I.executeCommand(token, co))
-    p.foreach(co => executeC((game, g), co))
+    p.foreach(co =>  executeC((game, g), co))
     (token, g)
   }
 

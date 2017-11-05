@@ -9,6 +9,9 @@ object BattleActions {
   // ========================================
   // battle
   // ========================================
+//  case class BattField
+
+
 
   private def numberOfCivUnitsToBattle(b: GameBoard, p: P): (Int, Option[Civilization.T]) = {
     val m: MapSquareP = getSquare(b, p)
@@ -47,8 +50,6 @@ object BattleActions {
     }
     u
   }
-
-  implicit private def toBattleArmy(u: Seq[CombatUnit]): BattleArmy = BattleArmy(u.map(u => BattleUnit(Some(u), 0)) toArray)
 
   def assemblyCombatForces(b: GameBoard, civ: Civilization.T, p: P): BattleStart = {
     val mo: PlayerMove = getCurrentMove(b, civ).get

@@ -1,17 +1,13 @@
 package civilization.test
 
-import civilization.I.{GETBOARDGAME, REGISTEROWNER, executeCommand, getBoardForToken, getData, itemizeCommand}
+import civilization.I._
 import civilization.gameboard.GameBoard
-import org.scalatest.FunSuite
-import civilization.helper._
-import civilization.objects._
-import civilization.message._
-import civilization.helper.AllowedCommands.{allowedCommands}
+import civilization.helper.AllowedCommands.allowedCommands
 import civilization.helper.SetFigureAction.itemizeForSetBuyFigures
-import civilization.io.fromjson.toJ
-import play.api.libs.json.JsValue
-import play.api.libs.json._
-import civilization.io.fromjson._
+import civilization.io.fromjson.{toJ, _}
+import civilization.objects._
+import org.scalatest.FunSuite
+import play.api.libs.json.{JsValue, _}
 
 class Test8 extends FunSuite {
 
@@ -27,6 +23,9 @@ class Test8 extends FunSuite {
     var s: String = executeCommand(token, "SETCAPITAL", 2, 2, null)
     println(s)
     assert(s == null)
+    var js: String = "{\"row\":1, \"col\" : 1}"
+    Helper.executeCommandH(token, "SETSCOUT", 2, 2, js)
+    Helper.executeCommandH(token, "SETARMY", 2, 2, js)
     g = getBoardForToken(token);
     l = allowedCommands(g, Civilization.Germany)
     println(l)
