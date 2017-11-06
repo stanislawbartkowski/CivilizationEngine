@@ -6,13 +6,6 @@ import civilization.objects._
 
 object BattleActions {
 
-  // ========================================
-  // battle
-  // ========================================
-//  case class BattField
-
-
-
   private def numberOfCivUnitsToBattle(b: GameBoard, p: P): (Int, Option[Civilization.T]) = {
     val m: MapSquareP = getSquare(b, p)
     var battleforce: Int = UNITSBATTLE

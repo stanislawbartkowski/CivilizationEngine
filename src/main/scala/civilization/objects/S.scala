@@ -40,4 +40,6 @@ object S {
   final val list = "list"
   final val attacker = "attacker"
   final val defender = "defender"
+  final val you = "you"
+  final val combatbonus = "combatbonus"
 }

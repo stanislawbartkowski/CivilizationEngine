@@ -9,6 +9,9 @@ package object objects {
   val DEFAULTTRADEFORPROD = 3
   val UNITLEVELSIZE = 4
   val UNITSBATTLE = 3
+  val IRONSTRENGTH = 3
+
+  case class GameConfig(val ironincreasedefend: Boolean)
 
 
   type TileTerrain = Array[Array[Square]]
@@ -22,12 +25,13 @@ package object objects {
   case class TilesRead(val name: String, val tile: Tile)
 
   object P {
-    def constructEmpty : P = P(-1,-1)
+    def constructEmpty: P = P(-1, -1)
   }
 
   case class P(val row: Int, val col: Int) {
     def +(that: P) = row == that.row && col == that.col
-    def empty : Boolean = row == -1 && col == -1
+
+    def empty: Boolean = row == -1 && col == -1
   }
 
   case class Tile(val terrain: TileTerrain, val civ: Civilization.T, val suggestedcapital: P) {
@@ -45,7 +49,8 @@ package object objects {
         case City.WalledNormal => 10
       }
     }
-    def belongsTo(civ: Civilization.T) : Boolean = this.civ == civ
+
+    def belongsTo(civ: Civilization.T): Boolean = this.civ == civ
   }
 
   object Resource extends Enumeration {
@@ -103,19 +108,28 @@ package object objects {
   object CombatUnitType extends Enumeration {
     type T = Value
     val Artillery, Infantry, Mounted, Aircraft = Value
+
+    def trumpover(c1: CombatUnitType.T, c2: CombatUnitType.T): Boolean =
+      if (c1 == Aircraft) true
+      else if (c1 == Infantry && c2 == Mounted) true
+      else if (c1 == Mounted && c2 == Artillery) true
+      else if (c1 == Artillery && c2 == Infantry) true
+      else false
   }
 
   case class CombatUnitStrength() {
-    private val s : Array[Int] = Array(0,0,0,0)
-    def getStrength(c : CombatUnitType.T) : Int = s(c.id)
-    def setStrength(c : CombatUnitType.T, newval : Int) = {
-      require(newval >=0 && newval <=3)
+    private val s: Array[Int] = Array(0, 0, 0, 0)
+
+    def getStrength(c: CombatUnitType.T): Int = s(c.id)
+
+    def setStrength(c: CombatUnitType.T, newval: Int) = {
+      require(newval >= 0 && newval <= 3)
       s(c.id) = newval
     }
   }
 
-  case class CombatUnit(val utype:CombatUnitType.T, val strength:Array[Int] ) {
-    def ==(v : CombatUnit) : Boolean = {
+  case class CombatUnit(val utype: CombatUnitType.T, val strength: Array[Int]) {
+    def ==(v: CombatUnit): Boolean = {
       if (this.utype != v.utype) return false
       for (i <- 0 until this.strength.length)
         if (this.strength(i) != v.strength(i)) return false
@@ -123,7 +137,7 @@ package object objects {
     }
   }
 
-  case class BattleStart(val attacker : Seq[CombatUnit], val defender : Seq[CombatUnit])
+  case class BattleStart(val attacker: Seq[CombatUnit], val defender: Seq[CombatUnit])
 
   object TechnologyName extends Enumeration {
     type T = Value

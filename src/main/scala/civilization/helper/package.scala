@@ -142,13 +142,25 @@ package object helper {
   // CombatUnits handling
   // ==============================
 
-  def getRandomRemove[T](a: Seq[T]): (T, Seq[T]) = {
+  def getRemove[T](a: Seq[T],i : Int): (T, Seq[T]) = {
     val b = a.toBuffer
-    val randI: Int = ra.nextInt(b.size)
-    val t: T = b(randI)
-    b.remove(randI)
+    val t: T = b(i)
+    b.remove(i)
     return (t, b)
   }
+
+  def getRandomRemove[T](a: Seq[T]): (T, Seq[T]) = {
+    val randI: Int = ra.nextInt(a.size)
+    getRemove(a,randI)
+  }
+
+//  def getRandomRemove[T](a: Seq[T]): (T, Seq[T]) = {
+//    val b = a.toBuffer
+//    val randI: Int = ra.nextInt(b.size)
+//    val t: T = b(randI)
+//    b.remove(randI)
+//    return (t, b)
+ // }
 
   private def reuseKilledUnits(b: GameBoard, unitt: CombatUnitType.T) = {
     // add killed units to units
@@ -176,7 +188,7 @@ package object helper {
 
   private def getPhase(c: Command): Option[TurnPhase.T] = if (c.command == Command.ENDOFPHASE) Some(c.param.asInstanceOf[TurnPhase.T]) else None
 
-  private def allCivs(b: GameBoard): Seq[Civilization.T] = b.players.map(_.civ)
+  def allCivs(b: GameBoard): Seq[Civilization.T] = b.players.map(_.civ)
 
   private def nextPhase(pha: TurnPhase.T): TurnPhase.T = if (pha == TurnPhase.Research) TurnPhase.StartOfTurn else TurnPhase.apply(pha.id + 1)
 
@@ -276,7 +288,7 @@ package object helper {
     // if null then Reveal
     var moves: Seq[Move] = Nil
     p.foreach(co => co.command match {
-      case Command.MOVE | Command.ENDOFMOVE | Command.EXPLOREHUT | Command.ATTACK | Command.STARTBATTLE =>
+      case Command.MOVE | Command.ENDOFMOVE | Command.EXPLOREHUT | Command.ATTACK | Command.STARTBATTLE | Command.PLAYUNIT | Command.PLAYUNITIRON =>
         moves = moves :+ Move(co.command, if (co.p == null) None else Some(co.p))
       case Command.REVEALTILE => moves = moves :+ moves.last // for reveal repeat last
       case _ => {

@@ -5,7 +5,8 @@ import civilization.helper._
 import civilization.objects._
 import play.api.libs.json._
 import civilization.helper.AllowedCommands.allowedCommands
-import com.fasterxml.jackson.annotation.JsonValue
+import civilization.io.tojson.BattleJSon.genBattleJson
+import civilization.io.tojson.CombatUnitJSon.unitstoJSON
 
 /** Generates game board in JSON to be picked up by UI. */
 
@@ -23,15 +24,15 @@ object genboardj {
 
   case class BoardGameJ(g: Game, map: Array[Array[MapSquareJ]], you: PlayerDeckJ, others: Seq[PlayerDeckJ])
 
-  private def producehv(hvcount : Map[HutVillage.T, Seq[HutVillage]], h : HutVillage.T) : JsObject =
-    if (hvcount.contains(h)) JsObject(Seq(h.toString ->JsNumber(hvcount(h).length))) else JsObject.empty
+  private def producehv(hvcount: Map[HutVillage.T, Seq[HutVillage]], h: HutVillage.T): JsObject =
+    if (hvcount.contains(h)) JsObject(Seq(h.toString -> JsNumber(hvcount(h).length))) else JsObject.empty
 
-  private def hvtojson(hv : Seq[HutVillage], you : Boolean) : JsValue = {
+  private def hvtojson(hv: Seq[HutVillage], you: Boolean): JsValue = {
     // calculate the number of Hut and Villages
-    val hvcount : Map[HutVillage.T, Seq[HutVillage]] = hv.groupBy(_.hv)
-    val jhut : JsObject = producehv(hvcount,HutVillage.Village)
-    val jvillage : JsObject = producehv(hvcount,HutVillage.Hut)
-    val l : JsObject = if (you) Json.obj(S.list -> hv) else JsObject.empty
+    val hvcount: Map[HutVillage.T, Seq[HutVillage]] = hv.groupBy(_.hv)
+    val jhut: JsObject = producehv(hvcount, HutVillage.Village)
+    val jvillage: JsObject = producehv(hvcount, HutVillage.Hut)
+    val l: JsObject = if (you) Json.obj(S.list -> hv) else JsObject.empty
     return jhut ++ jvillage ++ l
   }
 
@@ -79,33 +80,6 @@ object genboardj {
 
   private def commandToArray(l: Seq[Command.T]): JsArray = {
     JsArray(l.map(c => Json.obj(S.command -> c)).foldLeft(List[JsObject]())(_ :+ _))
-  }
-
-  private def unitstoJSON(li: Seq[CombatUnit], detail: Boolean, s: CombatUnitStrength): JsValue = {
-    val utype: Map[CombatUnitType.T, Seq[CombatUnit]] = li.groupBy(_.utype)
-    //    val ulist : Seq[(CombatUnitType.T,Int)] = utype.map(u => (u._1,u._2.length)
-    val ulist: Seq[(CombatUnitType.T, Int)] = CombatUnitType.values.map(u => (u, if (utype.get(u).isDefined) utype.get(u).get.length else 0)) toSeq
-    val useq: Seq[JsValue] = ulist.map(j =>
-      if (s == null) Json.obj(
-        S.unitname -> j._1,
-        S.num -> j._2
-      ) else
-        Json.obj(
-          S.unitname -> j._1,
-          S.num -> j._2,
-          "militarystrength" -> s.getStrength(j._1)
-        )
-    )
-
-    if (detail)
-      Json.obj(
-        S.units -> useq,
-        S.list -> li
-      )
-    else
-      Json.obj(
-        S.units -> useq
-      )
   }
 
   private def genPlayerDeckJson(p: PlayerDeckJ, you: Boolean): JsValue = Json.obj(
@@ -163,9 +137,10 @@ object genboardj {
       S.units -> unitstoJSON(g.market.units, false, null),
       S.killedunits -> unitstoJSON(g.market.killedunits, true, null),
       S.resources -> Json.toJson(g.resources.resou),
-      S.hutvillages -> hvtojson(g.resources.hvused,true),
-      "you" -> genPlayerDeckJson(b.you, true),
-      "others" -> JsArray(o)
+      S.hutvillages -> hvtojson(g.resources.hvused, true),
+      S.you -> genPlayerDeckJson(b.you, true),
+      "others" -> JsArray(o),
+      "battle" -> genBattleJson(g, civ)
     ))))
   }
 

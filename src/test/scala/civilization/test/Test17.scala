@@ -9,7 +9,7 @@ import civilization.io.tojson._
 import civilization.io.readdir.GenBoard.genBoard
 import civilization.objects.{Civilization, Command}
 import org.scalatest.FunSuite
-import play.api.libs.json.{JsArray, JsValue, Json}
+import play.api.libs.json._
 import civilization.objects._
 
 class Test17 extends FunSuite with ImplicitMiximToJson {
@@ -90,10 +90,29 @@ class Test17 extends FunSuite with ImplicitMiximToJson {
     val n: BattleStart = com.param.asInstanceOf[BattleStart]
     val jj: JsValue = n
     println(jj)
+    val s = II.getData(II.GETBOARDGAME,token)
+    println(s)
+    val js : JsValue = toJ(s)
+    val batt : JsValue = (js \ "board" \ "battle").get
+    println(batt)
+    assert(batt != null)
   }
 
   test("Test Attack Village and STart") {
     val reg = Helper.readBoardAndPlayT("test17/BOARD2.json", "test17/GAME3.json", Civilization.Rome)
+    val token: String = reg._1
+    Helper.executeCommandH(token, "PLAYUNIT", 0, 0, null)
+    var g: GameBoard = I.getBoardForToken(token)
+    println(g.battle)
+    val b: BattleField = g.battle.get
+    // attacker move
+    assert(b.attackermove)
+    assert(2 == b.defender.waiting.length)
+    assert(b.defender.fighting(0).isDefined)
+    val s = II.getData(II.GETBOARDGAME,token)
+    val js : JsValue = toJ(s)
+    val batt : JsValue = (js \ "board" \ "battle").get
+    println(batt)
   }
 
 }

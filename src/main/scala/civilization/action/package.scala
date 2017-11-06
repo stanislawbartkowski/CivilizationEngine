@@ -75,6 +75,10 @@ package object action extends ImplicitMiximToJson with ImplicitMiximFromJson {
 
     case Command.STARTBATTLE => new AttackCommand.StartBattleCommand(param)
 
+    case Command.PLAYUNIT => new AttackCommand.PlayUnitCommand(false)
+
+    case Command.PLAYUNITIRON => new AttackCommand.PlayUnitCommand(true)
+
     case _ => throw FatalError(Mess(M.NOTIMPLELEMENTEDYET, command))
   }
 

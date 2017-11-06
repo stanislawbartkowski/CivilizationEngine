@@ -17,6 +17,7 @@ package object gameboard {
   /** Part of map pattern. Position of the tile and orientation.
     * Initially only civilication tiles have orientation specified.
     * The tile is revealed if o isDefine  otherwise still hidden
+    *
     * @param p Position in the map pattern, row and column, (0,0) means (bottom, left)
     * @param o Orienation. If isDefine the tile is revealed
     */
@@ -31,6 +32,7 @@ package object gameboard {
   case class Technology(val tech: TechnologyName.T, val level: Int)
 
   /** TODO : consider
+    *
     * @param tech
     */
   case class PlayerTechnology(val tech: TechnologyName.T)
@@ -134,18 +136,21 @@ package object gameboard {
       Resource.Iron -> 0, Resource.Uranium -> 0, Resource.Wheat -> 0)
 
     def setResNum(r: Resource.T, num: Int) = table.put(r, num)
-    def incr(r:Resource.T) = table(r) = table(r) + 1
-    def decr(r:Resource.T) = {
+
+    def incr(r: Resource.T) = table(r) = table(r) + 1
+
+    def decr(r: Resource.T) = {
       require(table(r) > 0)
       table(r) = table(r) - 1
     }
-    def nof(r : Resource.T) : Int = table(r)
+
+    def nof(r: Resource.T): Int = table(r)
 
   }
 
   case class Resources(var hv: Seq[HutVillage], var hvused: Seq[HutVillage], val resou: GameResources)
 
-  case class PlayerDeck(val civ: Civilization.T, var tech: Seq[PlayerTechnology], var units: Seq[CombatUnit],val resou: GameResources) {
+  case class PlayerDeck(val civ: Civilization.T, var tech: Seq[PlayerTechnology], var units: Seq[CombatUnit], val resou: GameResources) {
 
     val defaultcitylimit: Int = 2
     val defaultarmieslimit: Int = 6
@@ -168,13 +173,18 @@ package object gameboard {
     def okV: Boolean = version == packageversion
   }
 
-  type BattleArmy = Array[Option[CombatUnit]]
+  case class FrontUnit(val unit: CombatUnit, var attackstrength: Int, var defendstrenght: Int, var wounds: Int)
 
-  case class BattleFieldSide(val fighting : BattleArmy, val waiting : Seq[CombatUnit], val killed : Seq[CombatUnit], val strength:CombatUnitStrength, val combatBonus : Int) {
-    var iron : Int = -1
+  type BattleArmy = Array[Option[FrontUnit]]
+
+  case class BattleFieldSide(val fighting: BattleArmy, var waiting: Seq[CombatUnit], var killed: Seq[CombatUnit], val strength: CombatUnitStrength, val combatBonus: Int, var canuseiron: Boolean) {
+    var ironused : Int = -1
   }
 
-  case class BattleField(val attacker : BattleFieldSide,val defender : BattleFieldSide)
+  case class BattleField(val attacker: BattleFieldSide, val defender: BattleFieldSide, val attackerciv: Civilization.T, val defenderciv: Civilization.T) {
+    var attackermove: Boolean = false
+    def endofbattle : Boolean = attacker.waiting.isEmpty && defender.waiting.isEmpty
+  }
 
   case class GameBoard(val players: Seq[PlayerDeck], val map: BoardMap, val resources: Resources, val market: Market) {
 
@@ -193,7 +203,9 @@ package object gameboard {
 
     var play: Play.Play = new Play.Play()
     var tech: Seq[Technology] = _
-    var battle : Option[BattleField] = None
+    var battle: Option[BattleField] = None
+
+    def conf : GameConfig = GameConfig(false)
   }
 
 
