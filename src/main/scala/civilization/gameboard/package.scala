@@ -178,12 +178,18 @@ package object gameboard {
   type BattleArmy = Array[Option[FrontUnit]]
 
   case class BattleFieldSide(val fighting: BattleArmy, var waiting: Seq[CombatUnit], var killed: Seq[CombatUnit], val strength: CombatUnitStrength, val combatBonus: Int, var canuseiron: Boolean) {
-    var ironused : Int = -1
+    var ironused: Int = -1
+    def points: Int = {
+      val su : Int = waiting.map(p=>p.getStrength(strength)).sum
+      su +  fighting.map(f => if (f.isEmpty) 0 else f.get.attackstrength).sum + combatBonus
+    }
   }
 
   case class BattleField(val attacker: BattleFieldSide, val defender: BattleFieldSide, val attackerciv: Civilization.T, val defenderciv: Civilization.T) {
     var attackermove: Boolean = false
-    def endofbattle : Boolean = attacker.waiting.isEmpty && defender.waiting.isEmpty
+
+    def endofbattle: Boolean = attacker.waiting.isEmpty && defender.waiting.isEmpty
+    def attackerwinner : Boolean =  attacker.points > defender.points
   }
 
   case class GameBoard(val players: Seq[PlayerDeck], val map: BoardMap, val resources: Resources, val market: Market) {
@@ -205,7 +211,7 @@ package object gameboard {
     var tech: Seq[Technology] = _
     var battle: Option[BattleField] = None
 
-    def conf : GameConfig = GameConfig(false)
+    def conf: GameConfig = GameConfig(false)
   }
 
 

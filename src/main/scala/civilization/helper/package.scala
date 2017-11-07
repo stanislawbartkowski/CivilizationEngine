@@ -142,7 +142,7 @@ package object helper {
   // CombatUnits handling
   // ==============================
 
-  def getRemove[T](a: Seq[T],i : Int): (T, Seq[T]) = {
+  def getRemove[T](a: Seq[T], i: Int): (T, Seq[T]) = {
     val b = a.toBuffer
     val t: T = b(i)
     b.remove(i)
@@ -151,16 +151,16 @@ package object helper {
 
   def getRandomRemove[T](a: Seq[T]): (T, Seq[T]) = {
     val randI: Int = ra.nextInt(a.size)
-    getRemove(a,randI)
+    getRemove(a, randI)
   }
 
-//  def getRandomRemove[T](a: Seq[T]): (T, Seq[T]) = {
-//    val b = a.toBuffer
-//    val randI: Int = ra.nextInt(b.size)
-//    val t: T = b(randI)
-//    b.remove(randI)
-//    return (t, b)
- // }
+  //  def getRandomRemove[T](a: Seq[T]): (T, Seq[T]) = {
+  //    val b = a.toBuffer
+  //    val randI: Int = ra.nextInt(b.size)
+  //    val t: T = b(randI)
+  //    b.remove(randI)
+  //    return (t, b)
+  // }
 
   private def reuseKilledUnits(b: GameBoard, unitt: CombatUnitType.T) = {
     // add killed units to units
@@ -288,8 +288,10 @@ package object helper {
     // if null then Reveal
     var moves: Seq[Move] = Nil
     p.foreach(co => co.command match {
-      case Command.MOVE | Command.ENDOFMOVE | Command.EXPLOREHUT | Command.ATTACK | Command.STARTBATTLE | Command.PLAYUNIT | Command.PLAYUNITIRON =>
+      case Command.MOVE | Command.ENDOFMOVE | Command.EXPLOREHUT  =>
         moves = moves :+ Move(co.command, if (co.p == null) None else Some(co.p))
+      case  Command.ATTACK | Command.STARTBATTLE | Command.PLAYUNIT | Command.PLAYUNITIRON | Command.ENDBATTLE =>
+        moves = moves :+ Move(co.command, None)
       case Command.REVEALTILE => moves = moves :+ moves.last // for reveal repeat last
       case _ => {
         if (fig != null) li = li :+ PlayerMove(fig, moves)
@@ -304,6 +306,14 @@ package object helper {
     })
     if (fig != null) li = li :+ PlayerMove(fig, moves)
     li
+  }
+
+  def battleParticipants(b: GameBoard): (P, P) = {
+    val cu: CurrentPhase = currentPhase(b)
+    val p: Seq[Command] = lastPhaseCommandsReverse(b, cu.notcompleted.head, TurnPhase.Movement)
+    val command = p.find(p => p.command == Command.ATTACK).get
+    // civ attacker defender
+    (civLastMoves(b,cu.notcompleted.head).last.lastp, command.p)
   }
 
 

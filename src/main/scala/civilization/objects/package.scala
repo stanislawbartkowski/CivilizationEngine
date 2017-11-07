@@ -135,6 +135,10 @@ package object objects {
         if (this.strength(i) != v.strength(i)) return false
       true
     }
+
+    def getStrength(s: CombatUnitStrength): Int =
+      strength(s.getStrength(utype))
+
   }
 
   case class BattleStart(val attacker: Seq[CombatUnit], val defender: Seq[CombatUnit])

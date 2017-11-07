@@ -4,6 +4,7 @@ import civilization.I
 import civilization.I.II
 import civilization.gameboard._
 import civilization.helper.AllowedCommands.allowedCommands
+import civilization.helper._
 import civilization.io.fromjson._
 import civilization.io.tojson._
 import civilization.io.readdir.GenBoard.genBoard
@@ -90,17 +91,57 @@ class Test17 extends FunSuite with ImplicitMiximToJson {
     val n: BattleStart = com.param.asInstanceOf[BattleStart]
     val jj: JsValue = n
     println(jj)
-    val s = II.getData(II.GETBOARDGAME,token)
+    val s = II.getData(II.GETBOARDGAME, token)
     println(s)
-    val js : JsValue = toJ(s)
-    val batt : JsValue = (js \ "board" \ "battle").get
+    val js: JsValue = toJ(s)
+    val batt: JsValue = (js \ "board" \ "battle").get
     println(batt)
     assert(batt != null)
   }
 
+  private def checkkilled(j: JsValue, side: String, expected: Int) = {
+    val jj: JsArray = (j \ side \ "killedunits").get.as[JsArray]
+    println(jj)
+    assert(expected == jj.value.size)
+  }
+
+  private def checklist(j: JsValue, side: String, expected: Int) = {
+    val jj: JsArray = (j \ side \ "waiting" \ "list").get.as[JsArray]
+    println(jj)
+    assert(expected == jj.value.size)
+  }
+
+  private def checkfront(j: JsValue, side: String, expected: Int) = {
+    var no = 0
+    val jj: JsArray = (j \ side \ "front").get.as[JsArray]
+    println(jj)
+    jj.value.foreach(p => if (p != JsNull) no = no + 1)
+    assert(expected == no)
+  }
+
+  private def checkturn(j: JsValue, side: String, expected: Boolean): Unit = {
+    val t: Boolean = (j \ side \ "turn").get.as[Boolean]
+    println(t)
+    assert(expected == t)
+  }
+
+  private def checkendofgame(j: JsValue, expected: Boolean): Unit = {
+    val t: Boolean = (j \ "endofbattle").get.as[Boolean]
+    println(t)
+    assert(expected == t)
+  }
+
+  private def checkattackerwinner(j: JsValue, expected: Boolean): Unit = {
+    val t: Boolean = (j \ "attackerwinner").get.as[Boolean]
+    println(t)
+    assert(expected == t)
+  }
+
+
   test("Test Attack Village and STart") {
     val reg = Helper.readBoardAndPlayT("test17/BOARD2.json", "test17/GAME3.json", Civilization.Rome)
     val token: String = reg._1
+    // defender
     Helper.executeCommandH(token, "PLAYUNIT", 0, 0, null)
     var g: GameBoard = I.getBoardForToken(token)
     println(g.battle)
@@ -109,10 +150,136 @@ class Test17 extends FunSuite with ImplicitMiximToJson {
     assert(b.attackermove)
     assert(2 == b.defender.waiting.length)
     assert(b.defender.fighting(0).isDefined)
-    val s = II.getData(II.GETBOARDGAME,token)
-    val js : JsValue = toJ(s)
-    val batt : JsValue = (js \ "board" \ "battle").get
-    println(batt)
+    var s = II.getData(II.GETBOARDGAME, token)
+    var js: JsValue = toJ(s)
+    var batt: JsValue = (js \ "board" \ "battle").get
+    println(Json.prettyPrint(batt))
+    checkkilled(batt, "attacker", 0)
+    checkkilled(batt, "defender", 0)
+    checkfront(batt, "attacker", 0)
+    checkfront(batt, "defender", 1)
+    checklist(batt, "attacker", 3)
+    checklist(batt, "defender", 2)
+    checkturn(batt, "attacker", true)
+    checkturn(batt, "defender", false)
+    checkendofgame(batt, false)
+
+    //attacker
+    // Artillery again Infantry
+    Helper.executeCommandH(token, "PLAYUNIT", 0, 0, null)
+    s = II.getData(II.GETBOARDGAME, token)
+    js = toJ(s)
+    batt = (js \ "board" \ "battle").get
+    println("=============================")
+    println(Json.prettyPrint(batt))
+    checkkilled(batt, "attacker", 0)
+    checkkilled(batt, "defender", 1)
+    checkfront(batt, "attacker", 1)
+    checkfront(batt, "defender", 0)
+    checklist(batt, "attacker", 2)
+    checklist(batt, "defender", 2)
+    checkturn(batt, "attacker", false)
+    checkturn(batt, "defender", true)
+
+    // defender
+    // attack with mounted
+    Helper.executeCommandH(token, "PLAYUNIT", 1, 0, null)
+    s = II.getData(II.GETBOARDGAME, token)
+    js = toJ(s)
+    batt = (js \ "board" \ "battle").get
+    println("=============================")
+    println(Json.prettyPrint(batt))
+    checkkilled(batt, "attacker", 0)
+    checkkilled(batt, "defender", 2)
+    checkfront(batt, "attacker", 1)
+    checkfront(batt, "defender", 0)
+    checklist(batt, "attacker", 2)
+    checklist(batt, "defender", 1)
+    checkturn(batt, "attacker", true)
+    checkturn(batt, "defender", false)
+
+    // attacker:
+    // play mounted
+    Helper.executeCommandH(token, "PLAYUNIT", 0, 1, null)
+    s = II.getData(II.GETBOARDGAME, token)
+    js = toJ(s)
+    batt = (js \ "board" \ "battle").get
+    println("=============================")
+    println(Json.prettyPrint(batt))
+    checkkilled(batt, "attacker", 0)
+    checkkilled(batt, "defender", 2)
+    checkfront(batt, "attacker", 2)
+    checkfront(batt, "defender", 0)
+    checklist(batt, "attacker", 1)
+    checklist(batt, "defender", 1)
+    checkturn(batt, "attacker", false)
+    checkturn(batt, "defender", true)
+
+    // defender:
+    // attack with artlery, both killed
+    Helper.executeCommandH(token, "PLAYUNIT", 0, 0, null)
+    s = II.getData(II.GETBOARDGAME, token)
+    js = toJ(s)
+    batt = (js \ "board" \ "battle").get
+    println("=============================")
+    println(Json.prettyPrint(batt))
+    checkkilled(batt, "attacker", 1)
+    checkkilled(batt, "defender", 3)
+    checkfront(batt, "attacker", 1)
+    checkfront(batt, "defender", 0)
+    checklist(batt, "attacker", 1)
+    checklist(batt, "defender", 0)
+    checkturn(batt, "attacker", true)
+    checkturn(batt, "defender", false)
+
+    // attacker: play last unit
+    Helper.executeCommandH(token, "PLAYUNIT", 0, 0, null)
+    s = II.getData(II.GETBOARDGAME, token)
+    js = toJ(s)
+    batt = (js \ "board" \ "battle").get
+    println("=============================")
+    println(Json.prettyPrint(batt))
+    checkkilled(batt, "attacker", 1)
+    checkkilled(batt, "defender", 3)
+    checkfront(batt, "attacker", 2)
+    checkfront(batt, "defender", 0)
+    checklist(batt, "attacker", 0)
+    checklist(batt, "defender", 0)
+    checkturn(batt, "attacker", true)
+    checkturn(batt, "defender", false)
+    checkendofgame(batt, true)
+    checkattackerwinner(batt, true)
+
+    // end of the battle
+    Helper.executeCommandH(token, "ENDBATTLE", 0, 0, null)
+    s = II.getData(II.GETBOARDGAME, token)
+    js = toJ(s)
+    println("=============================")
+    println(Json.prettyPrint(js))
+    // no active battle
+    batt = (js \ "board" \ "battle").get
+    assert(batt == JsNull)
+    val gg: GameBoard = I.getBoardForToken(token)
+    var ma: MapSquareP = getSquare(gg, P(3, 0))
+    // no figures
+    assert(ma.civHere.isEmpty)
+    ma = getSquare(gg, P(4, 0))
+    assert(ma.civHere.get == Civilization.Rome)
+    assert(ma.s.figures.numberofArmies == 1)
+    val pl: PlayerDeck = gg.playerDeck(Civilization.Rome)
+    // village taken
+    assert(pl.hvlist.length == 1)
+    // two units, one killed
+    assert(pl.units.length == 2)
+    // killed units: 4 killed in the battle and 1 before
+    assert(gg.market.killedunits.length == 5)
+
+    // check available move
+    val l = allowedCommands(gg, Civilization.Rome)
+    println(l)
+    assert(l.filter(_ == Command.MOVE).isEmpty)
+    assert(l.filter(_ == Command.ENDOFMOVE).isEmpty)
+    assert(!l.filter(_ == Command.ENDOFPHASE).isEmpty)
   }
 
 }
