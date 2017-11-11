@@ -1,7 +1,6 @@
 [
-  { "num" : 25, "resource" : "Wheat" },
-  { "num" : 25, "resource" : "Incense" },
-  { "num" : 2, "resource" : "Iron" },
-  { "num" : 25, "resource" : "Coin" },
-  { "num" : 25, "resource" : "Silk"}
+  { "num" : -1, "resource" : "Wheat" },
+  { "num" : -1, "resource" : "Incense" },
+  { "num" : -1, "resource" : "Iron" },
+  { "num" : -1, "resource" : "Silk"}
 ]

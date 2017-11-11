@@ -4,7 +4,7 @@ import civilization.gameboard._
 import civilization.helper.{revealTile, getThreeRandomUnits, getRandomHutVillage}
 import civilization.io.fromjson.{toArrayHutVillages, toSeqPatterMap}
 import civilization.message.{FatalError, M, Mess}
-import civilization.objects.{Civilization, HutVillage, TilesRead, CombatUnit}
+import civilization.objects.{Civilization, HutVillage, TilesRead, CombatUnit, Resource}
 import play.api.libs.json.JsValue
 import civilization.io.fromjson.ImplicitMiximFromJson
 
@@ -17,9 +17,12 @@ object GenBoard extends ImplicitMiximFromJson {
     toArrayHutVillages(j)
   }
 
-  private def readResources: GameResources = {
+  private def readResources(nciv: Int): GameResources = {
     val j: JsValue = readJSON("map/market", "RESOURCES.json")
-    j.as[GameResources]
+    val g: GameResources = j.as[GameResources]
+    // resources available should be equal to number of civilizations in play
+    Resource.values.foreach(r => if (g.nof(r) == -1) g.setResNum(r, nciv))
+    g
   }
 
 
@@ -65,14 +68,14 @@ object GenBoard extends ImplicitMiximFromJson {
     val players: List[PlayerDeck] = l.map(PlayerDeck(_, Nil, Nil, new GameResources()))
     val units: Seq[CombatUnit] = readListOfUnits
     val market: Market = Market(units, Nil)
-    val g: GameBoard = GameBoard(players, BoardMap(map), Resources(readHutVillages, Nil, readResources), market)
+    val g: GameBoard = GameBoard(players, BoardMap(map), Resources(readHutVillages, Nil, readResources(l.length)), market)
     g.tech = readTechnologies
     // reveal tiles
     lpatt.foreach(p => if (p.o.isDefined) revealTile(g, p.o.get, p.p))
     // attach random three units
     g.players.foreach(p => p.units = getThreeRandomUnits(g))
     // assing resources to hut and villages
-    map.foreach(m => assignResources(g,m))
+    map.foreach(m => assignResources(g, m))
     g
   }
 
