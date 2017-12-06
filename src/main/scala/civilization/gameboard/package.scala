@@ -177,7 +177,7 @@ package object gameboard {
 
   type BattleArmy = Array[Option[FrontUnit]]
 
-  case class BattleFieldSide(val fighting: BattleArmy, var waiting: Seq[CombatUnit], var killed: Seq[CombatUnit], val strength: CombatUnitStrength, val combatBonus: Int, var canuseiron: Boolean) {
+  case class BattleFieldSide(val fighting: BattleArmy, var waiting: Seq[CombatUnit], var killed: Seq[CombatUnit], val strength: CombatUnitStrength, val combatBonus: Int, var canuseiron: Boolean,val isvillage : Boolean) {
     var ironused: Int = -1
     def points: Int = {
       val su : Int = waiting.map(p=>p.getStrength(strength)).sum

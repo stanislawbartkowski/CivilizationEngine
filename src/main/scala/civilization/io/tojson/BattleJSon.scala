@@ -23,27 +23,28 @@ object BattleJSon {
   }
 
 
-  def genbattlefileSide(b: BattleFieldSide, details: Boolean, turn : Boolean ) = Json.obj(
+  def genbattlefileSide(b: BattleFieldSide, details: Boolean, turn: Boolean) = Json.obj(
     S.combatbonus -> b.combatBonus,
     "front" -> b.fighting,
     "canuseiron" -> b.canuseiron,
     "ironused" -> b.ironused,
     S.killedunits -> b.killed,
-    "waiting" -> unitstoJSON(b.waiting,details,b.strength),
+    "waiting" -> unitstoJSON(b.waiting, details, b.strength),
     S.you -> details,
     "turn" -> turn,
-    "points" -> b.points
+    "points" -> b.points,
+    "isvillage" -> b.isvillage
   )
 
-  def genBattleJson(g: GameBoard, civ : Civilization.T): JsValue =
+  def genBattleJson(g: GameBoard, civ: Civilization.T): JsValue =
     if (g.battle.isEmpty) JsNull
     else {
 
       Json.obj(
         "endofbattle" -> g.battle.get.endofbattle,
         "attackerwinner" -> g.battle.get.attackerwinner,
-        S.attacker -> genbattlefileSide(g.battle.get.attacker,civ == g.battle.get.attackerciv,g.battle.get.attackermove),
-        S.defender -> genbattlefileSide(g.battle.get.defender,civ == g.battle.get.defenderciv,!g.battle.get.attackermove)
+        S.attacker -> genbattlefileSide(g.battle.get.attacker, civ == g.battle.get.attackerciv, g.battle.get.attackermove),
+        S.defender -> genbattlefileSide(g.battle.get.defender, civ == g.battle.get.defenderciv, !g.battle.get.attackermove)
       )
     }
 

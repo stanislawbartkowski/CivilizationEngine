@@ -78,20 +78,10 @@ object MoveAction {
     figureMovePointCheck(b, civ, fig, p, endofmove)
   }
 
-  private def figureMoveExecute(b: GameBoard, civ: Civilization.T, p: P, endofmove: Boolean) = {
-
+  private def figureMoveExecute(b: GameBoard, civ: Civilization.T, p: P, endofmove: Boolean) =
     if (endofmove && p == null) None
     else
-//      val fig: PlayerMove = getCurrentMove(b, civ).get
-//      val last: P = fig.lastp
-//      // remove from last
-//      putFigures(b, civ, last, -(fig.f.toFigures))
-      // new position
-//      putFigures(b, civ, p, fig.f.toFigures)
       moveFigures(b,civ,p)
-
-  }
-
 
   class StartMoveAction(override val param: Figures) extends AbstractCommand(param) {
     def execute(board: GameBoard) = Unit

@@ -165,7 +165,7 @@ package object helper {
   private def reuseKilledUnits(b: GameBoard, unitt: CombatUnitType.T) = {
     // add killed units to units
     b.market.units = b.market.units ++ b.market.killedunits.filter(_.utype == unitt)
-    // remove units from killed units
+    // remove units from killed units list
     val newkilledunits: Seq[CombatUnit] = b.market.killedunits.filter(_.utype != unitt)
     b.market.killedunits = newkilledunits
   }

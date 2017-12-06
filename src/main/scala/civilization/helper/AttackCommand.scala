@@ -49,11 +49,11 @@ object AttackCommand extends ImplicitMiximToJson {
     val li: PlayerLimits = getLimits(board, civ)
     val pl: PlayerDeck = board.playerDeck(civ)
     // can use iron
-    BattleFieldSide(createEmptyFighting(p), units, Nil, pl.combatlevel, li.combatBonus, pl.resou.nof(Resource.Iron) > 0)
+    BattleFieldSide(createEmptyFighting(p), units, Nil, pl.combatlevel, li.combatBonus, pl.resou.nof(Resource.Iron) > 0, false)
   }
 
   private def createBattleSideForVillages(p: BattleStart): BattleFieldSide =
-    BattleFieldSide(createEmptyFighting(p), p.defender, Nil, CombatUnitStrength(), 0, false)
+    BattleFieldSide(createEmptyFighting(p), p.defender, Nil, CombatUnitStrength(), 0, false, true)
 
 
   /** Get next civilization after civ */
@@ -67,7 +67,7 @@ object AttackCommand extends ImplicitMiximToJson {
   }
 
   // problem with implicit
-  private def finghtingtocombat(aa: BattleArmy) : Seq[CombatUnit] =
+  private def finghtingtocombat(aa: BattleArmy): Seq[CombatUnit] =
     aa.filter(f => f.isDefined).map(_.get.unit)
 
   def battlesideaftermatch(b: GameBoard, s: BattleFieldSide, p: MapSquareP, winner: Boolean) = {
@@ -107,7 +107,7 @@ object AttackCommand extends ImplicitMiximToJson {
       if (!defe.s.hvhere)
         throw new FatalError(Mess(M.ENDOFBATTLEIMPLEMENTEDONLYFORVILLAGES, defe.p))
       // move all village units to killed
-      board.market.killedunits = board.market.killedunits ++ batt.defender.killed ++ finghtingtocombat( batt.defender.fighting)
+      board.market.killedunits = board.market.killedunits ++ batt.defender.killed ++ finghtingtocombat(batt.defender.fighting)
       if (batt.attackerwinner) {
         // get village
         val pl: PlayerDeck = board.playerDeck(att.civHere.get)
