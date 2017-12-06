@@ -198,6 +198,95 @@ IMPORTANT: seems not working properly, IntelliJ ant build does not generate scal
     },
   }
 ```
+# Battle
+## Start
+```JSON
+    "battle" : {
+      "endofbattle" : false,
+      "attackerwinner" : false,
+      "attacker" : {
+        "combatbonus" : 0,
+        "front" : [ null, null, null, null, null, null ],
+        "canuseiron" : false,
+        "ironused" : -1,
+        "killedunits" : [ ],
+        "waiting" : {
+          "units" : [ {
+            "name" : "Artillery",
+            "num" : 1,
+            "militarystrength" : 0
+          }, {
+            "name" : "Infantry",
+            "num" : 1,
+            "militarystrength" : 0
+          }, {
+            "name" : "Mounted",
+            "num" : 1,
+            "militarystrength" : 0
+          }, {
+            "name" : "Aircraft",
+            "num" : 0,
+            "militarystrength" : 0
+          } ],
+          "list" : [ {
+            "name" : "Artillery",
+            "strength" : [ 2, 3, 4, 6 ]
+          }, {
+            "name" : "Mounted",
+            "strength" : [ 1, 2, 4, 5 ]
+          }, {
+            "name" : "Infantry",
+            "strength" : [ 1, 3, 4, 6 ]
+          } ]
+        },
+        "you" : true,
+        "turn" : false,
+        "points" : 4
+      },
+      "defender" : {
+        "combatbonus" : 0,
+        "front" : [ null, null, null, null, null, null ],
+        "canuseiron" : false,
+        "ironused" : -1,
+        "killedunits" : [ ],
+        "waiting" : {
+          "units" : [ {
+            "name" : "Artillery",
+            "num" : 1,
+            "militarystrength" : 0
+          }, {
+            "name" : "Infantry",
+            "num" : 1,
+            "militarystrength" : 0
+          }, {
+            "name" : "Mounted",
+            "num" : 1,
+            "militarystrength" : 0
+          }, {
+            "name" : "Aircraft",
+            "num" : 0,
+            "militarystrength" : 0
+          } ],
+          "list" : [ {
+            "name" : "Infantry",
+            "strength" : [ 1, 3, 4, 6 ]
+          }, {
+            "name" : "Artillery",
+            "strength" : [ 2, 3, 4, 6 ]
+          }, {
+            "name" : "Mounted",
+            "strength" : [ 1, 2, 4, 5 ]
+          } ]
+        },
+        "you" : true,
+        "turn" : true,
+        "points" : 4
+      }
+    }
+  }
+}
+```
+
 # Units
 Summary, number of units. Opposite players exposes only this information to you
 Example
