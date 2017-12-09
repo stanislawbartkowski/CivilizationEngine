@@ -368,6 +368,23 @@ One Hut and Spy discovered
 * Usage example:  
   * executeCommand("secret token","BUYARTILLERY",2,2,null)
   * Buy Artillery in city (2,2)
+  
+## ATTACK
+* executeCommand(token,"ATTACK",row, col)
+* Parameters:
+ * row,col : square to attack. Can be village or alient unit or city. Currently only attacking village is implemented. The attacking unit is the current unix in move phase
+* Usage example:
+  * executeCommand("secret token","ATTACK",4,0,null)
+  * Start the battle involving village at square (4,0)
+  
+## PLAYUNIT
+* executeCommand(token,"PLAYUNIT",indexfrom, indexto,null)
+* Parameters:
+  * indexfrom : position of the unit on "waiting" line 
+  * indexto: position on "fighting" line where unit is played to
+* Usage example:
+  * executeCommand("secret token",0,0,null)
+  * waiting unit from position 0 is moving to position 0 in fighting line.
 
 # itemizeCommand format
 
