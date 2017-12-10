@@ -98,12 +98,16 @@ object AttackCommand extends ImplicitMiximToJson {
     override def execute(board: GameBoard): Unit = {
       val ba = battleParticipants(board)
       val att: MapSquareP = getSquare(board, ba._1)
+      // import, take attackign civilization before battle conclusion
+      val attackciv : Civilization.T = att.civHere.get
       val defe: MapSquareP = getSquare(board, ba._2)
       val batt: BattleField = board.battle.get
       // close battle
       board.battle = None
       // attacker aftermath
       battlesideaftermatch(board, batt.attacker, att, batt.attackerwinner)
+      // attacker will lose figures if battle is lost
+      // so get civilization before
       if (!defe.s.hvhere)
         throw new FatalError(Mess(M.ENDOFBATTLEIMPLEMENTEDONLYFORVILLAGES, defe.p))
       // move all village units to killed
@@ -121,13 +125,13 @@ object AttackCommand extends ImplicitMiximToJson {
       if (isExecute)
         if (batt.attackerwinner) {
           // move army to this point
-          val command: Command = constructCommand(Command.ENDOFMOVE, att.civHere.get, defe.p, null)
+          val command: Command = constructCommand(Command.ENDOFMOVE, attackciv, defe.p, null)
           // execute later
           board.addForcedCommand(command)
         }
         else {
           // battle lost, nothing
-          val command: Command = constructCommand(Command.ENDOFMOVE, att.civHere.get, P.constructEmpty, null)
+          val command: Command = constructCommand(Command.ENDOFMOVE, attackciv, null, null)
           board.addForcedCommand(command)
         }
     }

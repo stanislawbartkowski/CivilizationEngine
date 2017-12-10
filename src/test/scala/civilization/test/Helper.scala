@@ -76,5 +76,21 @@ object Helper {
     assert (e(token,action,row,col,jsparam) != null)
   }
 
+  // TEST, battle
+
+  def checkendofgame(j: JsValue, expected: Boolean): Unit = {
+    val t: Boolean = (j \ "endofbattle").get.as[Boolean]
+    println(t)
+    assert(expected == t)
+  }
+
+  def checkattackerwinner(j: JsValue, expected: Boolean): Unit = {
+    val t: Boolean = (j \ "attackerwinner").get.as[Boolean]
+    println(t)
+    assert(expected == t)
+  }
+
+
+
 }
 

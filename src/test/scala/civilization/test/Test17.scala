@@ -125,19 +125,6 @@ class Test17 extends FunSuite with ImplicitMiximToJson {
     assert(expected == t)
   }
 
-  private def checkendofgame(j: JsValue, expected: Boolean): Unit = {
-    val t: Boolean = (j \ "endofbattle").get.as[Boolean]
-    println(t)
-    assert(expected == t)
-  }
-
-  private def checkattackerwinner(j: JsValue, expected: Boolean): Unit = {
-    val t: Boolean = (j \ "attackerwinner").get.as[Boolean]
-    println(t)
-    assert(expected == t)
-  }
-
-
   test("Test Attack Village and STart") {
     val reg = Helper.readBoardAndPlayT("test17/BOARD2.json", "test17/GAME3.json", Civilization.Rome)
     val token: String = reg._1
@@ -162,7 +149,7 @@ class Test17 extends FunSuite with ImplicitMiximToJson {
     checklist(batt, "defender", 2)
     checkturn(batt, "attacker", true)
     checkturn(batt, "defender", false)
-    checkendofgame(batt, false)
+    Helper.checkendofgame(batt, false)
 
     //attacker
     // Artillery again Infantry
@@ -247,8 +234,8 @@ class Test17 extends FunSuite with ImplicitMiximToJson {
     checklist(batt, "defender", 0)
     checkturn(batt, "attacker", true)
     checkturn(batt, "defender", false)
-    checkendofgame(batt, true)
-    checkattackerwinner(batt, true)
+    Helper.checkendofgame(batt, true)
+    Helper.checkattackerwinner(batt, true)
 
     // end of the battle
     Helper.executeCommandH(token, "ENDBATTLE", 0, 0, null)
