@@ -389,7 +389,7 @@ One Hut and Spy discovered
   * executeCommand("secret token",0,0,null)
   * waiting unit from position 0 is moving to position 0 in fighting line.
 
-## ENDOFBATTLE
+## ENDBATTLE
 * executeCommand("secret token",-1,-1,null)
 * Parameters: no
   * in the future JSON par value should contain the winner reward
