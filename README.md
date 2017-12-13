@@ -381,6 +381,7 @@ One Hut and Spy discovered
   * Start the battle involving village at square (4,0)
   
 ## PLAYUNIT
+## PLAYUNITIRON
 * executeCommand(token,"PLAYUNIT",indexfrom, indexto,null)
 * Parameters:
   * indexfrom : position of the unit on "waiting" line 
