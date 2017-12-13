@@ -12,6 +12,8 @@ It is the beginning, for the time being only the following actions are implement
 * tile revealing
 * explore hut
 * harvest resource
+* explore hut
+* fight village
 
 The engine does not contain any user interface, the user interface is developed as a separate project. [https://github.com/stanislawbartkowski/CivilizationUI] It keeps all game logic and state and executes commands to move from one game stage to another and provides the current state to the clients to keep user interface synchronized.
 Only single player test game is available.
