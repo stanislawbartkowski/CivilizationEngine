@@ -276,6 +276,11 @@ package object helper {
     def lastp: P = begstop._2.p.get
   }
 
+  private def toFig(co : Command) : PlayerFigures = {
+    val f: Figures = co.param.asInstanceOf[Figures]
+    PlayerFigures(co.civ, f.numberofArmies, f.numberofScouts)
+  }
+
   def civLastMoves(b: GameBoard, civ: Civilization.T): Seq[PlayerMove] = {
     val cu: CurrentPhase = currentPhase(b)
     if (cu.turnPhase != TurnPhase.Movement) return Nil
@@ -295,8 +300,7 @@ package object helper {
           // 2017/12/23
           // if there was a battle, number of figures to move can be lower then number of figures starting the move
           // some figures could be killed in the battle
-          val f: Figures = co.param.asInstanceOf[Figures]
-          fig = PlayerFigures(co.civ, f.numberofArmies, f.numberofScouts)
+          fig = toFig(co)
         }
       case  Command.ATTACK | Command.STARTBATTLE | Command.PLAYUNIT | Command.PLAYUNITIRON | Command.ENDBATTLE =>
         moves = moves :+ Move(co.command, None)
@@ -306,8 +310,7 @@ package object helper {
         fig = null
         moves = Nil
         if (co.command == Command.STARTMOVE) {
-          val f: Figures = co.param.asInstanceOf[Figures]
-          fig = PlayerFigures(co.civ, f.numberofArmies, f.numberofScouts)
+          fig = toFig(co)
           moves = moves :+ Move(co.command, if (co.p == null) None else Some(co.p))
         }
       }
