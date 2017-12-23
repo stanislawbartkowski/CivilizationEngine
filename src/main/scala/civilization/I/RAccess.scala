@@ -15,6 +15,8 @@ trait RAccess {
 
   def touchCurrentGame(token : String)
 
+  def removeCurrentGames(remove : String => Boolean)
+
   // game
   def registerGame(value: String): Int
 

@@ -60,9 +60,9 @@ package object action extends ImplicitMiximToJson with ImplicitMiximFromJson {
 
     case Command.STARTMOVE => new MoveAction.StartMoveAction(toFigures(param))
 
-    case Command.MOVE => new MoveAction.MoveAction
+    case Command.MOVE => new MoveAction.MoveAction(toFiguresNull(param))
 
-    case Command.ENDOFMOVE => new MoveAction.EndOfMoveAction
+    case Command.ENDOFMOVE => new MoveAction.EndOfMoveAction(toFiguresNull(param))
 
     case Command.REVEALTILE => new RevealTileAction(toOrientation(param))
 
@@ -102,12 +102,13 @@ package object action extends ImplicitMiximToJson with ImplicitMiximFromJson {
 
     def param1: Any
 
-    private var replay : Boolean = false
+    private var replay: Boolean = false
 
     def setReplay = replay = true
 
-    def isReplay : Boolean = replay
-    def isExecute : Boolean = !replay
+    def isReplay: Boolean = replay
+
+    def isExecute: Boolean = !replay
 
     // TODO: should return Option[Mess], not null
     // null : success, Mess : failure and failure info

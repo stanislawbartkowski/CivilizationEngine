@@ -1,4 +1,4 @@
-name := "TestC"
+name := "CivilizationEngine"
 
 version := "1.0"
 

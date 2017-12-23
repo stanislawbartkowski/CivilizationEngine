@@ -2,10 +2,11 @@ package civilization.helper
 
 import civilization.action.{AbstractCommand, AbstractCommandNone, Command, constructCommand}
 import civilization.io.tojson.ImplicitMiximToJson
-import civilization.message.{M, Mess, FatalError}
+import civilization.message.{FatalError, M, Mess}
 import civilization.objects._
 import civilization.gameboard._
 import civilization.message
+import play.api.libs.json.JsValue
 
 import scala.util.control.Breaks.{breakable, _}
 
@@ -70,7 +71,7 @@ object AttackCommand extends ImplicitMiximToJson {
   private def finghtingtocombat(aa: BattleArmy): Seq[CombatUnit] =
     aa.filter(f => f.isDefined).map(_.get.unit)
 
-  def battlesideaftermatch(b: GameBoard, s: BattleFieldSide, p: MapSquareP, winner: Boolean) = {
+  def battlesideaftermatch(b: GameBoard, civ: Civilization.T, s: BattleFieldSide, p: MapSquareP, winner: Boolean): Option[Figures] = {
     b.market.killedunits = b.market.killedunits ++ s.killed
     if (s.ironused > -1) b.resources.resou.incr(Resource.Iron)
     val survived: Seq[CombatUnit] = finghtingtocombat(s.fighting)
@@ -79,12 +80,25 @@ object AttackCommand extends ImplicitMiximToJson {
     if (winner) pl.units = pl.units ++ survived
     // else kill them all
     else b.market.killedunits = b.market.killedunits ++ survived
+    // fugures participating in the battle
+    val pla: PlayerMove = getCurrentMove(b, civ).get
+    var fig: Option[Figures] = None
+    var f: Figures = null
     if (winner) {
-      // kill figure for every two killed units
-      val tokill = s.killed.length / 2
-      p.s.figures.numberofArmies = Math.max(1, p.s.figures.numberofArmies - tokill)
+      // kill figure for every two killed units leaving at least one
+      val tokill = Math.min(s.killed.length / 2, pla.f.numberofArmies - 1)
+      if (tokill == 0) f = Figures(0, 0)
+      else {
+        f = Figures(-tokill, 0)
+        fig = Option(Figures(pla.f.numberofArmies - tokill, pla.f.numberofScouts))
+      }
     }
-    else p.s.figures.kill() // kill them all
+    else
+    // kill all figures participating in the battle
+      f = Figures(-pla.f.numberofArmies, -pla.f.numberofScouts)
+
+    p.s.figures + f
+    fig
   }
 
   class EndOfBattleCommand extends AbstractCommandNone {
@@ -99,13 +113,13 @@ object AttackCommand extends ImplicitMiximToJson {
       val ba = battleParticipants(board)
       val att: MapSquareP = getSquare(board, ba._1)
       // import, take attackign civilization before battle conclusion
-      val attackciv : Civilization.T = att.civHere.get
+      val attackciv: Civilization.T = att.civHere.get
       val defe: MapSquareP = getSquare(board, ba._2)
       val batt: BattleField = board.battle.get
       // close battle
       board.battle = None
       // attacker aftermath
-      battlesideaftermatch(board, batt.attacker, att, batt.attackerwinner)
+      val f: Option[Figures] = battlesideaftermatch(board, civ, batt.attacker, att, batt.attackerwinner)
       // attacker will lose figures if battle is lost
       // so get civilization before
       if (!defe.s.hvhere)
@@ -125,7 +139,8 @@ object AttackCommand extends ImplicitMiximToJson {
       if (isExecute)
         if (batt.attackerwinner) {
           // move army to this point
-          val command: Command = constructCommand(Command.ENDOFMOVE, attackciv, defe.p, null)
+          val param: JsValue = if (f.isEmpty) null else f.get
+          val command: Command = constructCommand(Command.ENDOFMOVE, attackciv, defe.p, param)
           // execute later
           board.addForcedCommand(command)
         }
@@ -268,7 +283,7 @@ object AttackCommand extends ImplicitMiximToJson {
       val ma: MapSquareP = getSquare(board, p)
       if (!ma.s.figures.empty && ma.s.figures.numberofArmies == 0 && ma.s.figures.numberofScouts > 0) {
         ma.s.figures.kill()
-        moveFigures(board, civ, p)
+        moveFigures(board, civ, p, None)
         return true
       }
       false

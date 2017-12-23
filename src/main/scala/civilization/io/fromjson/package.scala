@@ -390,6 +390,13 @@ package object fromjson extends ImplicitMiximFromJson {
 
   def toFigures(j: JsValue): Figures = convert[FiguresToMoveJ](FiguresToMoveJ(j))
 
+  def toFiguresNull(j : JsValue) : Figures = {
+    if (j == null) return null
+    if (j == JsNull) return null
+    toFigures(j)
+  }
+
+
   def toTechnologies(j: JsValue): Seq[Technology] = convert[SeqTechnologyJ](SeqTechnologyJ(j))
 
   def toTechnologName(j: JsValue) = j.as[TechnologyName.T]

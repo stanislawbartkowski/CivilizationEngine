@@ -290,6 +290,14 @@ package object helper {
     p.foreach(co => co.command match {
       case Command.MOVE | Command.ENDOFMOVE | Command.EXPLOREHUT  =>
         moves = moves :+ Move(co.command, if (co.p == null) None else Some(co.p))
+        // 2017/12/23
+        if (co.param != null) {
+          // 2017/12/23
+          // if there was a battle, number of figures to move can be lower then number of figures starting the move
+          // some figures could be killed in the battle
+          val f: Figures = co.param.asInstanceOf[Figures]
+          fig = PlayerFigures(co.civ, f.numberofArmies, f.numberofScouts)
+        }
       case  Command.ATTACK | Command.STARTBATTLE | Command.PLAYUNIT | Command.PLAYUNITIRON | Command.ENDBATTLE =>
         moves = moves :+ Move(co.command, None)
       case Command.REVEALTILE => moves = moves :+ moves.last // for reveal repeat last
@@ -623,16 +631,17 @@ package object helper {
     val pl: PlayerDeck = b.playerDeck(civ)
     pl.hvlist = pl.hvlist :+ h
     // final, move figures to point
-    moveFigures(b, civ, p)
+    moveFigures(b, civ, p,None)
   }
 
-  def moveFigures(b: GameBoard, civ: Civilization.T, p: P) = {
+  def moveFigures(b: GameBoard, civ: Civilization.T, p: P, fparam : Option[Figures]) = {
     val fig: PlayerMove = getCurrentMove(b, civ).get
     val last: P = fig.lastp
+    val f : Figures = if (fparam.isEmpty) fig.f.toFigures else fparam.get
     // remove from last
-    putFigures(b, civ, last, -(fig.f.toFigures))
+    putFigures(b, civ, last, -f)
     // new position
-    putFigures(b, civ, p, fig.f.toFigures)
+    putFigures(b, civ, p, f)
   }
 
 }

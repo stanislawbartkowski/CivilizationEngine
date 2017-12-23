@@ -87,7 +87,7 @@ package object I {
   private def toCiv(civ: String): Civilization.T = Civilization.withName(civ)
 
   private def registerOwnerPlay(civ: String, game: String): String = {
-    val l : List[Civilization.T] = civ.split(",").toList.map(toCiv(_))
+    val l: List[Civilization.T] = civ.split(",").toList.map(toCiv(_))
     val g: GameBoard = genBoard(l, game)
     registerGame(g, l.head)
   }
@@ -136,7 +136,7 @@ package object I {
   }
 
   // for testing only
-  def executeCommand(gb: (CurrentGame, GameBoard), com: CommandValues, replay : Boolean): Mess = {
+  def executeCommand(gb: (CurrentGame, GameBoard), com: CommandValues, replay: Boolean): Mess = {
     val co: Command = constructCommand(com)
     if (replay) co.setReplay
     var mess: Mess = playCommand(gb._2, co, c => {
@@ -148,7 +148,7 @@ package object I {
   }
 
   // for testing only
-  def executeCommand(token: String, com: CommandValues): Mess = executeCommand(getBoard(token), com,false)
+  def executeCommand(token: String, com: CommandValues): Mess = executeCommand(getBoard(token), com, false)
 
   def executeCommand(token: String, action: String, row: Int, col: Int, jsparam: String): String = {
     val gb = getBoard(token)
@@ -157,7 +157,7 @@ package object I {
     val command: Command.T = Command.withName(action)
     val coma: CommandValues = CommandValues(command, civ, if (row == -1) null else P(row, col), if (jsparam == null) null else toJ(jsparam))
     touchGame(gb._1.gameid, g)
-    val m: Mess = executeCommand(gb, coma,false)
+    val m: Mess = executeCommand(gb, coma, false)
     if (m == null) null else m.toString
   }
 
@@ -180,7 +180,15 @@ package object I {
     Json.toJson(ld).toString()
   }
 
+  private def removeexistinggames(gameid: Int): Unit = {
+    r.removeCurrentGames(co => {
+      val c: CurrentGame = co
+      c.gameid == gameid
+    })
+  }
+
   def resumeGame(gameid: Int, c: String): String = {
+    removeexistinggames(gameid)
     val civ: Civilization.T = toCiv(c)
     currentGame(civ, gameid)
   }

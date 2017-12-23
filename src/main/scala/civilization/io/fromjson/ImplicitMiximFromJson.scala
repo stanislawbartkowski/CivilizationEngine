@@ -1,6 +1,6 @@
 package civilization.io.fromjson
 
-import civilization.gameboard.GameResources
+import civilization.gameboard.{Figures, GameResources}
 import civilization.objects._
 import play.api.libs.json._
 

@@ -9,11 +9,13 @@ package object R {
   private final val CURRENT = "current"
   private final val GAMES = "games"
 
-  private final def SEQKEY = CIVILIZATION + "." + "seq"
+  private final val SEQKEY = CIVILIZATION + "." + "seq"
 
-  private final def PLAY = "play"
+  private final val PLAY = "play"
 
-  private final def METADATA = "metadata"
+  private final val METADATA = "metadata"
+
+  private final val ALLCURRENT = CIVILIZATION + "." + CURRENT + ".*"
 
   private final val rid = (CIVILIZATION + raw"\." + GAMES + raw"\." + raw"(\d*)." + METADATA).r
 
@@ -28,7 +30,7 @@ package object R {
 
   class R extends RAccess {
 
-//    private final val expireT: Int = 3600 * 24
+    //    private final val expireT: Int = 3600 * 24
     private final val expireT: Int = 3600
 
     private final val r: RedisClientPool = rr.get
@@ -49,8 +51,8 @@ package object R {
     private def getkeys(patt: String): List[String] = r.withClient(r => r.keys(patt)).get.filter(_.isDefined).map(_.get)
 
     override def getCurrentGames(): Seq[String] = {
-      val patt: String = CIVILIZATION + "." + CURRENT + ".*"
-      val keys: List[String] = getkeys(patt)
+      val patt: String = ALLCURRENT
+      val keys: Seq[String] = getkeys(patt)
       r.withClient(r => keys.map(r.get(_).get))
     }
 
@@ -58,6 +60,14 @@ package object R {
 
     override def touchCurrentGame(token: String): Unit = renewexpireT(token)
 
+    override def removeCurrentGames(remove: String => Boolean) = {
+      val keys: Seq[String] = getkeys(ALLCURRENT)
+      val rkeys: Seq[String] = keys.filter(k => {
+        val co = r.withClient(r => r.get(k))
+        remove(co.get)
+      })
+      rkeys.foreach(k => r.withClient(r => r.del(k)))
+    }
 
     // ===================
 

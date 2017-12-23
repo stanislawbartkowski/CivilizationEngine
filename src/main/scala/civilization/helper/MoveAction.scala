@@ -65,7 +65,7 @@ object MoveAction {
     val s: MapSquareP = getSquare(b, p)
     if (!s.revealed) return Some(Mess(M.POINTNOTREVEALED, p))
     if (s.sm.terrain == Terrain.Water && !li.watercrossingallowed) return Some(Mess(M.CANNOTCROSSWATER, figdesc))
-    val mess : Option[Mess] = isSquareForFigures(b,civ,fig.f.toFigures,s.s,li)
+    val mess: Option[Mess] = isSquareForFigures(b, civ, fig.f.toFigures, s.s, li)
     if (mess.isDefined) return mess
     if (endofmove) checkFinalPoint(b, civ, s, fig.f.toFigures) else None
   }
@@ -78,10 +78,10 @@ object MoveAction {
     figureMovePointCheck(b, civ, fig, p, endofmove)
   }
 
-  private def figureMoveExecute(b: GameBoard, civ: Civilization.T, p: P, endofmove: Boolean) =
+  private def figureMoveExecute(b: GameBoard, civ: Civilization.T, p: P, endofmove: Boolean, f: Option[Figures]) =
     if (endofmove && p == null) None
     else
-      moveFigures(b,civ,p)
+      moveFigures(b, civ, p, f)
 
   class StartMoveAction(override val param: Figures) extends AbstractCommand(param) {
     def execute(board: GameBoard) = Unit
@@ -89,16 +89,16 @@ object MoveAction {
     def verify(board: GameBoard): Mess = startOfMoveVerify(board, civ, p, param)
   }
 
-  class MoveAction extends AbstractCommand() {
+  class MoveAction(override val param: Figures) extends AbstractCommand(param) {
 
-    def execute(board: GameBoard) = figureMoveExecute(board, civ, p, false)
+    def execute(board: GameBoard) = figureMoveExecute(board, civ, p, false, if (param == null) None else Some(param))
 
     def verify(board: GameBoard): Mess = figureMoveVerify(board, civ, p, false).getOrElse(null)
   }
 
-  class EndOfMoveAction extends AbstractCommand() {
+  class EndOfMoveAction(override val param: Figures) extends AbstractCommand(param) {
 
-    def execute(board: GameBoard) = figureMoveExecute(board, civ, p, true)
+    def execute(board: GameBoard) = figureMoveExecute(board, civ, p, true, if (param == null) None else Some(param))
 
     def verify(board: GameBoard): Mess = figureMoveVerify(board, civ, p, true).getOrElse(null)
   }
