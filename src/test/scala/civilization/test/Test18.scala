@@ -68,5 +68,24 @@ class Test18 extends FunSuite with ImplicitMiximToJson {
     assert(!ma.s.hvhere)
   }
 
+  test("Error while two players game") {
+    val reg = Helper.ReadAndPlayForTwo("test18/BOARDGAME3.json", "test18/PLAY3.json", Civilization.America,Civilization.China)
+    val token: String = reg._1
+    var gg: GameBoard = I.getBoardForToken(token)
+    assert(!gg.battle.get.attackerwinner)
+    assert(gg.battle.get.endofbattle)
+    Helper.executeCommandH(token, "ENDBATTLE", -1, -1, null)
+    gg = I.getBoardForToken(token)
+    var ma: MapSquareP = getSquare(gg, P(12, 4))
+    println(ma)
+    println(ma.s.figures)
+    // atacking figure killed
+    // 2 figures on the square, one left
+    assert(1 == ma.s.figures.numberofArmies)
+    ma = getSquare(gg, P(12, 3))
+    // village still exists
+    assert(ma.civHere.isEmpty)
+    assert(ma.s.hvhere)
+  }
 
 }

@@ -71,17 +71,21 @@ object AttackCommand extends ImplicitMiximToJson {
   private def finghtingtocombat(aa: BattleArmy): Seq[CombatUnit] =
     aa.filter(f => f.isDefined).map(_.get.unit)
 
-  def battlesideaftermatch(b: GameBoard, civ: Civilization.T, s: BattleFieldSide, p: MapSquareP, winner: Boolean): Option[Figures] = {
+  def battlesideaftermatch(b: GameBoard, s: BattleFieldSide, p: MapSquareP, winner: Boolean): Option[Figures] = {
     b.market.killedunits = b.market.killedunits ++ s.killed
+    val civattacker : Civilization.T = p.civHere.get
     if (s.ironused > -1) b.resources.resou.incr(Resource.Iron)
     val survived: Seq[CombatUnit] = finghtingtocombat(s.fighting)
-    val pl: PlayerDeck = b.playerDeck(p.civHere.get)
+    val pl: PlayerDeck = b.playerDeck(civattacker)
     // return survived units
     if (winner) pl.units = pl.units ++ survived
     // else kill them all
     else b.market.killedunits = b.market.killedunits ++ survived
     // fugures participating in the battle
-    val pla: PlayerMove = getCurrentMove(b, civ).get
+    // important: 2017/12/24
+    // p.civHere.get not civ !
+    // the winner can be different then attacker
+    val pla: PlayerMove = getCurrentMove(b, civattacker).get
     var fig: Option[Figures] = None
     var f: Figures = null
     if (winner) {
@@ -110,7 +114,7 @@ object AttackCommand extends ImplicitMiximToJson {
     }
 
     override def execute(board: GameBoard): Unit = {
-      val ba = battleParticipants(board)
+      val ba : (P, P) = battleParticipants(board)
       val att: MapSquareP = getSquare(board, ba._1)
       // import, take attackign civilization before battle conclusion
       val attackciv: Civilization.T = att.civHere.get
@@ -119,7 +123,7 @@ object AttackCommand extends ImplicitMiximToJson {
       // close battle
       board.battle = None
       // attacker aftermath
-      val f: Option[Figures] = battlesideaftermatch(board, civ, batt.attacker, att, batt.attackerwinner)
+      val f: Option[Figures] = battlesideaftermatch(board, batt.attacker, att, batt.attackerwinner)
       // attacker will lose figures if battle is lost
       // so get civilization before
       if (!defe.s.hvhere)
@@ -128,7 +132,7 @@ object AttackCommand extends ImplicitMiximToJson {
       board.market.killedunits = board.market.killedunits ++ batt.defender.killed ++ finghtingtocombat(batt.defender.fighting)
       if (batt.attackerwinner) {
         // get village
-        val pl: PlayerDeck = board.playerDeck(att.civHere.get)
+        val pl: PlayerDeck = board.playerDeck(attackciv)
         // get village
         pl.hvlist = pl.hvlist :+ defe.s.hv.get
         // remove village
