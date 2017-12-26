@@ -134,10 +134,29 @@ class Test19 extends FunSuite with ImplicitMiximToJson {
     val tokena: String = reg._2
     val g: GameBoard = I.getBoardForToken(tokena)
     println(g.playerDeck(Civilization.Arabs).resou.table)
+    println(g.playerDeck(Civilization.Arabs).units.length)
+    g.playerDeck(Civilization.Arabs).units.foreach(println)
+    val numofA = g.playerDeck(Civilization.Arabs).units.length
+    val numofAM = g.playerDeck(Civilization.America).units.length
     Helper.executeCommandH(tokena, "ENDBATTLE", -1, -1, "\"Silk\"")
     val gg: GameBoard = I.getBoardForToken(tokena)
     println(gg.playerDeck(Civilization.Arabs).resou.table)
     assert(g.playerDeck(Civilization.Arabs).resou.nof(Resource.Silk) + 1 == gg.playerDeck(Civilization.Arabs).resou.nof(Resource.Silk))
     assert(g.playerDeck(Civilization.America).resou.nof(Resource.Silk) - 1 == gg.playerDeck(Civilization.America).resou.nof(Resource.Silk))
+    println(gg.playerDeck(Civilization.Arabs).units.length)
+    gg.playerDeck(Civilization.Arabs).units.foreach(println)
+    assert(gg.playerDeck(Civilization.Arabs).units.length == 5)
+    assert(gg.playerDeck(Civilization.America).units.length == 0)
+  }
+
+  test("Two players game, battle, battle resolution, armies diseapering") {
+    val reg = Helper.ReadAndPlayForTwo("test19/BOARDGAME4.json", "test19/PLAY4.json", Civilization.Germany, Civilization.Egypt)
+    val tokenc: String = reg._1
+    val tokena: String = reg._2
+    val g: GameBoard = I.getBoardForToken(tokena)
+    println(g.playerDeck(Civilization.Germany).units.length)
+    assert(3 == g.playerDeck(Civilization.Germany).units.length)
+    println(g.playerDeck(Civilization.Egypt).units.length)
+    assert(g.playerDeck(Civilization.Egypt).units.isEmpty)
   }
 }
