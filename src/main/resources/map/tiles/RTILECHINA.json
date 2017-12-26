@@ -1,0 +1,34 @@
+{
+  "civ" : "China","suggestedcapital" : { "row" : 2, "col" : 1 },
+  "squares" : [
+
+    [
+      {"terrain" : "Mountain","tokens" : {"Production" : 1},"resource" : "Culture"},
+      {"terrain" : "Water","tokens" : {"Trade" : 1}},
+      {"terrain" : "Forest","tokens" : {"Production" : 2}},
+      {"terrain" : "Water","tokens" : {"Trade" : 1},"resource" : "Silk"}
+    ],
+
+    [
+      {"terrain" : "Mountain","tokens" : {"Production" : 1}},
+      {"terrain" : "Mountain","tokens" : {"Production" : 1}},
+      {"terrain" : "Forest","tokens" : {"Production" : 2}},
+      {"terrain" : "Forest","tokens" : {"Production" : 2}}
+    ],
+
+    [
+      {"terrain" : "Mountain","tokens" : {"Production" : 1},"resource" : "Iron"},
+      {"terrain" : "Desert","tokens" : {"Trade" : 1}},
+      {"terrain" : "Grassland"},
+      {"terrain" : "Grassland"}
+    ],
+
+    [
+      {"terrain" : "Desert","tokens" : {"Trade" : 1}},
+      {"terrain" : "Desert","tokens" : {"Trade" : 1}},
+      {"terrain" : "Desert","tokens" : {"Trade" : 1}},
+      {"terrain" : "Grassland","resource" : "Wheat"}
+    ]
+
+  ]
+}

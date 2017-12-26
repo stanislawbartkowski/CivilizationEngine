@@ -28,4 +28,6 @@ trait ImplicitMiximFromJson {
 
   implicit def toBattleStart(j : JsValue) :BattleStart = j.as[BattleStart]
 
+  implicit def toCombatUnit(j : JsValue) : CombatUnit = convert[CombatUnitJ](CombatUnitJ(j))
+
 }

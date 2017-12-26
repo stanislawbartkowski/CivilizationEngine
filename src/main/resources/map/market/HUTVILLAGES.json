@@ -1,7 +1,15 @@
 [
   {
     "hv": "Hut",
-    "resource": "Spy"
+    "resource": "Iron"
+  },
+  {
+    "hv": "Hut",
+    "resource": "Wheat"
+  },
+  {
+    "hv": "Hut",
+    "resource": "Silk"
   },
   {
     "hv": "Hut",
@@ -9,18 +17,26 @@
   },
   {
     "hv": "Hut",
+    "resource": "Iron"
+  },
+  {
+    "hv": "Hut",
+    "resource": "Incense"
+  },
+  {
+    "hv": "Hut",
+    "resource": "Wheat"
+  },
+  {
+    "hv": "Hut",
+    "resource": "Wheat"
+  },
+  {
+    "hv": "Hut",
     "resource": "Silk"
   },
   {
-    "hv": "Village",
-    "resource": "Uranium"
-  },
-  {
-    "hv": "Village",
-    "resource": "Spy"
-  },
-  {
-    "hv": "Village",
+    "hv": "Hut",
     "resource": "Wheat"
   },
   {
@@ -29,59 +45,70 @@
   },
   {
     "hv": "Hut",
-    "resource": "Iron"
+    "resource": "Silk"
   },
   {
     "hv": "Hut",
     "resource": "Silk"
   },
   {
-    "hv": "Village",
-    "resource": "Uranium"
+    "hv": "Hut",
+    "resource": "Spy"
   },
   {
-    "hv": "Village",
+    "hv": "Hut",
     "resource": "Incense"
   },
   {
-    "hv": "Village",
-    "resource": "Silk"
+    "hv": "Hut",
+    "resource": "Incense"
   },
   {
     "hv": "Hut",
-    "resource": "Spy"
+    "resource": "Incense"
   },
   {
     "hv": "Hut",
-    "resource": "Iron"
-  },
-  {
-    "hv": "Hut",
-    "resource": "Silk"
-  },
-  {
-    "hv": "Village",
-    "resource": "Uranium"
-  },
-  {
-    "hv": "Village",
-    "resource": "Spy"
-  },
-  {
-    "hv": "Village",
     "resource": "Wheat"
   },
   {
     "hv": "Hut",
+    "resource": "Silk"
+  },
+  {
+    "hv": "Hut",
+    "resource": "Incense"
+  },
+
+  {
+    "hv": "Hut",
     "resource": "Spy"
   },
   {
     "hv": "Hut",
-    "resource": "Iron"
+    "resource": "Wheat"
   },
   {
     "hv": "Hut",
     "resource": "Silk"
+  },
+  {
+    "hv": "Hut",
+    "resource": "Spy"
+  },
+  {
+    "hv": "Hut",
+    "resource": "Wheat"
+  },
+  {
+    "hv": "Hut",
+    "resource": "Incense"
+  },
+
+
+  {
+    "hv": "Village",
+    "resource": "Iron"
   },
   {
     "hv": "Village",
@@ -89,11 +116,42 @@
   },
   {
     "hv": "Village",
-    "resource": "Incense"
+    "resource": "Spy"
   },
   {
     "hv": "Village",
-    "resource": "Silk"
+    "resource": "Spy"
+  },
+  {
+    "hv": "Village",
+    "resource": "Spy"
+  },
+  {
+    "hv": "Village",
+    "resource": "Spy"
+  },
+  {
+    "hv": "Village",
+    "resource": "Iron"
+  },
+  {
+    "hv": "Village",
+    "resource": "Uranium"
+  },
+  {
+    "hv": "Village",
+    "resource": "Uranium"
+  },
+  {
+    "hv": "Village",
+    "resource": "Iron"
   }
+
+
+
+
+
+
+
 
 ]

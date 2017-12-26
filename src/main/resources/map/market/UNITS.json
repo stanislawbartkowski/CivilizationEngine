@@ -1,6 +1,18 @@
 [
-  { "num" : 25, "unit" : {"name":"Aircraft","strength":[7,8,9,15]}},
-  { "num" : 23, "unit" : {"name":"Infantry","strength":[1,2,3,4]}},
-  { "num" : 23, "unit" : {"name":"Artillery","strength":[1,3,4,6]}},
-  { "num" : 23, "unit" : {"name":"Mounted","strength":[2,3,4,5]}}
+  { "num" : 3, "unit" : {"name":"Aircraft","strength":[5,5,5,5]}},
+  { "num" : 3, "unit" : {"name":"Aircraft","strength":[6,6,6,6]}},
+  { "num" : 2, "unit" : {"name":"Aircraft","strength":[7,7,7,7]}},
+
+  { "num" : 3, "unit" : {"name":"Infantry","strength":[1,2,3,4]}},
+  { "num" : 9, "unit" : {"name":"Infantry","strength":[2,3,4,5]}},
+  { "num" : 3, "unit" : {"name":"Infantry","strength":[3,4,5,6]}},
+
+  { "num" : 3, "unit" : {"name":"Artillery","strength":[1,2,3,4]}},
+  { "num" : 9, "unit" : {"name":"Artillery","strength":[2,3,4,5]}},
+  { "num" : 3, "unit" : {"name":"Artillery","strength":[3,4,5,6]}},
+
+  { "num" : 3, "unit" : {"name":"Mounted","strength":[1,2,3,4]}},
+  { "num" : 9, "unit" : {"name":"Mounted","strength":[2,3,4,5]}},
+  { "num" : 3, "unit" : {"name":"Mounted","strength":[3,4,5,6]}}
+
 ]

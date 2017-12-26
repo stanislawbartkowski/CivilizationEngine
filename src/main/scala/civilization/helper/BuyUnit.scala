@@ -1,6 +1,6 @@
 package civilization.helper
 
-import civilization.action._
+import civilization.action.{AbstractCommand, _}
 import civilization.gameboard
 import civilization.gameboard.{Figures, GameBoard}
 import civilization.message.Mess
@@ -20,9 +20,10 @@ object BuyUnit extends CommandPackage with ImplicitMiximFromJson with ImplicitMi
       case Command.BUYARTILLERY => CombatUnitType.Artillery
     }
 
-  override def getSet: Set[Command.T] = Set(Command.BUYARTILLERY, Command.BUYAIRCRAFT, Command.BUYMOUNTED, Command.BUYINFANTRY)
+  override def getSet: Set[Command.T] = Set(Command.BUYARTILLERY, Command.BUYAIRCRAFT, Command.BUYMOUNTED, Command.BUYINFANTRY, Command.TAKEUNIT)
 
   private def itemizeI(b: gameboard.GameBoard, civ: Civilization.T, com: Command.T, limit: PlayerLimits): Seq[P] = {
+    if (com == Command.TAKEUNIT) return Nil
     val u: CombatUnitType.T = toU(com)
     if (u == CombatUnitType.Aircraft && !limit.aircraftUnlocked) return Nil
     val cost: Int = ObjectCost.getCost(u, limit.playerStrength.getStrength(u))
@@ -37,14 +38,34 @@ object BuyUnit extends CommandPackage with ImplicitMiximFromJson with ImplicitMi
   protected class BuyUnitAction extends AbstractCommandNone {
     def execute(board: GameBoard) = {
       val u: CombatUnitType.T = toU(command)
-      val co: CombatUnit = getRandomUnit(board, u)
-      board.playerDeck(civ).units = board.playerDeck(civ).units :+ co
+      checkKilledUnits(board,u)
+      if (isExecute) {
+        val co: CombatUnit = getRandomUnit(board, u,false)
+        //        board.playerDeck(civ).units = board.playerDeck(civ).units :+ co
+        val commandC: Command = constructCommand(Command.TAKEUNIT, civ, p, co)
+        // execute later
+        board.addForcedCommand(commandC)
+      }
     }
 
     def verify(board: GameBoard): Mess = defaultverify(board, civ, command, p, j)
   }
 
+  protected class TakeUnitAction(override val param: CombatUnit) extends AbstractCommand(param) {
+
+    override def verify(board: GameBoard): Mess = null
+
+    override def execute(board: GameBoard): Unit = {
+      board.playerDeck(civ).units = board.playerDeck(civ).units :+ param
+      val fun = (p1: CombatUnit,p2 : CombatUnit ) => { p1 == p2 }
+      board.market.units = removeElem(board.market.units,param,(p1: CombatUnit,p2 : CombatUnit ) => { p1 == p2 })
+    }
+  }
+
 
   override def produceCommand(command: Command.T, civ: Civilization.T, p: P, param: JsValue) =
-    new BuyUnitAction()
+    command match {
+      case Command.TAKEUNIT => new TakeUnitAction(param)
+      case _ => new BuyUnitAction()
+    }
 }

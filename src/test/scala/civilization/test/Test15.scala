@@ -46,7 +46,7 @@ class Test15 extends FunSuite {
     val reg = Helper.readBoardAndPlayT("test15/BOARDGAME1.json", "test15/GAME1.json", Civilization.Rome)
     val token: String = reg._1
     var g: GameBoard = I.getBoardForToken(token)
-    assert(1 == g.playerDeck(Civilization.Rome).units.length)
+    assert(g.playerDeck(Civilization.Rome).units.length == 1)
     assert(!g.market.killedunits.isEmpty)
     // should reuse killed
     Helper.executeCommandH(token, "BUYARTILLERY", 2, 2, null)

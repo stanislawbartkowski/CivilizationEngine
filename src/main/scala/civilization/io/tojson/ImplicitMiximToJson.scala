@@ -33,4 +33,7 @@ trait ImplicitMiximToJson {
 
   implicit def writesFigures(f: Figures) = Json.toJson(f)
 
+  implicit def writeCombatUnit(m: CombatUnit): JsValue = Json.toJson(m)
+
+
 }

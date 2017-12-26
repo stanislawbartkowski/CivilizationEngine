@@ -132,15 +132,17 @@ package object helper {
     val a: Seq[HutVillage] = board.resources.hv.filter(_.hv == hv)
     // throws if empty, unexpected here
     if (a.isEmpty) throw FatalError(Mess(M.NOUNUSEDHUTORVILLAGES, hv))
-    val removed = getRandomRemove[HutVillage](a)
+    val removed = getRandom(a,1)
+    //    val removed = getRandomRemove[HutVillage](a)
     board.resources.hv = board.resources.hv.filter(_.hv != hv) ++ removed._2
-    removed._1
+    removed._1.head
   }
 
 
   // ==============================
   // CombatUnits handling
   // ==============================
+
 
   def getRemove[T](a: Seq[T], i: Int): (T, Seq[T]) = {
     val b = a.toBuffer
@@ -149,18 +151,53 @@ package object helper {
     return (t, b)
   }
 
-  def getRandomRemove[T](a: Seq[T]): (T, Seq[T]) = {
-    val randI: Int = ra.nextInt(a.size)
-    getRemove(a, randI)
+  /*
+    def getRandomRemove[T](a: Seq[T]): (T, Seq[T]) = {
+      val randI: Int = ra.nextInt(a.size)
+      getRemove(a, randI)
+    }
+  */
+
+
+  def getRandom[T](a: Seq[T], no: Integer): (Seq[T], Seq[T]) = {
+    // mutables
+    val b = a.toBuffer
+    val res: scala.collection.mutable.ArrayBuffer[T] = scala.collection.mutable.ArrayBuffer.empty
+    for (i <- 0 until no) {
+      val randI: Int = ra.nextInt(b.size)
+      //
+      res += b(randI)
+
+      b.remove(randI)
+    }
+    // convert again to immutables
+    (res, b)
   }
 
-  //  def getRandomRemove[T](a: Seq[T]): (T, Seq[T]) = {
-  //    val b = a.toBuffer
-  //    val randI: Int = ra.nextInt(b.size)
-  //    val t: T = b(randI)
-  //    b.remove(randI)
-  //    return (t, b)
-  // }
+  def removeFromSeq[T](u: Seq[T], toremove: Seq[T], eq: (T, T) => Boolean): Seq[T] = {
+    // mutable
+    val b = toremove.toBuffer
+    val uu = u.filter(p => {
+      var res: Boolean = true
+      breakable {
+        for (i <- 0 until b.size)
+          if (eq(b(i), p)) {
+            b.remove(i)
+            res = false
+            break
+          }
+      }
+      res
+    }
+    )
+    if (!b.isEmpty)
+      throw new FatalError(Mess(M.CANNOTREMOVEUNITS, (u, toremove)))
+    uu
+  }
+
+  def getRandom[T](u: Seq[T]): T = getRandom(u, 1)._1.head
+
+  def removeElem[T](a: Seq[T], p: T, eq: (T, T) => Boolean): Seq[T] = removeFromSeq(a, Seq(p), eq)
 
   private def reuseKilledUnits(b: GameBoard, unitt: CombatUnitType.T) = {
     // add killed units to units
@@ -170,19 +207,24 @@ package object helper {
     b.market.killedunits = newkilledunits
   }
 
-  def getRandomUnit(b: GameBoard, unitt: CombatUnitType.T): CombatUnit = {
+  def checkKilledUnits(b: GameBoard, unitt: CombatUnitType.T): Unit = {
     var units: Seq[CombatUnit] = b.market.units.filter(_.utype == unitt)
     if (units.isEmpty) reuseKilledUnits(b, unitt)
-    // again
-    units = b.market.units.filter(_.utype == unitt)
-    if (units.isEmpty)
-      throw new FatalError(Mess(M.ALLUNITSUSED, (unitt)))
-    val removed = getRandomRemove[CombatUnit](units)
-    b.market.units = b.market.units.filter(_.utype != unitt) ++ removed._2
-    removed._1
   }
 
-  def getThreeRandomUnits(b: GameBoard): Seq[CombatUnit] = Seq(getRandomUnit(b, CombatUnitType.Infantry), getRandomUnit(b, CombatUnitType.Artillery), getRandomUnit(b, CombatUnitType.Mounted))
+  def getRandomUnit(b: GameBoard, unitt: CombatUnitType.T,remove : Boolean): CombatUnit = {
+    checkKilledUnits(b,unitt)
+    // again
+    val units: Seq[CombatUnit] = b.market.units.filter(_.utype == unitt)
+    if (units.isEmpty)
+      throw new FatalError(Mess(M.ALLUNITSUSED, (unitt)))
+    val u = getRandom(units,1)
+    if (remove)
+      b.market.units = b.market.units.filter(_.utype != unitt) ++ u._2
+    u._1.head
+  }
+
+  def getThreeRandomUnits(b: GameBoard, remove : Boolean): Seq[CombatUnit] = Seq(getRandomUnit(b, CombatUnitType.Infantry,remove), getRandomUnit(b, CombatUnitType.Artillery,remove), getRandomUnit(b, CombatUnitType.Mounted,remove))
 
   case class CurrentPhase(val notcompleted: Seq[Civilization.T], val turnPhase: TurnPhase.T, val roundno: Int)
 
@@ -276,7 +318,7 @@ package object helper {
     def lastp: P = begstop._2.p.get
   }
 
-  private def toFig(co : Command) : PlayerFigures = {
+  private def toFig(co: Command): PlayerFigures = {
     val f: Figures = co.param.asInstanceOf[Figures]
     PlayerFigures(co.civ, f.numberofArmies, f.numberofScouts)
   }
@@ -293,7 +335,7 @@ package object helper {
     // if null then Reveal
     var moves: Seq[Move] = Nil
     p.foreach(co => co.command match {
-      case Command.MOVE | Command.ENDOFMOVE | Command.EXPLOREHUT  =>
+      case Command.MOVE | Command.ENDOFMOVE | Command.EXPLOREHUT =>
         moves = moves :+ Move(co.command, if (co.p == null) None else Some(co.p))
         // 2017/12/23
         if (co.param != null) {
@@ -302,7 +344,7 @@ package object helper {
           // some figures could be killed in the battle
           fig = toFig(co)
         }
-      case  Command.ATTACK | Command.STARTBATTLE | Command.PLAYUNIT | Command.PLAYUNITIRON | Command.ENDBATTLE =>
+      case Command.ATTACK | Command.STARTBATTLE | Command.PLAYUNIT | Command.PLAYUNITIRON | Command.ENDBATTLE =>
         moves = moves :+ Move(co.command, None)
       case Command.REVEALTILE => moves = moves :+ moves.last // for reveal repeat last
       case _ => {
@@ -324,7 +366,7 @@ package object helper {
     val p: Seq[Command] = lastPhaseCommandsReverse(b, cu.notcompleted.head, TurnPhase.Movement)
     val command = p.find(p => p.command == Command.ATTACK).get
     // civ attacker defender
-    (civLastMoves(b,cu.notcompleted.head).last.lastp, command.p)
+    (civLastMoves(b, cu.notcompleted.head).last.lastp, command.p)
   }
 
 
@@ -634,13 +676,13 @@ package object helper {
     val pl: PlayerDeck = b.playerDeck(civ)
     pl.hvlist = pl.hvlist :+ h
     // final, move figures to point
-    moveFigures(b, civ, p,None)
+    moveFigures(b, civ, p, None)
   }
 
-  def moveFigures(b: GameBoard, civ: Civilization.T, p: P, fparam : Option[Figures]) = {
+  def moveFigures(b: GameBoard, civ: Civilization.T, p: P, fparam: Option[Figures]) = {
     val fig: PlayerMove = getCurrentMove(b, civ).get
     val last: P = fig.lastp
-    val f : Figures = if (fparam.isEmpty) fig.f.toFigures else fparam.get
+    val f: Figures = if (fparam.isEmpty) fig.f.toFigures else fparam.get
     // remove from last
     putFigures(b, civ, last, -f)
     // new position

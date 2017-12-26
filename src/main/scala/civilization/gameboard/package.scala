@@ -12,7 +12,7 @@ package object gameboard {
   /** Version: used during storing and retrieving gameboard from datastore.
     * Ignore games which does not fit to avoid runtime errors
     */
-  private final val packageversion: Int = 2;
+  private final val packageversion: Int = 3;
 
   /** Part of map pattern. Position of the tile and orientation.
     * Initially only civilication tiles have orientation specified.
@@ -133,7 +133,7 @@ package object gameboard {
     //    val table : scala.collection.mutable.Map[Resource.T,Int] = Resource.values.map(v => (v,0)).toMap
     val table: scala.collection.mutable.Map[Resource.T, Int] = scala.collection.mutable.Map(
       Resource.Coin -> 0, Resource.Spy -> 0, Resource.Silk -> 0, Resource.Incense -> 0,
-      Resource.Iron -> 0, Resource.Uranium -> 0, Resource.Wheat -> 0)
+      Resource.Iron -> 0, Resource.Uranium -> 0, Resource.Wheat -> 0, Resource.Culture -> 0)
 
     def setResNum(r: Resource.T, num: Int) = table.put(r, num)
 
@@ -173,15 +173,18 @@ package object gameboard {
     def okV: Boolean = version == packageversion
   }
 
+  case class WinnerLoot(val hv: Option[HutVillage.T], val res: Option[Resource.T], val trade: Boolean, val culture: Boolean)
+
   case class FrontUnit(val unit: CombatUnit, var attackstrength: Int, var defendstrenght: Int, var wounds: Int)
 
   type BattleArmy = Array[Option[FrontUnit]]
 
-  case class BattleFieldSide(val fighting: BattleArmy, var waiting: Seq[CombatUnit], var killed: Seq[CombatUnit], val strength: CombatUnitStrength, val combatBonus: Int, var canuseiron: Boolean,val isvillage : Boolean) {
+  case class BattleFieldSide(val fighting: BattleArmy, var waiting: Seq[CombatUnit], var killed: Seq[CombatUnit], val strength: CombatUnitStrength, val combatBonus: Int, var canuseiron: Boolean, val isvillage: Boolean) {
     var ironused: Int = -1
+
     def points: Int = {
-      val su : Int = waiting.map(p=>p.getStrength(strength)).sum
-      su +  fighting.map(f => if (f.isEmpty) 0 else f.get.attackstrength).sum + combatBonus
+      val su: Int = waiting.map(p => p.getStrength(strength)).sum
+      su + fighting.map(f => if (f.isEmpty) 0 else f.get.attackstrength).sum + combatBonus
     }
   }
 
@@ -189,7 +192,8 @@ package object gameboard {
     var attackermove: Boolean = false
 
     def endofbattle: Boolean = attacker.waiting.isEmpty && defender.waiting.isEmpty
-    def attackerwinner : Boolean =  attacker.points > defender.points
+
+    def attackerwinner: Boolean = attacker.points > defender.points
   }
 
   case class GameBoard(val players: Seq[PlayerDeck], val map: BoardMap, val resources: Resources, val market: Market) {

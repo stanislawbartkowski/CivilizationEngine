@@ -44,7 +44,8 @@ object SetCityAction {
         sq.s.figures.kill()
         // remove one scout
         f.numberofScouts = f.numberofScouts - 1
-        if (!f.empty) {
+        // 2017/12/25 : isExecute
+        if (!f.empty && isExecute) {
           // try to position them around
           // checkFinalPoint
 

@@ -44,16 +44,23 @@ package object readdir {
     o.map(filename => (filename, readJSON(resourcedir, filename))).toList
   }
 
+  private def readTileFromFile(f : String) : Tile = {
+    val j : JsValue = readJSON("map/tiles",f)
+    return toTile(j)
+  }
+
   def readListOfTiles: Seq[TilesRead] = {
-    readdirJSON("map/tiles").map(f => TilesRead(f._1, toTile(f._2))).toList
+    // only files starting with R
+    readdirJSON("map/tiles").filter(_._1.startsWith("R")).map(f => TilesRead(f._1, toTile(f._2))).toList
   }
 
   def readGameBoard(j: JsValue): GameBoard = {
-    val l: Seq[TilesRead] = readListOfTiles
+//    val l: Seq[TilesRead] = readListOfTiles
     val g: GameBoard = toGameBoard(j)
     g.tech = readTechnologies
     g.map.map.foreach(p => {
-      p.tile = l.find(t => p.tname == t.name).get.tile
+//      p.tile = l.find(t => p.tname == t.name).get.tile
+      p.tile = readTileFromFile(p.tname)
     })
     g
   }
@@ -79,7 +86,9 @@ package object readdir {
   def readListOfUnits : Seq[CombatUnit] = {
     val j: JsValue = readJSON("map/market", "UNITS.json")
     val list : Seq[NumCombatUnit] = j.as[Seq[NumCombatUnit]]
-    list.map( se => for (i <- 0 to se.no) yield se.unit) flatten
+    // 2017/12/24
+    // important until (not to)
+    list.map( se => for (i <- 0 until se.no) yield se.unit) flatten
   }
 
 }

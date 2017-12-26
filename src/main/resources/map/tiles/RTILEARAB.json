@@ -1,0 +1,34 @@
+{
+  "civ" : "Arabs","suggestedcapital" : { "row" : 1, "col" : 2 },
+  "squares" : [
+
+    [
+     {"terrain" : "Forest","tokens" : {"Production" : 2}},
+     {"terrain" : "Water","tokens" : {"Trade" : 1},"resource" : "Incense"},
+     {"terrain" : "Mountain","tokens" : {"Production" : 1}},
+     {"terrain" : "Water","tokens" : {"Trade" : 1}}
+    ],
+
+    [
+     {"terrain" : "Water","tokens" : {"Trade" : 1}},
+     {"terrain" : "Forest","tokens" : {"Production" : 2}},
+     {"terrain" : "Desert","tokens" : {"Trade" : 1}},
+     {"terrain" : "Water","tokens" : {"Trade" : 1},"resource" : "Silk"}
+    ],
+
+    [
+      {"terrain" : "Forest","tokens" : {"Production" : 2},"resource" : "Wheat"},
+      {"terrain" : "Mountain","tokens" : {"Production" : 1}},
+      {"terrain" : "Grassland"},
+      {"terrain" : "Forest","tokens" : {"Production" : 2}}
+    ],
+
+    [
+     {"terrain" : "Desert","tokens" : {"Trade" : 1},"resource" : "Culture"},
+     {"terrain" : "Desert","tokens" : {"Trade" : 1}},
+     {"terrain" : "Desert","tokens" : {"Trade" : 1}},
+     {"terrain" : "Water","tokens" : {"Trade" : 1}}
+    ]
+
+  ]
+}

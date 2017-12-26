@@ -46,7 +46,8 @@ object BattleJSon {
         "attackerwinner" -> g.battle.get.attackerwinner,
         "bothsides" -> bothsides,
         S.attacker -> genbattlefileSide(g.battle.get.attacker, civ == g.battle.get.attackerciv, g.battle.get.attackermove,g.battle.get.attackerciv),
-        S.defender -> genbattlefileSide(g.battle.get.defender, civ == g.battle.get.defenderciv, !g.battle.get.attackermove,g.battle.get.defenderciv)
+        S.defender -> genbattlefileSide(g.battle.get.defender, civ == g.battle.get.defenderciv, !g.battle.get.attackermove,g.battle.get.defenderciv),
+        "winnerloot" -> BattleActions.winnerLoot(g)
       )
     }
 

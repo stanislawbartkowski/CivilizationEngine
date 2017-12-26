@@ -1,0 +1,31 @@
+{
+    "squares" : [
+      [
+        {"terrain" : "Mountain","tokens" : {"Production" : 1}},
+        {"terrain" : "Grassland"},
+        {"terrain" : "Grassland","hv" : "Hut"},
+        {"terrain" : "Grassland"}
+      ],
+
+      [
+        {"terrain" : "Desert","tokens" : {"Trade" : 1}, "resource" : "Culture"},
+        {"terrain" : "Forest","tokens" : {"Production" : 2}},
+        {"terrain" : "Water","tokens" : {"Trade" : 1},"resource" : "Silk"},
+        {"terrain" : "Mountain","tokens" : {"Production" : 1}}
+      ],
+
+      [
+        {"terrain" : "Desert","tokens" : {"Trade" : 1}},
+        {"terrain" : "Grassland","hv" : "Hut"},
+        {"terrain" : "Water","tokens" : {"Trade" : 1}},
+        {"terrain" : "Water","tokens" : {"Trade" : 1}}
+      ],
+
+      [
+        {"terrain" : "Water","tokens" : {"Trade" : 1}},
+        {"terrain" : "Grassland"},
+        {"terrain" : "Water","tokens" : {"Trade" : 1}},
+        {"terrain" : "Water","tokens" : {"Trade" : 1}}
+      ]
+    ]
+}

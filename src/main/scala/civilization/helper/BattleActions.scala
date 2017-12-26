@@ -1,6 +1,6 @@
 package civilization.helper
 
-import civilization.gameboard.{GameBoard, PlayerDeck}
+import civilization.gameboard.{GameBoard, PlayerDeck, WinnerLoot}
 import civilization.objects._
 
 
@@ -26,20 +26,13 @@ object BattleActions {
     var u: Seq[CombatUnit] = Nil
     if (n._2.isEmpty) {
       // barbarians
-      u = getThreeRandomUnits(b)
-      // important: put them back again, will be removed in next step
-      b.market.units = b.market.units ++ u
+      u = getThreeRandomUnits(b, false)
     }
     else {
       // civilization, draw units for battle
       val pl: PlayerDeck = b.playerDeck(n._2.get)
-      while (u.length < n._1 && !pl.units.isEmpty) {
-        val removed = getRandomRemove[CombatUnit](pl.units)
-        u = u :+ removed._1
-        pl.units = removed._2
-      }
-      // add them again, will be removed later
-      pl.units = pl.units ++ u
+      val nounits = Math.min(pl.units.length, n._1)
+      u = getRandom(pl.units, nounits)._1
     }
     u
   }
@@ -50,6 +43,29 @@ object BattleActions {
     val attackerF: Seq[CombatUnit] = assemblyForce(b, attacker)
     val defenderF: Seq[CombatUnit] = assemblyForce(b, p)
     BattleStart(attackerF, defenderF)
+  }
+
+  def winnerLoot(b: GameBoard): Seq[WinnerLoot] = {
+    val ba: (P, P) = battleParticipants(b)
+    val att: MapSquareP = getSquare(b, ba._1)
+    val defe: MapSquareP = getSquare(b, ba._2)
+    if (defe.s.hvhere) return Nil
+    var civloser: Civilization.T = att.civHere.get
+    if (b.battle.get.attackerwinner) civloser = defe.civHere.get
+    // construct loot list
+    var loot: Seq[WinnerLoot] = Nil
+    val t: TradeForCiv = numberofTrade(b, civloser)
+    if (t.trade > 0) loot = List(WinnerLoot(None, None, true, false))
+    // hut
+    val pl: PlayerDeck = b.playerDeck(civloser)
+    if (pl.hvlist.find(_.hv == HutVillage.Hut).isDefined)
+      loot = loot :+ WinnerLoot(Some(HutVillage.Hut), None, false, false)
+    // village
+    if (pl.hvlist.find(_.hv == HutVillage.Village).isDefined)
+      loot = loot :+ WinnerLoot(Some(HutVillage.Village), None, false, false)
+    // resource
+    loot = loot ++ pl.resou.table.filter(_._2 > 0).map(r => WinnerLoot(None, Some(r._1), false, false))
+    loot
   }
 
 }

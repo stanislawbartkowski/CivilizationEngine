@@ -12,25 +12,9 @@ import scala.util.control.Breaks.{breakable, _}
 
 object AttackCommand extends ImplicitMiximToJson {
 
-  private def removeUnits(u: Seq[CombatUnit], units: Seq[CombatUnit]): Seq[CombatUnit] = {
-    val b = units.toBuffer
-    val uu = u.filter(p => {
-      var res: Boolean = true
-      breakable {
-        for (i <- 0 until b.size)
-          if (b(i) == p) {
-            b.remove(i)
-            res = false
-            break
-          }
-      }
-      res
-    }
-    )
-    if (!b.isEmpty)
-      throw new FatalError(Mess(M.CANNOTREMOVEUNITS, units))
-    uu
-  }
+  private def removeUnits(u: Seq[CombatUnit], units: Seq[CombatUnit]): Seq[CombatUnit] = removeFromSeq(u, units, (p1: CombatUnit, p2: CombatUnit) => {
+    p1 == p2
+  })
 
   private def removePlayerUnits(board: GameBoard, civ: Civilization.T, units: Seq[CombatUnit]) = {
     val pl: PlayerDeck = board.playerDeck(civ)
@@ -73,7 +57,7 @@ object AttackCommand extends ImplicitMiximToJson {
 
   def battlesideaftermatch(b: GameBoard, s: BattleFieldSide, p: MapSquareP, winner: Boolean): Option[Figures] = {
     b.market.killedunits = b.market.killedunits ++ s.killed
-    val civattacker : Civilization.T = p.civHere.get
+    val civattacker: Civilization.T = p.civHere.get
     if (s.ironused > -1) b.resources.resou.incr(Resource.Iron)
     val survived: Seq[CombatUnit] = finghtingtocombat(s.fighting)
     val pl: PlayerDeck = b.playerDeck(civattacker)
@@ -114,7 +98,7 @@ object AttackCommand extends ImplicitMiximToJson {
     }
 
     override def execute(board: GameBoard): Unit = {
-      val ba : (P, P) = battleParticipants(board)
+      val ba: (P, P) = battleParticipants(board)
       val att: MapSquareP = getSquare(board, ba._1)
       // import, take attackign civilization before battle conclusion
       val attackciv: Civilization.T = att.civHere.get

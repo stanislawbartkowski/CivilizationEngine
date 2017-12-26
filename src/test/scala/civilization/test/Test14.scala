@@ -53,10 +53,11 @@ class Test14   extends FunSuite {
     val numofM = numof(g,CombatUnitType.Mounted)
     val numofA = numof(g,CombatUnitType.Artillery)
     println(numofI)
-    val l : Seq[CombatUnit] = getThreeRandomUnits(g)
-    assert(numof(g,CombatUnitType.Infantry) + 1 == numofI)
-    assert(numof(g,CombatUnitType.Mounted) + 1 == numofM)
-    assert(numof(g,CombatUnitType.Artillery) + 1 == numofA)
+    val l : Seq[CombatUnit] = getThreeRandomUnits(g,true)
+    // do not remove
+    assert(numof(g,CombatUnitType.Infantry) == numofI -1 )
+    assert(numof(g,CombatUnitType.Mounted) == numofM -1)
+    assert(numof(g,CombatUnitType.Artillery) == numofA - 1)
   }
 
 

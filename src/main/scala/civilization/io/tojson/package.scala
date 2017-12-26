@@ -115,6 +115,13 @@ package object tojson extends ImplicitMiximToJson {
     )
   }
 
+  implicit val winnerlootWrites: Writes[WinnerLoot] = new Writes[WinnerLoot] {
+    def writes(m: WinnerLoot) =
+      if (m.trade) Json.toJson(S.trade)
+      else if (m.hv.isDefined) Json.toJson(m.hv.get)
+      else Json.toJson(m.res.get)
+  }
+
   implicit val gameresourcesWrites : Writes[GameResources] = new Writes[GameResources]  {
     def writes(m: GameResources) = {
        var l: Seq[JsValue] = m.table.map(e => Json.obj(
@@ -178,6 +185,5 @@ package object tojson extends ImplicitMiximToJson {
 
   def writeMetaData(m: GameMetaData): JsValue = Json.toJson(m)
 
-  def writeCombatUnit(m: CombatUnit): JsValue = Json.toJson(m)
-
+  def writeSeqWinnerLoot(m : Seq[WinnerLoot]) : JsValue = Json.toJson(m)
 }

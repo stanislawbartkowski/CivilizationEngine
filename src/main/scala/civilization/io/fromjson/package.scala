@@ -407,8 +407,7 @@ package object fromjson extends ImplicitMiximFromJson {
 
   def toMetaData(j: JsValue): GameMetaData = j.as[GameMetaData]
 
-//  def toInt(j : JsValue) : Int = j.as[Int]
-
+  /*
   def toCombatUnit(j : JsValue) : CombatUnit = convert[CombatUnitJ](CombatUnitJ(j))
-
+*/
 }

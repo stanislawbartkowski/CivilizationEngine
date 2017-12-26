@@ -1,7 +1,7 @@
 package civilization.io.readdir
 
 import civilization.gameboard._
-import civilization.helper.{revealTile, getThreeRandomUnits, getRandomHutVillage}
+import civilization.helper.{revealTile, getThreeRandomUnits, getRandomHutVillage,getRandom}
 import civilization.io.fromjson.{toArrayHutVillages, toSeqPatterMap}
 import civilization.message.{FatalError, M, Mess}
 import civilization.objects.{Civilization, HutVillage, TilesRead, CombatUnit, Resource}
@@ -34,10 +34,8 @@ object GenBoard extends ImplicitMiximFromJson {
   def genBoard(l: List[Civilization.T], patt: String): GameBoard = {
     val j: JsValue = readJSON("map/pattern", patt)
     val lpatt: Seq[PatternMap] = toSeqPatterMap(j)
-    val tiles: Seq[TilesRead] = readListOfTiles
-    val ra = scala.util.Random
-    // extract only normal tiles
-    var ntile: Buffer[TilesRead] = tiles.filter(_.tile.civ == null).toBuffer
+    var rtiles: Seq[TilesRead] = readListOfTiles.filter(!_.tile.civhome)
+    val tilesciv : Seq[TilesRead] = readListOfTiles.filter(_.tile.civhome)
     // transform list to set
     var sciv: Set[Civilization.T] = l.toSet
     var map: Seq[MapTile] = Nil
@@ -47,18 +45,15 @@ object GenBoard extends ImplicitMiximFromJson {
         if (sciv.isEmpty) throw FatalError(Mess(M.MORECIVTTILESTHENCIVDECLARED))
         // take first civ
         val civ: Civilization.T = sciv.head
-        tile = tiles.find(_.tile.civ == civ).getOrElse(null)
+        tile = tilesciv.find(_.tile.civ == civ).getOrElse(null)
         if (tile == null) throw FatalError(Mess(M.CANNOTFINDHOMETILEFORCIV, civ))
         // remove element from set
         sciv = sciv - civ
       }
       else {
-        // get random
-        val i: Int = ra.nextInt(ntile.length)
-        tile = ntile(i)
-        // remove used
-        //ntile = H.removeElement(ntile,i)
-        ntile.remove(i)
+        var r = getRandom(rtiles,1)
+        tile = r._1.head
+        rtiles = r._2
       }
       val t: MapTile = MapTile(tile.name, p.p, None, genEmptySquares)
       t.tile = tile.tile
@@ -73,7 +68,7 @@ object GenBoard extends ImplicitMiximFromJson {
     // reveal tiles
     lpatt.foreach(p => if (p.o.isDefined) revealTile(g, p.o.get, p.p))
     // attach random three units
-    g.players.foreach(p => p.units = getThreeRandomUnits(g))
+    g.players.foreach(p => p.units = getThreeRandomUnits(g,true))
     // assing resources to hut and villages
     map.foreach(m => assignResources(g, m))
     g

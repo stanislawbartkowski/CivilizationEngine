@@ -10,6 +10,7 @@ package object objects {
   val UNITLEVELSIZE = 4
   val UNITSBATTLE = 3
   val IRONSTRENGTH = 3
+  val MAXLOOTTRADE = 3
 
   case class GameConfig(val ironincreasedefend: Boolean)
 
@@ -55,7 +56,7 @@ package object objects {
 
   object Resource extends Enumeration {
     type T = Value
-    val Wheat, Silk, Incense, Iron, Coin, Spy, Uranium = Value
+    val Wheat, Silk, Incense, Iron, Coin, Spy, Uranium, Culture = Value
   }
 
   object Terrain extends Enumeration {
@@ -70,7 +71,7 @@ package object objects {
 
   object Civilization extends Enumeration {
     type T = Value
-    val America, China, Egypt, Germany, Rome, Russia, Spain = Value
+    val America, China, Egypt, Germany, Rome, Russia, Spain,Arabs = Value
   }
 
   object City extends Enumeration {
