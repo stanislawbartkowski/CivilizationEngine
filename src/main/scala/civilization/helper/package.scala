@@ -151,14 +151,6 @@ package object helper {
     return (t, b)
   }
 
-  /*
-    def getRandomRemove[T](a: Seq[T]): (T, Seq[T]) = {
-      val randI: Int = ra.nextInt(a.size)
-      getRemove(a, randI)
-    }
-  */
-
-
   def getRandom[T](a: Seq[T], no: Integer): (Seq[T], Seq[T]) = {
     // mutables
     val b = a.toBuffer
@@ -236,6 +228,17 @@ package object helper {
 
   private def prevPhase(pha: TurnPhase.T): TurnPhase.T = if (pha == TurnPhase.StartOfTurn) TurnPhase.Research else TurnPhase.apply(pha.id - 1)
 
+  private def currentTurnReverse(b : GameBoard) : Seq[Command] = {
+    var list : Seq[Command]= Nil
+    breakable(
+      b.play.commands.reverse.foreach(c => {
+        if (getPhase(c) == TurnPhase.StartOfTurn) break
+        list = list :+ c
+      })
+    )
+    list
+  }
+
   def currentPhase(b: GameBoard): CurrentPhase = {
 
     // reverse command, analyze from end
@@ -253,7 +256,6 @@ package object helper {
     // full single round if StartOfTurn less or equal number of players, so the 1 is deducted
     // during test can be less then 0 if there is no StartOfTurn
     val roundno = math.max((ephases.filter(getPhase(_).get == TurnPhase.StartOfTurn).length - 1) / players.size, 0)
-
 
     // current phase
     val currentphase: TurnPhase.T = getPhase(ephases.head).get
@@ -469,8 +471,22 @@ package object helper {
   def spendProdForCities(b: GameBoard, civ: Civilization.T): Map[P, Int] =
     spendTradeCommands(b, civ) map { case (p, seq) => (p, spendProdForCity(seq)) }
 
-  case class TradeForCiv(val terrain: Int, val noresearch: Int, val toprod: Int) {
-    def trade: Int = terrain + noresearch - toprod
+  case class TradeForCiv(val terrain: Int, val noresearch: Int, val toprod: Int, val loottrade : Int) {
+    def trade: Int = terrain + noresearch - toprod + loottrade
+  }
+
+  private def numberofloottrade(b: GameBoard, civ: Civilization.T): Int = {
+    val loott : Int = currentTurnReverse(b).foldLeft(0) ( (sum, c) => {
+      var modif : Int = 0
+      if (c.command == Command.TAKEWINNERLOOT) {
+        val take : TakeWinnerLoot = c.param.asInstanceOf[TakeWinnerLoot]
+        if (take.loot.trade)
+          if (take.winner == civ) modif = take.trade
+          else if (take.loser == civ) modif = 0 - take.trade
+      }
+      sum + modif}
+    )
+    loott
   }
 
   private def numberofTradeTerrain(b: GameBoard, civ: Civilization.T): Integer = {
@@ -510,7 +526,7 @@ package object helper {
 
   def numberofTrade(b: GameBoard, civ: Civilization.T): TradeForCiv = {
     val li: PlayerLimits = getLimits(b, civ)
-    TradeForCiv(numberofTradeTerrain(b, civ), numberofTradenoresearch(b, civ), reduceTradeBySpend(b, civ, li))
+    TradeForCiv(numberofTradeTerrain(b, civ), numberofTradenoresearch(b, civ), reduceTradeBySpend(b, civ, li),numberofloottrade(b,civ))
   }
 
   // ===================================

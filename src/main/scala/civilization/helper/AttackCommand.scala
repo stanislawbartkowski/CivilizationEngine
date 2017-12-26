@@ -89,11 +89,73 @@ object AttackCommand extends ImplicitMiximToJson {
     fig
   }
 
-  class EndOfBattleCommand extends AbstractCommandNone {
+  private def takerandomresohv(pl: PlayerDeck, hv: HutVillage.T): Resource.T = {
+    val h: HutVillage.T = HutVillage.Hut
+    val hvlist: Seq[HutVillage] = pl.hvlist.filter(_.hv == hv)
+    return getRandom(hvlist.map(_.resource))
+  }
+
+  private def prepareloot(g: GameBoard, batt: BattleField, param: WinnerLoot, attackciv: Civilization.T, defeciv: Civilization.T) {
+    if (param.noloot()) return
+    // there is a loot
+    val winnerciv: Civilization.T = if (batt.attackerwinner) attackciv else defeciv
+    val loserciv: Civilization.T = if (batt.attackerwinner) defeciv else attackciv
+
+    val reso: Option[Resource.T] =
+      if (param.hv.isDefined) Some(takerandomresohv(g.playerDeck(loserciv), param.hv.get)) else if (param.res.isDefined) param.res else None
+
+    var trade: Integer = 0
+    if (param.trade) {
+      val tradeloser = numberofTrade(g, loserciv).trade
+      trade = Math.min(MAXLOOTTRADE, tradeloser)
+    }
+    val tlook: TakeWinnerLoot = TakeWinnerLoot(winnerciv, loserciv, param, reso, trade)
+    val command: Command = constructCommand(Command.TAKEWINNERLOOT, attackciv, null, tlook)
+    g.addForcedCommand(command)
+  }
+
+  private def verifyloot(g: GameBoard, param: WinnerLoot): Option[Mess] = {
+    if (param.noloot()) return None
+    val l: Seq[WinnerLoot] = BattleActions.winnerLoot(g)
+    if (l.find(_ == param).isDefined) return None
+    Some(Mess(M.IMPROPERLOOTCANNOTGETTHISFROMLOSER, param))
+  }
+
+  class TakeWinnerLootCommand(override val param: TakeWinnerLoot) extends AbstractCommand(param) {
+
+    override def verify(board: GameBoard): Mess = null
+
+    override def execute(board: GameBoard): Unit = {
+      val pl: PlayerDeck = board.playerDeck(param.winner)
+      val los: PlayerDeck = board.playerDeck(param.loser)
+      if (param.loot.hv.isDefined) {
+        val hv: HutVillage = HutVillage(param.loot.hv.get, param.reso.get)
+        // give winner
+        pl.hvlist = pl.hvlist :+ hv
+        // take from loser
+        val fun: (HutVillage, HutVillage) => Boolean = (p1: HutVillage, p2: HutVillage) => {
+          p1 == p2
+        }
+        los.hvlist = removeElem(los.hvlist, hv, fun)
+      }
+      if (param.loot.res.isDefined) {
+        // move resource
+        // take loser
+        los.resou.decr(param.reso.get)
+        // give winner
+        pl.resou.incr(param.reso.get)
+      }
+    }
+  }
+
+
+  class EndOfBattleCommand(override val param: WinnerLoot) extends AbstractCommand(param) {
 
     override def verify(board: GameBoard): Mess = {
       if (!board.battle.get.endofbattle)
         return Mess(M.BATTLEISNOTFINISHED)
+      val res: Option[Mess] = verifyloot(board, param)
+      if (res.isDefined) return res.get
       return null
     }
 
@@ -103,6 +165,7 @@ object AttackCommand extends ImplicitMiximToJson {
       // import, take attackign civilization before battle conclusion
       val attackciv: Civilization.T = att.civHere.get
       val defe: MapSquareP = getSquare(board, ba._2)
+      val defeciv: Option[Civilization.T] = defe.civHere
       val batt: BattleField = board.battle.get
       // close battle
       board.battle = None
@@ -110,21 +173,26 @@ object AttackCommand extends ImplicitMiximToJson {
       val f: Option[Figures] = battlesideaftermatch(board, batt.attacker, att, batt.attackerwinner)
       // attacker will lose figures if battle is lost
       // so get civilization before
-      if (!defe.s.hvhere)
-        throw new FatalError(Mess(M.ENDOFBATTLEIMPLEMENTEDONLYFORVILLAGES, defe.p))
+      //      if (!defe.s.hvhere)
+      //        throw new FatalError(Mess(M.ENDOFBATTLEIMPLEMENTEDONLYFORVILLAGES, defe.p))
       // move all village units to killed
       board.market.killedunits = board.market.killedunits ++ batt.defender.killed ++ finghtingtocombat(batt.defender.fighting)
-      if (batt.attackerwinner) {
-        // get village
-        val pl: PlayerDeck = board.playerDeck(attackciv)
-        // get village
-        pl.hvlist = pl.hvlist :+ defe.s.hv.get
-        // remove village
-        defe.s.hv = None
-        // move army to this point
-      }
+      if (batt.attackerwinner)
+        if (defe.s.hvhere) {
+          // get village
+          val pl: PlayerDeck = board.playerDeck(attackciv)
+          // get village
+          pl.hvlist = pl.hvlist :+ defe.s.hv.get
+          // remove village
+          defe.s.hv = None
+        }
+        else {
+          // kill enemy figures
+          defe.s.figures.kill()
+        }
+      // loot
 
-      if (isExecute)
+      if (isExecute) {
         if (batt.attackerwinner) {
           // move army to this point
           val param: JsValue = if (f.isEmpty) null else f.get
@@ -137,6 +205,9 @@ object AttackCommand extends ImplicitMiximToJson {
           val command: Command = constructCommand(Command.ENDOFMOVE, attackciv, null, null)
           board.addForcedCommand(command)
         }
+        if (defeciv.isDefined)
+          prepareloot(board, batt, param, attackciv, defeciv.get)
+      }
     }
   }
 

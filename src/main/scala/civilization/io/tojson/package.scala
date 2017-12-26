@@ -159,6 +159,16 @@ package object tojson extends ImplicitMiximToJson {
     )
   }
 
+  implicit val takewinnerlootWrites : Writes[TakeWinnerLoot] = new Writes[TakeWinnerLoot] {
+    override def writes(o: TakeWinnerLoot) = Json.obj(
+      S.winner -> o.winner,
+      S.loser -> o.loser,
+      S.winnerloot -> o.loot,
+      S.resource -> o.reso,
+      S.trade -> o.trade
+    )
+  }
+
 
   def writeCivilizationT(c: Civilization.T): JsValue = Json.toJson(c)
 

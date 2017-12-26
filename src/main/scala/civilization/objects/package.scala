@@ -17,7 +17,10 @@ package object objects {
 
   type TileTerrain = Array[Array[Square]]
 
-  case class HutVillage(var hv: HutVillage.T, var resource: Resource.T)
+  case class HutVillage(var hv: HutVillage.T, var resource: Resource.T) {
+    def ==(that: HutVillage): Boolean =
+      hv == that.hv && resource == that.resource
+  }
 
   case class Tokens(val numofTrade: Int, val numofProduction: Int, val numofCulture: Int)
 
@@ -71,7 +74,7 @@ package object objects {
 
   object Civilization extends Enumeration {
     type T = Value
-    val America, China, Egypt, Germany, Rome, Russia, Spain,Arabs = Value
+    val America, China, Egypt, Germany, Rome, Russia, Spain, Arabs = Value
   }
 
   object City extends Enumeration {

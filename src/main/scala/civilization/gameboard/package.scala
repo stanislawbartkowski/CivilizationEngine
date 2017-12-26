@@ -173,7 +173,26 @@ package object gameboard {
     def okV: Boolean = version == packageversion
   }
 
-  case class WinnerLoot(val hv: Option[HutVillage.T], val res: Option[Resource.T], val trade: Boolean, val culture: Boolean)
+  def eqO[T](p1: Option[T], p2: Option[T]): Boolean = {
+    if (p1.isEmpty && p2.isEmpty) return true
+    if (p1.isEmpty) return false
+    if (p2.isEmpty) return false
+    return p1.get == p2.get
+  }
+
+  case class WinnerLoot(val hv: Option[HutVillage.T], val res: Option[Resource.T], val trade: Boolean, val culture: Boolean) {
+    def ==(v: WinnerLoot): Boolean = {
+      if (trade != v.trade) return false
+      if (culture != v.culture) return false
+      return eqO(hv, v.hv) && eqO(res, v.res)
+    }
+
+    def noloot(): Boolean = {
+      return !trade && !culture && hv.isEmpty && res.isEmpty
+    }
+  }
+
+  case class TakeWinnerLoot(val winner: Civilization.T, val loser: Civilization.T, val loot: WinnerLoot, val reso: Option[Resource.T], val trade: Int)
 
   case class FrontUnit(val unit: CombatUnit, var attackstrength: Int, var defendstrenght: Int, var wounds: Int)
 

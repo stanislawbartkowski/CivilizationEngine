@@ -1,12 +1,12 @@
 package civilization.test
 
-import civilization.gameboard.GameBoard
-import org.scalatest.FunSuite
-import civilization.helper._
-import civilization.objects._
 import civilization.action._
+import civilization.gameboard.GameBoard
+import civilization.helper._
 import civilization.io.fromjson._
 import civilization.message.Mess
+import civilization.objects._
+import org.scalatest.FunSuite
 
 class Test4 extends FunSuite {
 

@@ -78,13 +78,13 @@ class Test19 extends FunSuite with ImplicitMiximToJson {
   }
 
   test("Two players game, battle, battle resolution") {
-    val reg = Helper.ReadAndPlayForTwo("test19/BOARDGAME3.json", "test19/PLAY3.json", Civilization.China, Civilization.America)
+    val reg = Helper.ReadAndPlayForTwo("test19/BOARDGAME3.json", "test19/PLAY3.json", Civilization.Arabs, Civilization.America)
     val tokenc: String = reg._1
     val tokena: String = reg._2
     var g: GameBoard = I.getBoardForToken(tokena)
     assert(g.battle.isDefined)
     assert(g.battle.get.endofbattle)
-    val s : Seq[WinnerLoot] = BattleActions.winnerLoot(g)
+    val s: Seq[WinnerLoot] = BattleActions.winnerLoot(g)
     println(s)
     assert(s.find(_.trade).isDefined)
     assert(s.find(l => l.res.isDefined && l.res.get == Resource.Silk).isDefined)
@@ -93,9 +93,51 @@ class Test19 extends FunSuite with ImplicitMiximToJson {
     var js: JsValue = toJ(ss)
     var batt: JsValue = (js \ "board" \ "battle").get
     println(Json.prettyPrint(batt))
-    val wi : JsArray = (batt \ "winnerloot").as[JsArray]
+    val wi: JsArray = (batt \ "winnerloot").as[JsArray]
     println(wi)
     assert(wi.value.length == 4)
+    val numar = numberofTrade(g, Civilization.Arabs)
+    val numam = numberofTrade(g, Civilization.America)
+    println(numar)
+    println(numam)
+    Helper.executeCommandH(tokena, "ENDBATTLE", -1, -1, "\"trade\"")
+    g = I.getBoardForToken(tokena)
+    val xnumar = numberofTrade(g, Civilization.Arabs)
+    val xnumam = numberofTrade(g, Civilization.America)
+    println(xnumar)
+    println(xnumam)
+    assert(numar.trade == (xnumar.trade - 3))
+    assert(numam.trade == xnumam.trade + 3)
+    assert(xnumar.loottrade == 3)
+    assert(xnumam.loottrade == -3)
+  }
 
+  test("Two players game, battle, battle resolution, take Hut") {
+    val reg = Helper.ReadAndPlayForTwo("test19/BOARDGAME3.json", "test19/PLAY3.json", Civilization.Arabs, Civilization.America)
+    val tokenc: String = reg._1
+    val tokena: String = reg._2
+    val g: GameBoard = I.getBoardForToken(tokena)
+    println(g.playerDeck(Civilization.Arabs).hvlist)
+    println(g.playerDeck(Civilization.America).hvlist)
+    Helper.executeCommandH(tokena, "ENDBATTLE", -1, -1, "\"Hut\"")
+    val gg: GameBoard = I.getBoardForToken(tokena)
+    println(gg.playerDeck(Civilization.Arabs).hvlist)
+    println(gg.playerDeck(Civilization.America).hvlist)
+    // Arabs take one hut from America
+    assert(g.playerDeck(Civilization.Arabs).hvlist.length + 1 == gg.playerDeck(Civilization.Arabs).hvlist.length)
+    assert(g.playerDeck(Civilization.America).hvlist.length - 1 == gg.playerDeck(Civilization.America).hvlist.length)
+  }
+
+  test("Two players game, battle, battle resolution, take Silk") {
+    val reg = Helper.ReadAndPlayForTwo("test19/BOARDGAME3.json", "test19/PLAY3.json", Civilization.Arabs, Civilization.America)
+    val tokenc: String = reg._1
+    val tokena: String = reg._2
+    val g: GameBoard = I.getBoardForToken(tokena)
+    println(g.playerDeck(Civilization.Arabs).resou.table)
+    Helper.executeCommandH(tokena, "ENDBATTLE", -1, -1, "\"Silk\"")
+    val gg: GameBoard = I.getBoardForToken(tokena)
+    println(gg.playerDeck(Civilization.Arabs).resou.table)
+    assert(g.playerDeck(Civilization.Arabs).resou.nof(Resource.Silk) + 1 == gg.playerDeck(Civilization.Arabs).resou.nof(Resource.Silk))
+    assert(g.playerDeck(Civilization.America).resou.nof(Resource.Silk) - 1 == gg.playerDeck(Civilization.America).resou.nof(Resource.Silk))
   }
 }

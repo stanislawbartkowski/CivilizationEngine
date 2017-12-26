@@ -43,6 +43,25 @@ package object fromjson extends ImplicitMiximFromJson {
   implicit val technologyNameReads: Reads[TechnologyName.Value] = EnumUtils.enumReads(TechnologyName)
   implicit val inittypeNameReads: Reads[CombatUnitType.Value] = EnumUtils.enumReads(CombatUnitType)
 
+  implicit val towinnerlootReads: Reads[WinnerLoot] = new Reads[WinnerLoot] {
+    def reads(json: JsValue): JsResult[WinnerLoot] = {
+      var hv: Option[HutVillage.T] = None
+      var res: Option[Resource.T] = None
+      var trade: Boolean = false
+      var culture: Boolean = false
+      val s = json.as[String]
+      if (s == S.trade) trade = true
+      else {
+        hv = json.asOpt[HutVillage.T]
+        if (hv.isEmpty) res = json.asOpt[Resource.T]
+        if (res.isEmpty && hv.isEmpty)
+          return JsError(json.toString() + " improper loot name")
+
+      }
+      JsSuccess(WinnerLoot(hv, res, trade, culture))
+    }
+  }
+
   implicit val tokensReads: Reads[Tokens] = new Reads[Tokens] {
     def reads(json: JsValue): JsResult[Tokens] = {
       val numofProduction: Int = (json \ "Production").asOpt[Int].getOrElse(0)
@@ -101,10 +120,9 @@ package object fromjson extends ImplicitMiximFromJson {
     (JsPath \ "name").read[TechnologyName.T] and (JsPath \ "level").read[Int]
     ) (Technology.apply _)
 
-  def listReads[T](length: Int)(implicit anyListReads: Reads[Array[T]]) : Reads[Array[T]] =
-    {
-       js:JsValue =>
-       anyListReads.reads(js).filter(JsError(JsonValidationError(s"Length of the list must be $length")))(_.size == length)
+  def listReads[T](length: Int)(implicit anyListReads: Reads[Array[T]]): Reads[Array[T]] = {
+    js: JsValue =>
+      anyListReads.reads(js).filter(JsError(JsonValidationError(s"Length of the list must be $length")))(_.size == length)
   }
 
 
@@ -139,7 +157,7 @@ package object fromjson extends ImplicitMiximFromJson {
     def reads(json: JsValue): JsResult[MapSquare] = {
       val hv: Option[HutVillage] = (json \ S.hutvillage).asOpt[Option[HutVillage]].getOrElse(None)
       val figures: PlayerFigures = (json \ "figures").asOpt[PlayerFigures].getOrElse(null)
-      val city: Option[City]= (json \ S.city).asOpt[Option[City]].getOrElse(None)
+      val city: Option[City] = (json \ S.city).asOpt[Option[City]].getOrElse(None)
       val ma: MapSquare = MapSquare(hv, city)
       if (figures != null) {
         ma.figures.civ = figures.civ
@@ -178,10 +196,10 @@ package object fromjson extends ImplicitMiximFromJson {
   implicit val playerdeckReads: Reads[PlayerDeck] = new Reads[PlayerDeck] {
     def reads(json: JsValue): JsResult[PlayerDeck] = {
       val civ: Civilization.T = (json \ S.civ).as[Civilization.T]
-      val tech : Seq[PlayerTechnology] = (json \ S.tech).as[Seq[PlayerTechnology]]
-      val units : Seq[CombatUnit] = (json \ S.units).as[Seq[CombatUnit]]
-      var resou : GameResources = (json \ S.resources).as[GameResources]
-      JsSuccess(PlayerDeck(civ,tech,units,resou))
+      val tech: Seq[PlayerTechnology] = (json \ S.tech).as[Seq[PlayerTechnology]]
+      val units: Seq[CombatUnit] = (json \ S.units).as[Seq[CombatUnit]]
+      var resou: GameResources = (json \ S.resources).as[GameResources]
+      JsSuccess(PlayerDeck(civ, tech, units, resou))
     }
   }
 
@@ -191,23 +209,23 @@ package object fromjson extends ImplicitMiximFromJson {
     ) (HutVillage.apply _)
 
   implicit val hutvillagekOptionReads: Reads[Option[HutVillage]] = (
-      JsPath.readNullable[HutVillage]
+    JsPath.readNullable[HutVillage]
     )
 
   implicit val cityOptionReads: Reads[Option[City]] = (
     JsPath.readNullable[City]
     )
 
-  implicit val readBattleStart : Reads[BattleStart] = (
+  implicit val readBattleStart: Reads[BattleStart] = (
     (JsPath \ S.attacker).read[Seq[CombatUnit]] and (JsPath \ S.defender).read[Seq[CombatUnit]]
-  ) (BattleStart.apply _)
+    ) (BattleStart.apply _)
 
   implicit val marketReads: Reads[Resources] = (
     (JsPath \ S.hutvillages).read[Seq[HutVillage]] and (JsPath \ S.hutvillagesused).read[Seq[HutVillage]] and
-    (JsPath \ S.resources).read[GameResources]
+      (JsPath \ S.resources).read[GameResources]
     ) (Resources.apply _)
 
-  implicit val markettReads : Reads[Market] = (
+  implicit val markettReads: Reads[Market] = (
     (JsPath \ S.units).read[Seq[CombatUnit]] and (JsPath \ S.killedunits).read[Seq[CombatUnit]]
     ) (Market.apply _)
 
@@ -217,8 +235,8 @@ package object fromjson extends ImplicitMiximFromJson {
       val players: List[PlayerDeck] = (json \ S.players).as[List[PlayerDeck]]
       val map: Seq[MapTile] = (json \ S.map).as[Seq[MapTile]]
       val resources: Resources = (json \ S.resources).as[Resources]
-      val market : Market = (json \ S.market).as[Market]
-      JsSuccess(GameBoard(players, BoardMap(map), resources,market))
+      val market: Market = (json \ S.market).as[Market]
+      JsSuccess(GameBoard(players, BoardMap(map), resources, market))
     }
   }
 
@@ -228,6 +246,15 @@ package object fromjson extends ImplicitMiximFromJson {
       (JsPath \ S.accesstime).read[Long] and
       (JsPath \ S.desc).read[String]
     ) (GameMetaData.apply _)
+
+  implicit val takeWinnerLootReads : Reads[TakeWinnerLoot] = (
+    (JsPath \ S.winner).read[Civilization.T] and
+      (JsPath \ S.loser).read[Civilization.T] and
+      (JsPath \ S.winnerloot).read[WinnerLoot] and
+      (JsPath \ S.resource).readNullable[Resource.T] and
+      (JsPath \ S.trade).read[Int]
+    ) (TakeWinnerLoot.apply _)
+
 
   trait FromJson {
     type Value
@@ -346,21 +373,21 @@ package object fromjson extends ImplicitMiximFromJson {
     }
   }
 
-  def eqJsParam(j1 : JsValue, j2 : CommandParams) : Boolean = {
-    val p : Option[P] = (j1 \ S.p).asOpt[P]
+  def eqJsParam(j1: JsValue, j2: CommandParams): Boolean = {
+    val p: Option[P] = (j1 \ S.p).asOpt[P]
     if (p.isEmpty && j2.p.isDefined) return false
     if (p.isDefined && j2.p.isEmpty) return false
     if (p.isDefined && j2.p.isDefined)
-       if (!(p == j2.p)) return false
-    val jpar : Option[JsObject] = (j1 \ S.param).asOpt[JsObject]
+      if (!(p == j2.p)) return false
+    val jpar: Option[JsObject] = (j1 \ S.param).asOpt[JsObject]
     if (jpar.isEmpty && j2.param.isEmpty) return true
     if (!jpar.isDefined || !j2.param.isDefined) return false
-//    if (jpar.isDefined)
-//      if (j2.param.isEmpty) return false
-//    if (j2.param.isEmpty) return false
+    //    if (jpar.isDefined)
+    //      if (j2.param.isEmpty) return false
+    //    if (j2.param.isEmpty) return false
 
-//    assert(!jpar.isDefined && !j2.param.isDefined,"Not implemented for JSON")
-//    true
+    //    assert(!jpar.isDefined && !j2.param.isDefined,"Not implemented for JSON")
+    //    true
     // TODO: json comparison, review
     return jpar.get == j2.param.get
   }
@@ -382,7 +409,7 @@ package object fromjson extends ImplicitMiximFromJson {
 
   def toTurnPhase(j: JsValue): TurnPhase.T = convert[TurnPhaseJ](TurnPhaseJ(j))
 
-//  def toOrientation(j: JsValue): Orientation.T = convert[OrientationJ](OrientationJ(j))
+  //  def toOrientation(j: JsValue): Orientation.T = convert[OrientationJ](OrientationJ(j))
 
   def toFigure(j: JsValue): Figure.T = {
     j.as[Figure.T]
@@ -390,7 +417,7 @@ package object fromjson extends ImplicitMiximFromJson {
 
   def toFigures(j: JsValue): Figures = convert[FiguresToMoveJ](FiguresToMoveJ(j))
 
-  def toFiguresNull(j : JsValue) : Figures = {
+  def toFiguresNull(j: JsValue): Figures = {
     if (j == null) return null
     if (j == JsNull) return null
     toFigures(j)
@@ -407,7 +434,4 @@ package object fromjson extends ImplicitMiximFromJson {
 
   def toMetaData(j: JsValue): GameMetaData = j.as[GameMetaData]
 
-  /*
-  def toCombatUnit(j : JsValue) : CombatUnit = convert[CombatUnitJ](CombatUnitJ(j))
-*/
 }

@@ -42,4 +42,7 @@ object S {
   final val defender = "defender"
   final val you = "you"
   final val combatbonus = "combatbonus"
+  final val winner = "winner"
+  final val loser = "loser"
+  final val winnerloot = "winnerloot"
 }
