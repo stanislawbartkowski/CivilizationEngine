@@ -40,7 +40,7 @@ class Test9 extends FunSuite {
   test("Execute command, buy scout") {
     var b: GameBoard = Helper.readBoardAndPlay("test9/BOARDGAME1.json", "test9/GAME1.json", Civilization.Rome)
     val token: String = registerGame(b, Civilization.Rome);
-    val s: String = getData(GETBOARDGAME, token)
+    val s: String = II.getData(GETBOARDGAME, token)
     println(s)
     val board: JsValue = toJ(s)
     val map: JsArray = (board \ "board" \ "map").get.as[JsArray]
@@ -69,7 +69,7 @@ class Test9 extends FunSuite {
     var i: Seq[(Figures, P)] = MoveItemize.itemizeforStartOfMove(b, Civilization.Rome)
     println(i)
     assert(i.length == 2)
-    val s: String = itemizeCommand(token, "STARTMOVE")
+    val s: String = II.itemizeCommand(token, "STARTMOVE")
     println(s)
   }
 
@@ -115,7 +115,7 @@ class Test9 extends FunSuite {
     println(s)
     assert(s == null)
     // itemize
-    s = itemizeCommand(token, "MOVE")
+    s = II.itemizeCommand(token, "MOVE")
     println(s)
     b = getBoardForToken(token)
     val o: Option[PossibleMove] = itemizeForMove(b, Civilization.Rome)
@@ -256,15 +256,15 @@ class Test9 extends FunSuite {
     var a: Seq[Command.T] = allowedCommands(b, Civilization.Rome)
     println(a)
     // get reveal itemized
-    val s: String = itemizeCommand(token, "REVEALTILE")
+    val s: String = II.itemizeCommand(token, "REVEALTILE")
     println(s)
     assert(s != null)
     // TODO: more detailed test
   }
 
   test("Check itemize for setcapital") {
-    val token: String = getData(REGISTEROWNER, "Germany")
-    val s: String = itemizeCommand(token, "SETCAPITAL")
+    val token: String = II.getData(REGISTEROWNER, "Germany")
+    val s: String = II.itemizeCommand(token, "SETCAPITAL")
     println(s)
     assert(s != null)
     val a: JsArray = Json.parse(s).as[JsArray]
@@ -274,7 +274,7 @@ class Test9 extends FunSuite {
   test("Execute command, check itemized for SetCity") {
     var b: GameBoard = Helper.readBoardAndPlay("test9/BOARDGAME1.json", "test9/GAME5.json", Civilization.Rome)
     val token: String = registerGame(b, Civilization.Rome)
-    val s: String = itemizeCommand(token, "SETCITY")
+    val s: String = II.itemizeCommand(token, "SETCITY")
     println(s)
     assert(s != null)
     val a: JsArray = Json.parse(s).as[JsArray]

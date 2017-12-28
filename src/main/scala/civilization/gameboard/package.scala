@@ -12,7 +12,7 @@ package object gameboard {
   /** Version: used during storing and retrieving gameboard from datastore.
     * Ignore games which does not fit to avoid runtime errors
     */
-  private final val packageversion: Int = 3;
+  private final val packageversion: Int = 4;
 
   /** Part of map pattern. Position of the tile and orientation.
     * Initially only civilication tiles have orientation specified.
@@ -164,10 +164,14 @@ package object gameboard {
 
   case class Market(var units: Seq[CombatUnit], var killedunits: Seq[CombatUnit])
 
-  case class GameMetaData(val version: Int, val createtime: Long, var accesstime: Long, val desc: String) {
+  case class GameMetaData(val version: Int, val createtime: Long, var accesstime: Long, var modiftimemili: Long, val desc: String) {
 
     def this(desc: String) {
-      this(packageversion, Calendar.getInstance().getTime.getTime, Calendar.getInstance().getTime.getTime, desc)
+      this(packageversion, Calendar.getInstance().getTime.getTime, Calendar.getInstance().getTime.getTime, Calendar.getInstance().getTimeInMillis, desc)
+    }
+
+    def modiftimestamp(): Unit = {
+      modiftimemili  = Calendar.getInstance().getTimeInMillis
     }
 
     def okV: Boolean = version == packageversion
@@ -218,6 +222,9 @@ package object gameboard {
   case class GameBoard(val players: Seq[PlayerDeck], val map: BoardMap, val resources: Resources, val market: Market) {
 
     var metadata: GameMetaData = new GameMetaData("")
+
+    // used only to generate JSON
+    var boardtoken : Option[String] = None
 
     // force command to execute next
     // TODO: I'm not happy with that

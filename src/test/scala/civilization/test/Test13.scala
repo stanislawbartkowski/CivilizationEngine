@@ -1,6 +1,7 @@
 package civilization.test
 
 import civilization.I
+import civilization.I.II
 import civilization.I.registerGame
 import civilization.gameboard.GameBoard
 import civilization.helper.AllowedCommands.allowedCommands
@@ -64,7 +65,7 @@ class Test13 extends FunSuite {
     assert(6 == prodc.prod)
     assert(0 == prodc.fromscouts)
     // itemized
-    var s: String = I.itemizeCommand(token, "SENDPRODUCTION")
+    var s: String = II.itemizeCommand(token, "SENDPRODUCTION")
     assert(s != null)
     println(s)
   }
@@ -84,7 +85,7 @@ class Test13 extends FunSuite {
     var g: GameBoard = I.getBoardForToken(token)
     var l: Seq[Command.T] = allowedCommands(g, Civilization.Rome)
     println(l)
-    var s: String = I.itemizeCommand(token, "SENDPRODUCTION")
+    var s: String = II.itemizeCommand(token, "SENDPRODUCTION")
     assert(s != null)
     println(s)
     val a : JsArray = toJ(s).as[JsArray]

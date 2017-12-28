@@ -7,7 +7,7 @@ import civilization.io.tojson._
 import civilization.io.fromjson._
 import play.api.libs.json._
 import org.scalatest.FunSuite
-import civilization.I._
+import civilization.I.II._
 import civilization.helper._
 import civilization.message.Mess
 import civilization.io.readdir.GenBoard.genBoard

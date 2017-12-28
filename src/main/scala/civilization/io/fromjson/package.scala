@@ -244,6 +244,7 @@ package object fromjson extends ImplicitMiximFromJson {
     (JsPath \ S.version).read[Int] and
       (JsPath \ S.createtime).read[Long] and
       (JsPath \ S.accesstime).read[Long] and
+      (JsPath \ S.boardmili).read[Long] and
       (JsPath \ S.desc).read[String]
     ) (GameMetaData.apply _)
 

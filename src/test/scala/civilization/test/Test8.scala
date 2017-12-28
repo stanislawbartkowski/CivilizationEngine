@@ -14,7 +14,7 @@ class Test8 extends FunSuite {
   Helper.I
 
   test("Execute command, check available") {
-    val token: String = getData(REGISTEROWNER, "Germany")
+    val token: String = II.getData(REGISTEROWNER, "Germany")
     var g: GameBoard = getBoardForToken(token);
     var l: Seq[Command.T] = allowedCommands(g, Civilization.Germany)
     println(l)
@@ -39,7 +39,7 @@ class Test8 extends FunSuite {
   }
 
   test("Execute command, set army and scout") {
-    val token: String = getData(REGISTEROWNER, "Germany")
+    val token: String = II.getData(REGISTEROWNER, "Germany")
     var g: GameBoard = getBoardForToken(token);
     var s: String = executeCommand(token, "SETCAPITAL", 2, 2, null)
     g = getBoardForToken(token);
@@ -65,7 +65,7 @@ class Test8 extends FunSuite {
   }
 
   test("Execute command, itemized") {
-    val token: String = getData(REGISTEROWNER, "Rome")
+    val token: String = II.getData(REGISTEROWNER, "Rome")
     var g: GameBoard = getBoardForToken(token);
     var s: String = executeCommand(token, "SETCAPITAL", 1, 2, null)
     println(s)
@@ -87,7 +87,7 @@ class Test8 extends FunSuite {
     assert(a.find(_._2 == P(2, 2)).isDefined)
     assert(a.find(_._2 == P(2, 3)).isDefined)
 
-    val o: String = itemizeCommand(token, "SETSCOUT")
+    val o: String = II.itemizeCommand(token, "SETSCOUT")
     // double check
     println(o)
     var p: Set[P] = a.map(_._2).toSet
@@ -103,12 +103,12 @@ class Test8 extends FunSuite {
   }
 
   test("Check production for city") {
-    val token: String = getData(REGISTEROWNER, "Rome")
+    val token: String = II.getData(REGISTEROWNER, "Rome")
     var g: GameBoard = getBoardForToken(token);
     var s: String = executeCommand(token, "SETCAPITAL", 1, 2, null)
     println(s)
     assert(s == null)
-    s = getData(GETBOARDGAME, token)
+    s = II.getData(GETBOARDGAME, token)
     //    println(s)
     val board: JsValue = toJ(s)
     val map: JsArray = (board \ "board" \ "map").get.as[JsArray]

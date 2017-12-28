@@ -6,7 +6,7 @@ import civilization.io.fromjson._
 import civilization.objects._
 import play.api.libs.json.{JsValue, Json}
 
-case class CurrentGame(val gameid: Int, val civ: Civilization.T, val createtime: Long = Calendar.getInstance().getTime.getTime, val accesstime: Long = Calendar.getInstance().getTime.getTime)
+case class CurrentGame(val gameid: Int, val civ: Civilization.T, val createtime: Long = Calendar.getInstance().getTime.getTime, val accesstime: Long = Calendar.getInstance().getTime.getTime, var boardtimemili: Option[Long] = None)
 
 object CurrentGame {
 
@@ -15,7 +15,8 @@ object CurrentGame {
       S.gameid -> g.gameid,
       S.civ -> g.civ,
       S.createtime -> g.createtime,
-      S.accesstime -> g.accesstime
+      S.accesstime -> g.accesstime,
+      S.boardmili -> g.boardtimemili
     )
     j.toString()
   }
@@ -26,9 +27,10 @@ object CurrentGame {
     val civ = (j \ S.civ).get.as[Civilization.T]
     val createtime = (j \ S.createtime).get.as[Long]
     val accesstime = (j \ S.accesstime).get.as[Long]
-    CurrentGame(gameid, civ, createtime, accesstime)
+    val boardtimemili: Option[Long] = (j \ S.boardmili).asOpt[Long]
+    CurrentGame(gameid, civ, createtime, accesstime, boardtimemili)
   }
 
-  implicit def convert(s : Seq[String]) : Seq[CurrentGame] = s.map(convert(_))
+  implicit def convert(s: Seq[String]): Seq[CurrentGame] = s.map(convert(_))
 
 }

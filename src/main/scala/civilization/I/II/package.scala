@@ -11,12 +11,13 @@ object II {
   final val UNREGISTERTOKEN = I.UNREGISTERTOKEN
   final val LISTOFWAITINGGAMES = I.LISTOFWAITINGGAMES
   final val REGISTEROWNERTWOGAME = I.REGISTEROWNERTWOGAME
+  final val iTEMIZECOMMAND = I.ITEMIZECOMMAND
 
-  def getData(what: Int, tokenorciv: String = null): String = I.getData(what, tokenorciv)
+  def getData(what: Int, tokenorciv: String = null, param : String = null): String = I.getData(what, tokenorciv,param)
 
   def executeCommand(token: String, action: String, row: Int, col: Int, jsparam: String): String = I.executeCommand(token, action, row, col, jsparam)
 
-  def itemizeCommand(token: String, action: String): String = I.itemizeCommand(token, action)
+  def itemizeCommand(token: String, action: String): String = getData(ITEMIZECOMMAND, token,action)
 
   def setR(r: I.RAccess) = I.setR(r)
 

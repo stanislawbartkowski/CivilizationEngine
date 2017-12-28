@@ -159,4 +159,35 @@ class Test19 extends FunSuite with ImplicitMiximToJson {
     println(g.playerDeck(Civilization.Egypt).units.length)
     assert(g.playerDeck(Civilization.Egypt).units.isEmpty)
   }
-}
+
+  test("Two players game, battle, battle resolution, empty json for the second time") {
+    val reg = Helper.ReadAndPlayForTwo("test19/BOARDGAME3.json", "test19/PLAY3.json", Civilization.Arabs, Civilization.America)
+    val tokenc: String = reg._1
+    val tokena: String = reg._2
+    var j : String = II.getData(II.GETBOARDGAME,tokenc)
+    println(j)
+    assert (j != "")
+    // again
+    j = II.getData(II.GETBOARDGAME,tokenc)
+    println("j="+j)
+    assert(j == "")
+    j = II.getData(II.GETBOARDGAME,tokena)
+    println(j)
+    assert (j != "")
+    // again
+    j = II.getData(II.GETBOARDGAME,tokena)
+    println("j="+j)
+    assert(j == "")
+    // make move
+    Helper.executeCommandH(tokena, "ENDBATTLE", -1, -1, "\"Silk\"")
+    // again
+    j = II.getData(II.GETBOARDGAME,tokena)
+    println(j)
+    // not empty for the first time
+    assert (j != "")
+    // again
+    j = II.getData(II.GETBOARDGAME,tokena)
+    println("j="+j)
+    assert(j == "")
+  }
+  }

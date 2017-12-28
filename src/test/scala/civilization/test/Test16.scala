@@ -45,7 +45,7 @@ class Test16  extends FunSuite {
     var l: Seq[Command.T] = allowedCommands(g, Civilization.Rome)
     println(l)
     assert(l.find(_ == Command.HARVESTRESOURCE).isDefined)
-    val s : String = I.itemizeCommand(token,"HARVESTRESOURCE")
+    val s : String = II.itemizeCommand(token,"HARVESTRESOURCE")
     println(s)
     val a :JsArray = toJ(s).as[JsArray]
     assert(3 == a.value.length)

@@ -1,6 +1,7 @@
 package civilization.test
 
 import civilization.I._
+import civilization.I.II
 import civilization.gameboard.GameBoard
 import civilization.helper._
 import civilization.io.fromjson.toJ
@@ -139,7 +140,7 @@ class Test11 extends FunSuite {
     var a: Seq[Command.T] = AllowedCommands.allowedCommands(g, Civilization.Rome)
     assert(!a.contains(Command.SETCITY))
     println(a)
-    val o: String = itemizeCommand(token, "SETCITY")
+    val o: String = II.itemizeCommand(token, "SETCITY")
     println(o)
   }
 
@@ -149,7 +150,7 @@ class Test11 extends FunSuite {
     var g: GameBoard = I.getBoardForToken(token)
     var a: Seq[Command.T] = AllowedCommands.allowedCommands(g, Civilization.Rome)
     println(a)
-    val o: String = itemizeCommand(token, "MOVE")
+    val o: String = II.itemizeCommand(token, "MOVE")
     println(o)
     val j: JsValue = toJ(o)
     println(j)

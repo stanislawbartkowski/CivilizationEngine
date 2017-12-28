@@ -31,6 +31,7 @@ package object I {
   final val UNREGISTERTOKEN: Int = 4
   final val LISTOFWAITINGGAMES: Int = 5
   final val REGISTEROWNERTWOGAME: Int = 6
+  final val ITEMIZECOMMAND: Int = 7
 
   private val random = new SecureRandom()
 
@@ -54,15 +55,32 @@ package object I {
   }
 
 
-  private def getBoard(token: String): (CurrentGame, GameBoard) = {
+  private def getBoard(token: String) : (CurrentGame, GameBoard) = {
     val game: CurrentGame = r.getCurrentGame(token)
+
     r.touchCurrentGame(token)
     (game, getGameBoard(game.gameid))
   }
 
   private def toC(com: Command): CommandValues = CommandValues(com.command, com.civ, com.p, com.j)
 
-  def getData(what: Int, tokenorciv: String): String = {
+  private def getBoardForCiv(token: String): String = {
+//    val g = getBoard(token)
+//    val civ: Civilization.T = g._1.civ
+//    Json.prettyPrint(genboardj.genBoardGameJson(g._2, civ))
+    val game: CurrentGame = r.getCurrentGame(token)
+     // game metadata
+    val m: GameMetaData = toMetaData(toJ(r.getMetaData(game.gameid)))
+    // nothing has changed
+    if (game.boardtimemili.isDefined && game.boardtimemili.get == m.modiftimemili) return ""
+    // update board current time in CurrentGame
+    game.boardtimemili = Some(m.modiftimemili)
+    r.updateCurrentGame(token,game)
+    val g : GameBoard = getGameBoard(game.gameid)
+    Json.prettyPrint(genboardj.genBoardGameJson(g, game.civ))
+  }
+
+  def getData(what: Int, tokenorciv: String, param: String): String = {
     synchronized {
       what match {
         case LISTOFCIV => getListOfCiv()
@@ -75,6 +93,7 @@ package object I {
           null
         }
         case LISTOFWAITINGGAMES => listOfWaitingGames
+        case ITEMIZECOMMAND => itemizeCommand(tokenorciv, param)
       }
     }
   }
@@ -124,12 +143,6 @@ package object I {
     Json.prettyPrint(writesGameBoard(g._2))
   }
 
-  private def getBoardForCiv(token: String): String = {
-    val g = getBoard(token)
-    val civ: Civilization.T = g._1.civ
-    Json.prettyPrint(genboardj.genBoardGameJson(g._2, civ))
-  }
-
   private def touchGame(gameid: Int, g: GameBoard) = {
     g.metadata.accesstime = Calendar.getInstance().getTime.getTime
     r.updateMetaData(gameid, writeMetaData(g.metadata).toString())
@@ -144,6 +157,9 @@ package object I {
       r.addMoveToPlay(gb._1.gameid, writeCommandValues(cv).toString())
     }
     )
+    // modif metadata with current timestamp
+    gb._2.metadata.modiftimestamp()
+    touchGame(gb._1.gameid,gb._2)
     return mess
   }
 
@@ -161,7 +177,7 @@ package object I {
     if (m == null) null else m.toString
   }
 
-  def itemizeCommand(token: String, action: String): String = {
+  private def itemizeCommand(token: String, action: String): String = {
     val command: Command.T = Command.withName(action)
     val g = getBoard(token)
     AllowedCommands.itemizeCommandS(g._2, g._1.civ, command)

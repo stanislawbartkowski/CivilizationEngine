@@ -1,5 +1,6 @@
 package civilization.test
 
+import civilization.I.II
 import civilization.I
 import civilization.I.{executeCommand, registerGame}
 import civilization.gameboard.GameBoard
@@ -89,13 +90,13 @@ class Test12 extends FunSuite {
     Helper.executeCommandH(token, "SPENDTRADE", 2, 2, "1")
     g = I.getBoardForToken(token)
     l = allowedCommands(g, Civilization.Germany)
-    var s: String = I.itemizeCommand(token, "SPENDTRADE")
+    var s: String = II.itemizeCommand(token, "SPENDTRADE")
     assert(s != null)
     println(s)
     // can buy scout
     println(l)
     assert(l.find(_ == Command.BUYSCOUT).isDefined)
-    s = I.itemizeCommand(token, "UNDOSPENDTRADE")
+    s = II.itemizeCommand(token, "UNDOSPENDTRADE")
     println(s)
     assert(s != null)
   }

@@ -111,6 +111,7 @@ package object tojson extends ImplicitMiximToJson {
       S.version -> m.version,
       S.createtime -> m.createtime,
       S.accesstime -> m.accesstime,
+      S.boardmili -> m.modiftimemili,
       S.desc -> m.desc
     )
   }
