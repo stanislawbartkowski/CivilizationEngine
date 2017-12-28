@@ -11,15 +11,18 @@ object SetCityAction {
   def verifySetCity(board: GameBoard, civ: Civilization.T, p: P, command: Command.T): Option[Mess] = {
 
     val deck: PlayerDeck = board.playerDeck(civ)
+    val mapp: MapSquareP = getSquare(board, p)
     command match {
-      case Command.SETCAPITAL => if (isCapitalBuild(board, civ)) return Some(Mess(M.CAPITALALREADYBUILD))
+      case Command.SETCAPITAL =>
+        if (isCapitalBuild(board, civ)) return Some(Mess(M.CAPITALALREADYBUILD))
+        if (!mapp.t.tile.civhome || mapp.t.tile.civ != civ)
+          return Some(Mess(M.CAPITALCANBEBUILDONLYONHOMETILE, p))
       case Command.SETCITY => {
         if (getLimits(board, civ).citieslimit == 0) return Some(Mess(M.CITYLIMITEXCEEDED))
-        val mapp: MapSquareP = getSquare(board, p)
         if (!mapp.s.figures.civOccupying(civ) || mapp.s.figures.numberofScouts == 0) return Some(Mess(M.CITYSHOULDBEBUILDONSCOUT, p))
       }
     }
-    isSquareForCity(board, p,civ)
+    isSquareForCity(board, p, civ)
   }
 
   class SetCityAction extends AbstractCommand {

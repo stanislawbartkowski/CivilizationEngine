@@ -219,12 +219,20 @@ package object gameboard {
     def attackerwinner: Boolean = attacker.points > defender.points
   }
 
+  private def rotaterightList[T](l : Seq[T]) : Seq[T] = if (l.isEmpty) l else l.tail :+ l.head
+
   case class GameBoard(val players: Seq[PlayerDeck], val map: BoardMap, val resources: Resources, val market: Market) {
 
-    var metadata: GameMetaData = new GameMetaData("")
+    // order of civilizations to play
+    var pllist : Seq[Civilization.T] = Nil
 
-    // used only to generate JSON
-    var boardtoken : Option[String] = None
+    // cheating, for old tests only
+    // do not rotate
+    var norotate : Boolean = false
+
+    def rotateplorder : Unit = if (!norotate) pllist = rotaterightList(pllist)
+
+    var metadata: GameMetaData = new GameMetaData("")
 
     // force command to execute next
     // TODO: I'm not happy with that

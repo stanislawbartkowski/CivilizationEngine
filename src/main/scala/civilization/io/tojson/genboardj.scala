@@ -67,8 +67,9 @@ object genboardj {
     // TODO: active civilization, later
     var civ: Civilization.T = cu.notcompleted.head
     cu.turnPhase match {
+      // 2017/12/28 : Research is active all the time (not StartOfTurn)
       // for StartOfTurn and Trade all are active
-      case TurnPhase.StartOfTurn | TurnPhase.Trade => {
+      case TurnPhase.Research | TurnPhase.Trade => {
         if (cu.notcompleted.contains(civrequesting)) civ = civrequesting
       }
       case _ =>

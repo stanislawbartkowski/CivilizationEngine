@@ -248,9 +248,13 @@ package object helper {
     val ephases: Seq[Command] = rlist.filter(getPhase(_).isDefined)
 
     // beginning of game
-    if (ephases.isEmpty) return CurrentPhase(allCivs(b), TurnPhase.StartOfTurn, 0)
+    if (ephases.isEmpty) {
+      // initiate the order of civ
+      b.pllist = allCivs(b)
+      return CurrentPhase(b.pllist, TurnPhase.StartOfTurn, 0)
+    }
 
-    var players: Set[Civilization.T] = allCivs(b).toSet
+    var players: Set[Civilization.T] = b.pllist.toSet
     // calculate roundno
     // complicated but working
     // full single round if StartOfTurn less or equal number of players, so the 1 is deducted
@@ -268,9 +272,9 @@ package object helper {
       )
     }
     // not empty, current phase is executed, prepare list of active players in order, remove completed
-    if (!players.isEmpty) return CurrentPhase(allCivs(b).filter(c => players(c)), currentphase, roundno)
+    if (!players.isEmpty) return CurrentPhase(b.pllist.filter(c => players(c)), currentphase, roundno)
     // empty, next phase
-    CurrentPhase(allCivs(b), nextPhase(currentphase), if (currentphase == TurnPhase.Research) roundno + 1 else roundno)
+    CurrentPhase(b.pllist, nextPhase(currentphase), if (currentphase == TurnPhase.Research) roundno + 1 else roundno)
   }
 
   private def lastPhaseCommandsReverse(b: GameBoard, civ: Civilization.T, pha: TurnPhase.T): Seq[Command] = {
@@ -472,8 +476,9 @@ package object helper {
     spendTradeCommands(b, civ) map { case (p, seq) => (p, spendProdForCity(seq)) }
 
   case class TradeForCiv(val terrain: Int, val noresearch: Int, val toprod: Int, val loottrade : Int) {
-    def trade: Int = terrain + noresearch - toprod + loottrade
+    def trade: Int = Math.min(terrain + noresearch - toprod + loottrade,TRADEMAX)
   }
+
 
   private def numberofloottrade(b: GameBoard, civ: Civilization.T): Int = {
     val loott : Int = currentTurnReverse(b).foldLeft(0) ( (sum, c) => {
@@ -521,7 +526,7 @@ package object helper {
       }
       )
     }
-    if (lasttrade > TRADEMAX) TRADEMAX else lasttrade
+    lasttrade
   }
 
   def numberofTrade(b: GameBoard, civ: Civilization.T): TradeForCiv = {

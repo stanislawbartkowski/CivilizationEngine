@@ -236,7 +236,11 @@ package object fromjson extends ImplicitMiximFromJson {
       val map: Seq[MapTile] = (json \ S.map).as[Seq[MapTile]]
       val resources: Resources = (json \ S.resources).as[Resources]
       val market: Market = (json \ S.market).as[Market]
-      JsSuccess(GameBoard(players, BoardMap(map), resources, market))
+      val g : GameBoard = GameBoard(players, BoardMap(map), resources, market)
+      // cheating
+      val norotate : Option[Boolean] = (json \ "norotate").asOpt[Boolean]
+      if (norotate.isDefined && norotate.get) g.norotate = true
+      JsSuccess(g)
     }
   }
 

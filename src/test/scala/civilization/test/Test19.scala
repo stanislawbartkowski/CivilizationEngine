@@ -106,8 +106,9 @@ class Test19 extends FunSuite with ImplicitMiximToJson {
     val xnumam = numberofTrade(g, Civilization.America)
     println(xnumar)
     println(xnumam)
-    assert(numar.trade == (xnumar.trade - 3))
-    assert(numam.trade == xnumam.trade + 3)
+    // cannot exceed 27
+//    assert(numar.trade == (xnumar.trade - 3))
+//    assert(numam.trade == xnumam.trade + 3)
     assert(xnumar.loottrade == 3)
     assert(xnumam.loottrade == -3)
   }

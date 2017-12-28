@@ -1,7 +1,7 @@
 package civilization.test
 
-import civilization.I.{CurrentGame}
-import civilization.I.{executeCommand}
+import civilization.I.CurrentGame
+import civilization.I.executeCommand
 import civilization.RR
 import civilization.gameboard.GameBoard
 import civilization.io.readdir.{readGameBoard, readPlay, readTestJSON}
@@ -9,6 +9,7 @@ import civilization.message.{FatalError, Mess}
 import civilization.objects.{CommandValues, _}
 import play.api.libs.json.JsValue
 import civilization.I.II
+import civilization.io.fromjson.toJ
 
 object Helper {
 
@@ -89,6 +90,20 @@ object Helper {
     println(t)
     assert(expected == t)
   }
+
+  def activeciv(token: String, civ: String, phase: String): Unit = {
+    val s = II.getData(II.GETBOARDGAME, token)
+    //        println(s)
+    val j: JsValue = toJ(s)
+    //println(j)
+    // both should be active at the beginning
+    val c = (j \ "board" \ "game" \ "active").as[String]
+    //    println(c)
+    assert(c == civ)
+    val p = (j \ "board" \ "game" \ "phase").as[String]
+    assert(p == phase)
+  }
+
 
 
 
