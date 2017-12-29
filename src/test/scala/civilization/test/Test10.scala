@@ -89,7 +89,8 @@ class Test10 extends FunSuite {
     assert(a.contains(Command.SETCAPITAL))
     a = allowedCommands(b, Civilization.China)
     println(a)
-    assert(a.contains(Command.SETCAPITAL))
+//    assert(a.contains(Command.SETCAPITAL))
+    assert(a.isEmpty)
     Helper.activeciv(token, "Rome", "StartOfTurn")
     // 2017/12/28, StartOfTurn in turn
     // Helper.activeciv(ctoken, "China", "StartOfTurn")
@@ -137,7 +138,7 @@ class Test10 extends FunSuite {
     assert(a.contains(Command.SETARMY))
     a = allowedCommands(b, Civilization.China)
     assert(!a.contains(Command.SETCAPITAL))
-    assert(a.contains(Command.SETARMY))
+    assert(!a.contains(Command.SETARMY))
   }
 
   test("Two players game, set capital, scout and army") {

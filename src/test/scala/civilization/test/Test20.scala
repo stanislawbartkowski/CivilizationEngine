@@ -114,4 +114,22 @@ class Test20 extends FunSuite with ImplicitMiximFromJson {
     })
   }
 
-}
+  test("Two players game, building in turn") {
+    val token: String = II.getData(II.REGISTEROWNERTWOGAME, "Rome,China")
+    println(token)
+    val game: CurrentGame = RR.RA.getCurrentGame(token)
+    val gameid: Int = game.gameid
+    println(gameid)
+    val ctoken: String = II.joinGame(gameid, Civilization.China.toString)
+    val g: GameBoard = I.getBoardForToken(token)
+    var l: Seq[Command.T] = allowedCommands(g, Civilization.Rome)
+    // allowed commands for Rome
+    println(l)
+    assert(l.find(_ == Command.SETCAPITAL).isDefined)
+    l = allowedCommands(g, Civilization.China)
+    // allowed commands for Rome
+    println(l)
+    assert(l.isEmpty)
+  }
+
+  }

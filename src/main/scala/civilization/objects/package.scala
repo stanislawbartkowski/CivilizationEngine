@@ -106,7 +106,7 @@ package object objects {
     type T = Value
     val StartOfTurn, Trade, CityManagement, Movement, Research = Value
 
-    def turnAction(t: Value): Boolean = t != StartOfTurn && t != Trade
+    def turnAction(t: Value): Boolean = t != Trade && t != Research
   }
 
   object CombatUnitType extends Enumeration {

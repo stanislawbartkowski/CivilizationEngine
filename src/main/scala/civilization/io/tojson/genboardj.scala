@@ -66,14 +66,16 @@ object genboardj {
     val cu: CurrentPhase = currentPhase(g)
     // TODO: active civilization, later
     var civ: Civilization.T = cu.notcompleted.head
-    cu.turnPhase match {
+    if (!TurnPhase.turnAction(cu.turnPhase))
+      if (cu.notcompleted.contains(civrequesting)) civ = civrequesting
+//    cu.turnPhase match {
       // 2017/12/28 : Research is active all the time (not StartOfTurn)
       // for StartOfTurn and Trade all are active
-      case TurnPhase.Research | TurnPhase.Trade => {
-        if (cu.notcompleted.contains(civrequesting)) civ = civrequesting
-      }
-      case _ =>
-    }
+//      case TurnPhase.Research | TurnPhase.Trade => {
+//        if (cu.notcompleted.contains(civrequesting)) civ = civrequesting
+//      }
+//      case _ =>
+//    }
     Game(civ, cu.roundno, cu.turnPhase)
   }
 
