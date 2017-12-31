@@ -3,7 +3,7 @@ package civilization.helper
 import civilization.action.{AbstractCommand, Command, constructCommand}
 import civilization.gameboard.{Figures, GameBoard, PlayerDeck}
 import civilization.message.{M, Mess}
-import civilization.objects.{City, Civilization, Command, P}
+import civilization.objects._
 import civilization.io.tojson.writesFigures
 
 object SetCityAction {
@@ -52,7 +52,7 @@ object SetCityAction {
           // try to position them around
           // checkFinalPoint
 
-          val moveto: Option[P] = squaresAround(board, p).filter(po => MoveAction.checkFinalPoint(board, civ, po, f).isEmpty).map(_.p).headOption
+          val moveto: Option[P] = squaresAround(board, p).filter(po => isSquareForFigure(board, civ, Figure.Army, p).isEmpty && MoveAction.checkFinalPoint(board, civ, po, f).isEmpty).map(_.p).headOption
           if (moveto.isDefined) {
             val command: Command = constructCommand(Command.FORCEDMOVEFIGURES, civ, moveto.get, writesFigures(f))
             // execute later

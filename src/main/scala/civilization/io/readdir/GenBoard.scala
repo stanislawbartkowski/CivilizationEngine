@@ -65,6 +65,7 @@ object GenBoard extends ImplicitMiximFromJson {
     val market: Market = Market(units, Nil)
     val g: GameBoard = GameBoard(players, BoardMap(map), Resources(readHutVillages, Nil, readResources(l.length)), market)
     g.tech = readTechnologies
+    g.civil = readListOfCivs
     // reveal tiles
     lpatt.foreach(p => if (p.o.isDefined) revealTile(g, p.o.get, p.p))
     // attach random three units

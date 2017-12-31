@@ -13,6 +13,7 @@
   },
   {
     "name": "Communism",
+    "gover": "Communism",
     "level": 3
   },
   {
@@ -57,10 +58,12 @@
   },
   {
     "name": "Democracy",
+    "gover": "Democracy",
     "level": 2
   },
   {
     "name": "Monarchy",
+    "gover": "Monarchy",
     "level": 2
   },
   {
@@ -85,6 +88,7 @@
   },
   {
     "name": "CodeOfLaw",
+    "gover": "Republic",
     "level": 1
   },
   {
@@ -141,11 +145,17 @@
   },
   {
     "name": "Theology",
+    "gover": "Fundamentalism",
     "level": 3
   },
   {
     "name": "Agriculture",
     "level": 1
+  },
+  {
+    "name": "Chivalry",
+    "gover": "Feudalism",
+    "level": 2
   },
   {
     "name": "Banking",

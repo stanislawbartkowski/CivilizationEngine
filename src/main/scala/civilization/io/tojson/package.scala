@@ -50,6 +50,15 @@ package object tojson extends ImplicitMiximToJson {
     )
   }
 
+  implicit val civilizationWrites : Writes[CivilizationG] = new Writes[CivilizationG] {
+    override def writes(o: CivilizationG): JsValue = Json.obj(
+      S.civ -> o.civ,
+      S.tech -> o.tech,
+      S.gover -> o.gover,
+      S.desc -> o.desc
+    )
+  }
+
   implicit val playerfiguresWrites: Writes[PlayerFigures] = new Writes[PlayerFigures] {
     def writes(m: PlayerFigures) = Json.obj(
       S.civ -> {
@@ -198,4 +207,7 @@ package object tojson extends ImplicitMiximToJson {
   def writeMetaData(m: GameMetaData): JsValue = Json.toJson(m)
 
   def writeSeqWinnerLoot(m : Seq[WinnerLoot]) : JsValue = Json.toJson(m)
+
+  def writeListOfCivs(m : Seq[CivilizationG]) : JsValue = Json.toJson(m)
+
 }

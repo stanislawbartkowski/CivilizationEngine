@@ -46,4 +46,6 @@ object S {
   final val loser = "loser"
   final val winnerloot = "winnerloot"
   final val boardmili = "boardmili"
+  final val name="name"
+  final val gover = "gover"
 }

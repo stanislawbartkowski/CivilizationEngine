@@ -68,10 +68,7 @@ package object action extends ImplicitMiximToJson with ImplicitMiximFromJson {
 
     case Command.EXPLOREHUT => new ExploreHutCommand.ExploreHutCommand()
 
-    case Command.RESEARCH => new ResearchTechnologyAction(toTechnologName(param))
-
     case Command.ATTACK => new AttackCommand.AttackCommand
-
 
     case Command.STARTBATTLE => new AttackCommand.StartBattleCommand(param)
 
@@ -163,6 +160,5 @@ package object action extends ImplicitMiximToJson with ImplicitMiximFromJson {
     }
 
   }
-
 
 }

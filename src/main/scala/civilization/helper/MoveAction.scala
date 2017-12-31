@@ -43,7 +43,8 @@ object MoveAction {
   def checkFinalPoint(b: GameBoard, civ: Civilization.T, s: MapSquareP, fig: Figures): Option[Mess] = {
     val li: PlayerLimits = getLimits(b, civ)
     val figdesc: (P, Figures) = (s.p, fig)
-    if (s.sm.terrain == Terrain.Water && li.waterstopallowed) return Some(Mess(M.CANNOTSTOPINWATER, figdesc))
+    // 2017/12/30 : error, water
+    if (s.sm.terrain == Terrain.Water && !li.waterstopallowed) return Some(Mess(M.CANNOTSTOPINWATER, figdesc))
     if (s.s.cityhere && s.s.city.get.belongsTo(civ)) return Some(Mess(M.CANNOTSTOPINCITY, figdesc))
     // 2017/08/28 figures already on the point
     //    val numb = fig.numberofArmies + fig.numberofScouts + s.s.figures.numberofArmies + s.s.figures.numberofScouts

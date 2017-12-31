@@ -10,7 +10,7 @@ import civilization.gameboard.{GameBoard, GameMetaData}
 import civilization.helper._
 import civilization.io.fromjson._
 import civilization.io.readdir.GenBoard.genBoard
-import civilization.io.readdir.{readGameBoard, readListOfTiles}
+import civilization.io.readdir._
 import civilization.io.tojson._
 import civilization.message._
 import civilization.objects._
@@ -32,6 +32,7 @@ package object I {
   final val LISTOFWAITINGGAMES: Int = 5
   final val REGISTEROWNERTWOGAME: Int = 6
   final val ITEMIZECOMMAND: Int = 7
+  final val LISTOFCIVDESCR : Int = 8
 
   private val random = new SecureRandom()
 
@@ -94,6 +95,10 @@ package object I {
         }
         case LISTOFWAITINGGAMES => listOfWaitingGames
         case ITEMIZECOMMAND => itemizeCommand(tokenorciv, param)
+        case LISTOFCIVDESCR => {
+          val j : JsValue = writeListOfCivs(readListOfCivs)
+          Json.prettyPrint(j)
+        }
       }
     }
   }

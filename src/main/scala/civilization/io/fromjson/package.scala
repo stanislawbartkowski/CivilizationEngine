@@ -41,6 +41,7 @@ package object fromjson extends ImplicitMiximFromJson {
   implicit val figuresReads: Reads[Figure.Value] = EnumUtils.enumReads(Figure)
   implicit val phaseReads: Reads[TurnPhase.Value] = EnumUtils.enumReads(TurnPhase)
   implicit val technologyNameReads: Reads[TechnologyName.Value] = EnumUtils.enumReads(TechnologyName)
+  implicit val governmentNameReads: Reads[GovernmentName.Value] = EnumUtils.enumReads(GovernmentName)
   implicit val inittypeNameReads: Reads[CombatUnitType.Value] = EnumUtils.enumReads(CombatUnitType)
 
   implicit val towinnerlootReads: Reads[WinnerLoot] = new Reads[WinnerLoot] {
@@ -117,7 +118,9 @@ package object fromjson extends ImplicitMiximFromJson {
     ) (City.apply _)
 
   implicit val Reads: Reads[Technology] = (
-    (JsPath \ "name").read[TechnologyName.T] and (JsPath \ "level").read[Int]
+    (JsPath \ S.name).read[TechnologyName.T] and
+      (JsPath \ S.gover).readNullable[GovernmentName.T] and
+      (JsPath \ "level").read[Int]
     ) (Technology.apply _)
 
   def listReads[T](length: Int)(implicit anyListReads: Reads[Array[T]]): Reads[Array[T]] = {
@@ -192,6 +195,12 @@ package object fromjson extends ImplicitMiximFromJson {
     }
   }
 
+  implicit val readCivilization: Reads[CivilizationG] = (
+    (JsPath \ S.civ).read[Civilization.T] and
+      (JsPath \ S.tech).read[TechnologyName.T] and
+      (JsPath \ S.gover).read[GovernmentName.T] and
+      (JsPath \ S.desc).read[String]
+    ) (CivilizationG.apply _)
 
   implicit val playerdeckReads: Reads[PlayerDeck] = new Reads[PlayerDeck] {
     def reads(json: JsValue): JsResult[PlayerDeck] = {
@@ -202,7 +211,6 @@ package object fromjson extends ImplicitMiximFromJson {
       JsSuccess(PlayerDeck(civ, tech, units, resou))
     }
   }
-
 
   implicit val hutvillageMyReads: Reads[HutVillage] = (
     (JsPath \ S.hutvillage).read[HutVillage.T] and (JsPath \ S.resource).read[Resource.T]
@@ -236,9 +244,9 @@ package object fromjson extends ImplicitMiximFromJson {
       val map: Seq[MapTile] = (json \ S.map).as[Seq[MapTile]]
       val resources: Resources = (json \ S.resources).as[Resources]
       val market: Market = (json \ S.market).as[Market]
-      val g : GameBoard = GameBoard(players, BoardMap(map), resources, market)
+      val g: GameBoard = GameBoard(players, BoardMap(map), resources, market)
       // cheating
-      val norotate : Option[Boolean] = (json \ "norotate").asOpt[Boolean]
+      val norotate: Option[Boolean] = (json \ "norotate").asOpt[Boolean]
       if (norotate.isDefined && norotate.get) g.norotate = true
       JsSuccess(g)
     }
@@ -252,7 +260,7 @@ package object fromjson extends ImplicitMiximFromJson {
       (JsPath \ S.desc).read[String]
     ) (GameMetaData.apply _)
 
-  implicit val takeWinnerLootReads : Reads[TakeWinnerLoot] = (
+  implicit val takeWinnerLootReads: Reads[TakeWinnerLoot] = (
     (JsPath \ S.winner).read[Civilization.T] and
       (JsPath \ S.loser).read[Civilization.T] and
       (JsPath \ S.winnerloot).read[WinnerLoot] and
@@ -431,7 +439,7 @@ package object fromjson extends ImplicitMiximFromJson {
 
   def toTechnologies(j: JsValue): Seq[Technology] = convert[SeqTechnologyJ](SeqTechnologyJ(j))
 
-  def toTechnologName(j: JsValue) = j.as[TechnologyName.T]
+  def toCivilizations(j: JsValue) : Seq[CivilizationG] = j.as[Seq[CivilizationG]]
 
   def toSeqPatterMap(j: JsValue): Seq[PatternMap] = convert[PatterMapSeqJ](PatterMapSeqJ(j))
 

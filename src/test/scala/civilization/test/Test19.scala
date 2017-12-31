@@ -150,7 +150,7 @@ class Test19 extends FunSuite with ImplicitMiximToJson {
     assert(gg.playerDeck(Civilization.America).units.length == 0)
   }
 
-  test("Two players game, battle, battle resolution, armies diseapering") {
+  test("Two players game, battle, battle resolution, armies dissapearing") {
     val reg = Helper.ReadAndPlayForTwo("test19/BOARDGAME4.json", "test19/PLAY4.json", Civilization.Germany, Civilization.Egypt)
     val tokenc: String = reg._1
     val tokena: String = reg._2

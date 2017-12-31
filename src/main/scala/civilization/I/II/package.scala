@@ -12,6 +12,7 @@ object II {
   final val LISTOFWAITINGGAMES = I.LISTOFWAITINGGAMES
   final val REGISTEROWNERTWOGAME = I.REGISTEROWNERTWOGAME
   final val iTEMIZECOMMAND = I.ITEMIZECOMMAND
+  final val LISTOFCIVDESCR = I.LISTOFCIVDESCR
 
   def getData(what: Int, tokenorciv: String = null, param : String = null): String = I.getData(what, tokenorciv,param)
 

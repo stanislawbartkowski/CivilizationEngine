@@ -36,4 +36,7 @@ trait ImplicitMiximFromJson {
 
   implicit def toTakeWinnerLoot(j: JsValue): TakeWinnerLoot = j.as[TakeWinnerLoot]
 
+  implicit def toTechnologName(j: JsValue) = j.as[TechnologyName.T]
+
+
 }

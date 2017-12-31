@@ -27,9 +27,10 @@ package object gameboard {
   /** Technology dictionary
     *
     * @param tech  Technology name
+    * @param gover Option,if technology enables government
     * @param level Level of this technology
     */
-  case class Technology(val tech: TechnologyName.T, val level: Int)
+  case class Technology(val tech: TechnologyName.T, val gover : Option[GovernmentName.T], val level: Int)
 
   /** TODO : consider
     *
@@ -248,6 +249,7 @@ package object gameboard {
     var play: Play.Play = new Play.Play()
     var tech: Seq[Technology] = _
     var battle: Option[BattleField] = None
+    var civil : Seq[CivilizationG] = _
 
     def conf: GameConfig = GameConfig(false)
   }

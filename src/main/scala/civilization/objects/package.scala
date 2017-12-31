@@ -147,10 +147,24 @@ package object objects {
 
   case class BattleStart(val attacker: Seq[CombatUnit], val defender: Seq[CombatUnit])
 
+  object GovernmentName extends Enumeration {
+    type T = Value
+    val
+    Communism,
+    Democracy,
+    Monarchy,
+    Republic,
+    Despotism,
+    Feudalism,
+    Anarchy,
+    Fundamentalism = Value
+  }
+
   object TechnologyName extends Enumeration {
     type T = Value
     val
     Irrigation,
+    Chivalry,
     Construction,
     MetalCasting,
     Communism,
@@ -191,4 +205,7 @@ package object objects {
   }
 
   def levelTrade(level: Int): Int = 6 + (level - 1) * 5
+
+  case class CivilizationG(val civ: Civilization.T, val tech: TechnologyName.T, val gover : GovernmentName.T, val desc: String)
+
 }

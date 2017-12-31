@@ -69,7 +69,7 @@ object Helper {
     s
   }
 
-  def executeCommandH(token: String, action: String, row: Int, col: Int, jsparam: String): Unit = {
+  def executeCommandH(token: String, action: String, row: Int, col: Int, jsparam: String = null): Unit = {
     assert (e(token,action,row,col,jsparam) == null)
   }
 

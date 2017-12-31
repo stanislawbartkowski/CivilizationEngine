@@ -2,6 +2,7 @@ package civilization.test
 
 import civilization.I.{CurrentGame, II, executeCommand}
 import civilization.{I, RR}
+
 import civilization.gameboard.GameBoard
 import civilization.helper.AllowedCommands.allowedCommands
 import civilization.helper._
@@ -10,6 +11,7 @@ import org.scalatest.FunSuite
 import civilization.objects._
 import play.api.libs.json._
 import civilization.io.fromjson.ImplicitMiximFromJson
+import civilization.io.readdir.GenBoard.genBoard
 
 class Test20 extends FunSuite with ImplicitMiximFromJson {
 
@@ -130,6 +132,34 @@ class Test20 extends FunSuite with ImplicitMiximFromJson {
     // allowed commands for Rome
     println(l)
     assert(l.isEmpty)
+    // test list of civs
   }
 
+  test("Two players game, battle, army into water") {
+    val reg = Helper.ReadAndPlayForTwo("test20/BOARDGAME1.json", "test20/PLAY1.json", Civilization.Spain, Civilization.Arabs)
+    val tokens: String = reg._1
+    val tokena: String = reg._2
+    Helper.executeCommandH(tokens, "SETCITY", 2, 5)
+    val g: GameBoard = I.getBoardForToken(tokens)
+    val fig : Seq[MapSquareP] = getFigures(g, Civilization.Spain)
+    fig.foreach(s => {
+      println(s)
+      assert(s.sm.terrain != Terrain.Water)
+    })
   }
+
+  test("Test gen board and civs") {
+    println("Test gen")
+    val g: GameBoard = genBoard(List(Civilization.Germany), "TEST1.json")
+    assert(g != null)
+    assert(!g.civil.isEmpty)
+    g.civil.foreach(println)
+    val s : String = II.getData(II.LISTOFCIVDESCR)
+    println(s)
+    g.tech.foreach(println)
+    // check that CodeOfLaw enables Republic
+    assert(g.tech.find(_.tech == TechnologyName.CodeOfLaw).get.gover.get == GovernmentName.Republic)
+  }
+
+
+}
