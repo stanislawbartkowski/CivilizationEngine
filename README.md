@@ -216,7 +216,7 @@ IMPORTANT: seems not working properly, IntelliJ ant build does not generate scal
 * level : Technology level (1 - 4)
 * ni : true, not implemented yet
 
-# Government and technolgy list for player
+# Government and technology list for player
 ```JSON
     "you" : {
       "tech" : [ {
@@ -239,6 +239,206 @@ IMPORTANT: seems not working properly, IntelliJ ant build does not generate scal
 * level : technology level, if initial always 1
 
 gover: Government
+
+# All technologies
+```JSON
+    "tech" : [ {
+      "name" : "Irrigation",
+      "gover" : null,
+      "level" : 2,
+      "ni" : true
+    }, {
+      "name" : "Construction",
+      "gover" : null,
+      "level" : 2,
+      "ni" : true
+    }, {
+      "name" : "MetalCasting",
+      "gover" : null,
+      "level" : 3,
+      "ni" : true
+    }, {
+      "name" : "Communism",
+      "gover" : "Communism",
+      "level" : 3,
+      "ni" : true
+    }, {
+      "name" : "MilitaryScience",
+      "gover" : null,
+      "level" : 3,
+      "ni" : true
+    }, {
+      "name" : "SteamPower",
+      "gover" : null,
+      "level" : 3,
+      "ni" : true
+    }, {
+      "name" : "GunPowder",
+      "gover" : null,
+      "level" : 3,
+      "ni" : true
+    }, {
+      "name" : "NuclearFusion",
+      "gover" : null,
+      "level" : 4,
+      "ni" : true
+    }, {
+      "name" : "ReplaceableParts",
+      "gover" : null,
+      "level" : 4,
+      "ni" : true
+    }, {
+      "name" : "Ballistics",
+      "gover" : null,
+      "level" : 4,
+      "ni" : true
+    }, {
+      "name" : "MessMedia",
+      "gover" : null,
+      "level" : 4,
+      "ni" : true
+    }, {
+      "name" : "Computers",
+      "gover" : null,
+      "level" : 4,
+      "ni" : true
+    }, {
+      "name" : "Flight",
+      "gover" : null,
+      "level" : 4,
+      "ni" : true
+    }, {
+      "name" : "PrintingPress",
+      "gover" : null,
+      "level" : 2,
+      "ni" : true
+    }, {
+      "name" : "Democracy",
+      "gover" : "Democracy",
+      "level" : 2,
+      "ni" : true
+    }, {
+      "name" : "Monarchy",
+      "gover" : "Monarchy",
+      "level" : 2,
+      "ni" : true
+    }, {
+      "name" : "Sailing",
+      "gover" : null,
+      "level" : 2,
+      "ni" : true
+    }, {
+      "name" : "Mathematics",
+      "gover" : null,
+      "level" : 2,
+      "ni" : true
+    }, {
+      "name" : "CivilService",
+      "gover" : null,
+      "level" : 2,
+      "ni" : true
+    }, {
+      "name" : "Engineering",
+      "gover" : null,
+      "level" : 2,
+      "ni" : true
+    }, {
+      "name" : "Metallurgy",
+      "gover" : null,
+      "level" : 1,
+      "ni" : true
+    }, {
+      "name" : "CodeOfLaw",
+      "gover" : "Republic",
+      "level" : 1,
+      "ni" : true
+    }, {
+      "name" : "HorsebackRiding",
+      "gover" : null,
+      "level" : 1,
+      "ni" : true
+    }, {
+      "name" : "Writing",
+      "gover" : null,
+      "level" : 1,
+      "ni" : true
+    }, {
+      "name" : "Pottery",
+      "gover" : null,
+      "level" : 1,
+      "ni" : true
+    }, {
+      "name" : "Philosophy",
+      "gover" : null,
+      "level" : 1,
+      "ni" : true
+    }, {
+      "name" : "Navigation",
+      "gover" : null,
+      "level" : 1,
+      "ni" : true
+    }, {
+      "name" : "AnimalHusbandry",
+      "gover" : null,
+      "level" : 1,
+      "ni" : true
+    }, {
+      "name" : "Currency",
+      "gover" : null,
+      "level" : 1,
+      "ni" : true
+    }, {
+      "name" : "Masonry",
+      "gover" : null,
+      "level" : 1,
+      "ni" : true
+    }, {
+      "name" : "Plastics",
+      "gover" : null,
+      "level" : 4,
+      "ni" : true
+    }, {
+      "name" : "Ecology",
+      "gover" : null,
+      "level" : 3,
+      "ni" : true
+    }, {
+      "name" : "Mysticism",
+      "gover" : null,
+      "level" : 2,
+      "ni" : true
+    }, {
+      "name" : "RailRoad",
+      "gover" : null,
+      "level" : 3,
+      "ni" : true
+    }, {
+      "name" : "Biology",
+      "gover" : null,
+      "level" : 3,
+      "ni" : true
+    }, {
+      "name" : "Theology",
+      "gover" : "Fundamentalism",
+      "level" : 3,
+      "ni" : true
+    }, {
+      "name" : "Agriculture",
+      "gover" : null,
+      "level" : 1,
+      "ni" : true
+    }, {
+      "name" : "Chivalry",
+      "gover" : "Feudalism",
+      "level" : 2,
+      "ni" : true
+    }, {
+      "name" : "Banking",
+      "gover" : null,
+      "level" : 3,
+      "ni" : true
+    } ],
+```
 
 # Battle
 ## Start
