@@ -24,7 +24,7 @@ package object I {
     this.r = r
   }
 
-  final val LISTOFCIV: Int = 0;
+  final val LISTOFCIV: Int = 0
   final val REGISTEROWNER: Int = 1
   final val GETBOARDGAME: Int = 2
   final val LISTOFGAMES: Int = 3
@@ -32,7 +32,6 @@ package object I {
   final val LISTOFWAITINGGAMES: Int = 5
   final val REGISTEROWNERTWOGAME: Int = 6
   final val ITEMIZECOMMAND: Int = 7
-  final val LISTOFCIVDESCR : Int = 8
 
   private val random = new SecureRandom()
 
@@ -84,7 +83,7 @@ package object I {
   def getData(what: Int, tokenorciv: String, param: String): String = {
     synchronized {
       what match {
-        case LISTOFCIV => getListOfCiv()
+//        case LISTOFCIV => getListOfCiv()
         case REGISTEROWNER => registerOwnerPlay(tokenorciv, "GAME1.json")
         case REGISTEROWNERTWOGAME => registerOwnerPlay(tokenorciv, "GAME2.json")
         case GETBOARDGAME => getBoardForCiv(tokenorciv)
@@ -95,7 +94,7 @@ package object I {
         }
         case LISTOFWAITINGGAMES => listOfWaitingGames
         case ITEMIZECOMMAND => itemizeCommand(tokenorciv, param)
-        case LISTOFCIVDESCR => {
+        case LISTOFCIV => {
           val j : JsValue = writeListOfCivs(readListOfCivs)
           Json.prettyPrint(j)
         }
@@ -103,10 +102,10 @@ package object I {
     }
   }
 
-  private def getListOfCiv(): String = {
-    val tiles: Set[Civilization.T] = readListOfTiles.filter(_.tile.civhome).map(_.tile.civ).toSet
-    Json.prettyPrint(writeListOfCiv(tiles contains _))
-  }
+//  private def getListOfCiv(): String = {
+//    val tiles: Set[Civilization.T] = readListOfTiles.filter(_.tile.civhome).map(_.tile.civ).toSet
+//    Json.prettyPrint(writeListOfCiv(tiles contains _))
+//  }
 
   private def toCiv(civ: String): Civilization.T = Civilization.withName(civ)
 

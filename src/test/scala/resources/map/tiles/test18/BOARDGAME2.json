@@ -2,6 +2,7 @@
   "players": [
     {
       "civ": "Germany",
+      "gover" : "Democracy",
       "tech": [],
       "units": [
         {

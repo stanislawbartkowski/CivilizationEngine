@@ -3,6 +3,7 @@
   "players": [
     {
       "civ": "China",
+      "gover" : "Democracy",
       "tech": [],
       "units": [
         {
@@ -70,6 +71,7 @@
     },
     {
       "civ": "America",
+      "gover" : "Democracy",
       "tech": [],
       "units": [
         {

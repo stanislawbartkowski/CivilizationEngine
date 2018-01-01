@@ -120,7 +120,8 @@ package object fromjson extends ImplicitMiximFromJson {
   implicit val Reads: Reads[Technology] = (
     (JsPath \ S.name).read[TechnologyName.T] and
       (JsPath \ S.gover).readNullable[GovernmentName.T] and
-      (JsPath \ "level").read[Int]
+      (JsPath \ S.level).read[Int] and
+      (JsPath \ S.notimplemented).readNullable[Boolean]
     ) (Technology.apply _)
 
   def listReads[T](length: Int)(implicit anyListReads: Reads[Array[T]]): Reads[Array[T]] = {
@@ -188,27 +189,26 @@ package object fromjson extends ImplicitMiximFromJson {
     }
   }
 
-  implicit val readsPlayerTechnology: Reads[PlayerTechnology] = new Reads[PlayerTechnology] {
-    def reads(json: JsValue): JsResult[PlayerTechnology] = {
-      val te = (json \ S.tech).as[TechnologyName.T]
-      JsSuccess(PlayerTechnology(te))
-    }
-  }
+  implicit val readsPlayerTechnology: Reads[PlayerTechnology] = (
+    (JsPath \ S.tech).read[Technology] and (JsPath \ S.initial).readNullable[Boolean]
+    ) (PlayerTechnology.apply _)
 
   implicit val readCivilization: Reads[CivilizationG] = (
     (JsPath \ S.civ).read[Civilization.T] and
       (JsPath \ S.tech).read[TechnologyName.T] and
       (JsPath \ S.gover).read[GovernmentName.T] and
-      (JsPath \ S.desc).read[String]
+      (JsPath \ S.desc).read[String] and
+      (JsPath \ S.notimplemented).readNullable[Boolean]
     ) (CivilizationG.apply _)
 
   implicit val playerdeckReads: Reads[PlayerDeck] = new Reads[PlayerDeck] {
     def reads(json: JsValue): JsResult[PlayerDeck] = {
       val civ: Civilization.T = (json \ S.civ).as[Civilization.T]
+      val gover: GovernmentName.T = (json \ S.gover).as[GovernmentName.T]
       val tech: Seq[PlayerTechnology] = (json \ S.tech).as[Seq[PlayerTechnology]]
       val units: Seq[CombatUnit] = (json \ S.units).as[Seq[CombatUnit]]
-      var resou: GameResources = (json \ S.resources).as[GameResources]
-      JsSuccess(PlayerDeck(civ, tech, units, resou))
+      val resou: GameResources = (json \ S.resources).as[GameResources]
+      JsSuccess(PlayerDeck(civ, tech, units, resou, gover))
     }
   }
 
@@ -439,7 +439,7 @@ package object fromjson extends ImplicitMiximFromJson {
 
   def toTechnologies(j: JsValue): Seq[Technology] = convert[SeqTechnologyJ](SeqTechnologyJ(j))
 
-  def toCivilizations(j: JsValue) : Seq[CivilizationG] = j.as[Seq[CivilizationG]]
+  def toCivilizations(j: JsValue): Seq[CivilizationG] = j.as[Seq[CivilizationG]]
 
   def toSeqPatterMap(j: JsValue): Seq[PatternMap] = convert[PatterMapSeqJ](PatterMapSeqJ(j))
 

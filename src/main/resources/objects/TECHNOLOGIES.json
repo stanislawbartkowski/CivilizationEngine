@@ -1,164 +1,203 @@
 [
   {
     "name": "Irrigation",
-    "level": 2
+    "level": 2,
+    "ni" : true
   },
   {
     "name": "Construction",
+    "ni" : true,
     "level": 2
   },
   {
     "name": "MetalCasting",
+    "ni" : true,
     "level": 3
   },
   {
     "name": "Communism",
     "gover": "Communism",
+    "ni" : true,
     "level": 3
   },
   {
     "name": "MilitaryScience",
+    "ni" : true,
     "level": 3
   },
   {
     "name": "SteamPower",
+    "ni" : true,
     "level": 3
   },
   {
     "name": "GunPowder",
+    "ni" : true,
     "level": 3
   },
   {
     "name": "NuclearFusion",
+    "ni" : true,
     "level": 4
   },
   {
     "name": "ReplaceableParts",
+    "ni" : true,
     "level": 4
   },
   {
     "name": "Ballistics",
+    "ni" : true,
     "level": 4
   },
   {
     "name": "MessMedia",
+    "ni" : true,
     "level": 4
   },
   {
     "name": "Computers",
+    "ni" : true,
     "level": 4
   },
   {
     "name": "Flight",
+    "ni" : true,
     "level": 4
   },
   {
     "name": "PrintingPress",
+    "ni" : true,
     "level": 2
   },
   {
     "name": "Democracy",
+    "ni" : true,
     "gover": "Democracy",
     "level": 2
   },
   {
     "name": "Monarchy",
+    "ni" : true,
     "gover": "Monarchy",
     "level": 2
   },
   {
     "name": "Sailing",
+    "ni" : true,
     "level": 2
   },
   {
     "name": "Mathematics",
+    "ni" : true,
     "level": 2
   },
   {
     "name": "CivilService",
+    "ni" : true,
     "level": 2
   },
   {
     "name": "Engineering",
+    "ni" : true,
     "level": 2
   },
   {
     "name": "Metallurgy",
+    "ni" : true,
     "level": 1
   },
   {
     "name": "CodeOfLaw",
+    "ni" : true,
     "gover": "Republic",
     "level": 1
   },
   {
     "name": "HorsebackRiding",
+    "ni" : true,
     "level": 1
   },
   {
     "name": "Writing",
+    "ni" : true,
     "level": 1
   },
   {
     "name": "Pottery",
+    "ni" : true,
     "level": 1
   },
   {
     "name": "Philosophy",
+    "ni" : true,
     "level": 1
   },
   {
     "name": "Navigation",
+    "ni" : true,
     "level": 1
   },
   {
     "name": "AnimalHusbandry",
+    "ni" : true,
     "level": 1
   },
   {
     "name": "Currency",
+    "ni" : true,
     "level": 1
   },
   {
     "name": "Masonry",
+    "ni" : true,
     "level": 1
   },
   {
     "name": "Plastics",
+    "ni" : true,
     "level": 4
   },
   {
     "name": "Ecology",
+    "ni" : true,
     "level": 3
   },
   {
     "name": "Mysticism",
+    "ni" : true,
     "level": 2
   },
   {
     "name": "RailRoad",
+    "ni" : true,
     "level": 3
   },
   {
     "name": "Biology",
+    "ni" : true,
     "level": 3
   },
   {
     "name": "Theology",
+    "ni" : true,
     "gover": "Fundamentalism",
     "level": 3
   },
   {
     "name": "Agriculture",
+    "ni" : true,
     "level": 1
   },
   {
     "name": "Chivalry",
+    "ni" : true,
     "gover": "Feudalism",
     "level": 2
   },
   {
     "name": "Banking",
+    "ni" : true,
     "level": 3
   }
 ]

@@ -1,10 +1,10 @@
 package civilization.io.readdir
 
 import civilization.gameboard._
-import civilization.helper.{revealTile, getThreeRandomUnits, getRandomHutVillage,getRandom}
+import civilization.helper.{revealTile, getThreeRandomUnits, getRandomHutVillage, getRandom}
 import civilization.io.fromjson.{toArrayHutVillages, toSeqPatterMap}
 import civilization.message.{FatalError, M, Mess}
-import civilization.objects.{Civilization, HutVillage, TilesRead, CombatUnit, Resource}
+import civilization.objects._
 import play.api.libs.json.JsValue
 import civilization.io.fromjson.ImplicitMiximFromJson
 
@@ -35,7 +35,9 @@ object GenBoard extends ImplicitMiximFromJson {
     val j: JsValue = readJSON("map/pattern", patt)
     val lpatt: Seq[PatternMap] = toSeqPatterMap(j)
     var rtiles: Seq[TilesRead] = readListOfTiles.filter(!_.tile.civhome)
-    val tilesciv : Seq[TilesRead] = readListOfTiles.filter(_.tile.civhome)
+    val tilesciv: Seq[TilesRead] = readListOfTiles.filter(_.tile.civhome)
+    val civs: Seq[CivilizationG] = readListOfCivs
+    val techs: Seq[Technology] = readTechnologies
     // transform list to set
     var sciv: Set[Civilization.T] = l.toSet
     var map: Seq[MapTile] = Nil
@@ -51,7 +53,7 @@ object GenBoard extends ImplicitMiximFromJson {
         sciv = sciv - civ
       }
       else {
-        var r = getRandom(rtiles,1)
+        var r = getRandom(rtiles, 1)
         tile = r._1.head
         rtiles = r._2
       }
@@ -60,16 +62,22 @@ object GenBoard extends ImplicitMiximFromJson {
       map = map :+ t
     })
     if (!sciv.isEmpty) throw FatalError(Mess(M.TOOMANYCIVREQUESTED))
-    val players: List[PlayerDeck] = l.map(PlayerDeck(_, Nil, Nil, new GameResources()))
+    val players: List[PlayerDeck] = l.map(c => {
+      val civ: CivilizationG = civs.find(_.civ == c).get
+      val pt: PlayerTechnology = PlayerTechnology(techs.find(_.tech == civ.tech).get, Some(true))
+      PlayerDeck(c, List(pt), Nil, new GameResources(), civ.gover)
+    }
+    )
+
     val units: Seq[CombatUnit] = readListOfUnits
     val market: Market = Market(units, Nil)
     val g: GameBoard = GameBoard(players, BoardMap(map), Resources(readHutVillages, Nil, readResources(l.length)), market)
-    g.tech = readTechnologies
-    g.civil = readListOfCivs
+    g.tech = techs
+    g.civil = civs
     // reveal tiles
     lpatt.foreach(p => if (p.o.isDefined) revealTile(g, p.o.get, p.p))
     // attach random three units
-    g.players.foreach(p => p.units = getThreeRandomUnits(g,true))
+    g.players.foreach(p => p.units = getThreeRandomUnits(g, true))
     // assing resources to hut and villages
     map.foreach(m => assignResources(g, m))
     g

@@ -2,6 +2,7 @@
   "players" : [
     {
       "civ" : "Rome",
+      "gover" : "Democracy",
       "tech" : [],
       "units" : [],
       "resources" : []

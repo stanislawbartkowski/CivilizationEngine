@@ -48,4 +48,7 @@ object S {
   final val boardmili = "boardmili"
   final val name="name"
   final val gover = "gover"
+  final val level = "level"
+  final val initial = "initial"
+  final val notimplemented = "ni"
 }

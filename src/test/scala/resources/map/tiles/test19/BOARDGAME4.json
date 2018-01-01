@@ -3,6 +3,7 @@
   "players": [
     {
       "civ": "Egypt",
+      "gover" : "Democracy",
       "tech": [],
       "units": [
         {
@@ -70,6 +71,7 @@
     },
     {
       "civ": "Germany",
+      "gover" : "Democracy",
       "tech": [],
       "units": [
         {

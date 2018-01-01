@@ -68,14 +68,6 @@ object genboardj {
     var civ: Civilization.T = cu.notcompleted.head
     if (!TurnPhase.turnAction(cu.turnPhase))
       if (cu.notcompleted.contains(civrequesting)) civ = civrequesting
-//    cu.turnPhase match {
-      // 2017/12/28 : Research is active all the time (not StartOfTurn)
-      // for StartOfTurn and Trade all are active
-//      case TurnPhase.Research | TurnPhase.Trade => {
-//        if (cu.notcompleted.contains(civrequesting)) civ = civrequesting
-//      }
-//      case _ =>
-//    }
     Game(civ, cu.roundno, cu.turnPhase)
   }
 
@@ -86,6 +78,8 @@ object genboardj {
   }
 
   private def genPlayerDeckJson(p: PlayerDeckJ, you: Boolean): JsValue = Json.obj(
+    S.tech -> p.pl.tech,
+    S.gover -> p.pl.gover,
     S.civ -> p.civ,
     "trade" -> p.numberofTrade,
     "commands" -> commandToArray(p.commands),
@@ -121,6 +115,11 @@ object genboardj {
     Json.obj("roundno" -> g.roundno, "phase" -> g.phase, "active" -> g.active)
   }
 
+  private def toSeqTech(li : Seq[Technology]) : JsValue = {
+    val l : Seq[JsValue] = li.map(writeTechonology)
+    Json.toJson(l)
+  }
+
   def genBoardGameJson(g: GameBoard, civ: Civilization.T): JsValue = {
     val b: BoardGameJ = genBoardGameJ(g, civ)
     var rows: Seq[JsValue] = Seq()
@@ -142,6 +141,7 @@ object genboardj {
       S.resources -> Json.toJson(g.resources.resou),
       S.hutvillages -> hvtojson(g.resources.hvused, true),
       S.you -> genPlayerDeckJson(b.you, true),
+      S.tech -> toSeqTech(g.tech),
       "others" -> JsArray(o),
       "battle" -> genBattleJson(g, civ)
     ))))

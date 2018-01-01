@@ -11,7 +11,6 @@ trait ImplicitMiximToJson {
   implicit def toSeqP(li: Seq[P]): Seq[JsValue] =
     li.map(p => writesPoint(p))
 
-
   implicit def CPtoJS(c: CommandParams): JsValue = {
     if (c.p.isDefined)
       if (c.param.isDefined) Json.obj(

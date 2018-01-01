@@ -206,6 +206,15 @@ package object objects {
 
   def levelTrade(level: Int): Int = 6 + (level - 1) * 5
 
-  case class CivilizationG(val civ: Civilization.T, val tech: TechnologyName.T, val gover : GovernmentName.T, val desc: String)
+  case class CivilizationG(val civ: Civilization.T, val tech: TechnologyName.T, val gover : GovernmentName.T, val desc: String, val notimplemented : Option[Boolean])
+
+  /** Technology dictionary
+    *
+    * @param tech  Technology name
+    * @param gover Option,if technology enables government
+    * @param level Level of this technology
+    */
+  case class Technology(val tech: TechnologyName.T, val gover : Option[GovernmentName.T], val level: Int, val notimplemented : Option[Boolean])
+
 
 }

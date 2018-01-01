@@ -12,7 +12,7 @@ package object gameboard {
   /** Version: used during storing and retrieving gameboard from datastore.
     * Ignore games which does not fit to avoid runtime errors
     */
-  private final val packageversion: Int = 4;
+  private final val packageversion: Int = 5;
 
   /** Part of map pattern. Position of the tile and orientation.
     * Initially only civilication tiles have orientation specified.
@@ -24,19 +24,13 @@ package object gameboard {
   case class PatternMap(val p: P, val o: Option[Orientation.T])
 
 
-  /** Technology dictionary
-    *
-    * @param tech  Technology name
-    * @param gover Option,if technology enables government
-    * @param level Level of this technology
-    */
-  case class Technology(val tech: TechnologyName.T, val gover : Option[GovernmentName.T], val level: Int)
-
   /** TODO : consider
     *
     * @param tech
     */
-  case class PlayerTechnology(val tech: TechnologyName.T)
+  case class PlayerTechnology(val tech: Technology, val initial: Option[Boolean] = None) {
+    def level: Int = if (initial.isDefined && initial.get) 1 else tech.level
+  }
 
   /** Figures on the square, can be staked
     *
@@ -151,7 +145,7 @@ package object gameboard {
 
   case class Resources(var hv: Seq[HutVillage], var hvused: Seq[HutVillage], val resou: GameResources)
 
-  case class PlayerDeck(val civ: Civilization.T, var tech: Seq[PlayerTechnology], var units: Seq[CombatUnit], val resou: GameResources) {
+  case class PlayerDeck(val civ: Civilization.T, var tech: Seq[PlayerTechnology], var units: Seq[CombatUnit], val resou: GameResources, var gover: GovernmentName.T) {
 
     val defaultcitylimit: Int = 2
     val defaultarmieslimit: Int = 6
@@ -172,7 +166,7 @@ package object gameboard {
     }
 
     def modiftimestamp(): Unit = {
-      modiftimemili  = Calendar.getInstance().getTimeInMillis
+      modiftimemili = Calendar.getInstance().getTimeInMillis
     }
 
     def okV: Boolean = version == packageversion
@@ -220,18 +214,18 @@ package object gameboard {
     def attackerwinner: Boolean = attacker.points > defender.points
   }
 
-  private def rotaterightList[T](l : Seq[T]) : Seq[T] = if (l.isEmpty) l else l.tail :+ l.head
+  private def rotaterightList[T](l: Seq[T]): Seq[T] = if (l.isEmpty) l else l.tail :+ l.head
 
   case class GameBoard(val players: Seq[PlayerDeck], val map: BoardMap, val resources: Resources, val market: Market) {
 
     // order of civilizations to play
-    var pllist : Seq[Civilization.T] = Nil
+    var pllist: Seq[Civilization.T] = Nil
 
     // cheating, for old tests only
     // do not rotate
-    var norotate : Boolean = false
+    var norotate: Boolean = false
 
-    def rotateplorder : Unit = if (!norotate) pllist = rotaterightList(pllist)
+    def rotateplorder: Unit = if (!norotate) pllist = rotaterightList(pllist)
 
     var metadata: GameMetaData = new GameMetaData("")
 
@@ -249,7 +243,7 @@ package object gameboard {
     var play: Play.Play = new Play.Play()
     var tech: Seq[Technology] = _
     var battle: Option[BattleField] = None
-    var civil : Seq[CivilizationG] = _
+    var civil: Seq[CivilizationG] = _
 
     def conf: GameConfig = GameConfig(false)
   }

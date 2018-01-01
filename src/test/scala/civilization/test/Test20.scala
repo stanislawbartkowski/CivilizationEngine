@@ -154,12 +154,36 @@ class Test20 extends FunSuite with ImplicitMiximFromJson {
     assert(g != null)
     assert(!g.civil.isEmpty)
     g.civil.foreach(println)
-    val s : String = II.getData(II.LISTOFCIVDESCR)
+    val s : String = II.getData(II.LISTOFCIV)
     println(s)
     g.tech.foreach(println)
     // check that CodeOfLaw enables Republic
     assert(g.tech.find(_.tech == TechnologyName.CodeOfLaw).get.gover.get == GovernmentName.Republic)
   }
 
+  test("Two players game, check JSon for technologies") {
+    val token: String = II.getData(II.REGISTEROWNERTWOGAME, "Rome,China")
+    println(token)
+    val game: CurrentGame = RR.RA.getCurrentGame(token)
+    val gameid: Int = game.gameid
+    println(gameid)
+    val ctoken: String = II.joinGame(gameid, Civilization.China.toString)
+    val s : String = II.getData(II.GETBOARDGAME,token)
+    val j : JsValue = toJ(s)
+//    println(s)
+    val tecj : JsArray = (j \ "board" \ "tech").as[JsArray]
+    println(tecj)
+    val y : JsArray = (j \ "board" \ "you" \ "tech").as[JsArray]
+    println(y)
+    assert(1 == y.value.length)
+    val tech : JsValue = y.value(0)
+    println(tech)
+    assert("CodeOfLaw" == (tech \ "tech" \ "name").as[String])
+    assert(1 == (tech \ "level" ).as[Int])
+    val yy : JsValue = (j \ "board" \ "you").as[JsValue]
+    println(yy)
+    assert("Republic" == (yy \ "gover").as[String])
+  }
 
-}
+
+  }

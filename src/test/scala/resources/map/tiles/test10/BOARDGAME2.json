@@ -2,12 +2,14 @@
   "players" : [
     {
       "civ" : "Rome",
+      "gover" : "Democracy",
       "tech" : [],
       "units" : [],
       "resources" : []
     },
     {
       "civ" : "China",
+      "gover" : "Democracy",
       "tech" : [],
       "units" : [],
       "resources" : []
