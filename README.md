@@ -190,6 +190,7 @@ IMPORTANT: seems not working properly, IntelliJ ant build does not generate scal
       } 
       ]
       },
+    "tech" : [ {} ] 
     "hutvillages" : {
         "Hut" : 1,
         "list" : [ {
@@ -200,6 +201,44 @@ IMPORTANT: seems not working properly, IntelliJ ant build does not generate scal
     },
   }
 ```
+# Technology
+```JSON
+{
+      "name" : "Construction",
+      "gover" : null,
+      "level" : 2,
+      "ni" : true
+}      
+```
+name : Name of the technology
+gover : If not null then technology enables government change
+level : Technology level (1 - 4)
+ni : true, not implemented yet
+
+# Government and technolgy list for player
+```JSON
+    "you" : {
+      "tech" : [ {
+        "tech" : {
+          "name" : "CodeOfLaw",
+          "gover" : "Republic",
+          "level" : 1,
+          "ni" : true
+        },
+        "initial" : true,
+        "level" : 1
+      } ],
+      "gover" : "Republic",
+      "civ" : "Rome",
+      "trade" : 0,
+```
+tech : Technology
+tech\tech : Technology definiton
+initial : if start technology
+level : technology level, if initial always 1
+
+gover: Government
+
 # Battle
 ## Start
 ```JSON
