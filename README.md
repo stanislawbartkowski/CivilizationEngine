@@ -211,10 +211,10 @@ IMPORTANT: seems not working properly, IntelliJ ant build does not generate scal
       "ni" : true
 }      
 ```
-name : Name of the technology
-gover : If not null then technology enables government change
-level : Technology level (1 - 4)
-ni : true, not implemented yet
+* name : Name of the technology
+* gover : If not null then technology enables government change
+* level : Technology level (1 - 4)
+* ni : true, not implemented yet
 
 # Government and technolgy list for player
 ```JSON
@@ -233,10 +233,10 @@ ni : true, not implemented yet
       "civ" : "Rome",
       "trade" : 0,
 ```
-tech : Technology
-tech\tech : Technology definiton
-initial : if start technology
-level : technology level, if initial always 1
+* tech : Technology
+* tech\tech : Technology definiton
+* initial : if start technology
+* level : technology level, if initial always 1
 
 gover: Government
 
