@@ -13,7 +13,6 @@ import civilization.objects.Command.T
 import play.api.libs.json.JsValue
 
 
-
 object ResearchTechnology extends CommandPackage with ImplicitMiximFromJson with ImplicitMiximToJson {
 
 
@@ -47,10 +46,15 @@ object ResearchTechnology extends CommandPackage with ImplicitMiximFromJson with
 
   }
 
+  override def commandsAvail(b: GameBoard, civ: Civilization.T): Seq[Command.T] = {
+    val trade = numberofTrade(b,civ)
+    if (tradeToLevel(trade.trade)==0) Nil else List(Command.RESEARCH)
+  }
+
   override def getSet: Set[Command.T] = Set(Command.RESEARCH)
 
   override def produceCommand(command: Command.T, civ: Civilization.T, p: P, param: JsValue) = new ResearchTechnologyAction(param)
 
   override def itemize(b: GameBoard, civ: Civilization.T, com: Command.T): Seq[JsValue] = Nil
 
-  }
+}

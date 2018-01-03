@@ -4,14 +4,14 @@
    "tech" : "Currency",
    "gover" : "Despotism",
     "ni" : true,
-    "desc" : "The Americans start with a free, random great person.  OWhen Americans spend trade for production, the receive 2 production point instrwad of 1"
+    "desc" : "The Americans start with a free, random great person. When Americans spend trade for production, they receive 2 production points instead of 1."
   },
   {
     "civ" : "China",
     "tech" : "Writing",
     "gover" : "Despotism",
     "ni" : true,
-    "desc" : "The Chinese start with city walls in their capital. The Chinese gain 3 culture each time they explore a hut or conquer a village. The Chinese may save one of their killed unit after each battle, returning it to their standing force"
+    "desc" : "The Chinese start with city walls in their capital. The Chinese gain 3 culture each time they explore a hut or conquer a village. The Chinese may save one of their killed unit after each battle, returning it to their standing force."
   },
   {"civ" : "Egypt",
   "tech" : "Construction",
@@ -52,6 +52,6 @@
     "tech" : "Mathematics",
     "gover" : "Despotism",
     "ni" : true,
-    "desc" : "The Arabs start having every piece of resource from the market. When they spend any resource, the receive 1 culture for any resource in return. When they invest a coin, they move forward one step on culture track"
+    "desc" : "The Arabs start having every piece of resource from the market. When they spend any resource, the receive 1 culture for any resource in return. When they invest a coin, they move forward one step on culture track."
   }
 ]

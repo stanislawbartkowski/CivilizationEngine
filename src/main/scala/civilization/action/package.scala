@@ -80,7 +80,7 @@ package object action extends ImplicitMiximToJson with ImplicitMiximFromJson {
 
     case Command.TAKEWINNERLOOT => new AttackCommand.TakeWinnerLootCommand(param)
 
-    case _ => throw FatalError(Mess(M.NOTIMPLELEMENTEDYET, command))
+    case _ => throw FatalError(Mess(M.NOTIMPLEMENTEDYET, command))
   }
 
   trait Command {

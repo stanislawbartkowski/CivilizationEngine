@@ -2,7 +2,6 @@ package civilization.test
 
 import civilization.I.{CurrentGame, II, executeCommand}
 import civilization.{I, RR}
-
 import civilization.gameboard.GameBoard
 import civilization.helper.AllowedCommands.allowedCommands
 import civilization.helper._
@@ -12,6 +11,7 @@ import civilization.objects._
 import play.api.libs.json._
 import civilization.io.fromjson.ImplicitMiximFromJson
 import civilization.io.readdir.GenBoard.genBoard
+import civilization.message.M
 
 class Test20 extends FunSuite with ImplicitMiximFromJson {
 
@@ -170,7 +170,7 @@ class Test20 extends FunSuite with ImplicitMiximFromJson {
     val ctoken: String = II.joinGame(gameid, Civilization.China.toString)
     val s : String = II.getData(II.GETBOARDGAME,token)
     val j : JsValue = toJ(s)
-//    println(s)
+    println(s)
     val tecj : JsArray = (j \ "board" \ "tech").as[JsArray]
     println(tecj)
     val y : JsArray = (j \ "board" \ "you" \ "tech").as[JsArray]
@@ -185,5 +185,20 @@ class Test20 extends FunSuite with ImplicitMiximFromJson {
     assert("Republic" == (yy \ "gover").as[String])
   }
 
-
+  test("Test research") {
+    val reg = Helper.readBoardAndPlayT("test11/BOARDGAME1.json", "test20/GAME2.json", Civilization.Rome)
+    val token: String = reg._1
+    var g: GameBoard = I.getBoardForToken(token)
+    Helper.executeCommandH(token, "ENDOFPHASE", -1, -1, """"CityManagement"""")
+    Helper.executeCommandH(token, "ENDOFPHASE", -1, -1, """"Movement"""")
+    g = I.getBoardForToken(token)
+    var l = allowedCommands(g, Civilization.Rome)
+    // allowed commands for Rome
+    println(l)
+    // research enabled
+    assert(l.find(_ == Command.RESEARCH).isDefined)
   }
+
+
+
+}

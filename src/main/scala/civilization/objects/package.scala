@@ -4,8 +4,9 @@ import civilization.objects.TurnPhase.Value
 
 package object objects {
 
+  val MINTRADE:Int = 6
+  val TRADEMAX:Int = 27
   val TILESIZE: Int = 4
-  val TRADEMAX = 27
   val DEFAULTTRADEFORPROD = 3
   val UNITLEVELSIZE = 4
   val UNITSBATTLE = 3
@@ -204,7 +205,8 @@ package object objects {
     Banking = Value
   }
 
-  def levelTrade(level: Int): Int = 6 + (level - 1) * 5
+  def levelTrade(level: Int): Int = MINTRADE + (level - 1) * 5
+  def tradeToLevel(trade : Int) : Int = (trade-1)/5
 
   case class CivilizationG(val civ: Civilization.T, val tech: TechnologyName.T, val gover : GovernmentName.T, val desc: String, val notimplemented : Option[Boolean])
 

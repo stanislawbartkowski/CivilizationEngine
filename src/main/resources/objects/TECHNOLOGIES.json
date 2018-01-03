@@ -42,17 +42,14 @@
   },
   {
     "name": "ReplaceableParts",
-    "ni" : true,
     "level": 4
   },
   {
     "name": "Ballistics",
-    "ni" : true,
     "level": 4
   },
   {
     "name": "MessMedia",
-    "ni" : true,
     "level": 4
   },
   {

@@ -82,6 +82,7 @@ object genboardj {
     S.gover -> p.pl.gover,
     S.civ -> p.civ,
     "trade" -> p.numberofTrade,
+    "tradelevel" -> tradeToLevel(p.numberofTrade),
     "commands" -> commandToArray(p.commands),
     "citylimit" -> p.limits.citieslimit,
     "armieslimit" -> p.limits.armieslimit,
