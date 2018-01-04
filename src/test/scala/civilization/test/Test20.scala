@@ -107,8 +107,8 @@ class Test20 extends FunSuite with ImplicitMiximFromJson {
     println(j)
     a.value.foreach(e => {
       println(e)
-      val p : P = e
-      val s : MapSquareP = getSquare(g,p)
+      val p: P = e
+      val s: MapSquareP = getSquare(g, p)
       println(s.t.tile.civhome)
       println(s.t.tile.civ)
       assert(s.t.tile.civhome)
@@ -141,7 +141,7 @@ class Test20 extends FunSuite with ImplicitMiximFromJson {
     val tokena: String = reg._2
     Helper.executeCommandH(tokens, "SETCITY", 2, 5)
     val g: GameBoard = I.getBoardForToken(tokens)
-    val fig : Seq[MapSquareP] = getFigures(g, Civilization.Spain)
+    val fig: Seq[MapSquareP] = getFigures(g, Civilization.Spain)
     fig.foreach(s => {
       println(s)
       assert(s.sm.terrain != Terrain.Water)
@@ -154,7 +154,7 @@ class Test20 extends FunSuite with ImplicitMiximFromJson {
     assert(g != null)
     assert(!g.civil.isEmpty)
     g.civil.foreach(println)
-    val s : String = II.getData(II.LISTOFCIV)
+    val s: String = II.getData(II.LISTOFCIV)
     println(s)
     g.tech.foreach(println)
     // check that CodeOfLaw enables Republic
@@ -168,19 +168,19 @@ class Test20 extends FunSuite with ImplicitMiximFromJson {
     val gameid: Int = game.gameid
     println(gameid)
     val ctoken: String = II.joinGame(gameid, Civilization.China.toString)
-    val s : String = II.getData(II.GETBOARDGAME,token)
-    val j : JsValue = toJ(s)
+    val s: String = II.getData(II.GETBOARDGAME, token)
+    val j: JsValue = toJ(s)
     println(s)
-    val tecj : JsArray = (j \ "board" \ "tech").as[JsArray]
+    val tecj: JsArray = (j \ "board" \ "tech").as[JsArray]
     println(tecj)
-    val y : JsArray = (j \ "board" \ "you" \ "tech").as[JsArray]
+    val y: JsArray = (j \ "board" \ "you" \ "tech").as[JsArray]
     println(y)
     assert(1 == y.value.length)
-    val tech : JsValue = y.value(0)
+    val tech: JsValue = y.value(0)
     println(tech)
     assert("CodeOfLaw" == (tech \ "tech" \ "name").as[String])
-    assert(1 == (tech \ "level" ).as[Int])
-    val yy : JsValue = (j \ "board" \ "you").as[JsValue]
+    assert(1 == (tech \ "level").as[Int])
+    val yy: JsValue = (j \ "board" \ "you").as[JsValue]
     println(yy)
     assert("Republic" == (yy \ "gover").as[String])
   }
@@ -199,6 +199,21 @@ class Test20 extends FunSuite with ImplicitMiximFromJson {
     assert(l.find(_ == Command.RESEARCH).isDefined)
   }
 
+  test("Technology, block second level if not enough place") {
+    val reg = Helper.readBoardAndPlayT("test20/BOARDGAME2.json", "test20/PLAY2.json", Civilization.America)
+    val token: String = reg._1
+    var g: GameBoard = I.getBoardForToken(token)
+    var l: Seq[Command.T] = allowedCommands(g, Civilization.America)
+    println(l)
+    assert(l.find(_ == Command.RESEARCH).isDefined)
+    val t = ResearchTechnology.techologylevel(g,Civilization.America)
+    println(t)
+    // level 1 although trade 12, not place for 2 level technology
+    assert(t == 1)
+    val trade = numberofTrade(g, Civilization.America)
+    println(trade.trade)
+    assert(trade.trade ==12)
+  }
 
 
 }

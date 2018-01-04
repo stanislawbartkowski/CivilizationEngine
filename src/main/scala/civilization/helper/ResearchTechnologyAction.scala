@@ -16,13 +16,30 @@ import play.api.libs.json.JsValue
 object ResearchTechnology extends CommandPackage with ImplicitMiximFromJson with ImplicitMiximToJson {
 
 
+  private def listofLevel(b: GameBoard, deck: PlayerDeck, level: Int): Seq[PlayerTechnology] = deck.tech.filter(_.level == level)
+
+  def techologylevel(b: GameBoard, civ: Civilization.T): Int = {
+    val trade = numberofTrade(b, civ)
+    var tlevel: Int = tradeToLevel(trade.trade)
+    if (tlevel == 0) return 0
+    // test if there is a room for technology
+    val deck: PlayerDeck = b.playerDeck(civ)
+    while (tlevel > 1) {
+      val numtlevel: Int = listofLevel(b, deck, tlevel).length
+      val numtlevelp: Int = listofLevel(b, deck, tlevel - 1).length
+      if (numtlevel + 1 < numtlevelp) return tlevel // there is a place
+      // decrease and check again
+      tlevel = tlevel - 1
+    }
+    return 1 // first level
+  }
+
+
   protected class ResearchTechnologyAction(override val param: TechnologyName.T) extends AbstractCommand(param) {
 
     private def playerTech(deck: PlayerDeck): Set[TechnologyName.T] = deck.tech.map(_.tech.tech).toSet
 
     private def techLevel(b: GameBoard, tech: TechnologyName.T): Int = b.tech.find(_.tech == tech).get.level
-
-    private def listofLevel(b: GameBoard, deck: PlayerDeck, level: Int): Seq[PlayerTechnology] = deck.tech.filter(_.level == level)
 
     private def researchTechnologyVerify(b: GameBoard, civ: Civilization.T, tech: TechnologyName.T): Mess = {
       val deck: PlayerDeck = b.playerDeck(civ)
@@ -47,8 +64,7 @@ object ResearchTechnology extends CommandPackage with ImplicitMiximFromJson with
   }
 
   override def commandsAvail(b: GameBoard, civ: Civilization.T): Seq[Command.T] = {
-    val trade = numberofTrade(b,civ)
-    if (tradeToLevel(trade.trade)==0) Nil else List(Command.RESEARCH)
+    if (techologylevel(b, civ) == 0) Nil else List(Command.RESEARCH)
   }
 
   override def getSet: Set[Command.T] = Set(Command.RESEARCH)

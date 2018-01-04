@@ -18,7 +18,7 @@ object genboardj {
   case class MapSquareJ(revealed: Boolean, t: Terrain.T, trade: Int, production: Int, resource: Option[Resource.T], capForCiv: Option[Civilization.T],
                         civ: Civilization.T, city: City.T, defence: Int, numberofArmies: Int, numberofScouts: Int, tile: String, hv: Option[HutVillage.T])
 
-  case class PlayerDeckJ(civ: Civilization.T, numberofTrade: Int, commands: Seq[Command.T], limits: PlayerLimits, pl: PlayerDeck)
+  case class PlayerDeckJ(civ: Civilization.T, numberofTrade: Int, commands: Seq[Command.T], limits: PlayerLimits, technologylevel: Int, pl: PlayerDeck)
 
   case class Game(active: Civilization.T, roundno: Int, phase: TurnPhase.T)
 
@@ -71,7 +71,8 @@ object genboardj {
     Game(civ, cu.roundno, cu.turnPhase)
   }
 
-  private def genPlayerDeckJ(g: GameBoard, civ: Civilization.T): PlayerDeckJ = PlayerDeckJ(civ, numberofTrade(g, civ).trade, allowedCommands(g, civ), getLimits(g, civ), g.playerDeck(civ))
+  private def genPlayerDeckJ(g: GameBoard, civ: Civilization.T): PlayerDeckJ =
+    PlayerDeckJ(civ, numberofTrade(g, civ).trade, allowedCommands(g, civ), getLimits(g, civ), ResearchTechnology.techologylevel(g, civ), g.playerDeck(civ))
 
   private def commandToArray(l: Seq[Command.T]): JsArray = {
     JsArray(l.map(c => Json.obj(S.command -> c)).foldLeft(List[JsObject]())(_ :+ _))
@@ -82,7 +83,7 @@ object genboardj {
     S.gover -> p.pl.gover,
     S.civ -> p.civ,
     "trade" -> p.numberofTrade,
-    "tradelevel" -> tradeToLevel(p.numberofTrade),
+    "tradelevel" -> p.technologylevel,
     "commands" -> commandToArray(p.commands),
     "citylimit" -> p.limits.citieslimit,
     "armieslimit" -> p.limits.armieslimit,
@@ -116,8 +117,8 @@ object genboardj {
     Json.obj("roundno" -> g.roundno, "phase" -> g.phase, "active" -> g.active)
   }
 
-  private def toSeqTech(li : Seq[Technology]) : JsValue = {
-    val l : Seq[JsValue] = li.map(writeTechonology)
+  private def toSeqTech(li: Seq[Technology]): JsValue = {
+    val l: Seq[JsValue] = li.map(writeTechonology)
     Json.toJson(l)
   }
 
