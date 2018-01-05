@@ -251,6 +251,11 @@ class Test20 extends FunSuite with ImplicitMiximFromJson {
     // endofresearch issued for America
     println(l)
     assert(l.find(_ == Command.RESEARCH).isEmpty)
+    l = allowedCommands(g, Civilization.Russia)
+    // end of research issued for America
+    println(l)
+    assert(l.find(_ == Command.RESEARCH).isDefined)
+    assert(l.find(_ == Command.ENDOFPHASE).isDefined)
   }
 
 }
