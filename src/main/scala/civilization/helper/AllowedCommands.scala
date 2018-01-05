@@ -33,6 +33,9 @@ object AllowedCommands {
     var co: Seq[Command.T] = Nil
     // if "turned" phase of the game, only current player has moves until completes
     if (TurnPhase.turnAction(cu.turnPhase) && civ != cu.notcompleted.head) return Nil
+    // if player already completed return Nil
+    // 2017/01/05
+    if (!(cu.notcompleted contains civ)) return Nil
     co = CommandContainer.commandsAvail(b, civ, cu.turnPhase)
     val count: (Int, Int) = getNumberOfArmies(b, civ)
     cu.turnPhase match {
