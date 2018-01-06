@@ -5,12 +5,7 @@
       "gover": "Despotism",
       "tech": [
         {
-          "tech": {
-            "name": "Currency",
-            "gover": null,
-            "level": 1,
-            "ni": true
-          },
+          "tech": "Currency",
           "initial": true,
           "level": 1
         }
@@ -84,12 +79,7 @@
       "gover": "Communism",
       "tech": [
         {
-          "tech": {
-            "name": "Communism",
-            "gover": "Communism",
-            "level": 3,
-            "ni": true
-          },
+          "tech" : "Communism",
           "initial": true,
           "level": 1
         }

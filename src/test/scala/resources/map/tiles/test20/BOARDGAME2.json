@@ -5,12 +5,7 @@
       "gover": "Despotism",
       "tech": [
         {
-          "tech": {
-            "name": "Currency",
-            "gover": null,
-            "level": 1,
-            "ni": true
-          },
+          "tech": "Currency",
           "initial": true,
           "level": 1
         }

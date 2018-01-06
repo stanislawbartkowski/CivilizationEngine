@@ -5,12 +5,7 @@
       "gover": "Despotism",
       "tech": [
         {
-          "tech": {
-            "name": "Construction",
-            "gover": null,
-            "level": 2,
-            "ni": true
-          },
+          "tech": "Construction",
           "initial": true,
           "level": 1
         }
@@ -84,12 +79,7 @@
       "gover": "Despotism",
       "tech": [
         {
-          "tech": {
-            "name": "Mathematics",
-            "gover": null,
-            "level": 2,
-            "ni": true
-          },
+          "tech":  "Mathematics",
           "initial": true,
           "level": 1
         }

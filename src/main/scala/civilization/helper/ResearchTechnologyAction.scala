@@ -16,7 +16,7 @@ import play.api.libs.json.JsValue
 object ResearchTechnology extends CommandPackage with ImplicitMiximFromJson with ImplicitMiximToJson {
 
 
-  private def listofLevel(b: GameBoard, deck: PlayerDeck, level: Int): Seq[PlayerTechnology] = deck.tech.filter(_.level == level)
+  private def listofLevel(b: GameBoard, deck: PlayerDeck, level: Int): Seq[PlayerTechnology] = deck.tech.filter(b.techlevel(_) == level)
 
   def techologylevel(b: GameBoard, civ: Civilization.T): Int = {
     val trade = numberofTrade(b, civ)
@@ -37,7 +37,7 @@ object ResearchTechnology extends CommandPackage with ImplicitMiximFromJson with
 
   protected class ResearchTechnologyAction(override val param: TechnologyName.T) extends AbstractCommand(param) {
 
-    private def playerTech(deck: PlayerDeck): Set[TechnologyName.T] = deck.tech.map(_.tech.tech).toSet
+    private def playerTech(deck: PlayerDeck): Set[TechnologyName.T] = deck.tech.map(_.tech).toSet
 
     private def techLevel(b: GameBoard, tech: TechnologyName.T): Int = b.tech.find(_.tech == tech).get.level
 
@@ -54,7 +54,7 @@ object ResearchTechnology extends CommandPackage with ImplicitMiximFromJson with
 
     private def researchTechnologyExecute(b: GameBoard, civ: Civilization.T, tech: TechnologyName.T) = {
       val deck: PlayerDeck = b.playerDeck(civ)
-      deck.tech = deck.tech :+ new PlayerTechnology(b.tech.find(_.tech == tech).get)
+      deck.tech = deck.tech :+ new PlayerTechnology(tech)
     }
 
     override def execute(board: GameBoard) = researchTechnologyExecute(board, civ, param)

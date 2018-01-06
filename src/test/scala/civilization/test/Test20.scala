@@ -1,15 +1,16 @@
 package civilization.test
 
 import civilization.I.{CurrentGame, II, executeCommand}
-import civilization.action.constructCommand
 import civilization.{I, RR}
 import civilization.gameboard.GameBoard
+import civilization.gameboard._
 import civilization.helper.AllowedCommands.allowedCommands
 import civilization.helper._
 import civilization.io.fromjson.toJ
 import org.scalatest.FunSuite
 import civilization.objects._
 import play.api.libs.json._
+import civilization.io.readdir._
 import civilization.io.fromjson.ImplicitMiximFromJson
 import civilization.io.readdir.GenBoard.genBoard
 import civilization.message.M
@@ -179,7 +180,7 @@ class Test20 extends FunSuite with ImplicitMiximFromJson {
     assert(1 == y.value.length)
     val tech: JsValue = y.value(0)
     println(tech)
-    assert("CodeOfLaw" == (tech \ "tech" \ "name").as[String])
+    assert("CodeOfLaw" == (tech \ "tech").as[String])
     assert(1 == (tech \ "level").as[Int])
     val yy: JsValue = (j \ "board" \ "you").as[JsValue]
     println(yy)
@@ -256,6 +257,22 @@ class Test20 extends FunSuite with ImplicitMiximFromJson {
     println(l)
     assert(l.find(_ == Command.RESEARCH).isDefined)
     assert(l.find(_ == Command.ENDOFPHASE).isDefined)
+  }
+
+  test("Test wonders") {
+    println("List of wonders")
+    val wonders : Seq[WondersOfTheWorld] = readListOfWonders
+    val wo : WondersOfTheWorld = wonders.find(_.name == Wonders.ChichenItza).get
+    assert(wo.cost == 15)
+    assert(wo.age == WondersAge.Ancient)
+    assert(wo.phase.get == TurnPhase.CityManagement)
+    assert(wo.discount.get == WondersDiscount(10,TechnologyName.Currency))
+  }
+
+  test("Test buildings") {
+    println("List of buildings")
+    val l : Seq[Technology] = readTechnologies
+    println(l)
   }
 
 }

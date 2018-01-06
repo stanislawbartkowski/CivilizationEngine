@@ -4,8 +4,8 @@ import civilization.objects.TurnPhase.Value
 
 package object objects {
 
-  val MINTRADE:Int = 6
-  val TRADEMAX:Int = 27
+  val MINTRADE: Int = 6
+  val TRADEMAX: Int = 27
   val TILESIZE: Int = 4
   val DEFAULTTRADEFORPROD = 3
   val UNITLEVELSIZE = 4
@@ -161,6 +161,25 @@ package object objects {
     Fundamentalism = Value
   }
 
+  object BuildingName extends Enumeration {
+    type T = Value
+    val
+    Harbor,
+    TradingPost,
+    Workshop,
+    IronMine,
+    Library,
+    University,
+    Granary,
+    Aqueduct,
+    Market,
+    Bank,
+    Temple,
+    Cathedral,
+    Barracks,
+    Academy = Value
+  }
+
   object TechnologyName extends Enumeration {
     type T = Value
     val
@@ -175,7 +194,7 @@ package object objects {
     NuclearFusion,
     ReplaceableParts,
     Ballistics,
-    MessMedia,
+    MassMedia,
     Computers,
     Flight,
     PrintingPress,
@@ -202,21 +221,66 @@ package object objects {
     Biology,
     Theology,
     Agriculture,
+    Education,
+    Combustion,
     Banking = Value
   }
 
   def levelTrade(level: Int): Int = MINTRADE + (level - 1) * 5
-  def tradeToLevel(trade : Int) : Int = (trade-1)/5
 
-  case class CivilizationG(val civ: Civilization.T, val tech: TechnologyName.T, val gover : GovernmentName.T, val desc: String, val notimplemented : Option[Boolean])
+  def tradeToLevel(trade: Int): Int = (trade - 1) / 5
 
+  case class CivilizationG(val civ: Civilization.T, val tech: TechnologyName.T, val gover: GovernmentName.T, val desc: String, val notimplemented: Option[Boolean])
+
+
+  case class TechnologyUnit(val unit : CombatUnitType.T, val level : Int)
   /** Technology dictionary
     *
     * @param tech  Technology name
     * @param gover Option,if technology enables government
     * @param level Level of this technology
     */
-  case class Technology(val tech: TechnologyName.T, val gover : Option[GovernmentName.T], val level: Int, val notimplemented : Option[Boolean])
+  case class Technology(val tech: TechnologyName.T, val gover: Option[GovernmentName.T], val level: Int, val notimplemented: Option[Boolean], val building: Option[BuildingName.T], val resource: Option[Resource.T], val desc: String, val resourceany : Option[Int], val units : Option[Seq[TechnologyUnit]])
 
+  object WondersAge extends Enumeration {
+    type T = Value
+    val
+    Ancient,
+    Medieval,
+    Modern = Value
+  }
+
+  object Wonders extends Enumeration {
+    type T = Value
+    val
+    ChichenItza,
+    StatueofZeus,
+    Stonehenge,
+    TheColossus,
+    TheGreatLighthouse,
+    TheGreatWall,
+    TheHangingGardens,
+    TheOracle,
+    ThePyramids,
+    AngkorWat,
+    BrandenburgGate,
+    HimejiSamuraiCastle,
+    LeonardosWorkshop,
+    MachuPichu,
+    NotreDame,
+    PorcelainTower,
+    TajMahal,
+    TheLouvre,
+    BigBen,
+    CristoRedentor,
+    PanamaCanal,
+    StatueofLiberty,
+    SydneyOperaHouse,
+    TheInternet,
+    TheKremlin,
+    ThePentagon,
+    UnitedNations
+    = Value
+  }
 
 }

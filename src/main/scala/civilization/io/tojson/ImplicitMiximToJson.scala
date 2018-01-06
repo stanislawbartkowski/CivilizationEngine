@@ -9,7 +9,7 @@ trait ImplicitMiximToJson {
   implicit def writesPoint(p: P): JsValue = Json.toJson(p)
 
   implicit def toSeqP(li: Seq[P]): Seq[JsValue] =
-    li.map(p => writesPoint(p))
+    li.map(writesPoint)
 
   implicit def CPtoJS(c: CommandParams): JsValue = {
     if (c.p.isDefined)

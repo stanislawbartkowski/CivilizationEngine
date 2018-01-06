@@ -51,4 +51,9 @@ object S {
   final val level = "level"
   final val initial = "initial"
   final val notimplemented = "ni"
+  final val discount = "discount"
+  final val phase = "phase"
+  final val cost = "cost"
+  final val building = "building"
+  final val resourceany = "resourceany"
 }

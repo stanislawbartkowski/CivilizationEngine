@@ -35,20 +35,30 @@ package object tojson extends ImplicitMiximToJson {
     )
   }
 
-  implicit val tachnologyWrite: Writes[Technology]  = new Writes[Technology] {
+  implicit val technologyunitwrite :Writes[TechnologyUnit] = new Writes[TechnologyUnit] {
+    override def writes(o: TechnologyUnit): JsValue = Json.obj(
+      S.name -> o.unit,
+      S.level -> o.level
+    )
+  }
+
+  implicit val technologyWrite: Writes[Technology]  = new Writes[Technology] {
     override def writes(o: Technology): JsValue = Json.obj(
       S.name -> o.tech,
       S.gover -> o.gover,
       S.level -> o.level,
-      S.notimplemented -> o.notimplemented
+      S.notimplemented -> o.notimplemented,
+      S.building -> o.building,
+      S.resource -> o.resource,
+      S.resourceany -> o.resourceany,
+      S.units -> o.units
     )
   }
 
   implicit val playertechnologyWrites: Writes[PlayerTechnology] = new Writes[PlayerTechnology] {
     def writes(m: PlayerTechnology) = Json.obj(
       S.tech -> m.tech,
-      S.initial -> m.initial,
-      S.level -> m.level
+      S.initial -> m.initial
     )
   }
 

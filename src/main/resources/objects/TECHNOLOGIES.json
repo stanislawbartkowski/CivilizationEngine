@@ -2,199 +2,299 @@
   {
     "name": "Irrigation",
     "level": 2,
-    "ni" : true
+    "ni" : true,
+    "desc" : "Maximum Cities : 3"
   },
   {
     "name": "Construction",
     "ni" : true,
-    "level": 2
+    "level": 2,
+    "resource" : "Wheat",
+    "building" : "Workshop",
+    "desc" : "Wheat-City Managament: One of your cities produces an extra 5 production this turn."
   },
   {
     "name": "MetalCasting",
     "ni" : true,
-    "level": 3
+    "level": 3,
+    "resource" : "Spy",
+    "units" : [{"name" : "Artillery", "level" : 2}],
+    "desc" : "Incense-CityManagemen : Gain 7 culture"
   },
   {
     "name": "Communism",
     "gover": "Communism",
     "ni" : true,
-    "level": 3
+    "level": 3,
+    "resource" : "Spy",
+    "desc" : "Spy-Movement: Choose a square. No figure may leave that square this turn. This may interrupt a figure's movement."
   },
   {
     "name": "MilitaryScience",
     "ni" : true,
-    "level": 3
+    "level": 3,
+    "building" : "Academy",
+    "desc" : "Your cities each produce 1 extra production for every 3 coins you possess."
   },
   {
     "name": "SteamPower",
     "ni" : true,
-    "level": 3
+    "level": 3,
+    "resource" : "Silk",
+    "desc" : "Silk-City Management :  Move all of your figures in one square to any water square on the map. These figures may not move again this turn"
   },
   {
     "name": "GunPowder",
     "ni" : true,
-    "level": 3
+    "level": 3,
+    "units" : [{"name" : "Infantry", "level" : 3}],
+    "resourceany" : 2,
+    "desc" : "Any 2-City Management : Obsolete an ancient or medieval wonder, or destroy a building of your choice"
   },
   {
     "name": "NuclearFusion",
     "ni" : true,
-    "level": 4
+    "level": 4,
+    "resource" : "Uranium",
+    "desc": "Nuke-City Management : Take an extra action with each of your cities. Nuke-Movement : Nuke a non-capital city. The city is destroyed, along with all builidngs, wonders, figures and great persins in its outskirts"
   },
   {
     "name": "ReplaceableParts",
-    "level": 4
+    "level": 4,
+    "ni" : true,
+    "units" : [{"name" : "Infantry", "level" : 4}],
+    "desc" : "Stacking Limit : 6"
   },
   {
     "name": "Ballistics",
-    "level": 4
+    "ni" : true,
+    "level": 4,
+    "desc" : "Iron-Battle : When involved in a battle, deal up 6 wounds, spread across enemy units however you choose."
   },
   {
-    "name": "MessMedia",
-    "level": 4
+    "name": "MassMedia",
+    "ni" : true,
+    "level": 4,
+    "desc" : "Your culture cannot be cancelled, regardless of other game effects. Spy-Any Time: Cancel a resource ability. The resource spent to activate the ability is lost."
   },
   {
     "name": "Computers",
     "ni" : true,
-    "level": 4
+    "level": 4,
+    "desc" : "Your battle and culture hand sizes are increased by 1 for every 5 coins you have"
   },
   {
     "name": "Flight",
     "ni" : true,
-    "level": 4
+    "level": 4,
+    "units" : [{"name" : "Aircraft", "level" : 4}],
+    "desc" : "You may cross or end your movement in water. Also, you may ignore enemy figures, huts, villages and cities when moving."
   },
   {
     "name": "PrintingPress",
     "ni" : true,
-    "level": 2
+    "level": 2,
+    "building" : "University",
+    "desc" : "Once per turn, you may spend 5 culture during City Management to add 1 coin token to this tech (max 4)."
   },
   {
     "name": "Democracy",
     "ni" : true,
     "gover": "Democracy",
-    "level": 2
+    "units" : [{"name" : "Infantry", "level" : 2}],
+    "level": 2,
+    "desc" : "Once per turn, you may spend 6 trade during CityManagement to add 1 coin token to this tech (max 4)."
   },
   {
     "name": "Monarchy",
     "ni" : true,
     "gover": "Monarchy",
-    "level": 2
+    "level": 2,
+    "resource" : "Silk",
+    "desc" : "Silk-City Management: Obsolete 1 ancient wonder, or kill 1 random unit from another player's standing forces"
   },
   {
     "name": "Sailing",
     "ni" : true,
-    "level": 2
+    "level": 2,
+    "desc" : "Movement Speed : 4. You may cross or end your movement in water"
   },
   {
     "name": "Mathematics",
     "ni" : true,
-    "level": 2
+    "level": 2,
+    "resource" : "Iron",
+    "units" : [{"name" : "Artillery", "level" : 2}],
+    "desc" : "Iron-Battle: When involved in a battle, deal up 3 wounds, spread across enemy units however you choose."
   },
   {
     "name": "CivilService",
     "ni" : true,
-    "level": 2
+    "level": 2,
+    "resource" : "Spy",
+    "desc" : "1 Coin, +1 Hand Size, Spy-Any Time: cancel a culture event"
   },
   {
     "name": "Engineering",
     "ni" : true,
-    "level": 2
+    "level": 2,
+    "building" : "Aqueduct",
+    "desc" : "Once per turn, when spending production from a city, you may split the production to purchase two items instead of one"
   },
   {
     "name": "Metallurgy",
     "ni" : true,
-    "level": 1
+    "level": 1,
+    "building" : "Barracks",
+    "resource" : "Iron",
+    "desc" : "Iron-Battle : When playing a unit from hand, add 3 to strength of its attack"
   },
   {
     "name": "CodeOfLaw",
     "ni" : true,
     "gover": "Republic",
-    "level": 1
+    "building" : "TradingPost",
+    "level": 1,
+    "desc" : "Pnce per turn, after you win a battle, add 1 coin t this token (max 4)."
   },
   {
     "name": "HorsebackRiding",
     "ni" : true,
-    "level": 1
+    "level": 1,
+    "resource" : "Silk",
+    "desc" : "Travel Speed : 3, Silk-Trade : Gain 9 trade. Another player of your choice then gains 6 trade."
   },
   {
     "name": "Writing",
     "ni" : true,
-    "level": 1
+    "level": 1,
+    "building" : "Library",
+    "resource" : "Spy",
+    "desc" : "Spy - City Management : Cancel a city action being performed by another player (may not cancel resource ability)"
   },
   {
     "name": "Pottery",
     "ni" : true,
-    "level": 1
+    "level": 1,
+    "resourceany" : 2,
+    "building" : "Granary",
+    "desc" : "+1 Hand Size. Any 2-City Management: Add 1 coin token to this tech (max 4)."
   },
   {
     "name": "Philosophy",
     "ni" : true,
-    "level": 1
+    "level": 1,
+    "building" : "Temple",
+    "resourceany" : 3,
+    "desc" : "Any 3-City Management : Add 1 coin token to this tech (max 4)."
   },
   {
     "name": "Navigation",
     "ni" : true,
-    "level": 1
+    "building" : "Harbor",
+    "level": 1,
+    "desc" : "You may cross water, but you may not end your movement in it"
   },
   {
     "name": "AnimalHusbandry",
     "ni" : true,
-    "level": 1
+    "level": 1,
+    "resource" : "Wheat",
+    "desc" : "Once per battle, heal up to a total of 3 wounds from your units in play. Wheat-City Management : One of your cities prodices an extra three production this turn"
   },
   {
     "name": "Currency",
     "ni" : true,
-    "level": 1
+    "level": 1,
+    "building" : "Market",
+    "resource" : "Incense",
+    "desc" : "Incense-City Management : Gain three culture"
   },
   {
     "name": "Masonry",
     "ni" : true,
-    "level": 1
+    "level": 1,
+    "desc" : "Stacking Limit:3, You may build City Walls in your cities for 7 production. This is indicated by flipping the city marker to its walled side"
   },
   {
     "name": "Plastics",
     "ni" : true,
-    "level": 4
+    "level": 4,
+    "resource" : "Wheat",
+    "desc" : "Start Of Turn: Once per turn, build a unit, figure, or building you've unlocked for free"
   },
   {
     "name": "Ecology",
     "ni" : true,
-    "level": 3
+    "level": 3,
+    "resource" : "Wheat",
+    "desc" : "Advancing on the culture track costs you 1 less trade for every 3 coins you possess. Wheat - Start Of Turn : Change an empty non-mountain square into a different non-mountain square for the rest of the game."
   },
   {
     "name": "Mysticism",
     "ni" : true,
-    "level": 2
+    "level": 2,
+    "resource" : "Spy",
+    "desc" : "When you draw a culture event card, draw an extra card from that deck, keeping one and discarding the other. Spy-City Management: force an opponent to discard a coin token of your choice."
   },
   {
     "name": "RailRoad",
     "ni" : true,
-    "level": 3
+    "level": 3,
+    "building" : "IronMine",
+    "units" : [{"name" : "Mounted", "level" : 3}],
+    "desc" : "1 Coin"
   },
   {
     "name": "Biology",
     "ni" : true,
-    "level": 3
+    "level": 3,
+    "desc" : "Stacking Limit : 5. Once per battle, heal all wounds from your units in play"
   },
   {
     "name": "Theology",
     "ni" : true,
     "gover": "Fundamentalism",
-    "level": 3
+    "level": 3,
+    "building" : "Cathedral",
+    "desc" : "+1 Hand Size"
   },
   {
     "name": "Agriculture",
     "ni" : true,
-    "level": 1
+    "level": 1,
+    "desc" : "Immediately grow your capital to metropolis"
   },
   {
     "name": "Chivalry",
     "ni" : true,
     "gover": "Feudalism",
-    "level": 2
+    "level": 2,
+    "resource" : "Incense",
+    "desc" : "Incense-City Management : Gain 5 culture"
   },
   {
     "name": "Banking",
+    "ni": true,
+    "level": 3,
+    "building" : "Bank",
+    "resource" : "Wheat",
+    "desc" : "Wheat-City Management : One of you cities produces an extra 7 production per turn"
+  },
+  {
+    "name": "Education",
     "ni" : true,
-    "level": 3
+    "level": 3,
+    "resourceany" : 4,
+    "desc" : "Once per turn, when you build a wonder, add one coin to this tech (max 4). 4 resources (1 of each)-City Management : Learn a new tech of your choice for free."
+  },
+  {
+    "name": "Combustion",
+    "ni" : true,
+    "level": 4,
+    "units" : [{"name" : "Mounted", "level" : 4}],
+    "desc" : "Once per turn, when one of your armies ends its movement on a building, destroy that building. If one of your armies attacks a city with walls, the walls are destroyed before the battle."
   }
+
+
 ]

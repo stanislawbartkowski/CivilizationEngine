@@ -64,7 +64,7 @@ object GenBoard extends ImplicitMiximFromJson {
     if (!sciv.isEmpty) throw FatalError(Mess(M.TOOMANYCIVREQUESTED))
     val players: List[PlayerDeck] = l.map(c => {
       val civ: CivilizationG = civs.find(_.civ == c).get
-      val pt: PlayerTechnology = PlayerTechnology(techs.find(_.tech == civ.tech).get, Some(true))
+      val pt: PlayerTechnology = PlayerTechnology(civ.tech, Some(true))
       PlayerDeck(c, List(pt), Nil, new GameResources(), civ.gover)
     }
     )

@@ -18,11 +18,22 @@ object genboardj {
   case class MapSquareJ(revealed: Boolean, t: Terrain.T, trade: Int, production: Int, resource: Option[Resource.T], capForCiv: Option[Civilization.T],
                         civ: Civilization.T, city: City.T, defence: Int, numberofArmies: Int, numberofScouts: Int, tile: String, hv: Option[HutVillage.T])
 
-  case class PlayerDeckJ(civ: Civilization.T, numberofTrade: Int, commands: Seq[Command.T], limits: PlayerLimits, technologylevel: Int, pl: PlayerDeck)
+  case class PlayerTech(val pl : PlayerTechnology, val level: Int)
+
+  private def plToJson(pl : PlayerTech) : JsValue = Json.obj(
+    S.tech -> pl.pl.tech,
+    S.initial -> pl.pl.initial,
+    S.level -> pl.level
+  )
+
+  implicit def plSeqToJ(pl : Seq[PlayerTech]) : Seq[JsValue] = pl.map(plToJson)
+
+  case class PlayerDeckJ(civ: Civilization.T, numberofTrade: Int, commands: Seq[Command.T], limits: PlayerLimits, technologylevel: Int, tech : Seq[PlayerTech], pl: PlayerDeck)
 
   case class Game(active: Civilization.T, roundno: Int, phase: TurnPhase.T)
 
   case class BoardGameJ(g: Game, map: Array[Array[MapSquareJ]], you: PlayerDeckJ, others: Seq[PlayerDeckJ])
+
 
   private def producehv(hvcount: Map[HutVillage.T, Seq[HutVillage]], h: HutVillage.T): JsObject =
     if (hvcount.contains(h)) JsObject(Seq(h.toString -> JsNumber(hvcount(h).length))) else JsObject.empty
@@ -72,14 +83,17 @@ object genboardj {
   }
 
   private def genPlayerDeckJ(g: GameBoard, civ: Civilization.T): PlayerDeckJ =
-    PlayerDeckJ(civ, numberofTrade(g, civ).trade, allowedCommands(g, civ), getLimits(g, civ), ResearchTechnology.techologylevel(g, civ), g.playerDeck(civ))
+    PlayerDeckJ(civ, numberofTrade(g, civ).trade, allowedCommands(g, civ), getLimits(g, civ),
+      ResearchTechnology.techologylevel(g, civ),
+      g.playerDeck(civ).tech.map(t => PlayerTech(t,g.techlevel(t))),
+      g.playerDeck(civ))
 
   private def commandToArray(l: Seq[Command.T]): JsArray = {
     JsArray(l.map(c => Json.obj(S.command -> c)).foldLeft(List[JsObject]())(_ :+ _))
   }
 
   private def genPlayerDeckJson(p: PlayerDeckJ, you: Boolean): JsValue = Json.obj(
-    S.tech -> p.pl.tech,
+    S.tech -> plSeqToJ(p.tech),
     S.gover -> p.pl.gover,
     S.civ -> p.civ,
     "trade" -> p.numberofTrade,
@@ -114,7 +128,7 @@ object genboardj {
   }
 
   private def gameToJ(g: Game): JsValue = {
-    Json.obj("roundno" -> g.roundno, "phase" -> g.phase, "active" -> g.active)
+    Json.obj("roundno" -> g.roundno, S.phase -> g.phase, "active" -> g.active)
   }
 
   private def toSeqTech(li: Seq[Technology]): JsValue = {

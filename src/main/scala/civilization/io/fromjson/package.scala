@@ -43,6 +43,9 @@ package object fromjson extends ImplicitMiximFromJson {
   implicit val technologyNameReads: Reads[TechnologyName.Value] = EnumUtils.enumReads(TechnologyName)
   implicit val governmentNameReads: Reads[GovernmentName.Value] = EnumUtils.enumReads(GovernmentName)
   implicit val inittypeNameReads: Reads[CombatUnitType.Value] = EnumUtils.enumReads(CombatUnitType)
+  implicit val inittypeWondersAge: Reads[WondersAge.Value] = EnumUtils.enumReads(WondersAge)
+  implicit val inittypeWonders: Reads[Wonders.Value] = EnumUtils.enumReads(Wonders)
+  implicit val enumtypeBuildingName: Reads[BuildingName.Value] = EnumUtils.enumReads(BuildingName)
 
   implicit val towinnerlootReads: Reads[WinnerLoot] = new Reads[WinnerLoot] {
     def reads(json: JsValue): JsResult[WinnerLoot] = {
@@ -117,11 +120,21 @@ package object fromjson extends ImplicitMiximFromJson {
     (JsPath \ S.civ).read[Civilization.T] and (JsPath \ S.citytype).read[City.T]
     ) (City.apply _)
 
-  implicit val Reads: Reads[Technology] = (
+  implicit val techbuildReads: Reads[TechnologyUnit] = (
+    (JsPath \ S.name).read[CombatUnitType.T] and
+      (JsPath \ S.level).read[Int]
+    ) (TechnologyUnit.apply _)
+
+  implicit val techReads: Reads[Technology] = (
     (JsPath \ S.name).read[TechnologyName.T] and
       (JsPath \ S.gover).readNullable[GovernmentName.T] and
       (JsPath \ S.level).read[Int] and
-      (JsPath \ S.notimplemented).readNullable[Boolean]
+      (JsPath \ S.notimplemented).readNullable[Boolean] and
+      (JsPath \ S.building).readNullable[BuildingName.T] and
+      (JsPath \ S.resource).readNullable[Resource.T] and
+      (JsPath \ S.desc).read[String] and
+      (JsPath \ S.resourceany).readNullable[Int] and
+      (JsPath \ S.units).readNullable[Seq[TechnologyUnit]]
     ) (Technology.apply _)
 
   def listReads[T](length: Int)(implicit anyListReads: Reads[Array[T]]): Reads[Array[T]] = {
@@ -190,7 +203,7 @@ package object fromjson extends ImplicitMiximFromJson {
   }
 
   implicit val readsPlayerTechnology: Reads[PlayerTechnology] = (
-    (JsPath \ S.tech).read[Technology] and (JsPath \ S.initial).readNullable[Boolean]
+    (JsPath \ S.tech).read[TechnologyName.T] and (JsPath \ S.initial).readNullable[Boolean]
     ) (PlayerTechnology.apply _)
 
   implicit val readCivilization: Reads[CivilizationG] = (
@@ -268,6 +281,19 @@ package object fromjson extends ImplicitMiximFromJson {
       (JsPath \ S.trade).read[Int]
     ) (TakeWinnerLoot.apply _)
 
+  implicit val WondersDiscountReads: Reads[WondersDiscount] = (
+    (JsPath \ S.cost).read[Int] and
+      (JsPath \ S.tech).read[TechnologyName.T]
+    ) (WondersDiscount.apply _)
+
+  implicit val WondersReads: Reads[WondersOfTheWorld] = (
+    (JsPath \ S.name).read[Wonders.T] and
+      (JsPath \ S.phase).readNullable[TurnPhase.T] and
+      (JsPath \ "age").read[WondersAge.T] and
+      (JsPath \ S.cost).read[Int] and
+      (JsPath \ S.discount).readNullable[WondersDiscount] and
+      (JsPath \ S.desc).read[String]
+    ) (WondersOfTheWorld.apply _)
 
   trait FromJson {
     type Value
@@ -446,5 +472,7 @@ package object fromjson extends ImplicitMiximFromJson {
   def toArrayHutVillages(j: JsValue): Array[HutVillage] = j.as[Array[HutVillage]]
 
   def toMetaData(j: JsValue): GameMetaData = j.as[GameMetaData]
+
+  def toSeqOfWonders(j: JsValue): Seq[WondersOfTheWorld] = j.as[Seq[WondersOfTheWorld]]
 
 }

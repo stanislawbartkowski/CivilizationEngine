@@ -28,9 +28,7 @@ package object gameboard {
     *
     * @param tech
     */
-  case class PlayerTechnology(val tech: Technology, val initial: Option[Boolean] = None) {
-    def level: Int = if (initial.isDefined && initial.get) 1 else tech.level
-  }
+  case class PlayerTechnology(val tech: TechnologyName.T, val initial: Option[Boolean] = None)
 
   /** Figures on the square, can be staked
     *
@@ -191,6 +189,10 @@ package object gameboard {
     }
   }
 
+  case class WondersDiscount(val cost: Int, tech: TechnologyName.T)
+
+  case class WondersOfTheWorld(val name: Wonders.T, val phase: Option[TurnPhase.T],val age: WondersAge.T, val cost: Int, val discount: Option[WondersDiscount], val desc: String)
+
   case class TakeWinnerLoot(val winner: Civilization.T, val loser: Civilization.T, val loot: WinnerLoot, val reso: Option[Resource.T], val trade: Int)
 
   case class FrontUnit(val unit: CombatUnit, var attackstrength: Int, var defendstrenght: Int, var wounds: Int)
@@ -246,6 +248,9 @@ package object gameboard {
     var civil: Seq[CivilizationG] = _
 
     def conf: GameConfig = GameConfig(false)
+
+    def technology(te : TechnologyName.T) : Technology = tech.find(_.tech == te).get
+    def techlevel(tep : PlayerTechnology) : Int = if (tep.initial.isDefined && tep.initial.get) 1 else technology(tep.tech).level
   }
 
 

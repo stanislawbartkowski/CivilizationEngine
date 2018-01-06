@@ -59,6 +59,11 @@ package object readdir {
     toCivilizations(j)
   }
 
+  def readListOfWonders : Seq[WondersOfTheWorld] = {
+    val j : JsValue = readJSON("objects","WONDERS.json")
+    toSeqOfWonders(j)
+  }
+
   def readGameBoard(j: JsValue): GameBoard = {
     //    val l: Seq[TilesRead] = readListOfTiles
     val g: GameBoard = toGameBoard(j)
