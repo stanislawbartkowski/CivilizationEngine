@@ -63,7 +63,7 @@ class Test7 extends FunSuite {
     println(s)
     val b: String = getData(GETBOARDGAME, s)
     println(b)
-    val ll = getData(LISTOFCIV, null)
+    val ll = getData(LISTOFRES, null)
     println(ll)
 
   }

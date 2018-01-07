@@ -11,9 +11,9 @@ trait ImplicitMiximFromJson {
 
   implicit def toInt(j: JsValue): Int = j.as[Int]
 
-  implicit val gameResourcesReads: Reads[GameResources] = new Reads[GameResources] {
-    def reads(json: JsValue): JsResult[GameResources] = {
-      val r: GameResources = new GameResources()
+  implicit val gameResourcesReads: Reads[BoardResources] = new Reads[BoardResources] {
+    def reads(json: JsValue): JsResult[BoardResources] = {
+      val r: BoardResources = new BoardResources()
       val a: JsArray = json.as[JsArray]
       a.value.foreach(i => {
         val j: JsValue = i

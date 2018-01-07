@@ -18,7 +18,7 @@ class Test19 extends FunSuite with ImplicitMiximToJson {
   Helper.I
 
   test("List of civs") {
-    val c: String = II.getData(II.LISTOFCIV)
+    val c: String = II.getData(II.LISTOFRES)
     System.out.println(c)
     val a: JsArray = Json.arr(c)
     assert(a != null)

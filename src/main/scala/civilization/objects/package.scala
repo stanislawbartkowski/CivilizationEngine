@@ -23,9 +23,11 @@ package object objects {
       hv == that.hv && resource == that.resource
   }
 
-  case class Tokens(val numofTrade: Int, val numofProduction: Int, val numofCulture: Int)
+  case class Tokens(val numofTrade: Int, val numofProduction: Int, val numofCulture: Int, val numofBattle: Int)
 
   case class Square(val terrain: Terrain.T, val hv: HutVillage.T, val resource: Option[Resource.T], val naturalwonder: Boolean, val token: Tokens)
+
+  case class Building(val name: BuildingName.T, val cost: Int, val star: Option[Boolean], val tokens: Tokens, val upgrade: Option[BuildingName.T], val terrain: Option[Terrain.T])
 
   case class TilesRead(val name: String, val tile: Tile)
 
@@ -165,6 +167,7 @@ package object objects {
     type T = Value
     val
     Harbor,
+    Shipyard,
     TradingPost,
     Workshop,
     IronMine,
@@ -233,14 +236,15 @@ package object objects {
   case class CivilizationG(val civ: Civilization.T, val tech: TechnologyName.T, val gover: GovernmentName.T, val desc: String, val notimplemented: Option[Boolean])
 
 
-  case class TechnologyUnit(val unit : CombatUnitType.T, val level : Int)
+  case class TechnologyUnit(val unit: CombatUnitType.T, val level: Int)
+
   /** Technology dictionary
     *
     * @param tech  Technology name
     * @param gover Option,if technology enables government
     * @param level Level of this technology
     */
-  case class Technology(val tech: TechnologyName.T, val gover: Option[GovernmentName.T], val level: Int, val notimplemented: Option[Boolean], val building: Option[BuildingName.T], val resource: Option[Resource.T], val desc: String, val resourceany : Option[Int], val units : Option[Seq[TechnologyUnit]])
+  case class Technology(val tech: TechnologyName.T, val gover: Option[GovernmentName.T], val level: Int, val notimplemented: Option[Boolean], val building: Option[BuildingName.T], val resource: Option[Resource.T], val desc: String, val resourceany: Option[Int], val units: Option[Seq[TechnologyUnit]])
 
   object WondersAge extends Enumeration {
     type T = Value

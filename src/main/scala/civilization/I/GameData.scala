@@ -13,7 +13,7 @@ object GameData {
       S.civ -> g.civ,
       S.createtime -> g.createtime,
       S.accesstime -> g.accesstime,
-      "phase" -> g.phase,
+      S.phase -> g.phase,
       "round" -> g.round
     )
     j

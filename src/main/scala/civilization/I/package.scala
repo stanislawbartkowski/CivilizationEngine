@@ -15,6 +15,7 @@ import civilization.io.tojson._
 import civilization.message._
 import civilization.objects._
 import play.api.libs.json._
+import civilization.io.readdir.GameResources
 
 package object I {
 
@@ -24,7 +25,7 @@ package object I {
     this.r = r
   }
 
-  final val LISTOFCIV: Int = 0
+  final val LISTOFRES: Int = 0
   final val REGISTEROWNER: Int = 1
   final val GETBOARDGAME: Int = 2
   final val LISTOFGAMES: Int = 3
@@ -94,8 +95,9 @@ package object I {
         }
         case LISTOFWAITINGGAMES => listOfWaitingGames
         case ITEMIZECOMMAND => itemizeCommand(tokenorciv, param)
-        case LISTOFCIV => {
-          val j : JsValue = writeListOfCivs(readListOfCivs)
+        case LISTOFRES => {
+//          val j : JsValue = writeListOfCivs(readListOfCivs)
+          val j:JsValue = GameResources.instance()
           Json.prettyPrint(j)
         }
       }

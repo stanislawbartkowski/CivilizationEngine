@@ -156,8 +156,8 @@ package object tojson extends ImplicitMiximToJson {
       else Json.toJson(m.res.get)
   }
 
-  implicit val gameresourcesWrites : Writes[GameResources] = new Writes[GameResources]  {
-    def writes(m: GameResources) = {
+  implicit val gameresourcesWrites : Writes[BoardResources] = new Writes[BoardResources]  {
+    def writes(m: BoardResources) = {
        var l: Seq[JsValue] = m.table.map(e => Json.obj(
          S.resource -> e._1,
          S.num -> e._2
@@ -193,6 +193,24 @@ package object tojson extends ImplicitMiximToJson {
     )
   }
 
+  implicit val wondersdiscountWrite : Writes[WondersDiscount] = new Writes[WondersDiscount] {
+    override def writes(o: WondersDiscount): JsValue = Json.obj(
+      S.cost -> o.cost,
+      S.tech -> o.tech
+    )
+  }
+
+  implicit val wonderoftheworldWrite : Writes[WondersOfTheWorld] = new Writes[WondersOfTheWorld] {
+    override def writes(o: WondersOfTheWorld): JsValue = Json.obj(
+      S.name -> o.name,
+      S.age -> o.age,
+      S.cost -> o.cost,
+      S.phase -> o.phase,
+      S.discount -> o.discount,
+      S.desc -> o.desc
+    )
+  }
+
   implicit val takewinnerlootWrites : Writes[TakeWinnerLoot] = new Writes[TakeWinnerLoot] {
     override def writes(o: TakeWinnerLoot) = Json.obj(
       S.winner -> o.winner,
@@ -200,6 +218,26 @@ package object tojson extends ImplicitMiximToJson {
       S.winnerloot -> o.loot,
       S.resource -> o.reso,
       S.trade -> o.trade
+    )
+  }
+
+  implicit val tekensWrite : Writes[Tokens] = new Writes[Tokens]  {
+    override def writes(o: Tokens): JsValue = Json.obj(
+      S.tradeT -> o.numofTrade,
+      S.productionT -> o.numofProduction,
+      S.cultureT -> o.numofCulture,
+      S.battleT -> o.numofBattle
+    )
+  }
+
+  implicit val bildingWrites : Writes[Building] = new Writes[Building] {
+    override def writes(o: Building): JsValue = Json.obj(
+      S.name -> o.name,
+      S.cost -> o.cost,
+      S.tokens -> o.tokens,
+      S.star -> o.star,
+      S.upgrade -> o.upgrade,
+      S.terrain -> o.terrain
     )
   }
 
@@ -234,5 +272,11 @@ package object tojson extends ImplicitMiximToJson {
   def writeSeqWinnerLoot(m : Seq[WinnerLoot]) : JsValue = Json.toJson(m)
 
   def writeListOfCivs(m : Seq[CivilizationG]) : JsValue = Json.toJson(m)
+
+  def writeListOfTechs(m : Seq[Technology]) : JsValue = Json.toJson(m)
+
+  def writeListOfWonders(m : Seq[WondersOfTheWorld]) : JsValue = Json.toJson(m)
+
+  def writeListOfBuilding(m : Seq[Building]) : JsValue = Json.toJson(m)
 
 }

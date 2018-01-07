@@ -157,7 +157,6 @@ object genboardj {
       S.resources -> Json.toJson(g.resources.resou),
       S.hutvillages -> hvtojson(g.resources.hvused, true),
       S.you -> genPlayerDeckJson(b.you, true),
-      S.tech -> toSeqTech(g.tech),
       "others" -> JsArray(o),
       "battle" -> genBattleJson(g, civ)
     ))))

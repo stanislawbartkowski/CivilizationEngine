@@ -1,0 +1,103 @@
+[
+  {
+    "name" : "TradingPost",
+    "cost" : 7,
+    "tokens" : {"Trade" : 2, "Culture" : 1},
+    "terrain" : "Desert"
+  },
+  {
+    "name" : "Harbor",
+    "cost" : 7,
+    "tokens" : {"Trade" : 2, "Production" : 1},
+    "terrain" : "Water"
+  },
+  {
+    "name" : "Shipyard",
+    "cost" : 5,
+    "tokens" : {"Trade" : 2, "Production" : 1,"Battle" : 2},
+    "terrain" : "Water",
+    "star" : true
+  },
+  {
+    "name" : "Market",
+    "cost" : 7,
+    "tokens" : {"Trade" : 1, "Production" : 1,"Culture" : 2},
+    "star" : true,
+    "upgrade" : "Bank"
+  },
+  {
+    "name" : "Bank",
+    "cost" : 10,
+    "tokens" : {"Trade" : 1, "Production" : 1,"Culture" : 2, "Coin" : 1},
+    "star" : true
+  },
+  {
+    "name" : "Barracks",
+    "cost" : 7,
+    "tokens" : {"Trade" : 2, "Battle" : 2},
+    "upgrade" : "Academy",
+    "star" : true
+  },
+  {
+    "name" : "Academy",
+    "cost" : 10,
+    "tokens" : {"Trade" : 2, "Battle" : 4},
+    "upgrade" : "Academy",
+    "star" : true
+  },
+  {
+    "name" : "Temple",
+    "cost" : 7,
+    "tokens" : {"Culture" : 2},
+    "upgrade" : "Cathedral",
+    "star" : true
+  },
+  {
+    "name" : "Cathedral",
+    "cost" : 7,
+    "tokens" : {"Culture" : 3},
+    "star" : true
+  },
+  {
+    "name" : "Granary",
+    "cost" : 5,
+    "tokens" : {"Production" : 1, "Trade" : 1},
+    "upgrade" : "Aqueduct",
+    "terrain" : "Grassland"
+  },
+  {
+    "name" : "Granary",
+    "cost" : 5,
+    "tokens" : {"Production" : 1, "Trade" : 1},
+    "upgrade" : "Aqueduct",
+    "terrain" : "Grassland"
+  },
+  {
+    "name" : "Aqueduct",
+    "cost" : 8,
+    "tokens" : {"Production" : 2, "Trade" : 2},
+    "terrain" : "Grassland"
+  },
+  {
+    "name" : "Library",
+    "cost" : 5,
+    "tokens" : {"Culture" : 1, "Trade" : 1},
+    "upgrade" : "University",
+    "terrain" : "Grassland"
+  },
+  {
+    "name" : "University",
+    "cost" : 8,
+    "tokens" : {"Culture" : 2, "Trade" : 2},
+    "terrain" : "Grassland"
+  },
+  {
+    "name" : "Workshop",
+    "cost" : 7,
+    "tokens" : {"Production" : 3},
+    "terrain" : "Mountain"
+  }
+
+
+
+]

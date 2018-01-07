@@ -68,12 +68,22 @@ package object fromjson extends ImplicitMiximFromJson {
 
   implicit val tokensReads: Reads[Tokens] = new Reads[Tokens] {
     def reads(json: JsValue): JsResult[Tokens] = {
-      val numofProduction: Int = (json \ "Production").asOpt[Int].getOrElse(0)
-      val numofCulture: Int = (json \ "Culture").asOpt[Int].getOrElse(0)
-      val numofTrade: Int = (json \ "Trade").asOpt[Int].getOrElse(0)
-      JsSuccess(Tokens(numofTrade, numofProduction, numofCulture))
+      val numofProduction: Int = (json \ S.productionT).asOpt[Int].getOrElse(0)
+      val numofCulture: Int = (json \ S.cultureT).asOpt[Int].getOrElse(0)
+      val numofTrade: Int = (json \ S.tradeT).asOpt[Int].getOrElse(0)
+      val numofBattle: Int = (json \ S.battleT).asOpt[Int].getOrElse(0)
+      JsSuccess(Tokens(numofTrade, numofProduction, numofCulture,numofBattle))
     }
   }
+
+  implicit val builingReads : Reads[Building] = (
+    (JsPath \ S.name).read[BuildingName.T] and
+      (JsPath \ S.cost).read[Int] and
+      (JsPath \ S.star).readNullable[Boolean] and
+      (JsPath \ S.tokens).read[Tokens] and
+      (JsPath \ S.upgrade).readNullable[BuildingName.T] and
+      (JsPath \ S.terrain).readNullable[Terrain.T]
+    ) (Building.apply _)
 
   implicit val squareReads: Reads[Square] = new Reads[Square] {
     def reads(json: JsValue): JsResult[Square] = {
@@ -81,7 +91,7 @@ package object fromjson extends ImplicitMiximFromJson {
       val hv: HutVillage.T = (json \ S.hutvillage).asOpt[HutVillage.T].getOrElse(null)
       val resource: Option[Resource.T] = (json \ S.resource).asOpt[Resource.T]
       val naturalwonder: Boolean = (json \ "naturalwonder").asOpt[Boolean].getOrElse(false)
-      val token: Tokens = (json \ "tokens").asOpt[Tokens].getOrElse(Tokens(0, 0, 0))
+      val token: Tokens = (json \ S.tokens).asOpt[Tokens].getOrElse(Tokens(0, 0, 0,0))
       JsSuccess(Square(terrain, hv, resource, naturalwonder, token))
     }
   }
@@ -220,7 +230,7 @@ package object fromjson extends ImplicitMiximFromJson {
       val gover: GovernmentName.T = (json \ S.gover).as[GovernmentName.T]
       val tech: Seq[PlayerTechnology] = (json \ S.tech).as[Seq[PlayerTechnology]]
       val units: Seq[CombatUnit] = (json \ S.units).as[Seq[CombatUnit]]
-      val resou: GameResources = (json \ S.resources).as[GameResources]
+      val resou: BoardResources = (json \ S.resources).as[BoardResources]
       JsSuccess(PlayerDeck(civ, tech, units, resou, gover))
     }
   }
@@ -243,7 +253,7 @@ package object fromjson extends ImplicitMiximFromJson {
 
   implicit val marketReads: Reads[Resources] = (
     (JsPath \ S.hutvillages).read[Seq[HutVillage]] and (JsPath \ S.hutvillagesused).read[Seq[HutVillage]] and
-      (JsPath \ S.resources).read[GameResources]
+      (JsPath \ S.resources).read[BoardResources]
     ) (Resources.apply _)
 
   implicit val markettReads: Reads[Market] = (
@@ -289,7 +299,7 @@ package object fromjson extends ImplicitMiximFromJson {
   implicit val WondersReads: Reads[WondersOfTheWorld] = (
     (JsPath \ S.name).read[Wonders.T] and
       (JsPath \ S.phase).readNullable[TurnPhase.T] and
-      (JsPath \ "age").read[WondersAge.T] and
+      (JsPath \ S.age).read[WondersAge.T] and
       (JsPath \ S.cost).read[Int] and
       (JsPath \ S.discount).readNullable[WondersDiscount] and
       (JsPath \ S.desc).read[String]
@@ -474,5 +484,7 @@ package object fromjson extends ImplicitMiximFromJson {
   def toMetaData(j: JsValue): GameMetaData = j.as[GameMetaData]
 
   def toSeqOfWonders(j: JsValue): Seq[WondersOfTheWorld] = j.as[Seq[WondersOfTheWorld]]
+
+  def toListOfBuildings(j : JsValue) : Seq[Building] = j.as[Seq[Building]]
 
 }

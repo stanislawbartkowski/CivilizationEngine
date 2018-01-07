@@ -13,7 +13,7 @@ import play.api.libs.json._
 import civilization.io.readdir._
 import civilization.io.fromjson.ImplicitMiximFromJson
 import civilization.io.readdir.GenBoard.genBoard
-import civilization.message.M
+import civilization.io.readdir.GameResources
 
 class Test20 extends FunSuite with ImplicitMiximFromJson {
 
@@ -154,13 +154,14 @@ class Test20 extends FunSuite with ImplicitMiximFromJson {
     println("Test gen")
     val g: GameBoard = genBoard(List(Civilization.Germany), "TEST1.json")
     assert(g != null)
-    assert(!g.civil.isEmpty)
-    g.civil.foreach(println)
-    val s: String = II.getData(II.LISTOFCIV)
+    val gr : GameResources = GameResources.instance()
+    assert(!gr.civ.isEmpty)
+    gr.civ.foreach(println)
+    val s: String = II.getData(II.LISTOFRES)
     println(s)
-    g.tech.foreach(println)
+    gr.tech.foreach(println)
     // check that CodeOfLaw enables Republic
-    assert(g.tech.find(_.tech == TechnologyName.CodeOfLaw).get.gover.get == GovernmentName.Republic)
+    assert(gr.tech.find(_.tech == TechnologyName.CodeOfLaw).get.gover.get == GovernmentName.Republic)
   }
 
   test("Two players game, check JSon for technologies") {
@@ -173,8 +174,8 @@ class Test20 extends FunSuite with ImplicitMiximFromJson {
     val s: String = II.getData(II.GETBOARDGAME, token)
     val j: JsValue = toJ(s)
     println(s)
-    val tecj: JsArray = (j \ "board" \ "tech").as[JsArray]
-    println(tecj)
+//    val tecj: JsArray = (j \ "board" \ "tech").as[JsArray]
+//    println(tecj)
     val y: JsArray = (j \ "board" \ "you" \ "tech").as[JsArray]
     println(y)
     assert(1 == y.value.length)
@@ -185,6 +186,10 @@ class Test20 extends FunSuite with ImplicitMiximFromJson {
     val yy: JsValue = (j \ "board" \ "you").as[JsValue]
     println(yy)
     assert("Republic" == (yy \ "gover").as[String])
+    val jb = II.getData(II.LISTOFRES)
+    val jj : JsValue = toJ(jb)
+    val tecj: JsArray = (jj \ "tech").as[JsArray]
+    println(tecj)
   }
 
   test("Test research") {
@@ -269,10 +274,25 @@ class Test20 extends FunSuite with ImplicitMiximFromJson {
     assert(wo.discount.get == WondersDiscount(10,TechnologyName.Currency))
   }
 
-  test("Test buildings") {
-    println("List of buildings")
+  test("Test technologies") {
+    println("List of  technologies")
     val l : Seq[Technology] = readTechnologies
     println(l)
+  }
+
+  test("Test buildings") {
+    println("List of buildings")
+    val l : Seq[Building] = readListOfBuildings
+    println(l)
+    var b : Building = l.find(_.name == BuildingName.University).get
+    println(b)
+    assert(b.cost == 8)
+    assert(b.tokens.numofCulture == 2)
+    b = l.find(_.name == BuildingName.Barracks).get
+    println(b)
+    assert(b.tokens.numofBattle == 2)
+    assert(b.upgrade.get == BuildingName.Academy)
+    assert(b.star.get)
   }
 
 }

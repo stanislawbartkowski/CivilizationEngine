@@ -4,7 +4,7 @@ import civilization.I
 
 object II {
 
-  final val LISTOFCIV = I.LISTOFCIV
+  final val LISTOFRES = I.LISTOFRES
   final val REGISTEROWNER = I.REGISTEROWNER
   final val GETBOARDGAME = I.GETBOARDGAME
   final val LISTOFGAMES = I.LISTOFGAMES

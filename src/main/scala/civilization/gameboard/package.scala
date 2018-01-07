@@ -4,6 +4,7 @@ import java.util.Calendar
 
 import civilization.objects._
 import civilization.action.{Command, Play}
+import civilization.io.readdir.GameResources
 
 
 /** Placeholder for objects and definitions related to the gameboard. */
@@ -121,7 +122,7 @@ package object gameboard {
 
   }
 
-  class GameResources {
+  class BoardResources {
 
     //    val table : scala.collection.mutable.Map[Resource.T,Int] = Resource.values.map(v => (v,0)).toMap
     val table: scala.collection.mutable.Map[Resource.T, Int] = scala.collection.mutable.Map(
@@ -141,9 +142,9 @@ package object gameboard {
 
   }
 
-  case class Resources(var hv: Seq[HutVillage], var hvused: Seq[HutVillage], val resou: GameResources)
+  case class Resources(var hv: Seq[HutVillage], var hvused: Seq[HutVillage], val resou: BoardResources)
 
-  case class PlayerDeck(val civ: Civilization.T, var tech: Seq[PlayerTechnology], var units: Seq[CombatUnit], val resou: GameResources, var gover: GovernmentName.T) {
+  case class PlayerDeck(val civ: Civilization.T, var tech: Seq[PlayerTechnology], var units: Seq[CombatUnit], val resou: BoardResources, var gover: GovernmentName.T) {
 
     val defaultcitylimit: Int = 2
     val defaultarmieslimit: Int = 6
@@ -243,13 +244,11 @@ package object gameboard {
     }
 
     var play: Play.Play = new Play.Play()
-    var tech: Seq[Technology] = _
     var battle: Option[BattleField] = None
-    var civil: Seq[CivilizationG] = _
 
     def conf: GameConfig = GameConfig(false)
 
-    def technology(te : TechnologyName.T) : Technology = tech.find(_.tech == te).get
+    def technology(te : TechnologyName.T) : Technology = GameResources.instance().tech.find(_.tech == te).get
     def techlevel(tep : PlayerTechnology) : Int = if (tep.initial.isDefined && tep.initial.get) 1 else technology(tep.tech).level
   }
 

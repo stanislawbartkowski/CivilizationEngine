@@ -64,11 +64,14 @@ package object readdir {
     toSeqOfWonders(j)
   }
 
+  def readListOfBuildings : Seq[Building] = {
+    val j : JsValue = readJSON("objects","BUILDINGS.json")
+    toListOfBuildings(j)
+  }
+
   def readGameBoard(j: JsValue): GameBoard = {
     //    val l: Seq[TilesRead] = readListOfTiles
     val g: GameBoard = toGameBoard(j)
-    g.tech = readTechnologies
-    g.civil = readListOfCivs
     g.map.map.foreach(p => {
       //      p.tile = l.find(t => p.tname == t.name).get.tile
       p.tile = readTileFromFile(p.tname)

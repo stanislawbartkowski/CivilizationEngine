@@ -56,4 +56,13 @@ object S {
   final val cost = "cost"
   final val building = "building"
   final val resourceany = "resourceany"
+  final val tokens = "tokens"
+  final val age = "age"
+  final val wonders = "wonders"
+  final val upgrade = "upgrade"
+  final val star = "star"
+  final val productionT = "Production"
+  final val cultureT = "Culture"
+  final val tradeT = "Trade"
+  final val battleT = "Battle"
 }

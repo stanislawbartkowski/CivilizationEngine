@@ -17,14 +17,13 @@ object GenBoard extends ImplicitMiximFromJson {
     toArrayHutVillages(j)
   }
 
-  private def readResources(nciv: Int): GameResources = {
+  private def readResources(nciv: Int): BoardResources = {
     val j: JsValue = readJSON("map/market", "RESOURCES.json")
-    val g: GameResources = j.as[GameResources]
+    val g: BoardResources = j.as[BoardResources]
     // resources available should be equal to number of civilizations in play
     Resource.values.foreach(r => if (g.nof(r) == -1) g.setResNum(r, nciv))
     g
   }
-
 
   private def assignResources(b: GameBoard, m: MapTile) = {
     for (row <- 0 until m.mapsquares.length; col <- 0 until m.mapsquares(row).length)
@@ -37,7 +36,7 @@ object GenBoard extends ImplicitMiximFromJson {
     var rtiles: Seq[TilesRead] = readListOfTiles.filter(!_.tile.civhome)
     val tilesciv: Seq[TilesRead] = readListOfTiles.filter(_.tile.civhome)
     val civs: Seq[CivilizationG] = readListOfCivs
-    val techs: Seq[Technology] = readTechnologies
+//    val techs: Seq[Technology] = readTechnologies
     // transform list to set
     var sciv: Set[Civilization.T] = l.toSet
     var map: Seq[MapTile] = Nil
@@ -65,15 +64,13 @@ object GenBoard extends ImplicitMiximFromJson {
     val players: List[PlayerDeck] = l.map(c => {
       val civ: CivilizationG = civs.find(_.civ == c).get
       val pt: PlayerTechnology = PlayerTechnology(civ.tech, Some(true))
-      PlayerDeck(c, List(pt), Nil, new GameResources(), civ.gover)
+      PlayerDeck(c, List(pt), Nil, new BoardResources(), civ.gover)
     }
     )
 
     val units: Seq[CombatUnit] = readListOfUnits
     val market: Market = Market(units, Nil)
     val g: GameBoard = GameBoard(players, BoardMap(map), Resources(readHutVillages, Nil, readResources(l.length)), market)
-    g.tech = techs
-    g.civil = civs
     // reveal tiles
     lpatt.foreach(p => if (p.o.isDefined) revealTile(g, p.o.get, p.p))
     // attach random three units

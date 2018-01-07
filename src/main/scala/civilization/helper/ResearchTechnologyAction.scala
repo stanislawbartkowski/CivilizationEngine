@@ -7,6 +7,7 @@ import civilization.objects._
 import civilization.action.{AbstractCommand, CommandPackage}
 import civilization.helper.HarvestResource.HarvestResource
 import civilization.io.fromjson.ImplicitMiximFromJson
+import civilization.io.readdir.GameResources
 import civilization.io.tojson.ImplicitMiximToJson
 import civilization.objects.Civilization.T
 import civilization.objects.Command.T
@@ -39,7 +40,7 @@ object ResearchTechnology extends CommandPackage with ImplicitMiximFromJson with
 
     private def playerTech(deck: PlayerDeck): Set[TechnologyName.T] = deck.tech.map(_.tech).toSet
 
-    private def techLevel(b: GameBoard, tech: TechnologyName.T): Int = b.tech.find(_.tech == tech).get.level
+    private def techLevel(b: GameBoard, tech: TechnologyName.T): Int = GameResources.instance().tech.find(_.tech == tech).get.level
 
     private def researchTechnologyVerify(b: GameBoard, civ: Civilization.T, tech: TechnologyName.T): Mess = {
       val deck: PlayerDeck = b.playerDeck(civ)

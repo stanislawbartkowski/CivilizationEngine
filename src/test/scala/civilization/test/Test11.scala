@@ -100,7 +100,7 @@ class Test11 extends FunSuite {
   }
 
   test("List of civs") {
-    val s: String = II.getData(II.LISTOFCIV, "")
+    val s: String = II.getData(II.LISTOFRES, "")
     println(s)
     assert(s.contains("Rome"))
     assert(s.contains("Spain"))
