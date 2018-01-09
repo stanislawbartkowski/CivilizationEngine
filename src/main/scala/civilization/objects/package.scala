@@ -1,7 +1,5 @@
 package civilization
 
-import civilization.objects.TurnPhase.Value
-
 package object objects {
 
   val MINTRADE: Int = 6

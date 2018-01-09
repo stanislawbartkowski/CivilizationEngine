@@ -66,13 +66,6 @@
     "terrain" : "Grassland"
   },
   {
-    "name" : "Granary",
-    "cost" : 5,
-    "tokens" : {"Production" : 1, "Trade" : 1},
-    "upgrade" : "Aqueduct",
-    "terrain" : "Grassland"
-  },
-  {
     "name" : "Aqueduct",
     "cost" : 8,
     "tokens" : {"Production" : 2, "Trade" : 2},
@@ -95,8 +88,16 @@
     "name" : "Workshop",
     "cost" : 7,
     "tokens" : {"Production" : 3},
+    "terrain" : "Mountain",
+    "upgrade" : "IronMine"
+  },
+  {
+    "name" : "IronMine",
+    "cost" : 10,
+    "tokens" : {"Production" : 4},
     "terrain" : "Mountain"
   }
+
 
 
 

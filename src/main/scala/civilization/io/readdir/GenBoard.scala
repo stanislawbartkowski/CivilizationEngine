@@ -25,6 +25,14 @@ object GenBoard extends ImplicitMiximFromJson {
     g
   }
 
+  private def readBuildingsResources: BuildingsResources = {
+    val j: JsValue = readJSON("map/market", "BUILDINGS.json")
+    val g: BuildingsResources = j.as[BuildingsResources]
+    // resources available should be equal to number of civilizations in play
+    //Resource.values.foreach(r => if (g.nof(r) == -1) g.setResNum(r, nciv))
+    g
+  }
+
   private def assignResources(b: GameBoard, m: MapTile) = {
     for (row <- 0 until m.mapsquares.length; col <- 0 until m.mapsquares(row).length)
       if (m.tile.terrain(row)(col).hv != null) m.mapsquares(row)(col).hv = Some(getRandomHutVillage(b, m.tile.terrain(row)(col).hv))
@@ -69,7 +77,7 @@ object GenBoard extends ImplicitMiximFromJson {
     )
 
     val units: Seq[CombatUnit] = readListOfUnits
-    val market: Market = Market(units, Nil)
+    val market: Market = Market(units, Nil,readBuildingsResources)
     val g: GameBoard = GameBoard(players, BoardMap(map), Resources(readHutVillages, Nil, readResources(l.length)), market)
     // reveal tiles
     lpatt.foreach(p => if (p.o.isDefined) revealTile(g, p.o.get, p.p))

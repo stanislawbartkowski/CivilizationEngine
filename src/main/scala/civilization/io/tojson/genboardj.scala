@@ -96,7 +96,7 @@ object genboardj {
     S.tech -> plSeqToJ(p.tech),
     S.gover -> p.pl.gover,
     S.civ -> p.civ,
-    "trade" -> p.numberofTrade,
+    S.trade -> p.numberofTrade,
     "tradelevel" -> p.technologylevel,
     "commands" -> commandToArray(p.commands),
     "citylimit" -> p.limits.citieslimit,
@@ -158,7 +158,8 @@ object genboardj {
       S.hutvillages -> hvtojson(g.resources.hvused, true),
       S.you -> genPlayerDeckJson(b.you, true),
       "others" -> JsArray(o),
-      "battle" -> genBattleJson(g, civ)
+      S.battle -> genBattleJson(g, civ),
+      S.buildings -> Json.toJson(g.market.buildings)
     ))))
   }
 

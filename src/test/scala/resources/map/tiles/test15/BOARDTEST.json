@@ -1654,6 +1654,7 @@
         ]
       }
     ],
-    "killedunits": []
+    "killedunits": [],
+    "buildings" : []
   }
 }

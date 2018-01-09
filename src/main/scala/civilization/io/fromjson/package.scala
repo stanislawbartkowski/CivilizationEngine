@@ -72,11 +72,11 @@ package object fromjson extends ImplicitMiximFromJson {
       val numofCulture: Int = (json \ S.cultureT).asOpt[Int].getOrElse(0)
       val numofTrade: Int = (json \ S.tradeT).asOpt[Int].getOrElse(0)
       val numofBattle: Int = (json \ S.battleT).asOpt[Int].getOrElse(0)
-      JsSuccess(Tokens(numofTrade, numofProduction, numofCulture,numofBattle))
+      JsSuccess(Tokens(numofTrade, numofProduction, numofCulture, numofBattle))
     }
   }
 
-  implicit val builingReads : Reads[Building] = (
+  implicit val builingReads: Reads[Building] = (
     (JsPath \ S.name).read[BuildingName.T] and
       (JsPath \ S.cost).read[Int] and
       (JsPath \ S.star).readNullable[Boolean] and
@@ -91,7 +91,7 @@ package object fromjson extends ImplicitMiximFromJson {
       val hv: HutVillage.T = (json \ S.hutvillage).asOpt[HutVillage.T].getOrElse(null)
       val resource: Option[Resource.T] = (json \ S.resource).asOpt[Resource.T]
       val naturalwonder: Boolean = (json \ "naturalwonder").asOpt[Boolean].getOrElse(false)
-      val token: Tokens = (json \ S.tokens).asOpt[Tokens].getOrElse(Tokens(0, 0, 0,0))
+      val token: Tokens = (json \ S.tokens).asOpt[Tokens].getOrElse(Tokens(0, 0, 0, 0))
       JsSuccess(Square(terrain, hv, resource, naturalwonder, token))
     }
   }
@@ -257,9 +257,10 @@ package object fromjson extends ImplicitMiximFromJson {
     ) (Resources.apply _)
 
   implicit val markettReads: Reads[Market] = (
-    (JsPath \ S.units).read[Seq[CombatUnit]] and (JsPath \ S.killedunits).read[Seq[CombatUnit]]
+    (JsPath \ S.units).read[Seq[CombatUnit]] and
+      (JsPath \ S.killedunits).read[Seq[CombatUnit]] and
+      (JsPath \ S.buildings).read[BuildingsResources]
     ) (Market.apply _)
-
 
   implicit val gameboardReads: Reads[GameBoard] = new Reads[GameBoard] {
     def reads(json: JsValue): JsResult[GameBoard] = {
@@ -485,6 +486,6 @@ package object fromjson extends ImplicitMiximFromJson {
 
   def toSeqOfWonders(j: JsValue): Seq[WondersOfTheWorld] = j.as[Seq[WondersOfTheWorld]]
 
-  def toListOfBuildings(j : JsValue) : Seq[Building] = j.as[Seq[Building]]
+  def toListOfBuildings(j: JsValue): Seq[Building] = j.as[Seq[Building]]
 
 }

@@ -106,7 +106,8 @@ package object tojson extends ImplicitMiximToJson {
   implicit val marketWrites: Writes[Market] = new Writes[Market] {
     def writes(m: Market) = Json.obj(
       S.units -> m.units,
-      S.killedunits -> m.killedunits
+      S.killedunits -> m.killedunits,
+      S.buildings -> m.buildings
     )
   }
 
@@ -165,6 +166,17 @@ package object tojson extends ImplicitMiximToJson {
       JsArray(l)
     }
   }
+
+  implicit val buildingresourcesWrites : Writes[BuildingsResources] = new Writes[BuildingsResources]  {
+    def writes(m: BuildingsResources) = {
+      var l: Seq[JsValue] = m.table.map(e => Json.obj(
+        S.name -> e._1,
+        S.num -> e._2
+      )).toSeq
+      JsArray(l)
+    }
+  }
+
 
   implicit val commandparamWrites: Writes[CommandValues] = new Writes[CommandValues] {
     def writes(m: CommandValues) = Json.obj(

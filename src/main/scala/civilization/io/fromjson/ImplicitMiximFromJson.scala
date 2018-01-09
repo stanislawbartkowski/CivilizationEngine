@@ -1,6 +1,6 @@
 package civilization.io.fromjson
 
-import civilization.gameboard._
+import civilization.gameboard.{EnumResources, _}
 import civilization.helper._
 import civilization.objects._
 import play.api.libs.json._
@@ -10,6 +10,21 @@ trait ImplicitMiximFromJson {
   implicit def toPoint(j: JsValue): P = convert[PJ](PJ(j))
 
   implicit def toInt(j: JsValue): Int = j.as[Int]
+
+
+  implicit val gameBuildingsReads: Reads[BuildingsResources] = new Reads[BuildingsResources] {
+    def reads(json: JsValue): JsResult[BuildingsResources] = {
+      val r: BuildingsResources = new BuildingsResources()
+      val a: JsArray = json.as[JsArray]
+      a.value.foreach(i => {
+        val j: JsValue = i
+        val re: BuildingName.T = (i \ S.name).get.as[BuildingName.T]
+        val num: Int = (i \ S.num).get.as[Int]
+        r.setResNum(re, num)
+      })
+      JsSuccess(r)
+    }
+  }
 
   implicit val gameResourcesReads: Reads[BoardResources] = new Reads[BoardResources] {
     def reads(json: JsValue): JsResult[BoardResources] = {

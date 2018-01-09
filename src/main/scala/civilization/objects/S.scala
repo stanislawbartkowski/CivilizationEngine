@@ -55,6 +55,7 @@ object S {
   final val phase = "phase"
   final val cost = "cost"
   final val building = "building"
+  final val buildings = "buildings"
   final val resourceany = "resourceany"
   final val tokens = "tokens"
   final val age = "age"
@@ -65,4 +66,5 @@ object S {
   final val cultureT = "Culture"
   final val tradeT = "Trade"
   final val battleT = "Battle"
+  final val battle = "battle"
 }

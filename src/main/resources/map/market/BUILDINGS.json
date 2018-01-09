@@ -1,0 +1,11 @@
+[
+  {"name" : "Harbor", "num" : 10},
+  {"name" : "Shipyard", "num" : 1},
+  {"name" : "TradingPost", "num" : 6},
+  {"name" : "Barracks", "num" : 5},
+  {"name" : "Workshop", "num" : 6},
+  {"name" : "Granary", "num" : 6},
+  {"name" : "Library", "num" : 6},
+  {"name" : "Temple", "num" : 5},
+  {"name" : "Market", "num" : 5}
+]

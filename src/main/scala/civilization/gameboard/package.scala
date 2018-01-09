@@ -122,24 +122,33 @@ package object gameboard {
 
   }
 
-  class BoardResources {
+  trait EnumResources[T] {
 
-    //    val table : scala.collection.mutable.Map[Resource.T,Int] = Resource.values.map(v => (v,0)).toMap
-    val table: scala.collection.mutable.Map[Resource.T, Int] = scala.collection.mutable.Map(
-      Resource.Coin -> 0, Resource.Spy -> 0, Resource.Silk -> 0, Resource.Incense -> 0,
-      Resource.Iron -> 0, Resource.Uranium -> 0, Resource.Wheat -> 0, Resource.Culture -> 0)
+    val table: scala.collection.mutable.Map[T, Int] = scala.collection.mutable.Map()
 
-    def setResNum(r: Resource.T, num: Int) = table.put(r, num)
+    def setResNum(r: T, num: Int) = table.put(r, num)
 
-    def incr(r: Resource.T) = table(r) = table(r) + 1
+    def incr(r: T) = table(r) = table(r) + 1
 
-    def decr(r: Resource.T) = {
+    def decr(r: T) = {
       require(table(r) > 0)
       table(r) = table(r) - 1
     }
 
-    def nof(r: Resource.T): Int = table(r)
+    def nof(r: T): Int = table(r)
+  }
 
+  class BoardResources extends EnumResources[Resource.T] {
+    override val table: scala.collection.mutable.Map[Resource.T, Int] = scala.collection.mutable.Map(
+      Resource.Coin -> 0, Resource.Spy -> 0, Resource.Silk -> 0, Resource.Incense -> 0,
+      Resource.Iron -> 0, Resource.Uranium -> 0, Resource.Wheat -> 0, Resource.Culture -> 0)
+  }
+
+  class BuildingsResources extends EnumResources[BuildingName.T] {
+    override val table: scala.collection.mutable.Map[BuildingName.T, Int] = scala.collection.mutable.Map(
+      BuildingName.Shipyard -> 0, BuildingName.Harbor -> 0, BuildingName.TradingPost -> 0,
+      BuildingName.Barracks -> 0, BuildingName.Workshop -> 0, BuildingName.Granary -> 0,
+      BuildingName.Library -> 0, BuildingName.Temple -> 0, BuildingName.Market -> 0)
   }
 
   case class Resources(var hv: Seq[HutVillage], var hvused: Seq[HutVillage], val resou: BoardResources)
@@ -156,7 +165,7 @@ package object gameboard {
     var hvlist: Seq[HutVillage] = Nil
   }
 
-  case class Market(var units: Seq[CombatUnit], var killedunits: Seq[CombatUnit])
+  case class Market(var units: Seq[CombatUnit], var killedunits: Seq[CombatUnit], val buildings : BuildingsResources)
 
   case class GameMetaData(val version: Int, val createtime: Long, var accesstime: Long, var modiftimemili: Long, val desc: String) {
 
@@ -192,7 +201,7 @@ package object gameboard {
 
   case class WondersDiscount(val cost: Int, tech: TechnologyName.T)
 
-  case class WondersOfTheWorld(val name: Wonders.T, val phase: Option[TurnPhase.T],val age: WondersAge.T, val cost: Int, val discount: Option[WondersDiscount], val desc: String)
+  case class WondersOfTheWorld(val name: Wonders.T, val phase: Option[TurnPhase.T], val age: WondersAge.T, val cost: Int, val discount: Option[WondersDiscount], val desc: String)
 
   case class TakeWinnerLoot(val winner: Civilization.T, val loser: Civilization.T, val loot: WinnerLoot, val reso: Option[Resource.T], val trade: Int)
 
@@ -248,8 +257,9 @@ package object gameboard {
 
     def conf: GameConfig = GameConfig(false)
 
-    def technology(te : TechnologyName.T) : Technology = GameResources.instance().tech.find(_.tech == te).get
-    def techlevel(tep : PlayerTechnology) : Int = if (tep.initial.isDefined && tep.initial.get) 1 else technology(tep.tech).level
+    def technology(te: TechnologyName.T): Technology = GameResources.instance().tech.find(_.tech == te).get
+
+    def techlevel(tep: PlayerTechnology): Int = if (tep.initial.isDefined && tep.initial.get) 1 else technology(tep.tech).level
   }
 
 
