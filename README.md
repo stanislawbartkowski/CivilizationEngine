@@ -531,6 +531,40 @@ gover: Government
 * endofbattle 
   * false: in the miffle of the battle
   * true: end of the battle, attackerwinner: true or false. After that executeCommand(ENDBATTLE) should be submitted.
+  
+# Buldings
+It is the list of building in the market. The number of buildings available is assigned to undeveloped building.
+
+```json
+ "buildings" : [ {
+      "name" : "Temple",
+      "num" : 5
+    }, {
+      "name" : "TradingPost",
+      "num" : 6
+    }, {
+      "name" : "Library",
+      "num" : 6
+    }, {
+      "name" : "Barracks",
+      "num" : 5
+    }, {
+      "name" : "Granary",
+      "num" : 6
+    }, {
+      "name" : "Shipyard",
+      "num" : 5
+    }, {
+      "name" : "Market",
+      "num" : 5
+    }, {
+      "name" : "Workshop",
+      "num" : 6
+    }, {
+      "name" : "Harbor",
+      "num" : 10
+    } ]
+```
 
 # Units
 Summary, number of units. Opposite players exposes only this information to you
