@@ -1,6 +1,6 @@
 [
   {"name" : "Harbor", "num" : 10},
-  {"name" : "Shipyard", "num" : 1},
+  {"name" : "Shipyard", "num" : 5},
   {"name" : "TradingPost", "num" : 6},
   {"name" : "Barracks", "num" : 5},
   {"name" : "Workshop", "num" : 6},

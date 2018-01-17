@@ -24,7 +24,7 @@ object GameResources {
       S.civ -> writeListOfCivs(g.civ),
       S.tech -> writeListOfTechs(g.tech),
       S.wonders -> writeListOfWonders(g.wonders),
-      S.building -> writeListOfBuilding(g.buldings)
+      S.buildings -> writeListOfBuilding(g.buldings)
     )
     j
   }

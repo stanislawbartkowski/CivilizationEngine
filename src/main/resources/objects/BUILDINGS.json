@@ -54,7 +54,7 @@
   },
   {
     "name" : "Cathedral",
-    "cost" : 7,
+    "cost" : 10,
     "tokens" : {"Culture" : 3},
     "star" : true
   },
