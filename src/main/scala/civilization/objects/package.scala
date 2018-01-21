@@ -21,7 +21,7 @@ package object objects {
       hv == that.hv && resource == that.resource
   }
 
-  case class Tokens(val numofTrade: Int, val numofProduction: Int, val numofCulture: Int, val numofBattle: Int)
+  case class Tokens(val numofTrade: Int, val numofProduction: Int, val numofCulture: Int, val numofBattle: Int, val numofCoins : Int)
 
   case class Square(val terrain: Terrain.T, val hv: HutVillage.T, val resource: Option[Resource.T], val naturalwonder: Boolean, val token: Tokens)
 

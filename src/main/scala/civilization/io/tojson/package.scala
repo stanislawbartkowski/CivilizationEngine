@@ -35,14 +35,14 @@ package object tojson extends ImplicitMiximToJson {
     )
   }
 
-  implicit val technologyunitwrite :Writes[TechnologyUnit] = new Writes[TechnologyUnit] {
+  implicit val technologyunitwrite: Writes[TechnologyUnit] = new Writes[TechnologyUnit] {
     override def writes(o: TechnologyUnit): JsValue = Json.obj(
       S.name -> o.unit,
       S.level -> o.level
     )
   }
 
-  implicit val technologyWrite: Writes[Technology]  = new Writes[Technology] {
+  implicit val technologyWrite: Writes[Technology] = new Writes[Technology] {
     override def writes(o: Technology): JsValue = Json.obj(
       S.name -> o.tech,
       S.gover -> o.gover,
@@ -72,7 +72,7 @@ package object tojson extends ImplicitMiximToJson {
     )
   }
 
-  implicit val civilizationWrites : Writes[CivilizationG] = new Writes[CivilizationG] {
+  implicit val civilizationWrites: Writes[CivilizationG] = new Writes[CivilizationG] {
     override def writes(o: CivilizationG): JsValue = Json.obj(
       S.civ -> o.civ,
       S.tech -> o.tech,
@@ -94,12 +94,9 @@ package object tojson extends ImplicitMiximToJson {
 
   implicit val mapsqaureWrites: Writes[MapSquare] = new Writes[MapSquare] {
     def writes(m: MapSquare) = Json.obj(
-      S.hutvillage -> {
-        m.hv
-      },
-      S.city -> {
-        m.city
-      }
+      S.hutvillage -> m.hv,
+      S.city -> m.city,
+      S.building -> m.building
     )
   }
 
@@ -118,7 +115,7 @@ package object tojson extends ImplicitMiximToJson {
       S.map -> m.map.map,
       S.resources -> m.resources,
       S.market -> m.market,
-     "norotate" -> m.norotate
+      "norotate" -> m.norotate
     )
   }
 
@@ -157,17 +154,17 @@ package object tojson extends ImplicitMiximToJson {
       else Json.toJson(m.res.get)
   }
 
-  implicit val gameresourcesWrites : Writes[BoardResources] = new Writes[BoardResources]  {
+  implicit val gameresourcesWrites: Writes[BoardResources] = new Writes[BoardResources] {
     def writes(m: BoardResources) = {
-       var l: Seq[JsValue] = m.table.map(e => Json.obj(
-         S.resource -> e._1,
-         S.num -> e._2
-       )).toSeq
+      var l: Seq[JsValue] = m.table.map(e => Json.obj(
+        S.resource -> e._1,
+        S.num -> e._2
+      )).toSeq
       JsArray(l)
     }
   }
 
-  implicit val buildingresourcesWrites : Writes[BuildingsResources] = new Writes[BuildingsResources]  {
+  implicit val buildingresourcesWrites: Writes[BuildingsResources] = new Writes[BuildingsResources] {
     def writes(m: BuildingsResources) = {
       var l: Seq[JsValue] = m.table.map(e => Json.obj(
         S.name -> e._1,
@@ -192,27 +189,27 @@ package object tojson extends ImplicitMiximToJson {
   }
 
   implicit val commandparamCombatUnit: Writes[CombatUnit] = new Writes[CombatUnit] {
-    def writes(m: CombatUnit ) = Json.obj(
+    def writes(m: CombatUnit) = Json.obj(
       S.unitname -> m.utype,
       S.unitstrength -> m.strength
     )
   }
 
-  implicit val battleStart : Writes[BattleStart] = new Writes[BattleStart] {
+  implicit val battleStart: Writes[BattleStart] = new Writes[BattleStart] {
     override def writes(o: BattleStart) = Json.obj(
       S.attacker -> o.attacker,
       S.defender -> o.defender
     )
   }
 
-  implicit val wondersdiscountWrite : Writes[WondersDiscount] = new Writes[WondersDiscount] {
+  implicit val wondersdiscountWrite: Writes[WondersDiscount] = new Writes[WondersDiscount] {
     override def writes(o: WondersDiscount): JsValue = Json.obj(
       S.cost -> o.cost,
       S.tech -> o.tech
     )
   }
 
-  implicit val wonderoftheworldWrite : Writes[WondersOfTheWorld] = new Writes[WondersOfTheWorld] {
+  implicit val wonderoftheworldWrite: Writes[WondersOfTheWorld] = new Writes[WondersOfTheWorld] {
     override def writes(o: WondersOfTheWorld): JsValue = Json.obj(
       S.name -> o.name,
       S.age -> o.age,
@@ -223,7 +220,7 @@ package object tojson extends ImplicitMiximToJson {
     )
   }
 
-  implicit val takewinnerlootWrites : Writes[TakeWinnerLoot] = new Writes[TakeWinnerLoot] {
+  implicit val takewinnerlootWrites: Writes[TakeWinnerLoot] = new Writes[TakeWinnerLoot] {
     override def writes(o: TakeWinnerLoot) = Json.obj(
       S.winner -> o.winner,
       S.loser -> o.loser,
@@ -233,16 +230,17 @@ package object tojson extends ImplicitMiximToJson {
     )
   }
 
-  implicit val tekensWrite : Writes[Tokens] = new Writes[Tokens]  {
+  implicit val tekensWrite: Writes[Tokens] = new Writes[Tokens] {
     override def writes(o: Tokens): JsValue = Json.obj(
       S.tradeT -> o.numofTrade,
       S.productionT -> o.numofProduction,
       S.cultureT -> o.numofCulture,
-      S.battleT -> o.numofBattle
+      S.battleT -> o.numofBattle,
+      S.coinT -> o.numofCoins
     )
   }
 
-  implicit val bildingWrites : Writes[Building] = new Writes[Building] {
+  implicit val bildingWrites: Writes[Building] = new Writes[Building] {
     override def writes(o: Building): JsValue = Json.obj(
       S.name -> o.name,
       S.cost -> o.cost,
@@ -254,7 +252,7 @@ package object tojson extends ImplicitMiximToJson {
   }
 
 
-  def writeTechonology(t : Technology) : JsValue = Json.toJson(t)
+  def writeTechonology(t: Technology): JsValue = Json.toJson(t)
 
   def writeCivilizationT(c: Civilization.T): JsValue = Json.toJson(c)
 
@@ -281,14 +279,14 @@ package object tojson extends ImplicitMiximToJson {
 
   def writeMetaData(m: GameMetaData): JsValue = Json.toJson(m)
 
-  def writeSeqWinnerLoot(m : Seq[WinnerLoot]) : JsValue = Json.toJson(m)
+  def writeSeqWinnerLoot(m: Seq[WinnerLoot]): JsValue = Json.toJson(m)
 
-  def writeListOfCivs(m : Seq[CivilizationG]) : JsValue = Json.toJson(m)
+  def writeListOfCivs(m: Seq[CivilizationG]): JsValue = Json.toJson(m)
 
-  def writeListOfTechs(m : Seq[Technology]) : JsValue = Json.toJson(m)
+  def writeListOfTechs(m: Seq[Technology]): JsValue = Json.toJson(m)
 
-  def writeListOfWonders(m : Seq[WondersOfTheWorld]) : JsValue = Json.toJson(m)
+  def writeListOfWonders(m: Seq[WondersOfTheWorld]): JsValue = Json.toJson(m)
 
-  def writeListOfBuilding(m : Seq[Building]) : JsValue = Json.toJson(m)
+  def writeListOfBuilding(m: Seq[Building]): JsValue = Json.toJson(m)
 
 }

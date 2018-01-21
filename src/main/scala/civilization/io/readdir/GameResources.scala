@@ -28,4 +28,9 @@ object GameResources {
     )
     j
   }
+
+  def getBuilding(b: BuildingName.T): Building = instance().buldings.find(_.name == b).get
+
+  def getTechnology(t: TechnologyName.T): Technology = instance().tech.find(_.tech == t).get
+
 }

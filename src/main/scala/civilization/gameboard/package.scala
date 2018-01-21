@@ -79,7 +79,7 @@ package object gameboard {
     def toFigures: Figures = Figures(numberofArmies, numberofScouts)
   }
 
-  case class MapSquare(var hv: Option[HutVillage] = None, var city: Option[City] = None) {
+  case class MapSquare(var hv: Option[HutVillage] = None, var city: Option[City] = None, var building : Option[BuildingName.T] = None) {
     require(hv != null && city != null)
     val figures: PlayerFigures = new PlayerFigures(null, 0, 0)
 
@@ -226,6 +226,8 @@ package object gameboard {
     def attackerwinner: Boolean = attacker.points > defender.points
   }
 
+  case class BuildingPoint(val p : P, val b : BuildingName.T)
+
   private def rotaterightList[T](l: Seq[T]): Seq[T] = if (l.isEmpty) l else l.tail :+ l.head
 
   case class GameBoard(val players: Seq[PlayerDeck], val map: BoardMap, val resources: Resources, val market: Market) {
@@ -257,9 +259,7 @@ package object gameboard {
 
     def conf: GameConfig = GameConfig(false)
 
-    def technology(te: TechnologyName.T): Technology = GameResources.instance().tech.find(_.tech == te).get
-
-    def techlevel(tep: PlayerTechnology): Int = if (tep.initial.isDefined && tep.initial.get) 1 else technology(tep.tech).level
+    def techlevel(tep: PlayerTechnology): Int = if (tep.initial.isDefined && tep.initial.get) 1 else GameResources.getTechnology(tep.tech).level
   }
 
 

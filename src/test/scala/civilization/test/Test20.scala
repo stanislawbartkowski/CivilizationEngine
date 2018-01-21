@@ -293,6 +293,9 @@ class Test20 extends FunSuite with ImplicitMiximFromJson {
     assert(b.tokens.numofBattle == 2)
     assert(b.upgrade.get == BuildingName.Academy)
     assert(b.star.get)
+    b = l.find(_.name == BuildingName.Bank).get
+    println(b)
+    assert(b.tokens.numofCoins == 1)
   }
 
   test("Gen BoardGJ, check buildings") {

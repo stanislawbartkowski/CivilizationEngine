@@ -53,5 +53,6 @@ trait ImplicitMiximFromJson {
 
   implicit def toTechnologName(j: JsValue) = j.as[TechnologyName.T]
 
+  implicit def toBuildingPoint(j : JsValue) : BuildingPoint = j.as[BuildingPoint]
 
 }

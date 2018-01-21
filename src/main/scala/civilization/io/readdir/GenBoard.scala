@@ -44,7 +44,6 @@ object GenBoard extends ImplicitMiximFromJson {
     var rtiles: Seq[TilesRead] = readListOfTiles.filter(!_.tile.civhome)
     val tilesciv: Seq[TilesRead] = readListOfTiles.filter(_.tile.civhome)
     val civs: Seq[CivilizationG] = readListOfCivs
-//    val techs: Seq[Technology] = readTechnologies
     // transform list to set
     var sciv: Set[Civilization.T] = l.toSet
     var map: Seq[MapTile] = Nil

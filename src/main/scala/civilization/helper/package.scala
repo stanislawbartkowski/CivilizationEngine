@@ -309,7 +309,7 @@ package object helper {
     cities.toSeq
   }
 
-  def CitiesCanAfford(b: GameBoard, civ: Civilization.T, cost: Integer): Seq[P] =
+  def CitiesCanAfford(b: GameBoard, civ: Civilization.T, cost: Int): Seq[P] =
     CityAvailableForAction(b, civ).filter(city => getProductionForCity(b, civ, city).prod >= cost)
 
   case class Move(val command: Command.T, val p: Option[P])

@@ -72,9 +72,15 @@ package object fromjson extends ImplicitMiximFromJson {
       val numofCulture: Int = (json \ S.cultureT).asOpt[Int].getOrElse(0)
       val numofTrade: Int = (json \ S.tradeT).asOpt[Int].getOrElse(0)
       val numofBattle: Int = (json \ S.battleT).asOpt[Int].getOrElse(0)
-      JsSuccess(Tokens(numofTrade, numofProduction, numofCulture, numofBattle))
+      val numofCoins: Int = (json \ S.coinT).asOpt[Int].getOrElse(0)
+      JsSuccess(Tokens(numofTrade, numofProduction, numofCulture, numofBattle, numofCoins))
     }
   }
+
+  implicit val buildingpointReads: Reads[BuildingPoint] = (
+    (JsPath \ S.p).read[P] and
+      (JsPath \ S.building).read[BuildingName.T]
+    ) (BuildingPoint.apply _)
 
   implicit val builingReads: Reads[Building] = (
     (JsPath \ S.name).read[BuildingName.T] and
@@ -91,7 +97,7 @@ package object fromjson extends ImplicitMiximFromJson {
       val hv: HutVillage.T = (json \ S.hutvillage).asOpt[HutVillage.T].getOrElse(null)
       val resource: Option[Resource.T] = (json \ S.resource).asOpt[Resource.T]
       val naturalwonder: Boolean = (json \ "naturalwonder").asOpt[Boolean].getOrElse(false)
-      val token: Tokens = (json \ S.tokens).asOpt[Tokens].getOrElse(Tokens(0, 0, 0, 0))
+      val token: Tokens = (json \ S.tokens).asOpt[Tokens].getOrElse(Tokens(0, 0, 0, 0, 0))
       JsSuccess(Square(terrain, hv, resource, naturalwonder, token))
     }
   }
@@ -185,12 +191,14 @@ package object fromjson extends ImplicitMiximFromJson {
       val hv: Option[HutVillage] = (json \ S.hutvillage).asOpt[Option[HutVillage]].getOrElse(None)
       val figures: PlayerFigures = (json \ "figures").asOpt[PlayerFigures].getOrElse(null)
       val city: Option[City] = (json \ S.city).asOpt[Option[City]].getOrElse(None)
+      val building : BuildingName.T = (json \ S.building).asOpt[BuildingName.T].getOrElse(null)
       val ma: MapSquare = MapSquare(hv, city)
       if (figures != null) {
         ma.figures.civ = figures.civ
         ma.figures.numberofScouts = figures.numberofScouts
         ma.figures.numberofArmies = figures.numberofArmies
       }
+      if (building != null) ma.building = Some(building)
       JsSuccess(ma)
     }
   }
@@ -488,4 +496,5 @@ package object fromjson extends ImplicitMiximFromJson {
 
   def toListOfBuildings(j: JsValue): Seq[Building] = j.as[Seq[Building]]
 
+//  def toBuildingPoint(j : JsValue) : BuildingPoint = j.as[BuildingPoint]
 }

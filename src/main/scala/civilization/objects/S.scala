@@ -67,4 +67,5 @@ object S {
   final val tradeT = "Trade"
   final val battleT = "Battle"
   final val battle = "battle"
+  final val coinT = "Coin"
 }
