@@ -1,10 +1,9 @@
 package civilization.helper
 
 import civilization.action.AbstractCommand
-import civilization.gameboard.MapTile
 import civilization.message.{M, Mess}
-import civilization.{gameboard, message}
 import civilization.objects._
+import civilization.{gameboard, message}
 
 object ExploreHutCommand {
 

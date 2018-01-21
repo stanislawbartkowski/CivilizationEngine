@@ -25,7 +25,10 @@ package object objects {
 
   case class Square(val terrain: Terrain.T, val hv: HutVillage.T, val resource: Option[Resource.T], val naturalwonder: Boolean, val token: Tokens)
 
-  case class Building(val name: BuildingName.T, val cost: Int, val star: Option[Boolean], val tokens: Tokens, val upgrade: Option[BuildingName.T], val terrain: Option[Terrain.T])
+  case class Building(val name: BuildingName.T, val cost: Int, val star: Option[Boolean], val tokens: Tokens, val upgrade: Option[BuildingName.T], val terrain: Option[Terrain.T]) {
+    def isStar : Boolean = star.isDefined && star.get
+  }
+
 
   case class TilesRead(val name: String, val tile: Tile)
 

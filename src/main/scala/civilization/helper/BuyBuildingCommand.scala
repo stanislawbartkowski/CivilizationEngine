@@ -3,12 +3,11 @@ package civilization.helper
 import civilization.action.{AbstractCommand, CommandPackage}
 import civilization.gameboard._
 import civilization.io.fromjson.ImplicitMiximFromJson
+import civilization.io.readdir.GameResources
 import civilization.io.tojson.ImplicitMiximToJson
 import civilization.message
 import civilization.objects.Command.T
 import civilization.objects._
-import play.api.libs.json.JsValue
-import civilization.io.readdir.GameResources
 import play.api.libs.json.{JsValue, Json}
 
 
@@ -35,7 +34,7 @@ object BuyBuildingCommand extends CommandPackage with ImplicitMiximFromJson with
 
   private def findStarBuilding(b: GameBoard, city: P): Option[MapSquareP] = {
     val blds : Seq[MapSquareP] = findBuildings(b,city)
-    val stars : Seq[MapSquareP] = blds.map(s => (s, GameResources.getBuilding(s.s.building.get))).filter(s => s._2.star.isDefined && s._2.star.get).map(_._1)
+    val stars : Seq[MapSquareP] = blds.filter(_.s.building.get.isStar)
     // empty or one element
     if (stars.isEmpty) None else Some(stars.head)
   }
@@ -45,7 +44,10 @@ object BuyBuildingCommand extends CommandPackage with ImplicitMiximFromJson with
     val pl: PlayerDeck = b.playerDeck(civ)
     val alltechs: Seq[Technology] = pl.tech.map(t => GameResources.getTechnology(t.tech))
     // all unlocked buildings
-    val allb: Seq[Building] = alltechs.filter(_.building.isDefined).map(b => GameResources.getBuilding(b.building.get))
+    val allb: Seq[Building] = alltechs.filter(_.building.isDefined).map(b => GameResources.getBuilding(b.building.get)).
+    // filter out unavailable, sold out
+      filter(bld => b.market.buildings.noB(bld.name) > 0)
+
     // create set for quick lookup
     var setb: Set[BuildingName.T] = allb.map(_.name).toSet
     // remove upgraded already
@@ -75,6 +77,13 @@ object BuyBuildingCommand extends CommandPackage with ImplicitMiximFromJson with
     ))
   }
 
+  private def removeBuilding(b : GameBoard,s : MapSquareP) = {
+    // return building to the market
+    b.market.buildings.incdevBuilding(s.s.building.get.name,true)
+    // remove building
+    s.s.removeBuilding()
+  }
+
   protected class BuyBuilding(override val param: BuildingPoint) extends AbstractCommand(param) {
     override def verify(board: GameBoard): message.Mess = {
        val blds : Seq[BuildSquare] = possibleBuildings(board,civ,p)
@@ -85,13 +94,19 @@ object BuyBuildingCommand extends CommandPackage with ImplicitMiximFromJson with
 
     override def execute(board: GameBoard): Unit = {
       val bui: Building = GameResources.getBuilding(param.b)
-      if (bui.star.isDefined && bui.star.get) {
+      if (bui.isStar) {
         // remove star building if exists
         val sta: Option[MapSquareP] = findStarBuilding(board, param.p)
-        if (sta.isDefined) sta.get.s.building = None
+        if (sta.isDefined) removeBuilding(board,sta.get)
       }
       val ma: MapSquareP = getSquare(board, param.p)
-      ma.s.building = Some(param.b)
+      // remove existing if exists
+      if (ma.s.building.isDefined)
+        removeBuilding(board,ma)
+      // withdraw from market
+      board.market.buildings.incdevBuilding(param.b,false)
+      // built
+      ma.s.setBuilding(param.b)
     }
   }
 

@@ -5,6 +5,8 @@ import play.api.libs.json.Reads._
 import play.api.libs.functional.syntax._
 import civilization.objects._
 import civilization.gameboard._
+import civilization.io.readdir.GameResources
+
 
 package object fromjson extends ImplicitMiximFromJson {
 
@@ -198,7 +200,7 @@ package object fromjson extends ImplicitMiximFromJson {
         ma.figures.numberofScouts = figures.numberofScouts
         ma.figures.numberofArmies = figures.numberofArmies
       }
-      if (building != null) ma.building = Some(building)
+      if (building != null) ma.setBuilding(building)
       JsSuccess(ma)
     }
   }

@@ -4,7 +4,6 @@ import civilization.action.Command
 import civilization.gameboard._
 import civilization.message.{FatalError, M, Mess}
 import civilization.objects._
-import play.api.libs.json.JsValue
 
 import scala.util.control.Breaks._
 
@@ -17,11 +16,20 @@ package object helper {
 
     def terrain: Terrain.T = sm.terrain
 
-    def numberOfTrade: Int = sm.token.numofTrade
+    def numberOfTrade: Int =
+    // if building trade from building
+      if (s.building.isDefined) s.building.get.tokens.numofTrade
+      else sm.token.numofTrade
 
-    def numberOfProduction: Int = sm.token.numofProduction
+    def numberOfProduction: Int =
+    // if building, production from building
+      if (s.building.isDefined) s.building.get.tokens.numofProduction
+      else sm.token.numofProduction
 
-    def resource: Option[Resource.T] = sm.resource
+    def resource: Option[Resource.T] =
+    // building covers resource
+      if (s.building.isDefined) None
+      else sm.resource
 
     def suggestedCapitalForCiv: Option[Civilization.T] = if (suggestedCapital) Some(t.tile.civ) else None
 

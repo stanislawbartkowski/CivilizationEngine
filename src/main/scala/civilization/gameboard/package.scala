@@ -10,10 +10,42 @@ import civilization.io.readdir.GameResources
 /** Placeholder for objects and definitions related to the gameboard. */
 package object gameboard {
 
+  type BattleArmy = Array[Option[FrontUnit]]
   /** Version: used during storing and retrieving gameboard from datastore.
     * Ignore games which does not fit to avoid runtime errors
     */
   private final val packageversion: Int = 5;
+
+  def genEmptySquares: Array[Array[MapSquare]] = {
+    val squares: Array[Array[MapSquare]] = Array.ofDim(TILESIZE, TILESIZE)
+    for (i <- 0 until TILESIZE; j <- 0 until TILESIZE) squares(i)(j) = MapSquare()
+    squares
+  }
+
+  def eqO[T](p1: Option[T], p2: Option[T]): Boolean = {
+    if (p1.isEmpty && p2.isEmpty) return true
+    if (p1.isEmpty) return false
+    if (p2.isEmpty) return false
+    return p1.get == p2.get
+  }
+
+  private def rotaterightList[T](l: Seq[T]): Seq[T] = if (l.isEmpty) l else l.tail :+ l.head
+
+  trait EnumResources[T] {
+
+    val table: scala.collection.mutable.Map[T, Int] = scala.collection.mutable.Map()
+
+    def setResNum(r: T, num: Int) = table.put(r, num)
+
+    def incr(r: T) = table(r) = table(r) + 1
+
+    def decr(r: T) = {
+      require(table(r) > 0)
+      table(r) = table(r) - 1
+    }
+
+    def nof(r: T): Int = table(r)
+  }
 
   /** Part of map pattern. Position of the tile and orientation.
     * Initially only civilication tiles have orientation specified.
@@ -23,7 +55,6 @@ package object gameboard {
     * @param o Orienation. If isDefine the tile is revealed
     */
   case class PatternMap(val p: P, val o: Option[Orientation.T])
-
 
   /** TODO : consider
     *
@@ -40,14 +71,14 @@ package object gameboard {
     /** Not occupied by any army */
     def empty: Boolean = (numberofArmies == 0 && numberofScouts == 0)
 
+    /** Minus, move figures from squre */
+    def -(that: Figures) = this + Figures(0 - that.numberofArmies, 0 - that.numberofScouts)
+
     /** Adds figures, move figures over stationing */
     def +(that: Figures) = {
       this.numberofScouts = this.numberofScouts + that.numberofScouts
       this.numberofArmies = this.numberofArmies + that.numberofArmies
     }
-
-    /** Minus, move figures from squre */
-    def -(that: Figures) = this + Figures(0 - that.numberofArmies, 0 - that.numberofScouts)
 
     /** Minus, auxiliary */
     def unary_- : Figures = Figures(0 - numberofArmies, 0 - numberofScouts)
@@ -56,10 +87,6 @@ package object gameboard {
   case class PlayerFigures(var civ: Civilization.T, var numberofArmies: Int, var numberofScouts: Int) {
 
     require(ok)
-
-    private def ok: Boolean = numberofArmies >= 0 && numberofScouts >= 0
-
-    def empty: Boolean = (numberofArmies == 0 && numberofScouts == 0)
 
     def civOccupying(civ: Civilization.T): Boolean = !empty && this.civ == civ
 
@@ -70,6 +97,10 @@ package object gameboard {
       require(ok)
     }
 
+    private def ok: Boolean = numberofArmies >= 0 && numberofScouts >= 0
+
+    def empty: Boolean = (numberofArmies == 0 && numberofScouts == 0)
+
     def kill() = {
       this.numberofScouts = 0
       this.numberofArmies = 0
@@ -79,19 +110,16 @@ package object gameboard {
     def toFigures: Figures = Figures(numberofArmies, numberofScouts)
   }
 
-  case class MapSquare(var hv: Option[HutVillage] = None, var city: Option[City] = None, var building : Option[BuildingName.T] = None) {
+  case class MapSquare(var hv: Option[HutVillage] = None, var city: Option[City] = None, var building : Option[Building] = None) {
     require(hv != null && city != null)
     val figures: PlayerFigures = new PlayerFigures(null, 0, 0)
 
     def hvhere: Boolean = hv.isDefined
 
     def cityhere: Boolean = city.isDefined
-  }
 
-  def genEmptySquares: Array[Array[MapSquare]] = {
-    val squares: Array[Array[MapSquare]] = Array.ofDim(TILESIZE, TILESIZE)
-    for (i <- 0 until TILESIZE; j <- 0 until TILESIZE) squares(i)(j) = MapSquare()
-    squares
+    def setBuilding(b : BuildingName.T) = building = Some(GameResources.getBuilding(b))
+    def removeBuilding() = building = None
   }
 
   // tile is var, enriched later by tname
@@ -122,22 +150,6 @@ package object gameboard {
 
   }
 
-  trait EnumResources[T] {
-
-    val table: scala.collection.mutable.Map[T, Int] = scala.collection.mutable.Map()
-
-    def setResNum(r: T, num: Int) = table.put(r, num)
-
-    def incr(r: T) = table(r) = table(r) + 1
-
-    def decr(r: T) = {
-      require(table(r) > 0)
-      table(r) = table(r) - 1
-    }
-
-    def nof(r: T): Int = table(r)
-  }
-
   class BoardResources extends EnumResources[Resource.T] {
     override val table: scala.collection.mutable.Map[Resource.T, Int] = scala.collection.mutable.Map(
       Resource.Coin -> 0, Resource.Spy -> 0, Resource.Silk -> 0, Resource.Incense -> 0,
@@ -149,6 +161,36 @@ package object gameboard {
       BuildingName.Shipyard -> 0, BuildingName.Harbor -> 0, BuildingName.TradingPost -> 0,
       BuildingName.Barracks -> 0, BuildingName.Workshop -> 0, BuildingName.Granary -> 0,
       BuildingName.Library -> 0, BuildingName.Temple -> 0, BuildingName.Market -> 0)
+
+    private def toBaseBuilding(b : BuildingName.T) : BuildingName.T = {
+      var bd : BuildingName.T = b;
+      GameResources.instance().buldings.foreach(b => {
+        // converts upgraded to basic
+        if (b.upgrade.isDefined && b.upgrade.get == b) bd = b.name;
+      }
+      )
+      bd
+    }
+
+    /**
+      * increases/decreases the building number in the market
+      * converts upgraded building to basic building
+      * @param b Building
+      * @param inc increase or decrease
+      */
+    def incdevBuilding(b : BuildingName.T,inc : Boolean) = {
+      var bd : BuildingName.T = toBaseBuilding(b)
+      require(!inc && nof(bd) > 0)
+      if (inc) incr(bd)
+      else decr(bd)
+    }
+
+    /**
+      * number of buildings in the market
+      * @param b Building, base and upgraded are the same here
+      * @return number of buldings
+      */
+    def noB(b : BuildingName.T) : Int = nof(toBaseBuilding(b))
   }
 
   case class Resources(var hv: Seq[HutVillage], var hvused: Seq[HutVillage], val resou: BoardResources)
@@ -180,13 +222,6 @@ package object gameboard {
     def okV: Boolean = version == packageversion
   }
 
-  def eqO[T](p1: Option[T], p2: Option[T]): Boolean = {
-    if (p1.isEmpty && p2.isEmpty) return true
-    if (p1.isEmpty) return false
-    if (p2.isEmpty) return false
-    return p1.get == p2.get
-  }
-
   case class WinnerLoot(val hv: Option[HutVillage.T], val res: Option[Resource.T], val trade: Boolean, val culture: Boolean) {
     def ==(v: WinnerLoot): Boolean = {
       if (trade != v.trade) return false
@@ -207,8 +242,6 @@ package object gameboard {
 
   case class FrontUnit(val unit: CombatUnit, var attackstrength: Int, var defendstrenght: Int, var wounds: Int)
 
-  type BattleArmy = Array[Option[FrontUnit]]
-
   case class BattleFieldSide(val fighting: BattleArmy, var waiting: Seq[CombatUnit], var killed: Seq[CombatUnit], val strength: CombatUnitStrength, val combatBonus: Int, var canuseiron: Boolean, val isvillage: Boolean) {
     var ironused: Int = -1
 
@@ -228,8 +261,6 @@ package object gameboard {
 
   case class BuildingPoint(val p : P, val b : BuildingName.T)
 
-  private def rotaterightList[T](l: Seq[T]): Seq[T] = if (l.isEmpty) l else l.tail :+ l.head
-
   case class GameBoard(val players: Seq[PlayerDeck], val map: BoardMap, val resources: Resources, val market: Market) {
 
     // order of civilizations to play
@@ -238,14 +269,14 @@ package object gameboard {
     // cheating, for old tests only
     // do not rotate
     var norotate: Boolean = false
-
-    def rotateplorder: Unit = if (!norotate) pllist = rotaterightList(pllist)
-
     var metadata: GameMetaData = new GameMetaData("")
-
     // force command to execute next
     // TODO: I'm not happy with that
     var forcednext: List[Command] = Nil
+    var play: Play.Play = new Play.Play()
+    var battle: Option[BattleField] = None
+
+    def rotateplorder: Unit = if (!norotate) pllist = rotaterightList(pllist)
 
     def addForcedCommand(com: Command) = forcednext = forcednext :+ com
 
@@ -253,9 +284,6 @@ package object gameboard {
       // assuming exist
       players.find(p => p.civ == civ).get
     }
-
-    var play: Play.Play = new Play.Play()
-    var battle: Option[BattleField] = None
 
     def conf: GameConfig = GameConfig(false)
 

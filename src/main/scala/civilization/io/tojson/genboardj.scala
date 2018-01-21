@@ -16,19 +16,19 @@ object genboardj {
   // if empty square : number of original production
   // if city: number of city production
   case class MapSquareJ(revealed: Boolean, t: Terrain.T, trade: Int, production: Int, resource: Option[Resource.T], capForCiv: Option[Civilization.T],
-                        civ: Civilization.T, city: City.T, defence: Int, numberofArmies: Int, numberofScouts: Int, tile: String, hv: Option[HutVillage.T])
+                        civ: Civilization.T, city: City.T, defence: Int, numberofArmies: Int, numberofScouts: Int, tile: String, hv: Option[HutVillage.T], building: Option[BuildingName.T])
 
-  case class PlayerTech(val pl : PlayerTechnology, val level: Int)
+  case class PlayerTech(val pl: PlayerTechnology, val level: Int)
 
-  private def plToJson(pl : PlayerTech) : JsValue = Json.obj(
+  private def plToJson(pl: PlayerTech): JsValue = Json.obj(
     S.tech -> pl.pl.tech,
     S.initial -> pl.pl.initial,
     S.level -> pl.level
   )
 
-  implicit def plSeqToJ(pl : Seq[PlayerTech]) : Seq[JsValue] = pl.map(plToJson)
+  implicit def plSeqToJ(pl: Seq[PlayerTech]): Seq[JsValue] = pl.map(plToJson)
 
-  case class PlayerDeckJ(civ: Civilization.T, numberofTrade: Int, commands: Seq[Command.T], limits: PlayerLimits, technologylevel: Int, tech : Seq[PlayerTech], pl: PlayerDeck)
+  case class PlayerDeckJ(civ: Civilization.T, numberofTrade: Int, commands: Seq[Command.T], limits: PlayerLimits, technologylevel: Int, tech: Seq[PlayerTech], pl: PlayerDeck)
 
   case class Game(active: Civilization.T, roundno: Int, phase: TurnPhase.T)
 
@@ -69,7 +69,7 @@ object genboardj {
     }
 
     MapSquareJ(ss.revealed, t, trade, production, resource, cap, civ, city, defence, numberofArmies, numberofScouts, ss.t.tname,
-      if (ss.s.hv.isDefined) Some(ss.s.hv.get.hv) else None)
+      if (ss.s.hv.isDefined) Some(ss.s.hv.get.hv) else None,if (ss.s.building.isDefined) Some(ss.s.building.get.name) else None)
   }
 
   private def genGame(g: GameBoard, civrequesting: Civilization.T): Game = {
@@ -85,7 +85,7 @@ object genboardj {
   private def genPlayerDeckJ(g: GameBoard, civ: Civilization.T): PlayerDeckJ =
     PlayerDeckJ(civ, numberofTrade(g, civ).trade, allowedCommands(g, civ), getLimits(g, civ),
       ResearchTechnology.techologylevel(g, civ),
-      g.playerDeck(civ).tech.map(t => PlayerTech(t,g.techlevel(t))),
+      g.playerDeck(civ).tech.map(t => PlayerTech(t, g.techlevel(t))),
       g.playerDeck(civ))
 
   private def commandToArray(l: Seq[Command.T]): JsArray = {
@@ -123,7 +123,8 @@ object genboardj {
   private def mapSquareJ(m: MapSquareJ): JsValue = {
     Json.obj("revealed" -> m.revealed, S.terrain -> Option(m.t), S.trade -> m.trade, "production" -> m.production, S.resource -> m.resource,
       "capciv" -> Option(m.capForCiv), S.civ -> Option(m.civ), S.city -> Option(m.city), "defence" -> m.defence, S.numberofArmies -> m.numberofArmies, S.numberofScouts -> m.numberofScouts,
-      "tile" -> m.tile, S.hutvillage -> Option(m.hv)
+      "tile" -> m.tile, S.hutvillage -> Option(m.hv),
+      S.building -> m.building
     )
   }
 
