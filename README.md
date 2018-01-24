@@ -681,7 +681,7 @@ One Hut and Spy discovered
 * Usage example:
  * executeCommand("BUYBUILDING",0,4,{{"p":{"row":0,"col":4},"building":"Temple"})
  
-Remark: The same command is used to build a new building on an empty square and as a replacement of existing building. For replacement, the previous building is removed and new is nailed down. Also for a limited building. The previous limited building is removed regardless where it is standing, is removed and a new building is put.  
+Remark: The same command is used to build a new building on an empty square and as a replacement of existing building. For replacement, the previous building is removed and new is nailed down. Also for a limited building. The previous limited building is removed regardless where it is standind and a new building is put.  
 
 # itemizeCommand format
 
@@ -759,7 +759,7 @@ Market can be build at square (0,4).
 ```
 "list":[]
 ```
-For every building, there is a list of buildings to be pulled down if new building is puit there. The list could contain 1 (for replacement) or 2 elements. The second case is for "limited" building marked with star sign. In order to build next limited building, previous one should be removed.
+For every building, there is a list of buildings to be pulled down if new building is puit there. The list could contain 1 (for replacement) or 2 elements. The second case is for "limited" building marked with star sign. In order to build a next limited building, the previous one should be removed.
        
  ```JSON
  [{"p":{"row":1,"col":5},
