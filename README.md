@@ -672,6 +672,16 @@ One Hut and Spy discovered
   * in the future JSON par value should contain the winner reward
 * Usage example:
   * executeCommand("ENDBATTLE",-1,-1,null)
+  
+## BUYBUILDING
+* executeCommand("secret token",row,col, { "row" : row, "col" : col, "building" : "building name"})
+* Parameters:
+ *  row,col : city
+ *  { "row","col", "building"} : square at the outskirt of the city where bulding is build and set up
+* Usage example:
+ * executeCommand("BUYBUILDING",0,4,{{"p":{"row":0,"col":4},"building":"Temple"})
+ 
+Remark: The same command is used to build a new building on an empty square and as a replacement of existing building. For replacement, the previous building is removed and new is nailed down. Also for a limited building. The previous limited building is removed regardless where it is standing, is removed and a new building is put.  
 
 # itemizeCommand format
 
@@ -729,3 +739,42 @@ Sample
  {"p" : { "row" : 2, "col" : 5}, "explore" : \[{ "row" : 2, "col" : 4 }\] }
  
  Scout or figure at point (2,5) can explore hit (2,4)
+ 
+ ## BUYBUILDING
+ 
+Returns a list of cities and list of buildings possible to buy and build on the outskirts of a particular city.
+
+Example below:
+
+```JSON
+ [{"p":{"row":1,"col":5},
+```
+City at square (1,5)
+Around a city Market and Temple can be built.
+```JSON
+       {"p":{"row":0,"col":4},"building":"Market","list":[]},
+```
+Market can be build at square (0,4).
+
+```
+"list":[]
+```
+For every building, there is a list of buildings to be pulled down if new building is puit there. The list could contain 1 (for replacement) or 2 elements. The second case is for "limited" building marked with star sign. In order to build next limited building, previous one should be removed.
+       
+ ```JSON
+ [{"p":{"row":1,"col":5},
+   "list":[
+       {"p":{"row":0,"col":4},"building":"Market","list":[]},
+       {"p":{"row":0,"col":4},"building":"Temple","list":[]},
+       {"p":{"row":2,"col":4},"building":"Market","list":[]},
+       {"p":{"row":2,"col":4},"building":"Temple","list":[]},
+       {"p":{"row":2,"col":6},"building":"Market","list":[]},
+       {"p":{"row":2,"col":6},"building":"Temple","list":[]},
+       {"p":{"row":1,"col":4},"building":"Market","list":[]},
+       {"p":{"row":1,"col":4},"building":"Temple","list":[]},
+       {"p":{"row":1,"col":6},"building":"Market","list":[]},
+       {"p":{"row":1,"col":6},"building":"Temple","list":[]}
+     ]
+  }
+  ]
+
