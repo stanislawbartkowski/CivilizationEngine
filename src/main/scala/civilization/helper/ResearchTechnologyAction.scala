@@ -35,6 +35,22 @@ object ResearchTechnology extends CommandPackage with ImplicitMiximFromJson with
     return 1 // first level
   }
 
+  private def upgradeB(b: GameBoard, civ : Civilization.T, tech: TechnologyName.T) : Unit = {
+    val t : Technology = GameResources.getTechnology(tech)
+    // technology do not unlock any building
+    if (t.building.isEmpty) return
+    citiesForCivilization(b,civ).foreach(
+      c => {
+        // buildings
+        squaresAround(b,c.p).filter(_.s.building.isDefined).foreach( ss => {
+          val bui : Building = GameResources.getBuilding(ss.s.building.get.name)
+          if (bui.upgrade.isDefined)
+            if (bui.upgrade.get == t.building.get) ss.s.setBuilding(t.building.get)
+        })
+      }
+    )
+  }
+
 
   protected class ResearchTechnologyAction(override val param: TechnologyName.T) extends AbstractCommand(param) {
 
@@ -56,6 +72,8 @@ object ResearchTechnology extends CommandPackage with ImplicitMiximFromJson with
     private def researchTechnologyExecute(b: GameBoard, civ: Civilization.T, tech: TechnologyName.T) = {
       val deck: PlayerDeck = b.playerDeck(civ)
       deck.tech = deck.tech :+ new PlayerTechnology(tech)
+      // upgrade buildings
+      upgradeB(b,civ,tech)
     }
 
     override def execute(board: GameBoard) = researchTechnologyExecute(board, civ, param)

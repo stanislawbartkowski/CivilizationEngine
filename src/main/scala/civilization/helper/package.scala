@@ -375,7 +375,7 @@ package object helper {
     li
   }
 
-  def finishedAtPoint(b : GameBoard, civ: Civilization.T) : Map[P, Figures] = {
+  def finishedAtPoint(b: GameBoard, civ: Civilization.T): Map[P, Figures] = {
     val lastp: Seq[(Figures, P, P)] = civLastMoves(b, civ).map(o => (o.f.toFigures, o.begstop._1.p.get, o.begstop._2.p.get))
     //TODO: can be done better,2 traversals, use mutable map and fold
     //    val startmap : Map[P,Figures] = lastp.map(t => t._3 -> Figures(0,0)) toMap
@@ -737,5 +737,25 @@ package object helper {
     // new position
     putFigures(b, civ, p, f)
   }
+
+  // ===================================
+  // buildings
+  // ===================================
+
+  def removeBuilding(b: GameBoard, s: MapSquareP) = {
+    // return building to the market
+    b.market.buildings.incdevBuilding(s.s.building.get.name, true)
+    // remove building
+    s.s.removeBuilding()
+  }
+
+  def removeWonder(b: GameBoard, s: MapSquareP) = s.s.wonder = None
+
+  def canBuild(s: MapSquareP, civ: Civilization.T): Boolean = {
+    val civhere: Option[Civilization.T] = s.civHere
+    if (civhere.isEmpty) return true
+    return civhere.get == civ
+  }
+
 
 }

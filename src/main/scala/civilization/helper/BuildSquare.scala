@@ -11,9 +11,15 @@ object BuildSquare {
   case class BuildSquare(val p: BuildingPoint, val remove: Seq[P])
 
   def toJB(p: BuildSquare): JsValue =
-    Json.obj(
+    if (p.p.bui.isDefined)
+      Json.obj(
+        S.p -> writesPoint(p.p.p),
+        S.building -> p.p.b,
+        S.list -> p.remove.map(writesPoint)
+      )
+    else Json.obj(
       S.p -> writesPoint(p.p.p),
-      S.building -> p.p.b,
+      S.wonder -> p.p.w,
       S.list -> p.remove.map(writesPoint)
     )
 
@@ -32,10 +38,9 @@ object BuildSquare {
 
   def verifyB(board: GameBoard, civ: Civilization.T, p: P, param: BuildingPoint, m: message.M.Value, possibleP: (GameBoard, Civilization.T, P) => Seq[BuildSquare]): message.Mess = {
     val blds: Seq[BuildSquare] = possibleP(board, civ, p)
-    val f: Option[BuildSquare] = blds.find(p => p == param)
+    val f: Option[BuildSquare] = blds.find(p => p.p == param)
     if (f.isDefined) return null
     message.Mess(m, param)
   }
-
 
 }
