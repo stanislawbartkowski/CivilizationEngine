@@ -10,6 +10,7 @@ package object objects {
   val UNITSBATTLE = 3
   val IRONSTRENGTH = 3
   val MAXLOOTTRADE = 3
+  val WONDERWINDOW = 4
 
   case class GameConfig(val ironincreasedefend: Boolean)
 
@@ -37,7 +38,7 @@ package object objects {
   }
 
   case class P(val row: Int, val col: Int) {
-    def +(that: P) = row == that.row && col == that.col
+//    >def +(that: P) = row == that.row && col == that.col
 
     def empty: Boolean = row == -1 && col == -1
   }

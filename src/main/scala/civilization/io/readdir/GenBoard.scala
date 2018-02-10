@@ -38,6 +38,14 @@ object GenBoard extends ImplicitMiximFromJson {
       if (m.tile.terrain(row)(col).hv != null) m.mapsquares(row)(col).hv = Some(getRandomHutVillage(b, m.tile.terrain(row)(col).hv))
   }
 
+  private def genWondersAge(r: GameResources, age: WondersAge.T): Seq[Wonders.T] = {
+    // select wonders names relevant to age
+    val l: Seq[Wonders.T] = r.wonders.filter(_.age == age).map(_.name)
+    getRandom(l, WONDERWINDOW)._1
+  }
+
+  private def genWonders(r: GameResources): Seq[Wonders.T] = genWondersAge(r, WondersAge.Ancient) ++ genWondersAge(r, WondersAge.Medieval) ++ genWondersAge(r, WondersAge.Modern)
+
   def genBoard(l: List[Civilization.T], patt: String): GameBoard = {
     val j: JsValue = readJSON("map/pattern", patt)
     val lpatt: Seq[PatternMap] = toSeqPatterMap(j)
@@ -76,7 +84,7 @@ object GenBoard extends ImplicitMiximFromJson {
     )
 
     val units: Seq[CombatUnit] = readListOfUnits
-    val market: Market = Market(units, Nil,readBuildingsResources)
+    val market: Market = Market(units, Nil, readBuildingsResources,genWonders(GameResources.instance()))
     val g: GameBoard = GameBoard(players, BoardMap(map), Resources(readHutVillages, Nil, readResources(l.length)), market)
     // reveal tiles
     lpatt.foreach(p => if (p.o.isDefined) revealTile(g, p.o.get, p.p))

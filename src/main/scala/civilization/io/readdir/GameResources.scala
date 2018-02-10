@@ -33,4 +33,6 @@ object GameResources {
 
   def getTechnology(t: TechnologyName.T): Technology = instance().tech.find(_.tech == t).get
 
+  def getWonder(t : Wonders.T) : WondersOfTheWorld = instance().wonders.find(_.name == t).get
+
 }

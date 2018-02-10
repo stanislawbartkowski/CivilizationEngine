@@ -104,7 +104,8 @@ package object tojson extends ImplicitMiximToJson {
     def writes(m: Market) = Json.obj(
       S.units -> m.units,
       S.killedunits -> m.killedunits,
-      S.buildings -> m.buildings
+      S.buildings -> m.buildings,
+      S.wonders -> m.wonders
     )
   }
 
@@ -216,7 +217,8 @@ package object tojson extends ImplicitMiximToJson {
       S.cost -> o.cost,
       S.phase -> o.phase,
       S.discount -> o.discount,
-      S.desc -> o.desc
+      S.desc -> o.desc,
+      S.wondertT -> o.t
     )
   }
 
@@ -288,5 +290,7 @@ package object tojson extends ImplicitMiximToJson {
   def writeListOfWonders(m: Seq[WondersOfTheWorld]): JsValue = Json.toJson(m)
 
   def writeListOfBuilding(m: Seq[Building]): JsValue = Json.toJson(m)
+
+  def writeListOfWondersNames(l : Seq[Wonders.T]) : JsValue = Json.toJson(l)
 
 }

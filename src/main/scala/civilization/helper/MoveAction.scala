@@ -16,10 +16,19 @@ object MoveAction {
     false
   }
 
+  private def figuresToMove(b: GameBoard, civ: Civilization.T, p: P, fig: Figures) : Figures = {
+    val s: MapSquareP = getSquare(b, p)
+    val exiF : Figures = s.s.figures.toFigures
+    val lastm: Map[P, Figures] = finishedAtPoint(b,civ)
+    if (lastm contains  p) exiF - lastm.get(p).get
+    exiF
+  }
+
   private def startOfMoveVerify(b: GameBoard, civ: Civilization.T, p: P, fig: Figures): Mess = {
     checkP(b, p)
     // check if figures moves again from last position
-    val s: MapSquareP = getSquare(b, p)
+//    val s: MapSquareP = getSquare(b, p)
+/*`
     val flast: Seq[PlayerMove] = civLastMoves(b, civ)
     val f = flast.find(_.lastp == p)
     if (f.isDefined) {
@@ -33,10 +42,16 @@ object MoveAction {
       if (f.get.f.numberofArmies == fig.numberofArmies && f.get.f.numberofScouts == fig.numberofScouts)
         return Mess(M.FIGURESMOVEDAGAIN, (f.get.f.numberofArmies, f.get.f.numberofScouts))
     }
-
-    if (s.s.figures.civ != null && s.s.figures.civ != civ) return Mess(M.NOFIGURESBELONGINGTOCIVILIZATION, (p, civ))
-    if (s.s.figures.numberofScouts < fig.numberofScouts) return Mess(M.NUMBEROFSCOUTSLESS, (p, s.s.figures.numberofScouts, fig.numberofScouts))
-    if (s.s.figures.numberofArmies < fig.numberofArmies) return Mess(M.NUMBEROFARMIESLESS, (p, s.s.figures.numberofArmies, fig.numberofArmies))
+*/
+//    val r : Option[Mess] = checkMoveAgain(b,civ,p,fig)
+//    if (r.isDefined) return r.get
+    val ss: MapSquareP = getSquare(b, p)
+    val exiF : Figures = figuresToMove(b,civ,p,fig)
+    if (ss.s.figures.civ != null && ss.s.figures.civ != civ) return Mess(M.NOFIGURESBELONGINGTOCIVILIZATION, (p, civ))
+//    if (s.s.figures.numberofScouts < fig.numberofScouts) return Mess(M.NUMBEROFSCOUTSLESS, (p, s.s.figures.numberofScouts, fig.numberofScouts))
+ //   if (s.s.figures.numberofArmies < fig.numberofArmies) return Mess(M.NUMBEROFARMIESLESS, (p, s.s.figures.numberofArmies, fig.numberofArmies))
+    if (exiF.numberofScouts < fig.numberofScouts) return Mess(M.NUMBEROFSCOUTSLESS, (p, exiF.numberofScouts, fig.numberofScouts))
+    if (exiF.numberofArmies < fig.numberofArmies) return Mess(M.NUMBEROFARMIESLESS, (p, exiF.numberofArmies, fig.numberofArmies))
     null
   }
 

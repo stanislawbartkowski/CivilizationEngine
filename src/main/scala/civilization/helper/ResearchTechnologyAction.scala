@@ -49,7 +49,7 @@ object ResearchTechnology extends CommandPackage with ImplicitMiximFromJson with
       val civTrade: Int = numberofTrade(b, civ).trade
       if (leveltr > civTrade) return Mess(M.CANNOTAFFORDTHISTECHNOLOGY, (tech, leveltr, civTrade))
       val level: Int = techLevel(b, tech)
-      if (level > 1 && listofLevel(b, deck, level - 1).length + 1 >= listofLevel(b, deck, level).length) return Mess(M.NOPLACEINTECHNOLOGYTREE, tech)
+      if (level > 1 && listofLevel(b, deck, level - 1).length + 1 <= listofLevel(b, deck, level).length) return Mess(M.NOPLACEINTECHNOLOGYTREE, tech)
       null
     }
 

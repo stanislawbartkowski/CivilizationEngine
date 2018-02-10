@@ -2,43 +2,81 @@
   "players": [
     {
       "civ": "America",
-      "gover" : "Democracy",
-      "tech": [],
-      "resources" : [],
+      "gover": "Despotism",
+      "tech": [
+        {
+          "tech": "Currency",
+          "initial": true
+        }
+      ],
       "units": [
         {
           "name": "Infantry",
-          "strength": [
-            1,
-            2,
-            3,
-            4
-          ]
-        },
-        {
-          "name": "Artillery",
-          "strength": [
-            1,
-            3,
-            4,
-            6
-          ]
-        },
-        {
-          "name": "Mounted",
           "strength": [
             2,
             3,
             4,
             5
           ]
+        },
+        {
+          "name": "Artillery",
+          "strength": [
+            2,
+            3,
+            4,
+            5
+          ]
+        },
+        {
+          "name": "Mounted",
+          "strength": [
+            1,
+            2,
+            3,
+            4
+          ]
+        }
+      ],
+      "resources": [
+        {
+          "resource": "Incense",
+          "num": 0
+        },
+        {
+          "resource": "Spy",
+          "num": 0
+        },
+        {
+          "resource": "Coin",
+          "num": 0
+        },
+        {
+          "resource": "Culture",
+          "num": 0
+        },
+        {
+          "resource": "Silk",
+          "num": 0
+        },
+        {
+          "resource": "Iron",
+          "num": 0
+        },
+        {
+          "resource": "Uranium",
+          "num": 0
+        },
+        {
+          "resource": "Wheat",
+          "num": 0
         }
       ]
     }
   ],
   "map": [
     {
-      "tname": "TILEAMERICA.json",
+      "tname": "RTILEAMERICA.json",
       "p": {
         "row": 0,
         "col": 0
@@ -48,79 +86,95 @@
         [
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           }
         ],
         [
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           }
         ],
         [
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           }
         ],
         [
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           }
         ]
       ]
     },
     {
-      "tname": "TILE2.json",
+      "tname": "RTILE15.json",
       "p": {
         "row": 1,
         "col": 0
@@ -129,80 +183,102 @@
       "squares": [
         [
           {
-            "hv": null,
-            "city": null
+            "hv": {
+              "hv": "Hut",
+              "resource": "Silk"
+            },
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           }
         ],
         [
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           }
         ],
         [
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           }
         ],
         [
           {
-            "hv": null,
-            "city": null
+            "hv": {
+              "hv": "Village",
+              "resource": "Uranium"
+            },
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           }
         ]
       ]
     },
     {
-      "tname": "TILE7.json",
+      "tname": "RTILE18.json",
       "p": {
         "row": 2,
         "col": 0
@@ -212,79 +288,101 @@
         [
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
+          }
+        ],
+        [
+          {
+            "hv": {
+              "hv": "Village",
+              "resource": "Spy"
+            },
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
           }
         ],
         [
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
-            "hv": null,
-            "city": null
+            "hv": {
+              "hv": "Hut",
+              "resource": "Incense"
+            },
+            "city": null,
+            "building": null
           }
         ],
         [
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
-          }
-        ],
-        [
-          {
-            "hv": null,
-            "city": null
-          },
-          {
-            "hv": null,
-            "city": null
-          },
-          {
-            "hv": null,
-            "city": null
-          },
-          {
-            "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           }
         ]
       ]
     },
     {
-      "tname": "TEST1.json",
+      "tname": "RTILE14.json",
       "p": {
         "row": 3,
         "col": 0
@@ -294,79 +392,101 @@
         [
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": {
+              "hv": "Hut",
+              "resource": "Wheat"
+            },
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
-          },
-          {
-            "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           }
         ],
         [
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           }
         ],
         [
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           }
         ],
         [
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": {
+              "hv": "Hut",
+              "resource": "Spy"
+            },
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
-          },
-          {
-            "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           }
         ]
       ]
     },
     {
-      "tname": "TILE5.json",
+      "tname": "RTILE21.json",
       "p": {
         "row": 0,
         "col": 1
@@ -376,79 +496,95 @@
         [
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           }
         ],
         [
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           }
         ],
         [
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           }
         ],
         [
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           }
         ]
       ]
     },
     {
-      "tname": "TILE9.json",
+      "tname": "RTILE8.json",
       "p": {
         "row": 1,
         "col": 1
@@ -457,80 +593,102 @@
       "squares": [
         [
           {
-            "hv": null,
-            "city": null
+            "hv": {
+              "hv": "Hut",
+              "resource": "Wheat"
+            },
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           }
         ],
         [
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           }
         ],
         [
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": {
+              "hv": "Village",
+              "resource": "Uranium"
+            },
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
-          },
-          {
-            "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           }
         ],
         [
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           }
         ]
       ]
     },
     {
-      "tname": "TILE4.json",
+      "tname": "RTILE20.json",
       "p": {
         "row": 2,
         "col": 1
@@ -540,79 +698,95 @@
         [
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           }
         ],
         [
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           }
         ],
         [
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           }
         ],
         [
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           }
         ]
       ]
     },
     {
-      "tname": "TILE1.json",
+      "tname": "RTILE4.json",
       "p": {
         "row": 3,
         "col": 1
@@ -622,73 +796,95 @@
         [
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
-            "hv": null,
-            "city": null
+            "hv": {
+              "hv": "Hut",
+              "resource": "Wheat"
+            },
+            "city": null,
+            "building": null
           }
         ],
         [
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           }
         ],
         [
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": {
+              "hv": "Village",
+              "resource": "Iron"
+            },
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
-          },
-          {
-            "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           }
         ],
         [
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
-            "city": null
+            "city": null,
+            "building": null
           }
         ]
       ]
@@ -698,10 +894,6 @@
     "hutvillages": [
       {
         "hv": "Hut",
-        "resource": "Spy"
-      },
-      {
-        "hv": "Hut",
         "resource": "Iron"
       },
       {
@@ -709,15 +901,31 @@
         "resource": "Silk"
       },
       {
-        "hv": "Village",
-        "resource": "Uranium"
+        "hv": "Hut",
+        "resource": "Iron"
       },
       {
-        "hv": "Village",
-        "resource": "Spy"
+        "hv": "Hut",
+        "resource": "Iron"
       },
       {
-        "hv": "Village",
+        "hv": "Hut",
+        "resource": "Incense"
+      },
+      {
+        "hv": "Hut",
+        "resource": "Wheat"
+      },
+      {
+        "hv": "Hut",
+        "resource": "Wheat"
+      },
+      {
+        "hv": "Hut",
+        "resource": "Silk"
+      },
+      {
+        "hv": "Hut",
         "resource": "Wheat"
       },
       {
@@ -726,22 +934,22 @@
       },
       {
         "hv": "Hut",
-        "resource": "Iron"
-      },
-      {
-        "hv": "Hut",
         "resource": "Silk"
       },
       {
-        "hv": "Village",
-        "resource": "Uranium"
-      },
-      {
-        "hv": "Village",
+        "hv": "Hut",
         "resource": "Incense"
       },
       {
-        "hv": "Village",
+        "hv": "Hut",
+        "resource": "Incense"
+      },
+      {
+        "hv": "Hut",
+        "resource": "Incense"
+      },
+      {
+        "hv": "Hut",
         "resource": "Silk"
       },
       {
@@ -750,35 +958,35 @@
       },
       {
         "hv": "Hut",
-        "resource": "Iron"
-      },
-      {
-        "hv": "Hut",
         "resource": "Silk"
       },
       {
-        "hv": "Village",
-        "resource": "Uranium"
-      },
-      {
-        "hv": "Village",
+        "hv": "Hut",
         "resource": "Spy"
       },
       {
-        "hv": "Village",
+        "hv": "Hut",
         "resource": "Wheat"
       },
       {
         "hv": "Hut",
+        "resource": "Incense"
+      },
+      {
+        "hv": "Village",
         "resource": "Spy"
       },
       {
-        "hv": "Hut",
-        "resource": "Iron"
+        "hv": "Village",
+        "resource": "Spy"
       },
       {
-        "hv": "Hut",
-        "resource": "Silk"
+        "hv": "Village",
+        "resource": "Spy"
+      },
+      {
+        "hv": "Village",
+        "resource": "Iron"
       },
       {
         "hv": "Village",
@@ -786,250 +994,117 @@
       },
       {
         "hv": "Village",
-        "resource": "Incense"
-      },
-      {
-        "hv": "Village",
-        "resource": "Silk"
+        "resource": "Iron"
       }
     ],
     "hutvillagesused": [],
-    "resources" : []
+    "resources": [
+      {
+        "resource": "Incense",
+        "num": 1
+      },
+      {
+        "resource": "Spy",
+        "num": 0
+      },
+      {
+        "resource": "Coin",
+        "num": 0
+      },
+      {
+        "resource": "Culture",
+        "num": 0
+      },
+      {
+        "resource": "Silk",
+        "num": 1
+      },
+      {
+        "resource": "Iron",
+        "num": 1
+      },
+      {
+        "resource": "Uranium",
+        "num": 0
+      },
+      {
+        "resource": "Wheat",
+        "num": 1
+      }
+    ]
   },
   "market": {
     "units": [
       {
         "name": "Aircraft",
         "strength": [
-          7,
-          8,
-          9,
-          15
+          5,
+          5,
+          5,
+          5
+        ]
+      },
+      {
+        "name": "Aircraft",
+        "strength": [
+          5,
+          5,
+          5,
+          5
+        ]
+      },
+      {
+        "name": "Aircraft",
+        "strength": [
+          5,
+          5,
+          5,
+          5
+        ]
+      },
+      {
+        "name": "Aircraft",
+        "strength": [
+          6,
+          6,
+          6,
+          6
+        ]
+      },
+      {
+        "name": "Aircraft",
+        "strength": [
+          6,
+          6,
+          6,
+          6
+        ]
+      },
+      {
+        "name": "Aircraft",
+        "strength": [
+          6,
+          6,
+          6,
+          6
         ]
       },
       {
         "name": "Aircraft",
         "strength": [
           7,
-          8,
-          9,
-          15
+          7,
+          7,
+          7
         ]
       },
       {
         "name": "Aircraft",
         "strength": [
           7,
-          8,
-          9,
-          15
-        ]
-      },
-      {
-        "name": "Aircraft",
-        "strength": [
           7,
-          8,
-          9,
-          15
-        ]
-      },
-      {
-        "name": "Aircraft",
-        "strength": [
           7,
-          8,
-          9,
-          15
-        ]
-      },
-      {
-        "name": "Aircraft",
-        "strength": [
-          7,
-          8,
-          9,
-          15
-        ]
-      },
-      {
-        "name": "Aircraft",
-        "strength": [
-          7,
-          8,
-          9,
-          15
-        ]
-      },
-      {
-        "name": "Aircraft",
-        "strength": [
-          7,
-          8,
-          9,
-          15
-        ]
-      },
-      {
-        "name": "Aircraft",
-        "strength": [
-          7,
-          8,
-          9,
-          15
-        ]
-      },
-      {
-        "name": "Aircraft",
-        "strength": [
-          7,
-          8,
-          9,
-          15
-        ]
-      },
-      {
-        "name": "Aircraft",
-        "strength": [
-          7,
-          8,
-          9,
-          15
-        ]
-      },
-      {
-        "name": "Aircraft",
-        "strength": [
-          7,
-          8,
-          9,
-          15
-        ]
-      },
-      {
-        "name": "Aircraft",
-        "strength": [
-          7,
-          8,
-          9,
-          15
-        ]
-      },
-      {
-        "name": "Aircraft",
-        "strength": [
-          7,
-          8,
-          9,
-          15
-        ]
-      },
-      {
-        "name": "Aircraft",
-        "strength": [
-          7,
-          8,
-          9,
-          15
-        ]
-      },
-      {
-        "name": "Aircraft",
-        "strength": [
-          7,
-          8,
-          9,
-          15
-        ]
-      },
-      {
-        "name": "Aircraft",
-        "strength": [
-          7,
-          8,
-          9,
-          15
-        ]
-      },
-      {
-        "name": "Aircraft",
-        "strength": [
-          7,
-          8,
-          9,
-          15
-        ]
-      },
-      {
-        "name": "Aircraft",
-        "strength": [
-          7,
-          8,
-          9,
-          15
-        ]
-      },
-      {
-        "name": "Aircraft",
-        "strength": [
-          7,
-          8,
-          9,
-          15
-        ]
-      },
-      {
-        "name": "Aircraft",
-        "strength": [
-          7,
-          8,
-          9,
-          15
-        ]
-      },
-      {
-        "name": "Aircraft",
-        "strength": [
-          7,
-          8,
-          9,
-          15
-        ]
-      },
-      {
-        "name": "Aircraft",
-        "strength": [
-          7,
-          8,
-          9,
-          15
-        ]
-      },
-      {
-        "name": "Aircraft",
-        "strength": [
-          7,
-          8,
-          9,
-          15
-        ]
-      },
-      {
-        "name": "Aircraft",
-        "strength": [
-          7,
-          8,
-          9,
-          15
-        ]
-      },
-      {
-        "name": "Aircraft",
-        "strength": [
-          7,
-          8,
-          9,
-          15
+          7
         ]
       },
       {
@@ -1062,176 +1137,104 @@
       {
         "name": "Infantry",
         "strength": [
-          1,
           2,
           3,
-          4
+          4,
+          5
         ]
       },
       {
         "name": "Infantry",
         "strength": [
-          1,
           2,
           3,
-          4
+          4,
+          5
         ]
       },
       {
         "name": "Infantry",
         "strength": [
-          1,
           2,
           3,
-          4
+          4,
+          5
         ]
       },
       {
         "name": "Infantry",
         "strength": [
-          1,
           2,
           3,
-          4
+          4,
+          5
         ]
       },
       {
         "name": "Infantry",
         "strength": [
-          1,
           2,
           3,
-          4
+          4,
+          5
         ]
       },
       {
         "name": "Infantry",
         "strength": [
-          1,
           2,
           3,
-          4
+          4,
+          5
         ]
       },
       {
         "name": "Infantry",
         "strength": [
-          1,
           2,
           3,
-          4
+          4,
+          5
         ]
       },
       {
         "name": "Infantry",
         "strength": [
-          1,
           2,
           3,
-          4
+          4,
+          5
         ]
       },
       {
         "name": "Infantry",
         "strength": [
-          1,
-          2,
           3,
-          4
+          4,
+          5,
+          6
         ]
       },
       {
         "name": "Infantry",
         "strength": [
-          1,
-          2,
           3,
-          4
+          4,
+          5,
+          6
         ]
       },
       {
         "name": "Infantry",
         "strength": [
-          1,
-          2,
           3,
-          4
+          4,
+          5,
+          6
         ]
       },
       {
-        "name": "Infantry",
-        "strength": [
-          1,
-          2,
-          3,
-          4
-        ]
-      },
-      {
-        "name": "Infantry",
-        "strength": [
-          1,
-          2,
-          3,
-          4
-        ]
-      },
-      {
-        "name": "Infantry",
-        "strength": [
-          1,
-          2,
-          3,
-          4
-        ]
-      },
-      {
-        "name": "Infantry",
-        "strength": [
-          1,
-          2,
-          3,
-          4
-        ]
-      },
-      {
-        "name": "Infantry",
-        "strength": [
-          1,
-          2,
-          3,
-          4
-        ]
-      },
-      {
-        "name": "Infantry",
-        "strength": [
-          1,
-          2,
-          3,
-          4
-        ]
-      },
-      {
-        "name": "Infantry",
-        "strength": [
-          1,
-          2,
-          3,
-          4
-        ]
-      },
-      {
-        "name": "Infantry",
-        "strength": [
-          1,
-          2,
-          3,
-          4
-        ]
-      },
-      {
-        "name": "Infantry",
+        "name": "Artillery",
         "strength": [
           1,
           2,
@@ -1243,207 +1246,135 @@
         "name": "Artillery",
         "strength": [
           1,
+          2,
           3,
-          4,
-          6
+          4
         ]
       },
       {
         "name": "Artillery",
         "strength": [
           1,
+          2,
+          3,
+          4
+        ]
+      },
+      {
+        "name": "Artillery",
+        "strength": [
+          2,
           3,
           4,
+          5
+        ]
+      },
+      {
+        "name": "Artillery",
+        "strength": [
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      {
+        "name": "Artillery",
+        "strength": [
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      {
+        "name": "Artillery",
+        "strength": [
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      {
+        "name": "Artillery",
+        "strength": [
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      {
+        "name": "Artillery",
+        "strength": [
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      {
+        "name": "Artillery",
+        "strength": [
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      {
+        "name": "Artillery",
+        "strength": [
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      {
+        "name": "Artillery",
+        "strength": [
+          3,
+          4,
+          5,
           6
         ]
       },
       {
         "name": "Artillery",
         "strength": [
-          1,
           3,
           4,
+          5,
           6
         ]
       },
       {
         "name": "Artillery",
         "strength": [
-          1,
           3,
           4,
+          5,
           6
         ]
       },
       {
-        "name": "Artillery",
+        "name": "Mounted",
         "strength": [
           1,
+          2,
           3,
-          4,
-          6
+          4
         ]
       },
       {
-        "name": "Artillery",
+        "name": "Mounted",
         "strength": [
           1,
+          2,
           3,
-          4,
-          6
-        ]
-      },
-      {
-        "name": "Artillery",
-        "strength": [
-          1,
-          3,
-          4,
-          6
-        ]
-      },
-      {
-        "name": "Artillery",
-        "strength": [
-          1,
-          3,
-          4,
-          6
-        ]
-      },
-      {
-        "name": "Artillery",
-        "strength": [
-          1,
-          3,
-          4,
-          6
-        ]
-      },
-      {
-        "name": "Artillery",
-        "strength": [
-          1,
-          3,
-          4,
-          6
-        ]
-      },
-      {
-        "name": "Artillery",
-        "strength": [
-          1,
-          3,
-          4,
-          6
-        ]
-      },
-      {
-        "name": "Artillery",
-        "strength": [
-          1,
-          3,
-          4,
-          6
-        ]
-      },
-      {
-        "name": "Artillery",
-        "strength": [
-          1,
-          3,
-          4,
-          6
-        ]
-      },
-      {
-        "name": "Artillery",
-        "strength": [
-          1,
-          3,
-          4,
-          6
-        ]
-      },
-      {
-        "name": "Artillery",
-        "strength": [
-          1,
-          3,
-          4,
-          6
-        ]
-      },
-      {
-        "name": "Artillery",
-        "strength": [
-          1,
-          3,
-          4,
-          6
-        ]
-      },
-      {
-        "name": "Artillery",
-        "strength": [
-          1,
-          3,
-          4,
-          6
-        ]
-      },
-      {
-        "name": "Artillery",
-        "strength": [
-          1,
-          3,
-          4,
-          6
-        ]
-      },
-      {
-        "name": "Artillery",
-        "strength": [
-          1,
-          3,
-          4,
-          6
-        ]
-      },
-      {
-        "name": "Artillery",
-        "strength": [
-          1,
-          3,
-          4,
-          6
-        ]
-      },
-      {
-        "name": "Artillery",
-        "strength": [
-          1,
-          3,
-          4,
-          6
-        ]
-      },
-      {
-        "name": "Artillery",
-        "strength": [
-          1,
-          3,
-          4,
-          6
-        ]
-      },
-      {
-        "name": "Artillery",
-        "strength": [
-          1,
-          3,
-          4,
-          6
+          4
         ]
       },
       {
@@ -1530,132 +1461,71 @@
       {
         "name": "Mounted",
         "strength": [
-          2,
           3,
           4,
-          5
+          5,
+          6
         ]
       },
       {
         "name": "Mounted",
         "strength": [
-          2,
           3,
           4,
-          5
+          5,
+          6
         ]
       },
       {
         "name": "Mounted",
         "strength": [
-          2,
           3,
           4,
-          5
-        ]
-      },
-      {
-        "name": "Mounted",
-        "strength": [
-          2,
-          3,
-          4,
-          5
-        ]
-      },
-      {
-        "name": "Mounted",
-        "strength": [
-          2,
-          3,
-          4,
-          5
-        ]
-      },
-      {
-        "name": "Mounted",
-        "strength": [
-          2,
-          3,
-          4,
-          5
-        ]
-      },
-      {
-        "name": "Mounted",
-        "strength": [
-          2,
-          3,
-          4,
-          5
-        ]
-      },
-      {
-        "name": "Mounted",
-        "strength": [
-          2,
-          3,
-          4,
-          5
-        ]
-      },
-      {
-        "name": "Mounted",
-        "strength": [
-          2,
-          3,
-          4,
-          5
-        ]
-      },
-      {
-        "name": "Mounted",
-        "strength": [
-          2,
-          3,
-          4,
-          5
-        ]
-      },
-      {
-        "name": "Mounted",
-        "strength": [
-          2,
-          3,
-          4,
-          5
-        ]
-      },
-      {
-        "name": "Mounted",
-        "strength": [
-          2,
-          3,
-          4,
-          5
-        ]
-      },
-      {
-        "name": "Mounted",
-        "strength": [
-          2,
-          3,
-          4,
-          5
-        ]
-      },
-      {
-        "name": "Mounted",
-        "strength": [
-          2,
-          3,
-          4,
-          5
+          5,
+          6
         ]
       }
     ],
     "killedunits": [],
-    "buildings" : [],
+    "buildings": [
+      {
+        "name": "Temple",
+        "num": 5
+      },
+      {
+        "name": "TradingPost",
+        "num": 6
+      },
+      {
+        "name": "Library",
+        "num": 6
+      },
+      {
+        "name": "Barracks",
+        "num": 5
+      },
+      {
+        "name": "Granary",
+        "num": 6
+      },
+      {
+        "name": "Shipyard",
+        "num": 5
+      },
+      {
+        "name": "Market",
+        "num": 5
+      },
+      {
+        "name": "Workshop",
+        "num": 6
+      },
+      {
+        "name": "Harbor",
+        "num": 10
+      }
+    ],
     "wonders" : []
-  }
+  },
+  "norotate": false
 }

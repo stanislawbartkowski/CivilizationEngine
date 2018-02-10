@@ -1,5 +1,6 @@
 [
   {
+    "t" : "CI",
     "name" : "ChichenItza",
     "phase" : "CityManagement",
     "age" : "Ancient",
@@ -8,12 +9,14 @@
     "desc" : "City Management: Each of your cities produces an extra 3 hammers."
   },
   {
+    "t" : "SZ",
     "name" : "StatueofZeus",
     "age" : "Ancient",
     "cost" : 15,
     "desc" : "Combat Bonus : +6"
   },
   {
+    "t" : "SH",
     "name" : "Stonehenge",
     "phase" : "StartOfTurn",
     "age" : "Ancient",
@@ -21,6 +24,7 @@
     "desc" : "Start of Turn: Gain 1 culture."
   },
   {
+    "t" : "CL",
     "name" : "TheColossus",
     "phase" : "StartOfTurn",
     "age" : "Ancient",
@@ -29,6 +33,7 @@
     "desc" : "Start of Turn: Gain 3 trade."
   },
   {
+    "t" : "GL",
     "name" : "TheGreatLighthouse",
     "age" : "Ancient",
     "cost" : 15,
@@ -36,6 +41,7 @@
     "desc" : "Each empty water square in the outskirts of your cities generates 1 extra trade."
   },
   {
+    "t" : "GW",
     "name" : "TheGreatWall",
     "phase" : "StartOfTurn",
     "age" : "Ancient",
@@ -44,6 +50,7 @@
     "desc" : "When you lose a battle, your opponent gains one less loot. Start of Turn: Build city walls in one of your cities for free."
   },
   {
+    "t" : "HG",
     "name" : "TheHangingGardens",
     "phase" : "StartOfTurn",
     "age" : "Ancient",
@@ -52,6 +59,7 @@
     "desc" : "Start of Turn: Build a figure in the square containing the Hanging Gardens for free."
   },
   {
+    "t" : "OR",
     "name" : "TheOracle",
     "age" : "Ancient",
     "cost" : 15,
@@ -59,6 +67,7 @@
     "desc" : "Battle: Your opponent must play with his or her hand faceup for you to see."
   },
   {
+    "t" : "PY",
     "name" : "ThePyramids",
     "age" : "Ancient",
     "cost" : 15,
@@ -66,6 +75,7 @@
     "desc" : "Unlock all governments. You are immune to Anarchy. If obsoleted, revert to a government you've unlocked normally."
   },
   {
+    "t" : "AW",
     "name" : "AngkorWat",
     "phase" : "CityManagement",
     "age" : "Medieval",
@@ -74,12 +84,14 @@
     "desc" : "City Management: Once per turn, as a city action, you may harvest twice with that city (even from the same square twice)."
   },
   {
+    "t" : "BG",
     "name" : "BrandenburgGate",
     "age" : "Medieval",
     "cost" : 20,
     "desc" : "Enemy figures cannot end their movement in your cities' outskirts. Any enemies already in your city outskirts must move out when able."
   },
   {
+    "t" : "HC",
     "name" : "HimejiSamuraiCastle",
     "age" : "Medieval",
     "cost" : 20,
@@ -87,6 +99,7 @@
     "desc" : "Battle: All of your units are +1 strength."
   },
   {
+    "t" : "LW",
     "name" : "LeonardosWorkshop",
     "phase" : "CityManagement",
     "age" : "Medieval",
@@ -95,6 +108,7 @@
     "desc" : "City Management : Your unit cards never cost more than 5 hammers to build."
   },
   {
+    "t" : "MP",
     "name" : "MachuPichu",
     "phase" : "StartOfTurn",
     "age" : "Medieval",
@@ -103,6 +117,7 @@
     "desc" : "Start of Turn: Once per turn, after you invest a coin, gain 1 resource of your choice from the market."
   },
   {
+    "t" : "ND",
     "name" : "NotreDame",
     "phase" : "Research",
     "age" : "Medieval",
@@ -111,6 +126,7 @@
     "desc" : "Research : When researching a tech, you may spend 6 extra trades to learn a second tech of the same level or lower."
   },
   {
+    "t" : "PT",
     "name" : "PorcelainTower",
     "phase" : "Research",
     "age" : "Medieval",
@@ -119,6 +135,7 @@
     "desc" : "Research: Techs cost you 5 less trade to research. You may still only research once per turn."
   },
   {
+    "t" : "TM",
     "name" : "TajMahal",
     "phase" : "StartOfTurn",
     "age" : "Medieval",
@@ -127,6 +144,7 @@
     "desc" : "Start of Turn: Build a building you've unlocked in one of your cities for free."
   },
   {
+    "t" : "LV",
     "name" : "TheLouvre",
     "phase" : "StartOfTurn",
     "age" : "Medieval",
@@ -135,6 +153,7 @@
     "desc" : "Start of Turn: Gain 3 culture."
   },
   {
+    "t" : "BB",
     "name" : "BigBen",
     "phase" : "StartOfTurn",
     "age" : "Modern",
@@ -143,6 +162,7 @@
     "desc" : "Start of Turn: Gain one of every resource in the market."
   },
   {
+    "t" : "CR",
     "name" : "CristoRedentor",
     "phase" : "StartOfTurn",
     "age" : "Modern",
@@ -151,6 +171,7 @@
     "desc" : "Your culture hand size is increased by 4. Start of Turn: Draw two culture events from the deck of your choice."
   },
   {
+    "t" : "PC",
     "name" : "PanamaCanal",
     "phase" : "StartOfTurn",
     "age" : "Modern",
@@ -159,6 +180,7 @@
     "desc" : "Start of Turn: Add 1 coin token to this wonder."
   },
   {
+    "t" : "SL",
     "name" : "StatueofLiberty",
     "phase" : "StartOfTurn",
     "age" : "Modern",
@@ -167,6 +189,7 @@
     "desc" : "Start of Turn: Research one tech known by any other player for free. You may still research normally this turn."
   },
   {
+    "t" : "OH",
     "name" : "SydneyOperaHouse",
     "phase" : "StartOfTurn",
     "age" : "Modern",
@@ -174,6 +197,7 @@
     "desc" : "Start of Turn: Advance one space on the culture track for free."
   },
   {
+    "t" : "IT",
     "name" : "TheInternet",
     "age" : "Modern",
     "cost" : 25,
@@ -181,6 +205,7 @@
     "desc" : "The maximum number of coins you can add to each of your techs is increased by 2."
   },
   {
+    "t" : "KR",
     "name" : "TheKremlin",
     "age" : "Modern",
     "cost" : 25,
@@ -188,6 +213,7 @@
     "desc" : "Any Time: Once per turn, you may spend any two resources instead of a spy."
   },
   {
+    "t" : "PG",
     "name" : "ThePentagon",
     "age" : "Modern",
     "cost" : 25,
@@ -195,13 +221,12 @@
     "desc" : "Battle : Your units cannot be trumped."
   },
   {
+    "t" : "UN",
     "name" : "UnitedNations",
     "age" : "Modern",
     "cost" : 20,
     "desc" : "Any Time: Culture events cannot target you against your will."
   }
-
-
 
 
 ]

@@ -1409,7 +1409,8 @@
       }
     ],
     "killedunits": [],
-    "buildings" : []
+    "buildings" : [],
+    "wonders" : []
   },
   "norotate": false
 }

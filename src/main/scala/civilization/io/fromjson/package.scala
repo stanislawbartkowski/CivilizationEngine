@@ -81,7 +81,8 @@ package object fromjson extends ImplicitMiximFromJson {
 
   implicit val buildingpointReads: Reads[BuildingPoint] = (
     (JsPath \ S.p).read[P] and
-      (JsPath \ S.building).read[BuildingName.T]
+      (JsPath \ S.building).readNullable[BuildingName.T] and
+      (JsPath \ S.wonder).readNullable[Wonders.T]
     ) (BuildingPoint.apply _)
 
   implicit val builingReads: Reads[Building] = (
@@ -269,7 +270,8 @@ package object fromjson extends ImplicitMiximFromJson {
   implicit val markettReads: Reads[Market] = (
     (JsPath \ S.units).read[Seq[CombatUnit]] and
       (JsPath \ S.killedunits).read[Seq[CombatUnit]] and
-      (JsPath \ S.buildings).read[BuildingsResources]
+      (JsPath \ S.buildings).read[BuildingsResources] and
+      (JsPath \ S.wonders).read[Seq[Wonders.T]]
     ) (Market.apply _)
 
   implicit val gameboardReads: Reads[GameBoard] = new Reads[GameBoard] {
@@ -313,7 +315,8 @@ package object fromjson extends ImplicitMiximFromJson {
       (JsPath \ S.age).read[WondersAge.T] and
       (JsPath \ S.cost).read[Int] and
       (JsPath \ S.discount).readNullable[WondersDiscount] and
-      (JsPath \ S.desc).read[String]
+      (JsPath \ S.desc).read[String] and
+      (JsPath \ S.wondertT).read[String]
     ) (WondersOfTheWorld.apply _)
 
   trait FromJson {

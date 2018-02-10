@@ -159,6 +159,7 @@ object genboardj {
       S.hutvillages -> hvtojson(g.resources.hvused, true),
       S.you -> genPlayerDeckJson(b.you, true),
       "others" -> JsArray(o),
+      S.wonders -> writeListOfWondersNames(g.market.wonders),
       S.battle -> genBattleJson(g, civ),
       S.buildings -> Json.toJson(g.market.buildings)
     ))))

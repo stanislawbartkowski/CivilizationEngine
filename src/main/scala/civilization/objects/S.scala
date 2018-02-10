@@ -59,6 +59,7 @@ object S {
   final val resourceany = "resourceany"
   final val tokens = "tokens"
   final val age = "age"
+  final val wonder = "wonder"
   final val wonders = "wonders"
   final val upgrade = "upgrade"
   final val star = "star"
@@ -68,4 +69,5 @@ object S {
   final val battleT = "Battle"
   final val battle = "battle"
   final val coinT = "Coin"
+  final val wondertT = "t"
 }

@@ -110,7 +110,9 @@ package object gameboard {
     def toFigures: Figures = Figures(numberofArmies, numberofScouts)
   }
 
-  case class MapSquare(var hv: Option[HutVillage] = None, var city: Option[City] = None, var building : Option[Building] = None) {
+  case class WonderSquare(val w: Wonders.T, var obsolete: Boolean)
+
+  case class MapSquare(var hv: Option[HutVillage] = None, var city: Option[City] = None, var building: Option[Building] = None, var wonder: Option[WonderSquare] = None) {
     require(hv != null && city != null)
     val figures: PlayerFigures = new PlayerFigures(null, 0, 0)
 
@@ -118,7 +120,9 @@ package object gameboard {
 
     def cityhere: Boolean = city.isDefined
 
-    def setBuilding(b : BuildingName.T) = building = Some(GameResources.getBuilding(b))
+
+    def setBuilding(b: BuildingName.T) = building = Some(GameResources.getBuilding(b))
+
     def removeBuilding() = building = None
   }
 
@@ -162,11 +166,11 @@ package object gameboard {
       BuildingName.Barracks -> 0, BuildingName.Workshop -> 0, BuildingName.Granary -> 0,
       BuildingName.Library -> 0, BuildingName.Temple -> 0, BuildingName.Market -> 0)
 
-    private def toBaseBuilding(b : BuildingName.T) : BuildingName.T = {
-      var bd : BuildingName.T = b;
+    private def toBaseBuilding(bpar: BuildingName.T): BuildingName.T = {
+      var bd: BuildingName.T = bpar;
       GameResources.instance().buldings.foreach(b => {
         // converts upgraded to basic
-        if (b.upgrade.isDefined && b.upgrade.get == b) bd = b.name;
+        if (b.upgrade.isDefined && b.upgrade.get == bpar) bd = b.name;
       }
       )
       bd
@@ -175,22 +179,24 @@ package object gameboard {
     /**
       * increases/decreases the building number in the market
       * converts upgraded building to basic building
-      * @param b Building
+      *
+      * @param b   Building
       * @param inc increase or decrease
       */
-    def incdevBuilding(b : BuildingName.T,inc : Boolean) = {
-      var bd : BuildingName.T = toBaseBuilding(b)
-      require(!inc && nof(bd) > 0)
+    def incdevBuilding(b: BuildingName.T, inc: Boolean) = {
+      var bd: BuildingName.T = toBaseBuilding(b)
+      require(inc || nof(bd) > 0)
       if (inc) incr(bd)
       else decr(bd)
     }
 
     /**
       * number of buildings in the market
+      *
       * @param b Building, base and upgraded are the same here
       * @return number of buldings
       */
-    def noB(b : BuildingName.T) : Int = nof(toBaseBuilding(b))
+    def noB(b: BuildingName.T): Int = nof(toBaseBuilding(b))
   }
 
   case class Resources(var hv: Seq[HutVillage], var hvused: Seq[HutVillage], val resou: BoardResources)
@@ -207,7 +213,7 @@ package object gameboard {
     var hvlist: Seq[HutVillage] = Nil
   }
 
-  case class Market(var units: Seq[CombatUnit], var killedunits: Seq[CombatUnit], val buildings : BuildingsResources)
+  case class Market(var units: Seq[CombatUnit], var killedunits: Seq[CombatUnit], val buildings: BuildingsResources, var wonders: Seq[Wonders.T])
 
   case class GameMetaData(val version: Int, val createtime: Long, var accesstime: Long, var modiftimemili: Long, val desc: String) {
 
@@ -236,7 +242,7 @@ package object gameboard {
 
   case class WondersDiscount(val cost: Int, tech: TechnologyName.T)
 
-  case class WondersOfTheWorld(val name: Wonders.T, val phase: Option[TurnPhase.T], val age: WondersAge.T, val cost: Int, val discount: Option[WondersDiscount], val desc: String)
+  case class WondersOfTheWorld(val name: Wonders.T, val phase: Option[TurnPhase.T], val age: WondersAge.T, val cost: Int, val discount: Option[WondersDiscount], val desc: String, val t: String)
 
   case class TakeWinnerLoot(val winner: Civilization.T, val loser: Civilization.T, val loot: WinnerLoot, val reso: Option[Resource.T], val trade: Int)
 
@@ -259,7 +265,18 @@ package object gameboard {
     def attackerwinner: Boolean = attacker.points > defender.points
   }
 
-  case class BuildingPoint(val p : P, val b : BuildingName.T)
+  case class BuildingPoint(val p: P, val bui: Option[BuildingName.T], val won: Option[Wonders.T]) {
+    require(bui.isDefined && won.isEmpty || bui.isEmpty && won.isDefined)
+
+    def ==(that: BuildingPoint): Boolean =
+      p == that.p &&
+        (bui.isDefined && that.bui.isDefined && bui.get == that.bui.get ||
+          (won.isDefined && that.won.isDefined && won.get == that.won.get))
+
+    def b = bui.get
+
+    def w = won.get
+  }
 
   case class GameBoard(val players: Seq[PlayerDeck], val map: BoardMap, val resources: Resources, val market: Market) {
 
@@ -288,6 +305,8 @@ package object gameboard {
     def conf: GameConfig = GameConfig(false)
 
     def techlevel(tep: PlayerTechnology): Int = if (tep.initial.isDefined && tep.initial.get) 1 else GameResources.getTechnology(tep.tech).level
+
+    def getCurrentWonders(): Seq[Wonders.T] = market.wonders.take(WONDERWINDOW)
   }
 
 

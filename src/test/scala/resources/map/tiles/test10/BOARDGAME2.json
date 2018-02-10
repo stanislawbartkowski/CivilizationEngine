@@ -51,7 +51,8 @@
   "market" : {
     "units" : [{"name":"Artillery","strength":[1,3,4,6]}, {"name":"Mounted","strength":[1,2,4,5]}],
     "killedunits" : [],
-    "buildings" : []
+    "buildings" : [],
+    "wonders" : []
   }
 
 

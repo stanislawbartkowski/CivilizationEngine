@@ -235,6 +235,7 @@ class Test5 extends FunSuite {
     m = playCommand(b, com)
     println(m)
     assert(m != null)
-    assert(m.m == M.FIGURESMOVEDAGAIN)
+//    assert(m.m == M.FIGURESMOVEDAGAIN)
+    assert(m.m == M.NUMBEROFSCOUTSLESS)
   }
 }

@@ -375,6 +375,22 @@ package object helper {
     li
   }
 
+  def finishedAtPoint(b : GameBoard, civ: Civilization.T) : Map[P, Figures] = {
+    val lastp: Seq[(Figures, P, P)] = civLastMoves(b, civ).map(o => (o.f.toFigures, o.begstop._1.p.get, o.begstop._2.p.get))
+    //TODO: can be done better,2 traversals, use mutable map and fold
+    //    val startmap : Map[P,Figures] = lastp.map(t => t._3 -> Figures(0,0)) toMap
+    //    val lastm: Map[P, Figures] = lastp.map(t => t._3 -> t._1).toMap
+    // current points on board belonging to civilization
+    //    val current: Seq[(Figures, P)] = allSquares(b).filter(p => p.s.figures.civOccupying.isDefined && p.s.figures.civOccupying.get == civ).map(m => (m.s.figures.toFigures, m.p))
+    // sum all figures finishing at given point
+    val lastm: Map[P, Figures] = lastp.groupBy(_._3).map(e => e._1 -> e._2.foldLeft[Figures](Figures(0, 0))((f, p) => {
+      f + p._1;
+      f
+    }))
+    lastm
+  }
+
+
   def battleParticipants(b: GameBoard): (P, P) = {
     val cu: CurrentPhase = currentPhase(b)
     val p: Seq[Command] = lastPhaseCommandsReverse(b, cu.notcompleted.head, TurnPhase.Movement)

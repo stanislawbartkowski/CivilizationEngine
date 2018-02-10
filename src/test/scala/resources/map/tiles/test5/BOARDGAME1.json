@@ -59,7 +59,8 @@
   "market" : {
     "units" : [],
     "killedunits" : [],
-    "buildings" : []
+    "buildings" : [],
+    "wonders" : []
 
   }
 

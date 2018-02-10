@@ -19,6 +19,7 @@ object MoveItemize {
 
   /** not private, used in test */
   def itemizeforStartOfMove(b: GameBoard, civ: Civilization.T): Seq[(Figures, P)] = {
+    /*
     val lastp: Seq[(Figures, P, P)] = civLastMoves(b, civ).map(o => (o.f.toFigures, o.begstop._1.p.get, o.begstop._2.p.get))
     //TODO: can be done better,2 traversals, use mutable map and fold
     //    val startmap : Map[P,Figures] = lastp.map(t => t._3 -> Figures(0,0)) toMap
@@ -30,6 +31,8 @@ object MoveItemize {
       f + p._1;
       f
     }))
+    */
+    val lastm: Map[P, Figures] = finishedAtPoint(b,civ)
     val current: Seq[(Figures, P)] = getFigures(b, civ).map(m => (m.s.figures.toFigures, m.p))
     // remove all figures which has moved already
     current.foreach(f => {

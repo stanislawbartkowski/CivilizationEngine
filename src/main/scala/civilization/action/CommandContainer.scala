@@ -7,7 +7,7 @@ import play.api.libs.json.JsValue
 
 object CommandContainer {
 
-  val commands: Seq[CommandPackage] = Seq(BuyUnit, SpendTrade, SendProduction, HarvestResource, ResearchTechnology, BuyBuildingCommand)
+  val commands: Seq[CommandPackage] = Seq(BuyUnit, SpendTrade, SendProduction, HarvestResource, ResearchTechnology, BuyBuildingCommand,BuyWorldWonder)
 
   val comset: Map[Command.T, CommandPackage] = commands.map(c => c.getSet.map(co => (co, c))).flatten.map(c => c._1 -> c._2) toMap
 
