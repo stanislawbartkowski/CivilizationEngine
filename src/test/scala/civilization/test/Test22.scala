@@ -201,4 +201,11 @@ class Test22 extends FunSuite with ImplicitMiximFromJson {
     assert(s == "Stonehenge")
   }
 
+  test("Check game, research") {
+    val reg = Helper.ReadAndPlayForTwo("test22/BOARDGAME7.json", "test22/PLAY7.json", Civilization.Rome, Civilization.Russia)
+    val token: String = reg._1
+    // should fail ENDOFPHASE Research for the second time
+    Helper.executeCommandFail(token, "ENDOFPHASE", -1, -1, "\"Research\"")
+  }
+
   }
