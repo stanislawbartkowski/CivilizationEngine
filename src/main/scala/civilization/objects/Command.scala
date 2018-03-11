@@ -27,7 +27,7 @@ object Command extends Enumeration {
 
   /** Unique city actions. */
   def cityActionUnique(t: Value): Boolean = (t == BUYARMY || t == BUYSCOUT || t == BUYARTILLERY ||
-    t == BUYAIRCRAFT || t == BUYINFANTRY || t == BUYMOUNTED || t == HARVESTRESOURCE || t == BUYBUILDING)
+    t == BUYAIRCRAFT || t == BUYINFANTRY || t == BUYMOUNTED || t == HARVESTRESOURCE || t == BUYBUILDING || t == BUYWONDER)
 
   /** Movement action after starting the move */
   def actionMove(t: Value): Boolean = {

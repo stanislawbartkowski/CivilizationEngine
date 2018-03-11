@@ -16,7 +16,7 @@ object genboardj {
   // if empty square : number of original production
   // if city: number of city production
   case class MapSquareJ(revealed: Boolean, t: Terrain.T, trade: Int, production: Int, resource: Option[Resource.T], capForCiv: Option[Civilization.T],
-                        civ: Civilization.T, city: City.T, defence: Int, numberofArmies: Int, numberofScouts: Int, tile: String, hv: Option[HutVillage.T], building: Option[BuildingName.T])
+                        civ: Civilization.T, city: City.T, defence: Int, numberofArmies: Int, numberofScouts: Int, tile: String, hv: Option[HutVillage.T], building: Option[BuildingName.T], wonder : Option[Wonders.T])
 
   case class PlayerTech(val pl: PlayerTechnology, val level: Int)
 
@@ -28,7 +28,7 @@ object genboardj {
 
   implicit def plSeqToJ(pl: Seq[PlayerTech]): Seq[JsValue] = pl.map(plToJson)
 
-  case class PlayerDeckJ(civ: Civilization.T, numberofTrade: Int, commands: Seq[Command.T], limits: PlayerLimits, technologylevel: Int, tech: Seq[PlayerTech], pl: PlayerDeck)
+  case class PlayerDeckJ(civ: Civilization.T, numberofTrade: Int, commands: Seq[Command.T], limits: PlayerLimits, technologylevel: Int, tech: Seq[PlayerTech], pl: PlayerDeck, wonders : Seq[Wonders.T])
 
   case class Game(active: Civilization.T, roundno: Int, phase: TurnPhase.T)
 
@@ -69,7 +69,10 @@ object genboardj {
     }
 
     MapSquareJ(ss.revealed, t, trade, production, resource, cap, civ, city, defence, numberofArmies, numberofScouts, ss.t.tname,
-      if (ss.s.hv.isDefined) Some(ss.s.hv.get.hv) else None,if (ss.s.building.isDefined) Some(ss.s.building.get.name) else None)
+      if (ss.s.hv.isDefined) Some(ss.s.hv.get.hv) else None,
+      if (ss.s.building.isDefined) Some(ss.s.building.get.name) else None,
+      if (ss.s.wonder.isDefined) Some(ss.s.wonder.get.w) else None
+    )
   }
 
   private def genGame(g: GameBoard, civrequesting: Civilization.T): Game = {
@@ -82,15 +85,20 @@ object genboardj {
     Game(civ, cu.roundno, cu.turnPhase)
   }
 
+  private def wondersForPlayers(g: GameBoard, civ: Civilization.T) : Seq[Wonders.T] =
+    citiesForCivilization(g,civ).map(c => pointsAround(g,c.p)).flatten.map(p => getSquare(g,p)).filter(m => m.s.wonder.isDefined).map(m => m.s.wonder.get.w)
+
+
   private def genPlayerDeckJ(g: GameBoard, civ: Civilization.T): PlayerDeckJ =
     PlayerDeckJ(civ, numberofTrade(g, civ).trade, allowedCommands(g, civ), getLimits(g, civ),
       ResearchTechnology.techologylevel(g, civ),
       g.playerDeck(civ).tech.map(t => PlayerTech(t, g.techlevel(t))),
-      g.playerDeck(civ))
+      g.playerDeck(civ), wondersForPlayers(g,civ))
 
   private def commandToArray(l: Seq[Command.T]): JsArray = {
     JsArray(l.map(c => Json.obj(S.command -> c)).foldLeft(List[JsObject]())(_ :+ _))
   }
+
 
   private def genPlayerDeckJson(p: PlayerDeckJ, you: Boolean): JsValue = Json.obj(
     S.tech -> plSeqToJ(p.tech),
@@ -105,7 +113,8 @@ object genboardj {
     "tradeforprod" -> p.limits.tradeforProd,
     S.units -> unitstoJSON(p.pl.units, you, p.pl.combatlevel),
     S.resources -> p.pl.resou,
-    S.hutvillages -> hvtojson(p.pl.hvlist, you)
+    S.hutvillages -> hvtojson(p.pl.hvlist, you),
+    S.wonders -> p.wonders
   )
 
   private def genBoardGameJ(g: GameBoard, civ: Civilization.T): BoardGameJ = {
@@ -124,7 +133,8 @@ object genboardj {
     Json.obj("revealed" -> m.revealed, S.terrain -> Option(m.t), S.trade -> m.trade, "production" -> m.production, S.resource -> m.resource,
       "capciv" -> Option(m.capForCiv), S.civ -> Option(m.civ), S.city -> Option(m.city), "defence" -> m.defence, S.numberofArmies -> m.numberofArmies, S.numberofScouts -> m.numberofScouts,
       "tile" -> m.tile, S.hutvillage -> Option(m.hv),
-      S.building -> m.building
+      S.building -> m.building,
+      S.wonder -> m.wonder
     )
   }
 
@@ -159,7 +169,8 @@ object genboardj {
       S.hutvillages -> hvtojson(g.resources.hvused, true),
       S.you -> genPlayerDeckJson(b.you, true),
       "others" -> JsArray(o),
-      S.wonders -> writeListOfWondersNames(g.market.wonders),
+      // only first 4 wonders
+      S.wonders -> writeListOfWondersNames(g.market.wonders.take(WONDERWINDOW)),
       S.battle -> genBattleJson(g, civ),
       S.buildings -> Json.toJson(g.market.buildings)
     ))))

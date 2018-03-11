@@ -22,8 +22,9 @@ package object helper {
       else sm.token.numofTrade
 
     def numberOfProduction: Int =
-    // if building, production from building
-      if (s.building.isDefined) s.building.get.tokens.numofProduction
+    // if wonder, no production
+      if (s.wonder.isDefined) 0
+      else /* if building, production from building */ if (s.building.isDefined) s.building.get.tokens.numofProduction
       else sm.token.numofProduction
 
     def resource: Option[Resource.T] =

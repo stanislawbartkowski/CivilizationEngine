@@ -7,7 +7,7 @@ import civilization.gameboard.GameBoard
 import civilization.io.readdir.{readGameBoard, readPlay, readTestJSON}
 import civilization.message.{FatalError, Mess}
 import civilization.objects.{CommandValues, _}
-import play.api.libs.json.JsValue
+import play.api.libs.json._
 import civilization.I.II
 import civilization.io.fromjson.toJ
 
@@ -104,8 +104,11 @@ object Helper {
     assert(p == phase)
   }
 
+  def jyou(j : JsValue) : JsValue =
+     (j \ "board" \ "you").as[JsValue]
 
-
+  def jmap(j : JsValue) : JsArray =
+    (j \ "board" \ "map").as[JsArray]
 
 }
 

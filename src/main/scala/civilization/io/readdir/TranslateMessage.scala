@@ -33,8 +33,10 @@ object TranslateMessage {
         return getCodePreface(messages, co._1, true) + format.format(co._2, co._3)
       }
       case M.DUPLICATECITYACTIONINTHISCITY => {
-        val co = m.o.asInstanceOf[(Command, Command)]
-        return getCodePreface(messages, co._1, true) + format.format(getCodePreface(messages, co._2, true))
+        val co = m.o.asInstanceOf[(Command)]
+        val ms = getCodePreface(messages, co, true)
+        return format.format(ms)
+//        return format.format(getCodePreface(co, true))
       }
     }
     return m.toString

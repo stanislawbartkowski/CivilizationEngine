@@ -9,6 +9,10 @@ import civilization.io.fromjson.ImplicitMiximFromJson
 import civilization.io.readdir._
 import civilization.objects._
 import org.scalatest.FunSuite
+import play.api.libs.json._
+import civilization.io.fromjson.{toJ, _}
+import civilization.test.Helper._
+
 
 
 class Test22 extends FunSuite with ImplicitMiximFromJson {
@@ -64,6 +68,137 @@ class Test22 extends FunSuite with ImplicitMiximFromJson {
     println(gg.market.wonders)
     // Stonehege should dissapear
     assert(gg.getCurrentWonders().find(_ == Wonders.Stonehenge).isEmpty)
+  }
+
+  test("Buy several times") {
+    assertThrows[Exception] {
+      Helper.readBoardAndPlayT("test22/BOARDGAME4.json", "test22/PLAY4.json", Civilization.Germany)
+    }
+  }
+
+  test("Buy several times two players") {
+    assertThrows[Exception] {
+      val reg = Helper.ReadAndPlayForTwo("test22/BOARDGAME5.json", "test22/PLAY5.json", Civilization.Rome, Civilization.Russia)
+    }
+  }
+
+    test("Check visible wonders") {
+      val reg = Helper.readBoardAndPlayT("test22/BOARDGAME1.json", "test22/PLAY1.json", Civilization.Arabs)
+      val token: String = reg._1
+      val b = II.getData(II.GETBOARDGAME,token)
+      val j:JsValue = toJ(b)
+      println(j)
+      val w : JsArray = (j \ "board" \ "wonders").as[JsArray]
+      println(w)
+      println(w.value.length)
+      assert(w.value.length == 4)
+    }
+
+  test("Can affort two wonders") {
+    val reg = Helper.readBoardAndPlayT("test22/BOARDGAME6.json", "test22/PLAY6.json", Civilization.Spain)
+    val token: String = reg._1
+    var gg: GameBoard = I.getBoardForToken(token)
+    val mab: MapSquareP = getSquare(gg, P(2, 2))
+    println(mab)
+    var l = allowedCommands(gg, Civilization.Spain)
+    println(l)
+    assert(l.find(_ == Command.BUYWONDER).isDefined)
+    val ss = II.getData(II.GETBOARDGAME, token)
+    val jb = toJ(ss)
+    val jy = jyou(jb)
+    println(jy)
+    val b = getProductionForCity(gg,Civilization.Spain,P(2,2))
+    println(b.prod)
+    assert(b.prod == 11)
+
+    val ii = toJ(II.itemizeCommand(token,"BUYWONDER")).as[JsArray]
+    println(ii)
+    val pp = ii.value(0)
+    println(pp)
+    val li = (pp \ "list").as[JsArray]
+    println(li)
+    var isStonehege:Boolean = false
+    var isPyramids : Boolean = false
+    var isOracle : Boolean = false
+    li.value.foreach(ee => {
+      println(ee)
+      val w = (ee \ "wonder").as[String]
+      println(w)
+      if (w == "Stonehenge") isStonehege = true
+      if (w == "ThePyramids") isPyramids = true
+      if (w == "TheOracle") isOracle = true
+    }
+    )
+    assert(isStonehege)
+    assert(isPyramids)
+    assert(isOracle)
+  }
+
+  test("Buy wonder, check map") {
+    val reg = Helper.readBoardAndPlayT("test22/BOARDGAME6.json", "test22/PLAY6.json", Civilization.Spain)
+    val token: String = reg._1
+    var gg: GameBoard = I.getBoardForToken(token)
+    val c =
+      """{"p":{"row":3,"col":3},"wonder":"Stonehenge"}"""
+    Helper.executeCommandH(token, "BUYWONDER", 2, 2, c)
+    val ss = II.getData(II.GETBOARDGAME, token)
+    val jm = jmap(toJ(ss))
+    var buildno = 0
+    var wonderno = 0
+    jm.value.foreach(t => {
+      val ta : JsArray = t.as[JsArray]
+      ta.value.foreach(m => {
+//        println(m)
+        val b = (m \ "building").asOpt[String]
+        if (b.isDefined) {
+          buildno = buildno + 1
+          println(b.get)
+        }
+        val w = (m \ "wonder").asOpt[String]
+        if (w.isDefined) {
+          wonderno = wonderno + 1
+          println(w.get)
+        }
+      }
+      )
+    }
+    )
+    assert(buildno == 4)
+    println(wonderno)
+    assert(wonderno == 1)
+  }
+
+  test("Buy wonder, endofpahes") {
+    val reg = Helper.readBoardAndPlayT("test22/BOARDGAME6.json", "test22/PLAY6.json", Civilization.Spain)
+    val token: String = reg._1
+    var gg: GameBoard = I.getBoardForToken(token)
+    var b = getProductionForCity(gg,Civilization.Spain,P(2,2))
+    println(b.prod)
+    assert(b.prod == 11)
+    val c =
+      """{"p":{"row":3,"col":3},"wonder":"Stonehenge"}"""
+    Helper.executeCommandH(token, "BUYWONDER", 2, 2, c)
+    gg = I.getBoardForToken(token)
+    var l = allowedCommands(gg, Civilization.Spain)
+    println(l)
+    assert(l.find(_ == Command.BUYWONDER).isEmpty)
+    assert(l.find(_ == Command.BUYBUILDING).isEmpty)
+    // check production  for city
+    b = getProductionForCity(gg,Civilization.Spain,P(2,2))
+    // wonder, 0 production from square
+    println(b.prod)
+    assert(b.prod == 10)
+
+    // check wonders for player
+    val ss = II.getData(II.GETBOARDGAME, token)
+    val jb = toJ(ss)
+    val jy = jyou(jb)
+    println(jy)
+    val wA : JsArray = (jy \ "wonders").as[JsArray]
+    println(wA)
+    val s = wA.value(0).as[String]
+    println(s)
+    assert(s == "Stonehenge")
   }
 
   }
