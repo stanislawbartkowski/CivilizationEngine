@@ -566,6 +566,114 @@ It is the list of building in the market. The number of buildings available is a
     } ]
 ```
 
+# Wonders
+List of buildings and wonders to be built.
+```JSON
+[ {
+  "p" : {
+    "row" : 2,
+    "col" : 2
+  },
+  "list" : [ {
+    "p" : {
+      "row" : 1,
+      "col" : 1
+    },
+    "wonder" : "Stonehenge",
+    "list" : [ ]
+  }, {
+    "p" : {
+      "row" : 1,
+      "col" : 2
+    },
+    "wonder" : "Stonehenge",
+    "list" : [ {
+      "row" : 1,
+      "col" : 2
+    } ]
+  }, {
+    "p" : {
+      "row" : 1,
+      "col" : 3
+    },
+    "wonder" : "Stonehenge",
+    "list" : [ ]
+  }, {
+    "p" : {
+      "row" : 3,
+      "col" : 1
+    },
+    "wonder" : "Stonehenge",
+    "list" : [ {
+      "row" : 3,
+      "col" : 1
+    } ]
+  }, {
+    "p" : {
+      "row" : 2,
+      "col" : 1
+    },
+    "wonder" : "Stonehenge",
+    "list" : [ ]
+  } ]
+}, {
+  "p" : {
+    "row" : 5,
+    "col" : 3
+  },
+  "list" : [ {
+    "p" : {
+      "row" : 4,
+      "col" : 2
+    },
+    "wonder" : "Stonehenge",
+    "list" : [ ]
+  }, {
+    "p" : {
+      "row" : 4,
+      "col" : 3
+    },
+    "wonder" : "Stonehenge",
+    "list" : [ ]
+  }, {
+    "p" : {
+      "row" : 4,
+      "col" : 4
+    },
+    "wonder" : "Stonehenge",
+    "list" : [ ]
+  }, {
+    "p" : {
+      "row" : 6,
+      "col" : 2
+    },
+    "wonder" : "Stonehenge",
+    "list" : [ ]
+  }, {
+    "p" : {
+      "row" : 6,
+      "col" : 4
+    },
+    "wonder" : "Stonehenge",
+    "list" : [ ]
+  }, {
+    "p" : {
+      "row" : 5,
+      "col" : 2
+    },
+    "wonder" : "Stonehenge",
+    "list" : [ ]
+  }, {
+    "p" : {
+      "row" : 5,
+      "col" : 4
+    },
+    "wonder" : "Stonehenge",
+    "list" : [ ]
+  } ]
+} ]
+```
+
 # Units
 Summary, number of units. Opposite players exposes only this information to you
 Example
