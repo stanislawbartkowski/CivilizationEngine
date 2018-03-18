@@ -514,8 +514,8 @@ package object helper {
   def spendProdForCities(b: GameBoard, civ: Civilization.T): Map[P, Int] =
     spendTradeCommands(b, civ) map { case (p, seq) => (p, spendProdForCity(seq)) }
 
-  case class TradeForCiv(val terrain: Int, val noresearch: Int, val toprod: Int, val loottrade: Int) {
-    def trade: Int = Math.min(terrain + noresearch - toprod + loottrade, TRADEMAX)
+  case class TradeForCiv(val terrain: Int, val noresearch: Int, val toprod: Int, val loottrade: Int, val tradecoins: Int) {
+    def trade: Int = Math.min(terrain + noresearch - toprod + loottrade + tradecoins, TRADEMAX)
   }
 
 
@@ -574,7 +574,7 @@ package object helper {
   def numberofTrade(b: GameBoard, civ: Civilization.T): TradeForCiv = {
     val li: PlayerLimits = getLimits(b, civ)
     TradeForCiv(numberofTradeTerrain(b, civ), numberofTradenoresearch(b, civ), reduceTradeBySpend(b, civ, li),
-      numberofloottrade(b, civ))
+      numberofloottrade(b, civ), getCoins(b, civ).coins)
   }
 
   // ===================================
