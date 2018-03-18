@@ -1,26 +1,17 @@
 {
   "players": [
     {
-      "civ": "Rome",
-      "gover": "Republic",
+      "civ": "Spain",
+      "gover": "Despotism",
       "tech": [
         {
-          "tech": "CodeOfLaw",
+          "tech": "Navigation",
           "initial": true
         }
       ],
       "units": [
         {
           "name": "Infantry",
-          "strength": [
-            2,
-            3,
-            4,
-            5
-          ]
-        },
-        {
-          "name": "Artillery",
           "strength": [
             1,
             2,
@@ -29,85 +20,21 @@
           ]
         },
         {
-          "name": "Mounted",
-          "strength": [
-            2,
-            3,
-            4,
-            5
-          ]
-        }
-      ],
-      "resources": [
-        {
-          "resource": "Incense",
-          "num": 0
-        },
-        {
-          "resource": "Spy",
-          "num": 0
-        },
-        {
-          "resource": "Coin",
-          "num": 0
-        },
-        {
-          "resource": "Culture",
-          "num": 0
-        },
-        {
-          "resource": "Silk",
-          "num": 0
-        },
-        {
-          "resource": "Iron",
-          "num": 0
-        },
-        {
-          "resource": "Uranium",
-          "num": 0
-        },
-        {
-          "resource": "Wheat",
-          "num": 0
-        }
-      ]
-    },
-    {
-      "civ": "Russia",
-      "gover": "Communism",
-      "tech": [
-        {
-          "tech": "Communism",
-          "initial": true
-        }
-      ],
-      "units": [
-        {
-          "name": "Infantry",
-          "strength": [
-            2,
-            3,
-            4,
-            5
-          ]
-        },
-        {
           "name": "Artillery",
           "strength": [
+            2,
             3,
             4,
-            5,
-            6
+            5
           ]
         },
         {
           "name": "Mounted",
           "strength": [
+            1,
             2,
             3,
-            4,
-            5
+            4
           ]
         }
       ],
@@ -149,7 +76,7 @@
   ],
   "map": [
     {
-      "tname": "RTILEROME.json",
+      "tname": "RTILESPAIN.json",
       "p": {
         "row": 0,
         "col": 0
@@ -247,7 +174,7 @@
       ]
     },
     {
-      "tname": "RTILE12.json",
+      "tname": "RTILE19.json",
       "p": {
         "row": 1,
         "col": 0
@@ -266,31 +193,6 @@
             "building": null
           },
           {
-            "hv": {
-              "hv": "Hut",
-              "resource": "Iron"
-            },
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          }
-        ],
-        [
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
-          {
             "hv": null,
             "city": null,
             "building": null
@@ -302,6 +204,16 @@
           }
         ],
         [
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
           {
             "hv": null,
             "city": null,
@@ -310,8 +222,20 @@
           {
             "hv": {
               "hv": "Hut",
-              "resource": "Silk"
+              "resource": "Iron"
             },
+            "city": null,
+            "building": null
+          }
+        ],
+        [
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
             "city": null,
             "building": null
           },
@@ -328,7 +252,10 @@
         ],
         [
           {
-            "hv": null,
+            "hv": {
+              "hv": "Hut",
+              "resource": "Wheat"
+            },
             "city": null,
             "building": null
           },
@@ -351,7 +278,7 @@
       ]
     },
     {
-      "tname": "RTILE3.json",
+      "tname": "RTILE11.json",
       "p": {
         "row": 2,
         "col": 0
@@ -360,7 +287,10 @@
       "squares": [
         [
           {
-            "hv": null,
+            "hv": {
+              "hv": "Hut",
+              "resource": "Wheat"
+            },
             "city": null,
             "building": null
           },
@@ -414,7 +344,10 @@
             "building": null
           },
           {
-            "hv": null,
+            "hv": {
+              "hv": "Hut",
+              "resource": "Wheat"
+            },
             "city": null,
             "building": null
           },
@@ -449,7 +382,7 @@
       ]
     },
     {
-      "tname": "RTILE20.json",
+      "tname": "RTILE14.json",
       "p": {
         "row": 3,
         "col": 0
@@ -463,7 +396,10 @@
             "building": null
           },
           {
-            "hv": null,
+            "hv": {
+              "hv": "Hut",
+              "resource": "Incense"
+            },
             "city": null,
             "building": null
           },
@@ -534,7 +470,10 @@
             "building": null
           },
           {
-            "hv": null,
+            "hv": {
+              "hv": "Hut",
+              "resource": "Spy"
+            },
             "city": null,
             "building": null
           },
@@ -547,7 +486,7 @@
       ]
     },
     {
-      "tname": "RTILE7.json",
+      "tname": "RTILE16.json",
       "p": {
         "row": 0,
         "col": 1
@@ -566,21 +505,9 @@
             "building": null
           },
           {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          }
-        ],
-        [
-          {
             "hv": {
               "hv": "Hut",
-              "resource": "Incense"
+              "resource": "Silk"
             },
             "city": null,
             "building": null
@@ -589,6 +516,18 @@
             "hv": null,
             "city": null,
             "building": null
+          }
+        ],
+        [
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
           },
           {
             "hv": null,
@@ -612,6 +551,18 @@
             "city": null,
             "building": null
           },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          }
+        ],
+        [
           {
             "hv": null,
             "city": null,
@@ -622,18 +573,6 @@
               "hv": "Hut",
               "resource": "Silk"
             },
-            "city": null,
-            "building": null
-          }
-        ],
-        [
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": null,
             "city": null,
             "building": null
           },
@@ -651,7 +590,7 @@
       ]
     },
     {
-      "tname": "RTILE1.json",
+      "tname": "RTILE12.json",
       "p": {
         "row": 1,
         "col": 1
@@ -670,136 +609,10 @@
             "building": null
           },
           {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          }
-        ],
-        [
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": {
-              "hv": "Village",
-              "resource": "Iron"
-            },
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          }
-        ],
-        [
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
-          {
             "hv": {
               "hv": "Hut",
-              "resource": "Wheat"
+              "resource": "Silk"
             },
-            "city": null,
-            "building": null
-          }
-        ],
-        [
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          }
-        ]
-      ]
-    },
-    {
-      "tname": "RTILE16.json",
-      "p": {
-        "row": 2,
-        "col": 1
-      },
-      "orientation": null,
-      "squares": [
-        [
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": {
-              "hv": "Hut",
-              "resource": "Incense"
-            },
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          }
-        ],
-        [
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": null,
             "city": null,
             "building": null
           },
@@ -855,16 +668,38 @@
             "city": null,
             "building": null
           }
+        ],
+        [
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          }
         ]
       ]
     },
     {
-      "tname": "RTILERUSSIA.json",
+      "tname": "RTILE17.json",
       "p": {
-        "row": 3,
+        "row": 2,
         "col": 1
       },
-      "orientation": "Up",
+      "orientation": null,
       "squares": [
         [
           {
@@ -895,7 +730,10 @@
             "building": null
           },
           {
-            "hv": null,
+            "hv": {
+              "hv": "Hut",
+              "resource": "Incense"
+            },
             "city": null,
             "building": null
           },
@@ -945,6 +783,113 @@
           },
           {
             "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": {
+              "hv": "Village",
+              "resource": "Iron"
+            },
+            "city": null,
+            "building": null
+          }
+        ]
+      ]
+    },
+    {
+      "tname": "RTILE10.json",
+      "p": {
+        "row": 3,
+        "col": 1
+      },
+      "orientation": null,
+      "squares": [
+        [
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": {
+              "hv": "Hut",
+              "resource": "Silk"
+            },
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          }
+        ],
+        [
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          }
+        ],
+        [
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          }
+        ],
+        [
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": {
+              "hv": "Village",
+              "resource": "Uranium"
+            },
             "city": null,
             "building": null
           },
@@ -960,8 +905,60 @@
   "resources": {
     "hutvillages": [
       {
-        "hv": "Village",
+        "hv": "Hut",
+        "resource": "Wheat"
+      },
+      {
+        "hv": "Hut",
         "resource": "Iron"
+      },
+      {
+        "hv": "Hut",
+        "resource": "Iron"
+      },
+      {
+        "hv": "Hut",
+        "resource": "Incense"
+      },
+      {
+        "hv": "Hut",
+        "resource": "Wheat"
+      },
+      {
+        "hv": "Hut",
+        "resource": "Silk"
+      },
+      {
+        "hv": "Hut",
+        "resource": "Incense"
+      },
+      {
+        "hv": "Hut",
+        "resource": "Incense"
+      },
+      {
+        "hv": "Hut",
+        "resource": "Silk"
+      },
+      {
+        "hv": "Hut",
+        "resource": "Incense"
+      },
+      {
+        "hv": "Hut",
+        "resource": "Spy"
+      },
+      {
+        "hv": "Hut",
+        "resource": "Wheat"
+      },
+      {
+        "hv": "Hut",
+        "resource": "Spy"
+      },
+      {
+        "hv": "Hut",
+        "resource": "Wheat"
       },
       {
         "hv": "Village",
@@ -985,7 +982,7 @@
       },
       {
         "hv": "Village",
-        "resource": "Uranium"
+        "resource": "Iron"
       },
       {
         "hv": "Village",
@@ -994,89 +991,13 @@
       {
         "hv": "Village",
         "resource": "Iron"
-      },
-      {
-        "hv": "Hut",
-        "resource": "Iron"
-      },
-      {
-        "hv": "Hut",
-        "resource": "Silk"
-      },
-      {
-        "hv": "Hut",
-        "resource": "Iron"
-      },
-      {
-        "hv": "Hut",
-        "resource": "Wheat"
-      },
-      {
-        "hv": "Hut",
-        "resource": "Wheat"
-      },
-      {
-        "hv": "Hut",
-        "resource": "Silk"
-      },
-      {
-        "hv": "Hut",
-        "resource": "Wheat"
-      },
-      {
-        "hv": "Hut",
-        "resource": "Spy"
-      },
-      {
-        "hv": "Hut",
-        "resource": "Spy"
-      },
-      {
-        "hv": "Hut",
-        "resource": "Incense"
-      },
-      {
-        "hv": "Hut",
-        "resource": "Incense"
-      },
-      {
-        "hv": "Hut",
-        "resource": "Incense"
-      },
-      {
-        "hv": "Hut",
-        "resource": "Wheat"
-      },
-      {
-        "hv": "Hut",
-        "resource": "Silk"
-      },
-      {
-        "hv": "Hut",
-        "resource": "Spy"
-      },
-      {
-        "hv": "Hut",
-        "resource": "Wheat"
-      },
-      {
-        "hv": "Hut",
-        "resource": "Silk"
-      },
-      {
-        "hv": "Hut",
-        "resource": "Wheat"
-      },
-      {
-        "hv": "Hut",
-        "resource": "Incense"
       }
     ],
     "hutvillagesused": [],
     "resources": [
       {
         "resource": "Incense",
-        "num": 2
+        "num": 1
       },
       {
         "resource": "Spy",
@@ -1092,11 +1013,11 @@
       },
       {
         "resource": "Silk",
-        "num": 2
+        "num": 1
       },
       {
         "resource": "Iron",
-        "num": 2
+        "num": 1
       },
       {
         "resource": "Uranium",
@@ -1104,7 +1025,7 @@
       },
       {
         "resource": "Wheat",
-        "num": 2
+        "num": 1
       }
     ]
   },
@@ -1203,10 +1124,19 @@
       {
         "name": "Infantry",
         "strength": [
-          1,
           2,
           3,
-          4
+          4,
+          5
+        ]
+      },
+      {
+        "name": "Infantry",
+        "strength": [
+          2,
+          3,
+          4,
+          5
         ]
       },
       {
@@ -1320,10 +1250,10 @@
       {
         "name": "Artillery",
         "strength": [
+          1,
           2,
           3,
-          4,
-          5
+          4
         ]
       },
       {
@@ -1396,6 +1326,15 @@
           3,
           4,
           5
+        ]
+      },
+      {
+        "name": "Artillery",
+        "strength": [
+          3,
+          4,
+          5,
+          6
         ]
       },
       {
@@ -1437,10 +1376,19 @@
       {
         "name": "Mounted",
         "strength": [
-          1,
           2,
           3,
-          4
+          4,
+          5
+        ]
+      },
+      {
+        "name": "Mounted",
+        "strength": [
+          2,
+          3,
+          4,
+          5
         ]
       },
       {
@@ -1574,20 +1522,19 @@
       }
     ],
     "wonders": [
+      "StatueofZeus",
       "TheColossus",
-      "Stonehenge",
       "TheGreatLighthouse",
-      "ChichenItza",
+      "TheGreatWall",
       "HimejiSamuraiCastle",
+      "BrandenburgGate",
+      "PorcelainTower",
       "NotreDame",
-      "AngkorWat",
-      "LeonardosWorkshop",
-      "UnitedNations",
       "PanamaCanal",
-      "BigBen",
-      "SydneyOperaHouse"
+      "StatueofLiberty",
+      "TheInternet",
+      "BigBen"
     ]
   },
-  "norotate": false,
-  "resourcebuiliging" : true
+  "norotate": false
 }

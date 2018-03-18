@@ -1,6 +1,7 @@
 [
   {
     "t" : "CI",
+    "ni" : true,
     "name" : "ChichenItza",
     "phase" : "CityManagement",
     "age" : "Ancient",
@@ -10,6 +11,7 @@
   },
   {
     "t" : "SZ",
+    "ni" : true,
     "name" : "StatueofZeus",
     "age" : "Ancient",
     "cost" : 15,
@@ -17,6 +19,7 @@
   },
   {
     "t" : "SH",
+    "ni" : true,
     "name" : "Stonehenge",
     "phase" : "StartOfTurn",
     "age" : "Ancient",
@@ -25,6 +28,7 @@
   },
   {
     "t" : "CL",
+    "ni" : true,
     "name" : "TheColossus",
     "phase" : "StartOfTurn",
     "age" : "Ancient",
@@ -34,6 +38,7 @@
   },
   {
     "t" : "GL",
+    "ni" : true,
     "name" : "TheGreatLighthouse",
     "age" : "Ancient",
     "cost" : 15,
@@ -42,6 +47,7 @@
   },
   {
     "t" : "GW",
+    "ni" : true,
     "name" : "TheGreatWall",
     "phase" : "StartOfTurn",
     "age" : "Ancient",
@@ -51,6 +57,7 @@
   },
   {
     "t" : "HG",
+    "ni" : true,
     "name" : "TheHangingGardens",
     "phase" : "StartOfTurn",
     "age" : "Ancient",
@@ -60,6 +67,7 @@
   },
   {
     "t" : "OR",
+    "ni" : true,
     "name" : "TheOracle",
     "age" : "Ancient",
     "cost" : 15,
@@ -68,6 +76,7 @@
   },
   {
     "t" : "PY",
+    "ni" : true,
     "name" : "ThePyramids",
     "age" : "Ancient",
     "cost" : 15,
@@ -76,6 +85,7 @@
   },
   {
     "t" : "AW",
+    "ni" : true,
     "name" : "AngkorWat",
     "phase" : "CityManagement",
     "age" : "Medieval",
@@ -85,6 +95,7 @@
   },
   {
     "t" : "BG",
+    "ni" : true,
     "name" : "BrandenburgGate",
     "age" : "Medieval",
     "cost" : 20,
@@ -92,6 +103,7 @@
   },
   {
     "t" : "HC",
+    "ni" : true,
     "name" : "HimejiSamuraiCastle",
     "age" : "Medieval",
     "cost" : 20,
@@ -100,6 +112,7 @@
   },
   {
     "t" : "LW",
+    "ni" : true,
     "name" : "LeonardosWorkshop",
     "phase" : "CityManagement",
     "age" : "Medieval",
@@ -109,6 +122,7 @@
   },
   {
     "t" : "MP",
+    "ni" : true,
     "name" : "MachuPichu",
     "phase" : "StartOfTurn",
     "age" : "Medieval",
@@ -118,6 +132,7 @@
   },
   {
     "t" : "ND",
+    "ni" : true,
     "name" : "NotreDame",
     "phase" : "Research",
     "age" : "Medieval",
@@ -127,6 +142,7 @@
   },
   {
     "t" : "PT",
+    "ni" : true,
     "name" : "PorcelainTower",
     "phase" : "Research",
     "age" : "Medieval",
@@ -136,6 +152,7 @@
   },
   {
     "t" : "TM",
+    "ni" : true,
     "name" : "TajMahal",
     "phase" : "StartOfTurn",
     "age" : "Medieval",
@@ -145,6 +162,7 @@
   },
   {
     "t" : "LV",
+    "ni" : true,
     "name" : "TheLouvre",
     "phase" : "StartOfTurn",
     "age" : "Medieval",
@@ -154,6 +172,7 @@
   },
   {
     "t" : "BB",
+    "ni" : true,
     "name" : "BigBen",
     "phase" : "StartOfTurn",
     "age" : "Modern",
@@ -163,6 +182,7 @@
   },
   {
     "t" : "CR",
+    "ni" : true,
     "name" : "CristoRedentor",
     "phase" : "StartOfTurn",
     "age" : "Modern",
@@ -172,6 +192,7 @@
   },
   {
     "t" : "PC",
+    "ni" : true,
     "name" : "PanamaCanal",
     "phase" : "StartOfTurn",
     "age" : "Modern",
@@ -181,6 +202,7 @@
   },
   {
     "t" : "SL",
+    "ni" : true,
     "name" : "StatueofLiberty",
     "phase" : "StartOfTurn",
     "age" : "Modern",
@@ -190,6 +212,7 @@
   },
   {
     "t" : "OH",
+    "ni" : true,
     "name" : "SydneyOperaHouse",
     "phase" : "StartOfTurn",
     "age" : "Modern",
@@ -198,6 +221,7 @@
   },
   {
     "t" : "IT",
+    "ni" : true,
     "name" : "TheInternet",
     "age" : "Modern",
     "cost" : 25,
@@ -206,6 +230,7 @@
   },
   {
     "t" : "KR",
+    "ni" : true,
     "name" : "TheKremlin",
     "age" : "Modern",
     "cost" : 25,
@@ -214,6 +239,7 @@
   },
   {
     "t" : "PG",
+    "ni" : true,
     "name" : "ThePentagon",
     "age" : "Modern",
     "cost" : 25,
@@ -222,11 +248,11 @@
   },
   {
     "t" : "UN",
+    "ni" : true,
     "name" : "UnitedNations",
     "age" : "Modern",
     "cost" : 20,
     "desc" : "Any Time: Culture events cannot target you against your will."
   }
-
 
 ]

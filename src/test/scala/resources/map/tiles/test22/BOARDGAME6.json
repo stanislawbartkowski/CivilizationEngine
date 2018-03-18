@@ -1536,5 +1536,6 @@
       "UnitedNations"
     ]
   },
-  "norotate": false
+  "norotate": false,
+  "resourcebuiliging" : true
 }

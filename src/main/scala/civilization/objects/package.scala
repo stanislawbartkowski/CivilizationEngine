@@ -22,12 +22,12 @@ package object objects {
       hv == that.hv && resource == that.resource
   }
 
-  case class Tokens(val numofTrade: Int, val numofProduction: Int, val numofCulture: Int, val numofBattle: Int, val numofCoins : Int)
+  case class Tokens(val numofTrade: Int, val numofProduction: Int, val numofCulture: Int, val numofBattle: Int, val numofCoins: Int)
 
   case class Square(val terrain: Terrain.T, val hv: HutVillage.T, val resource: Option[Resource.T], val naturalwonder: Boolean, val token: Tokens)
 
   case class Building(val name: BuildingName.T, val cost: Int, val star: Option[Boolean], val tokens: Tokens, val upgrade: Option[BuildingName.T], val terrain: Option[Terrain.T]) {
-    def isStar : Boolean = star.isDefined && star.get
+    def isStar: Boolean = star.isDefined && star.get
   }
 
 
@@ -38,7 +38,7 @@ package object objects {
   }
 
   case class P(val row: Int, val col: Int) {
-//    >def +(that: P) = row == that.row && col == that.col
+    //    >def +(that: P) = row == that.row && col == that.col
 
     def empty: Boolean = row == -1 && col == -1
   }
@@ -246,7 +246,7 @@ package object objects {
     * @param gover Option,if technology enables government
     * @param level Level of this technology
     */
-  case class Technology(val tech: TechnologyName.T, val gover: Option[GovernmentName.T], val level: Int, val notimplemented: Option[Boolean], val building: Option[BuildingName.T], val resource: Option[Resource.T], val desc: String, val resourceany: Option[Int], val units: Option[Seq[TechnologyUnit]])
+  case class Technology(val tech: TechnologyName.T, val gover: Option[GovernmentName.T], val level: Int, val notimplemented: Option[Boolean], val building: Option[BuildingName.T], val resource: Option[Resource.T], val desc: String, val resourceany: Option[Int], val units: Option[Seq[TechnologyUnit]], val coins: Option[Int])
 
   object WondersAge extends Enumeration {
     type T = Value

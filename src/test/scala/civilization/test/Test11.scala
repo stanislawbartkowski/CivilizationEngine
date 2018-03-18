@@ -109,9 +109,7 @@ class Test11 extends FunSuite {
   test("hut villages exported") {
     var b: GameBoard = Helper.readBoardAndPlay("test9/BOARDGAME1.json", "test9/GAME8.json", Civilization.Rome)
     val token: String = registerGame(b, Civilization.Rome)
-    var s: String = II.getData(II.GETBOARDGAME, token)
-    println(s)
-    val j: JsValue = toJ(s)
+    val j: JsValue = Helper.getB(token)
     println(j)
     val a = (j \ "board" \ "map").get.as[JsArray]
     println(a)

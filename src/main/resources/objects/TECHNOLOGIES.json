@@ -19,7 +19,7 @@
     "level": 3,
     "resource" : "Spy",
     "units" : [{"name" : "Artillery", "level" : 2}],
-    "desc" : "Incense-CityManagemen : Gain 7 culture"
+    "desc" : "Incense-CityManagement : Gain 7 culture"
   },
   {
     "name": "Communism",
@@ -132,6 +132,7 @@
     "ni" : true,
     "level": 2,
     "resource" : "Spy",
+    "coin" : 1,
     "desc" : "1 Coin, +1 Hand Size, Spy-Any Time: cancel a culture event"
   },
   {
@@ -155,7 +156,7 @@
     "gover": "Republic",
     "building" : "TradingPost",
     "level": 1,
-    "desc" : "Pnce per turn, after you win a battle, add 1 coin t this token (max 4)."
+    "desc" : "Once per turn, after you win a battle, add 1 coin to this token (max 4)."
   },
   {
     "name": "HorsebackRiding",
@@ -241,6 +242,7 @@
     "name": "RailRoad",
     "ni" : true,
     "level": 3,
+    "coin" : 1,
     "building" : "IronMine",
     "units" : [{"name" : "Mounted", "level" : 3}],
     "desc" : "1 Coin"

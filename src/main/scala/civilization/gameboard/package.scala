@@ -242,7 +242,9 @@ package object gameboard {
 
   case class WondersDiscount(val cost: Int, tech: TechnologyName.T)
 
-  case class WondersOfTheWorld(val name: Wonders.T, val phase: Option[TurnPhase.T], val age: WondersAge.T, val cost: Int, val discount: Option[WondersDiscount], val desc: String, val t: String)
+  case class WondersOfTheWorld(val name: Wonders.T, val phase: Option[TurnPhase.T], val age: WondersAge.T, val cost: Int, val discount: Option[WondersDiscount], val desc: String, val t: String, val notimplemented: Option[Boolean]) {
+    def ni : Boolean = notimplemented.isDefined && notimplemented.get
+  }
 
   case class TakeWinnerLoot(val winner: Civilization.T, val loser: Civilization.T, val loot: WinnerLoot, val reso: Option[Resource.T], val trade: Int)
 
@@ -307,6 +309,10 @@ package object gameboard {
     def techlevel(tep: PlayerTechnology): Int = if (tep.initial.isDefined && tep.initial.get) 1 else GameResources.getTechnology(tep.tech).level
 
     def getCurrentWonders(): Seq[Wonders.T] = market.wonders.take(WONDERWINDOW)
+
+    def getTech(t : TechnologyName.T) : Technology = GameResources.getTechnology(t)
+
+    def getBuilding(b : BuildingName.T) : Building = GameResources.getBuilding(b)
   }
 
 

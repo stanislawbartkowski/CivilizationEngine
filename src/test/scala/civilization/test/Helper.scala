@@ -91,6 +91,11 @@ object Helper {
     assert(expected == t)
   }
 
+  def getB(token : String) = {
+    val s = II.getData(II.GETBOARDGAME, token)
+    toJ(s)
+  }
+
   def activeciv(token: String, civ: String, phase: String): Unit = {
     val s = II.getData(II.GETBOARDGAME, token)
     //        println(s)

@@ -30,6 +30,7 @@ package object helper {
     def resource: Option[Resource.T] =
     // building covers resource
       if (s.building.isDefined) None
+      else if (s.wonder.isDefined) None
       else sm.resource
 
     def suggestedCapitalForCiv: Option[Civilization.T] = if (suggestedCapital) Some(t.tile.civ) else None
@@ -64,6 +65,15 @@ package object helper {
 
   def citiesForCivilization(board: GameBoard, civ: Civilization.T): Seq[MapSquareP] =
     allPoints(board).map(getSquare(board, _)).filter(s => s.s.cityhere && s.s.city.get.belongsTo(civ)).toList
+
+  private def outskirtsForCiv(b: GameBoard, civ: Civilization.T): Seq[MapSquareP] =
+    citiesForCivilization(b, civ).flatMap(p => squaresAround(b, p.p))
+
+  private def squareNotBlocked(b: GameBoard, civ: Civilization.T, s: MapSquareP): Boolean =
+    s.civHere.isEmpty || s.civHere.get == civ
+
+  private def outskirtsForCivNotBlocked(b: GameBoard, civ: Civilization.T): Seq[MapSquareP] =
+    outskirtsForCiv(b, civ).filter(squareNotBlocked(b, civ, _))
 
   def pointtoTile(p: P): P = P(p.row / TILESIZE, p.col / TILESIZE)
 
@@ -333,6 +343,7 @@ package object helper {
     def lastp: P = begstop._2.p.get
   }
 
+
   private def toFig(co: Command): PlayerFigures = {
     val f: Figures = co.param.asInstanceOf[Figures]
     PlayerFigures(co.civ, f.numberofArmies, f.numberofScouts)
@@ -524,7 +535,9 @@ package object helper {
   }
 
   private def numberofTradeTerrain(b: GameBoard, civ: Civilization.T): Integer = {
-    val num: Int = citiesForCivilization(b, civ).flatMap(p => squaresAround(b, p.p)).map(_.numberOfTrade).foldLeft(0)(_ + _)
+    //    val num: Int = citiesForCivilization(b, civ).flatMap(p => squaresAround(b, p.p)).map(_.numberOfTrade).foldLeft(0)(_ + _)
+    val num: Int = outskirtsForCivNotBlocked(b, civ).map(_.numberOfTrade).sum
+    // squareNotBlocked(b, civ, s
     if (gameStart(b)) num * 2 else num
   }
 
@@ -560,7 +573,8 @@ package object helper {
 
   def numberofTrade(b: GameBoard, civ: Civilization.T): TradeForCiv = {
     val li: PlayerLimits = getLimits(b, civ)
-    TradeForCiv(numberofTradeTerrain(b, civ), numberofTradenoresearch(b, civ), reduceTradeBySpend(b, civ, li), numberofloottrade(b, civ))
+    TradeForCiv(numberofTradeTerrain(b, civ), numberofTradenoresearch(b, civ), reduceTradeBySpend(b, civ, li),
+      numberofloottrade(b, civ))
   }
 
   // ===================================
@@ -587,16 +601,22 @@ package object helper {
     harv.union(sends)
   }
 
-  private def allScouts(b: gameboard.GameBoard, civ: Civilization.T): Seq[MapSquareP] = getFigures(b, civ).filter(_.s.figures.numberofScouts > 0)
+  private def allScouts(b: gameboard.GameBoard, civ: Civilization.T): Seq[MapSquareP]
+  = getFigures(b, civ).filter(_.s.figures.numberofScouts > 0)
 
-  private def allOutSkirts(b: gameboard.GameBoard, civ: Civilization.T): Seq[MapSquareP] =
-    citiesForCivilization(b, civ).map(p => squaresAround(b, p.p)).flatten
+
+  private def allScoutsOutside(b: gameboard.GameBoard, civ: Civilization.T): Seq[MapSquareP] = {
+    val out: Seq[MapSquareP] = outskirtsForCiv(b, civ)
+    val sq: Seq[MapSquareP] = allScouts(b, civ)
+    sq.filter(sc => out.find(_.p == sc.p).isEmpty)
+  }
 
   def scoutsAvailableForAction(b: GameBoard, civ: Civilization.T, pfilt: (MapSquareP) => Boolean): Seq[(P, P)] = {
-    val out: Seq[MapSquareP] = allOutSkirts(b, civ)
+    //    val out: Seq[MapSquareP] = outskirtsForCiv(b, civ)
     // filter out scout on outskirts
     // filter also all on squares without production
-    val fig: Seq[MapSquareP] = allScouts(b, civ).filter(sc => out.find(_.p == sc.p).isEmpty).filter(pfilt)
+    //    val fig: Seq[MapSquareP] = allScouts(b, civ).filter(sc => out.find(_.p == sc.p).isEmpty).filter(pfilt)
+    val fig: Seq[MapSquareP] = allScoutsOutside(b, civ).filter(pfilt)
     val c: Seq[P] = CityAvailableForAction(b, civ)
     //    val scoutsused : Map[P,P] = sendprodForScouts(b,civ)
     val scoutsused: Set[P] = scoutsUsedAlready(b, civ)
@@ -610,7 +630,7 @@ package object helper {
     val fig: Seq[MapSquareP] = allScouts(b, civ)
     val scout: P = param
     if (fig.find(_.p == param).isEmpty) return Some(Mess(M.NOSCOUTATTHISPOINT, (scout)))
-    val out: Seq[MapSquareP] = allOutSkirts(b, civ)
+    val out: Seq[MapSquareP] = outskirtsForCiv(b, civ)
     if (out.find(_.p == scout).isDefined)
       return return Some(Mess(M.SCOUTISONCITYOUTSKIRT, (scout)))
     return None
@@ -634,13 +654,34 @@ package object helper {
   }
 
   def getProductionForCity(b: GameBoard, civ: Civilization.T, p: P): ProdForCity = {
-    val num: Int = squaresAround(b, p).map(s => getSquare(b, s.p).numberOfProduction).foldLeft(0)(_ + _)
+    //val num: Int = squaresAround(b, p).map(s => getSquare(b, s.p).numberOfProduction).foldLeft(0)(_ + _)
+    val num: Int = squaresAround(b, p).filter(squareNotBlocked(b, civ, _)).map(s => getSquare(b, s.p).numberOfProduction).sum
+
+    //val num: Int = outskirtsForCityResource(b, civ, p).map(_.numberOfProduction).sum
+
     val prod: Option[Int] = spendProdForCities(b, civ).get(p)
     val prodfromtrade: Int = if (prod.isDefined) prod.get else 0
     val prodFromScouts: Map[P, Int] = sendprodForCities(b, civ)
     val prodfromS: Option[Int] = prodFromScouts.get(p)
     val prodfromscouts: Int = if (prodfromS.isEmpty) 0 else prodfromS.get
     ProdForCity(num, prodfromtrade, prodfromscouts)
+  }
+
+  // ======================================
+
+  case class EconomyForCiv(val tech: Int, val squares: Int, val scout: Int) {
+    def coins = tech + squares + scout
+  }
+
+  def getCoins(b: GameBoard, civ: Civilization.T): EconomyForCiv = {
+    val pl: PlayerDeck = b.playerDeck(civ)
+    // check technologies
+    val tech: Int = pl.tech.map(t => b.getTech(t.tech)).map(t => if (t.coins.isEmpty) 0 else t.coins.get).sum
+    // number of squares with coins
+    val squares: Int = outskirtsForCivNotBlocked(b, civ).
+      filter(s => s.resource.isDefined && s.resource.get == Resource.Coin).length
+    val scouts: Int = allScoutsOutside(b, civ).filter(s => s.resource.isDefined && s.resource.get == Resource.Coin).length
+    EconomyForCiv(tech, squares, scouts)
   }
 
   // ==============================================

@@ -153,7 +153,8 @@ package object fromjson extends ImplicitMiximFromJson {
       (JsPath \ S.resource).readNullable[Resource.T] and
       (JsPath \ S.desc).read[String] and
       (JsPath \ S.resourceany).readNullable[Int] and
-      (JsPath \ S.units).readNullable[Seq[TechnologyUnit]]
+      (JsPath \ S.units).readNullable[Seq[TechnologyUnit]] and
+      (JsPath \ S.coin).readNullable[Int]
     ) (Technology.apply _)
 
   def listReads[T](length: Int)(implicit anyListReads: Reads[Array[T]]): Reads[Array[T]] = {
@@ -316,7 +317,8 @@ package object fromjson extends ImplicitMiximFromJson {
       (JsPath \ S.cost).read[Int] and
       (JsPath \ S.discount).readNullable[WondersDiscount] and
       (JsPath \ S.desc).read[String] and
-      (JsPath \ S.wondertT).read[String]
+      (JsPath \ S.wondertT).read[String] and
+      (JsPath \ S.notimplemented).readNullable[Boolean]
     ) (WondersOfTheWorld.apply _)
 
   trait FromJson {

@@ -51,7 +51,8 @@ package object tojson extends ImplicitMiximToJson {
       S.building -> o.building,
       S.resource -> o.resource,
       S.resourceany -> o.resourceany,
-      S.units -> o.units
+      S.units -> o.units,
+      S.coin -> o.coins
     )
   }
 
@@ -218,7 +219,8 @@ package object tojson extends ImplicitMiximToJson {
       S.phase -> o.phase,
       S.discount -> o.discount,
       S.desc -> o.desc,
-      S.wondertT -> o.t
+      S.wondertT -> o.t,
+      S.notimplemented -> o.ni
     )
   }
 

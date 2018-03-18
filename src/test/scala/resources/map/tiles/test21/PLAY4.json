@@ -136,8 +136,6 @@
  {"command":"ENDOFPHASE","civ":"Russia","p":null,"param":"Research"},
  {"command":"ENDOFPHASE","civ":"Russia","p":null,"param":"StartOfTurn"},
  {"command":"ENDOFPHASE","civ":"Russia","p":null,"param":"Trade"},
- {"command":"SPENDTRADE","civ":"Russia","p":{"row":5,"col":2},"param":8},
- {"command":"UNDOSPENDTRADE","civ":"Russia","p":{"row":5,"col":2},"param":null},
  {"command":"BUYBUILDING","civ":"Russia","p":{"row":5,"col":2},"param":{"p":{"row":4,"col":2},"building":"Temple"}},
  {"command":"ENDOFPHASE","civ":"Russia","p":null,"param":"CityManagement"},
  {"command":"ENDOFPHASE","civ":"Russia","p":null,"param":"Movement"}

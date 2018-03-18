@@ -1,23 +1,25 @@
 package civilization.test
 
-import civilization.I
-import civilization.I.II
-import civilization.gameboard.GameBoard
-import civilization.helper.AllowedCommands.allowedCommands
-import civilization.helper._
-import civilization.io.fromjson.ImplicitMiximFromJson
-import civilization.io.readdir._
-import civilization.objects._
-import org.scalatest.FunSuite
-import play.api.libs.json._
-import civilization.io.fromjson.{toJ, _}
-import civilization.test.Helper._
+  import civilization.I
+  import civilization.I.II
+  import civilization.gameboard.GameBoard
+  import civilization.gameboard._
+  import civilization.helper.AllowedCommands.allowedCommands
+  import civilization.helper._
+  import civilization.io.fromjson.ImplicitMiximFromJson
+  import civilization.io.readdir._
+  import civilization.objects._
+  import org.scalatest.FunSuite
+  import play.api.libs.json._
+  import civilization.io.fromjson.{toJ, _}
+  import civilization.io.readdir.GenBoard.genBoard
+  import civilization.test.Helper._
 
 
 
-class Test22 extends FunSuite with ImplicitMiximFromJson {
+  class Test22 extends FunSuite with ImplicitMiximFromJson {
 
-  Helper.I
+    Helper.I
 
   test("Wonders") {
     val token: String = II.getData(II.REGISTEROWNER, "China")
@@ -207,5 +209,51 @@ class Test22 extends FunSuite with ImplicitMiximFromJson {
     // should fail ENDOFPHASE Research for the second time
     Helper.executeCommandFail(token, "ENDOFPHASE", -1, -1, "\"Research\"")
   }
+
+  test("Check wonder not implemented") {
+    val w : WondersOfTheWorld =GameResources.getWonder(Wonders.Stonehenge)
+    println(w.notimplemented)
+    assert(w.ni)
+  }
+
+  test("Test wonders as resource") {
+    println("Test wonders")
+    val s: String = II.getData(II.LISTOFRES)
+    val j: JsValue = toJ(s)
+    val w : JsArray = (j \ "wonders").as[JsArray]
+    println(w)
+    var wasS = false
+    w.value.foreach( w => {
+      println(w)
+      val n = (w \ "name").as[String]
+      if (n == "Stonehenge") {
+        wasS = true
+        val ni = (w \ "ni").as[Boolean]
+        println("Stonehenge, check not implemented")
+        assert(ni)
+      }
+    })
+    assert(wasS)
+  }
+
+  test("Test technologies as resource") {
+    println("Test technologies")
+    val s: String = II.getData(II.LISTOFRES)
+    val j: JsValue = toJ(s)
+    val w : JsArray = (j \ "tech").as[JsArray]
+//    println(w)
+    var wasC = false
+    w.value.foreach( w => {
+      println(w)
+      val n = (w \ "name").as[String]
+      if (n == "RailRoad") {
+        val co = (w \ "coin").as[Int]
+        println(co)
+        wasC = co == 1
+      }
+    })
+    assert(wasC)
+  }
+
 
   }

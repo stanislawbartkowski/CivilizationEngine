@@ -28,7 +28,7 @@ object genboardj {
 
   implicit def plSeqToJ(pl: Seq[PlayerTech]): Seq[JsValue] = pl.map(plToJson)
 
-  case class PlayerDeckJ(civ: Civilization.T, numberofTrade: Int, commands: Seq[Command.T], limits: PlayerLimits, technologylevel: Int, tech: Seq[PlayerTech], pl: PlayerDeck, wonders : Seq[Wonders.T])
+  case class PlayerDeckJ(civ: Civilization.T, numberofTrade: Int, commands: Seq[Command.T], limits: PlayerLimits, technologylevel: Int, tech: Seq[PlayerTech], pl: PlayerDeck, wonders : Seq[Wonders.T],coins : Int)
 
   case class Game(active: Civilization.T, roundno: Int, phase: TurnPhase.T)
 
@@ -93,7 +93,8 @@ object genboardj {
     PlayerDeckJ(civ, numberofTrade(g, civ).trade, allowedCommands(g, civ), getLimits(g, civ),
       ResearchTechnology.techologylevel(g, civ),
       g.playerDeck(civ).tech.map(t => PlayerTech(t, g.techlevel(t))),
-      g.playerDeck(civ), wondersForPlayers(g,civ))
+      g.playerDeck(civ), wondersForPlayers(g,civ),
+      getCoins(g,civ).coins)
 
   private def commandToArray(l: Seq[Command.T]): JsArray = {
     JsArray(l.map(c => Json.obj(S.command -> c)).foldLeft(List[JsObject]())(_ :+ _))
@@ -114,7 +115,8 @@ object genboardj {
     S.units -> unitstoJSON(p.pl.units, you, p.pl.combatlevel),
     S.resources -> p.pl.resou,
     S.hutvillages -> hvtojson(p.pl.hvlist, you),
-    S.wonders -> p.wonders
+    S.wonders -> p.wonders,
+    S.coins -> p.coins
   )
 
   private def genBoardGameJ(g: GameBoard, civ: Civilization.T): BoardGameJ = {

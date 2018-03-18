@@ -1397,5 +1397,6 @@
     ],
     "wonders" : []
   },
-  "norotate": false
+  "norotate": false,
+  "resourcebuiliging" : true
 }

@@ -70,4 +70,6 @@ object S {
   final val battle = "battle"
   final val coinT = "Coin"
   final val wondertT = "t"
+  final val coin = "coin"
+  final val coins = "coins"
 }
