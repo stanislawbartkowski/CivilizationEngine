@@ -905,7 +905,7 @@ For every building, there is a list of buildings to be pulled down if new buildi
      ]
   }
   ]
-
+```
 ## POTTERYACTION,PHILOSOPHYACTION
 
 Returns list of cities where action is possible to execute
