@@ -129,6 +129,7 @@ IMPORTANT: seems not working properly, IntelliJ ant build does not generate scal
       "civ" : "China",
       "trade" : 6,
       "coins" : 4,
+      "combatbonus" : 3,
       "commands" : [ {
         "command" : "ENDOFPHASE"
       } ],
