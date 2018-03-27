@@ -60,7 +60,7 @@ package object gameboard {
     *
     * @param tech
     */
-  case class PlayerTechnology(val tech: TechnologyName.T, val initial: Option[Boolean] = None)
+  case class PlayerTechnology(val tech: TechnologyName.T, val initial: Option[Boolean] = None, var coins : Option[Int] = None)
 
   /** Figures on the square, can be staked
     *

@@ -103,7 +103,7 @@
     "gover": "Democracy",
     "units" : [{"name" : "Infantry", "level" : 2}],
     "level": 2,
-    "desc" : "Once per turn, you may spend 6 trade during CityManagement to add 1 coin token to this tech (max 4)."
+    "desc" : "Once per turn, you may spend 6 trade during City Management to add 1 coin token to this tech (max 4)."
   },
   {
     "name": "Monarchy",

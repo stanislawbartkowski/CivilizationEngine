@@ -11,6 +11,7 @@ package object objects {
   val IRONSTRENGTH = 3
   val MAXLOOTTRADE = 3
   val WONDERWINDOW = 4
+  val COINSCAPACITY = 4
 
   case class GameConfig(val ironincreasedefend: Boolean)
 
@@ -21,6 +22,8 @@ package object objects {
     def ==(that: HutVillage): Boolean =
       hv == that.hv && resource == that.resource
   }
+
+  case class HVResource(val hv: Option[HutVillage.T], val resource: Resource.T)
 
   case class Tokens(val numofTrade: Int, val numofProduction: Int, val numofCulture: Int, val numofBattle: Int, val numofCoins: Int)
 

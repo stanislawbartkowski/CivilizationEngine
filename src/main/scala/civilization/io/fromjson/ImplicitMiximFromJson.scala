@@ -55,4 +55,10 @@ trait ImplicitMiximFromJson {
 
   implicit def toBuildingPoint(j : JsValue) : BuildingPoint = j.as[BuildingPoint]
 
+  implicit def toHutVillageT(j : JsValue) : HutVillage.T = j.as[HutVillage.T]
+
+  implicit def toHVResource(j : JsValue) : HVResource = j.as[HVResource]
+
+  implicit def toHVResourceSeq(j : JsValue) : Seq[HVResource] = j.as[Seq[HVResource]]
+
 }

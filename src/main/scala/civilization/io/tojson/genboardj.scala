@@ -18,12 +18,13 @@ object genboardj {
   case class MapSquareJ(revealed: Boolean, t: Terrain.T, trade: Int, production: Int, resource: Option[Resource.T], capForCiv: Option[Civilization.T],
                         civ: Civilization.T, city: City.T, defence: Int, numberofArmies: Int, numberofScouts: Int, tile: String, hv: Option[HutVillage.T], building: Option[BuildingName.T], wonder : Option[Wonders.T])
 
-  case class PlayerTech(val pl: PlayerTechnology, val level: Int)
+  case class PlayerTech(val pl: PlayerTechnology, val level: Int,val coins: Int)
 
   private def plToJson(pl: PlayerTech): JsValue = Json.obj(
     S.tech -> pl.pl.tech,
     S.initial -> pl.pl.initial,
-    S.level -> pl.level
+    S.level -> pl.level,
+    S.coins -> pl.coins
   )
 
   implicit def plSeqToJ(pl: Seq[PlayerTech]): Seq[JsValue] = pl.map(plToJson)
@@ -92,7 +93,7 @@ object genboardj {
   private def genPlayerDeckJ(g: GameBoard, civ: Civilization.T): PlayerDeckJ =
     PlayerDeckJ(civ, numberofTrade(g, civ).trade, allowedCommands(g, civ), getLimits(g, civ),
       ResearchTechnology.techologylevel(g, civ),
-      g.playerDeck(civ).tech.map(t => PlayerTech(t, g.techlevel(t))),
+      g.playerDeck(civ).tech.map(t => PlayerTech(t, g.techlevel(t),if (t.coins.isEmpty) 0 else t.coins.get)),
       g.playerDeck(civ), wondersForPlayers(g,civ),
       getCoins(g,civ).coins)
 
@@ -116,7 +117,8 @@ object genboardj {
     S.resources -> p.pl.resou,
     S.hutvillages -> hvtojson(p.pl.hvlist, you),
     S.wonders -> p.wonders,
-    S.coins -> p.coins
+    S.coins -> p.coins,
+    "combatbonus" -> p.limits.combatBonus
   )
 
   private def genBoardGameJ(g: GameBoard, civ: Civilization.T): BoardGameJ = {
@@ -168,7 +170,7 @@ object genboardj {
       S.units -> unitstoJSON(g.market.units, false, null),
       S.killedunits -> unitstoJSON(g.market.killedunits, true, null),
       S.resources -> Json.toJson(g.resources.resou),
-      S.hutvillages -> hvtojson(g.resources.hvused, true),
+      S.hutvillagesused -> hvtojson(g.resources.hvused, true),
       S.you -> genPlayerDeckJson(b.you, true),
       "others" -> JsArray(o),
       // only first 4 wonders

@@ -243,6 +243,7 @@ package civilization.test
     val w : JsArray = (j \ "tech").as[JsArray]
 //    println(w)
     var wasC = false
+    var wasSM = false;
     w.value.foreach( w => {
       println(w)
       val n = (w \ "name").as[String]
@@ -251,8 +252,13 @@ package civilization.test
         println(co)
         wasC = co == 1
       }
+      if (n == "Pottery") {
+        val co = (w \ "resourceany").as[Int]
+        wasSM = (co == 2)
+      }
     })
     assert(wasC)
+    assert(wasSM)
   }
 
 

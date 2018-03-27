@@ -676,12 +676,20 @@ package object helper {
   def getCoins(b: GameBoard, civ: Civilization.T): EconomyForCiv = {
     val pl: PlayerDeck = b.playerDeck(civ)
     // check technologies
-    val tech: Int = pl.tech.map(t => b.getTech(t.tech)).map(t => if (t.coins.isEmpty) 0 else t.coins.get).sum
+    val tech: Int = pl.tech.map(t => if (t.coins.isEmpty) 0 else t.coins.get).sum
     // number of squares with coins
     val squares: Int = outskirtsForCivNotBlocked(b, civ).
       filter(s => s.resource.isDefined && s.resource.get == Resource.Coin).length
     val scouts: Int = allScoutsOutside(b, civ).filter(s => s.resource.isDefined && s.resource.get == Resource.Coin).length
     EconomyForCiv(tech, squares, scouts)
+  }
+
+  // ==============================================
+
+  private def calculateCombatBonus(b: GameBoard, civ: Civilization.T) : Int = {
+    // all buildings
+    outskirtsForCivNotBlocked(b,civ).filter(_.s.building.isDefined).foldLeft(0) { (sum,s) => s.s.building.get.tokens.numofBattle }
+//      map(_.s.building.get.tokens.numofBattle)
   }
 
   // ==============================================
@@ -699,7 +707,7 @@ package object helper {
     val count: (Int, Int) = getNumberOfArmies(b, civ)
     val armieslimit: Int = deck.defaultarmieslimit - count._1
     val scoutslimit: Int = deck.defaultscoutslimit - count._2
-    PlayerLimits(citieslimit, deck.defaultstackinglimit, false, false, armieslimit, scoutslimit, deck.defaulttravelspeed, DEFAULTTRADEFORPROD, deck.combatlevel, false, false, false, 0)
+    PlayerLimits(citieslimit, deck.defaultstackinglimit, false, false, armieslimit, scoutslimit, deck.defaulttravelspeed, DEFAULTTRADEFORPROD, deck.combatlevel, false, false, false, calculateCombatBonus(b,civ))
   }
 
   // =====================================

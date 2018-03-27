@@ -52,7 +52,8 @@ package object tojson extends ImplicitMiximToJson {
       S.resource -> o.resource,
       S.resourceany -> o.resourceany,
       S.units -> o.units,
-      S.coin -> o.coins
+      S.coin -> o.coins,
+      S.desc -> o.desc
     )
   }
 

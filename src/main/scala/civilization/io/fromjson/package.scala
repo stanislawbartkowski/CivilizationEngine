@@ -225,7 +225,9 @@ package object fromjson extends ImplicitMiximFromJson {
   }
 
   implicit val readsPlayerTechnology: Reads[PlayerTechnology] = (
-    (JsPath \ S.tech).read[TechnologyName.T] and (JsPath \ S.initial).readNullable[Boolean]
+    (JsPath \ S.tech).read[TechnologyName.T] and
+      (JsPath \ S.initial).readNullable[Boolean] and
+      (JsPath \ S.coins).readNullable[Int]
     ) (PlayerTechnology.apply _)
 
   implicit val readCivilization: Reads[CivilizationG] = (
@@ -250,6 +252,10 @@ package object fromjson extends ImplicitMiximFromJson {
   implicit val hutvillageMyReads: Reads[HutVillage] = (
     (JsPath \ S.hutvillage).read[HutVillage.T] and (JsPath \ S.resource).read[Resource.T]
     ) (HutVillage.apply _)
+
+  implicit val hutvillageresourceMyReads: Reads[HVResource] = (
+    (JsPath \ S.hutvillage).readNullable[HutVillage.T] and (JsPath \ S.resource).read[Resource.T]
+    ) (HVResource.apply _)
 
   implicit val hutvillagekOptionReads: Reads[Option[HutVillage]] = (
     JsPath.readNullable[HutVillage]
