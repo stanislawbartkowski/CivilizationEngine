@@ -128,6 +128,8 @@ IMPORTANT: seems not working properly, IntelliJ ant build does not generate scal
       "you" : {
       "civ" : "China",
       "trade" : 6,
+      "coins" : 4,
+      "combatbonus" : 3,
       "commands" : [ {
         "command" : "ENDOFPHASE"
       } ],
@@ -782,7 +784,7 @@ One Hut and Spy discovered
   * executeCommand("ENDBATTLE",-1,-1,null)
   
 ## BUYBUILDING
-* executeCommand("secret token",row,col, { "row" : row, "col" : col, "building" : "building name"})
+* executeCommand("secret token","BUYBUILIGING",row,col, { "row" : row, "col" : col, "building" : "building name"})
 * Parameters:
  *  row,col : city
  *  { "row","col", "building"} : square at the outskirt of the city where bulding is build and set up
@@ -790,6 +792,24 @@ One Hut and Spy discovered
  * executeCommand("BUYBUILDING",0,4,{{"p":{"row":0,"col":4},"building":"Temple"})
  
 Remark: The same command is used to build a new building on an empty square and as a replacement of existing building. For replacement, the previous building is removed and new is nailed down. Also for a limited building. The previous limited building is removed regardless where it is standind and a new building is put.  
+
+## POTTERYACTION,PHILOSOPHYACTION
+
+Spend resources or hut/villages and put a coin on the technology
+
+* executeCommand("secret token","POTTERYACTION",row,col,[{"hv" : "Village/Hut/null","resource" : "resource name"}])
+* executeCommand("secret token","PHILOSOPHYACTION",row,col,[{"hv" : "Village/Hut/null","resource" : "resource name"}])
+* Parameters:
+* row,col : city
+* [ { .... } ] : list of resources to spend. Format of a single resource:
+{ "hv" : "Hut/Village", "resource" : "resource name"} : Hut or village with resource
+{ "resource" : "resource name" } : resource itself, outside Hut or Village
+
+* Usage example:
+* executeCommand("secret token","POTTERYACTION",1,2,[{"hv" : "Hut","resource" : "Spy"}, {"resource" : "Iron"])
+
+ Spend Hut with Spy and Iron to put coin on Pottery technology. The action is executed in city (1,2)
+
 
 # itemizeCommand format
 
@@ -885,4 +905,14 @@ For every building, there is a list of buildings to be pulled down if new buildi
      ]
   }
   ]
+```
+## POTTERYACTION,PHILOSOPHYACTION
 
+Returns list of cities where action is possible to execute
+
+Example:
+
+```JSON
+ [{"p":{"row":1,"col":5},
+```
+Action can be execute in city (1,5)
