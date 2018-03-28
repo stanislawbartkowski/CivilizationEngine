@@ -114,4 +114,15 @@ class Test24 extends FunSuite with ImplicitMiximFromJson  {
     assert(num == 2)
   }
 
+  test("Verify combat bonus, two barracks built") {
+    val reg = Helper.readBoardAndPlayT("test24/BOARDGAME2.json", "test24/PLAY3.json", Civilization.Rome)
+    val token: String = reg._1
+    val j = Helper.getB(token)
+    val y = jyou(j)
+    println(y)
+    val bonus = (y \ "combatbonus").as[Int]
+    println(bonus)
+    assert(bonus == 4)
+  }
+
   }

@@ -688,8 +688,7 @@ package object helper {
 
   private def calculateCombatBonus(b: GameBoard, civ: Civilization.T) : Int = {
     // all buildings
-    outskirtsForCivNotBlocked(b,civ).filter(_.s.building.isDefined).foldLeft(0) { (sum,s) => s.s.building.get.tokens.numofBattle }
-//      map(_.s.building.get.tokens.numofBattle)
+    outskirtsForCivNotBlocked(b,civ).filter(_.s.building.isDefined).foldLeft(0) { (sum,s) => sum + s.s.building.get.tokens.numofBattle }
   }
 
   // ==============================================
