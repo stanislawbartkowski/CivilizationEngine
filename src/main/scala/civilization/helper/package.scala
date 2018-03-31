@@ -251,7 +251,7 @@ package object helper {
     var list: Seq[Command] = Nil
     breakable(
       b.play.commands.reverse.foreach(c => {
-        if (getPhase(c) == TurnPhase.StartOfTurn) break
+        if (getPhase(c).isDefined && getPhase(c).get == TurnPhase.StartOfTurn) break
         list = list :+ c
       })
     )
@@ -315,6 +315,14 @@ package object helper {
       })
     }
     clist
+  }
+
+  def technologyResourceUsed(b: GameBoard, civ: Civilization.T): Boolean = {
+    // all commands in the current phase
+    val com: Seq[Command] = currentTurnReverse(b).filter(_.civ == civ)
+    // only technology commands
+    // technology resource command is used
+    com.find(co => Command.isTechnologyResourceAction(co.command)).isDefined
   }
 
   def CityAvailableForAction(b: GameBoard, civ: Civilization.T): Seq[P] = {
@@ -425,6 +433,9 @@ package object helper {
   def isResearchDone(b: GameBoard, civ: Civilization.T): Boolean = !lastPhaseCommandsReverse(b, civ, TurnPhase.Research).isEmpty
 
   private def commandForPhase(b: GameBoard, command: Command): Mess = {
+    // technology resource action only once
+    if (Command.isTechnologyResourceAction(command.command))
+      if (technologyResourceUsed(b, command.civ)) return Mess(M.RESOURCEAVAILIBILITYCANBEUSERONCEPERTURN, command)
     val current: CurrentPhase = currentPhase(b)
     val phase: TurnPhase.T = Command.actionPhase(command.command)
     if (phase != null && phase != current.turnPhase) return Mess(M.ACTIONCANNOTBEEXECUTEDINTHISPHASE, (command, current.turnPhase, phase))
@@ -669,26 +680,29 @@ package object helper {
 
   // ======================================
 
-  case class EconomyForCiv(val tech: Int, val squares: Int, val scout: Int) {
-    def coins = tech + squares + scout
+  case class EconomyForCiv(val tech: Int, val squares: Int, val scout: Int, val techabilities: Int) {
+    def coins = tech + squares + scout + techabilities
   }
 
   def getCoins(b: GameBoard, civ: Civilization.T): EconomyForCiv = {
     val pl: PlayerDeck = b.playerDeck(civ)
     // check technologies
     val tech: Int = pl.tech.map(t => if (t.coins.isEmpty) 0 else t.coins.get).sum
+    // coins from tech abilities
+    val techabilities: Int = pl.tech.map(t => b.getTech(t.tech)).map(te => if (te.coins.isEmpty) 0 else te.coins.get).sum
+
     // number of squares with coins
     val squares: Int = outskirtsForCivNotBlocked(b, civ).
       filter(s => s.resource.isDefined && s.resource.get == Resource.Coin).length
     val scouts: Int = allScoutsOutside(b, civ).filter(s => s.resource.isDefined && s.resource.get == Resource.Coin).length
-    EconomyForCiv(tech, squares, scouts)
+    EconomyForCiv(tech, squares, scouts, techabilities)
   }
 
   // ==============================================
 
-  private def calculateCombatBonus(b: GameBoard, civ: Civilization.T) : Int = {
+  private def calculateCombatBonus(b: GameBoard, civ: Civilization.T): Int = {
     // all buildings
-    outskirtsForCivNotBlocked(b,civ).filter(_.s.building.isDefined).foldLeft(0) { (sum,s) => sum + s.s.building.get.tokens.numofBattle }
+    outskirtsForCivNotBlocked(b, civ).filter(_.s.building.isDefined).foldLeft(0) { (sum, s) => sum + s.s.building.get.tokens.numofBattle }
   }
 
   // ==============================================
@@ -706,7 +720,7 @@ package object helper {
     val count: (Int, Int) = getNumberOfArmies(b, civ)
     val armieslimit: Int = deck.defaultarmieslimit - count._1
     val scoutslimit: Int = deck.defaultscoutslimit - count._2
-    PlayerLimits(citieslimit, deck.defaultstackinglimit, false, false, armieslimit, scoutslimit, deck.defaulttravelspeed, DEFAULTTRADEFORPROD, deck.combatlevel, false, false, false, calculateCombatBonus(b,civ))
+    PlayerLimits(citieslimit, deck.defaultstackinglimit, false, false, armieslimit, scoutslimit, deck.defaulttravelspeed, DEFAULTTRADEFORPROD, deck.combatlevel, false, false, false, calculateCombatBonus(b, civ))
   }
 
   // =====================================

@@ -12,7 +12,8 @@ import play.api.libs.json.JsValue
 
 object PotteryPhilosophyAction extends CommandPackage with ImplicitMiximFromJson with ImplicitMiximToJson {
 
-  override def getSet: Set[Command.T] = Set(Command.POTTERYACTION, Command.PHILOSOPHYACTION)
+//  override def getSet: Set[Command.T] = Set(Command.POTTERYACTION, Command.PHILOSOPHYACTION)
+  override def getSet: Set[Command.T] = Set(Command.POTTERYACTION)
 
   private def increaseCoins(tp: PlayerTechnology) = {
     // increase number of coins

@@ -92,7 +92,7 @@ class Test24 extends FunSuite with ImplicitMiximFromJson  {
     var l = allowedCommands(gg, Civilization.Rome)
     println(l)
     val param = """[{"hv":"Hut","resource" : "Incense"},{"hv":"Hut","resource" : "Wheat"},{"resource" : "Iron"}]"""
-    Helper.executeCommandH(token, "PHILOSOPHYACTION", 1, 2, param)
+    Helper.executeCommandH(token, "POTTERYACTION", 1, 2, param)
     val j = Helper.getB(token)
     val y = jyou(j)
     println(y)
@@ -125,4 +125,25 @@ class Test24 extends FunSuite with ImplicitMiximFromJson  {
     assert(bonus == 4)
   }
 
+  test("Verify combat bonus, RailRoad, additional coin") {
+    val reg = Helper.readBoardAndPlayT("test24/BOARDGAME2.json", "test24/PLAY4.json", Civilization.Rome)
+    val token: String = reg._1
+    val j = Helper.getB(token)
+    val y = jyou(j)
+    println(y)
+    val co = (y \ "coins").as[Int]
+    println(co)
+    assert(co == 1)
+  }
+
+  test("Repeated technology resource action") {
+    val reg = Helper.readBoardAndPlayT("test24/BOARDGAME2.json", "test24/PLAY5.json", Civilization.Rome)
+    val token: String = reg._1
+    var gg = I.getBoardForToken(token)
+    var l = allowedCommands(gg, Civilization.Rome)
+    println(l)
+    // pottery action only once
+    assert(l.find(_ == Command.POTTERYACTION).isEmpty)
+    assert(l.find(_ == Command.BUYARMY).isDefined)
+  }
   }

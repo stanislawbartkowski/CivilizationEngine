@@ -13,8 +13,13 @@ object CommandContainer {
 
   def isCommandCovered(com: Command.T): Boolean = comset.contains(com)
 
-  def commandsAvail(b: GameBoard, civ: Civilization.T, phase: TurnPhase.T): Seq[Command.T] =
-    commands.map(co => co.commandsAvail(b, civ).filter(p => Command.actionPhase(p) == phase)).flatten
+  def commandsAvail(b: GameBoard, civ: Civilization.T, phase: TurnPhase.T): Seq[Command.T] = {
+    val co: Seq[Command.T] = commands.map(co => co.commandsAvail(b, civ).filter(p => Command.actionPhase(p) == phase)).flatten
+    // technology resource command used already
+    val techResourceUsed = technologyResourceUsed(b, civ)
+    // if yes, then weed out all technology commands here
+    if (!techResourceUsed) co else co.filter(!Command.isTechnologyResourceAction((_)))
+  }
 
   def itemize(b: GameBoard, civ: Civilization.T, com: Command.T): Seq[JsValue] =
     comset.get(com).get.itemize(b, civ, com)

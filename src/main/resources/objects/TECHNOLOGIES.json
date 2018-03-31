@@ -175,11 +175,10 @@
   },
   {
     "name": "Pottery",
-    "ni" : true,
     "level": 1,
     "resourceany" : 2,
     "building" : "Granary",
-    "desc" : "+1 Hand Size. Any 2-City Management: Add 1 coin token to this tech (max 4)."
+    "desc" : "+1 Hand Size. Any 2-City Management: Once per turn, add 1 coin token to this tech (max 4)."
   },
   {
     "name": "Philosophy",
@@ -187,7 +186,7 @@
     "level": 1,
     "building" : "Temple",
     "resourceany" : 3,
-    "desc" : "Any 3-City Management : Add 1 coin token to this tech (max 4)."
+    "desc" : "Any 3-City Management : Once per turn, get random great person"
   },
   {
     "name": "Navigation",

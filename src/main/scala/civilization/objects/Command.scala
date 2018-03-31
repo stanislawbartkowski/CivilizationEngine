@@ -30,9 +30,13 @@ object Command extends Enumeration {
     t == BUYAIRCRAFT || t == BUYINFANTRY || t == BUYMOUNTED || t == HARVESTRESOURCE || t == BUYBUILDING || t == BUYWONDER || t == POTTERYACTION || t == PHILOSOPHYACTION)
 
   /** Movement action after starting the move */
-  def actionMove(t: Value): Boolean = {
+  def actionMove(t: Value): Boolean =
     return t == MOVE || t == REVEALTILE || t == ENDOFMOVE || t == EXPLOREHUT || t == ATTACK || t == STARTBATTLE || t == PLAYUNIT || t == PLAYUNITIRON || t == ENDBATTLE
-  }
+
+
+  def isTechnologyResourceAction(t : Value) : Boolean =
+    return (t == POTTERYACTION || t == PHILOSOPHYACTION)
+
 }
 
 case class CommandParams(val p: Option[P], val param: Option[JsValue])
