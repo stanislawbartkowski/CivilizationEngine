@@ -1539,5 +1539,6 @@
     ]
   },
   "norotate": false,
-  "resourcebuiliging" : true
+  "resourcebuiliging" : true,
+  "tradecurrent" : true
 }

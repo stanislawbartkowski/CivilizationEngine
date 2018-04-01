@@ -288,6 +288,8 @@ package object gameboard {
     // cheating, for old tests only
     // do not rotate
     var norotate: Boolean = false
+    // cheating, calculate trade from current data
+    var tradecurrent : Boolean = false
     var metadata: GameMetaData = new GameMetaData("")
     // force command to execute next
     // TODO: I'm not happy with that

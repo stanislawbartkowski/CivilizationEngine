@@ -118,7 +118,8 @@ package object tojson extends ImplicitMiximToJson {
       S.map -> m.map.map,
       S.resources -> m.resources,
       S.market -> m.market,
-      "norotate" -> m.norotate
+      "norotate" -> m.norotate,
+      "tradecurrent" -> m.tradecurrent
     )
   }
 

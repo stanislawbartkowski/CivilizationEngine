@@ -525,8 +525,12 @@ package object helper {
   def spendProdForCities(b: GameBoard, civ: Civilization.T): Map[P, Int] =
     spendTradeCommands(b, civ) map { case (p, seq) => (p, spendProdForCity(seq)) }
 
-  case class TradeForCiv(val terrain: Int, val noresearch: Int, val toprod: Int, val loottrade: Int, val tradecoins: Int) {
+  case class TradeForCivCalculate(val terrain: Int, val noresearch: Int, val toprod: Int, val loottrade: Int, val tradecoins: Int) {
     def trade: Int = Math.min(terrain + noresearch - toprod + loottrade + tradecoins, TRADEMAX)
+  }
+
+  case class TradeForCiv(val tradecalculated: Int,val loottrade: Int, val toprod : Int ) {
+    def trade: Int = Math.min(tradecalculated - toprod + loottrade, TRADEMAX)
   }
 
 
@@ -556,7 +560,8 @@ package object helper {
     playerLimits.prodForTrade(spendProdForCities(b, civ).foldLeft(0) { (sum, i) => sum + i._2 })
   }
 
-  private def numberofTradenoresearch(b: GameBoard, civ: Civilization.T): Integer = {
+
+  private def numberofTradePhasenoresearch(b: GameBoard, civ: Civilization.T,phase : TurnPhase.T): Int = {
     // commands : reverse
     val rlist: Seq[Command] = b.play.commands.reverse.filter(_.civ == civ)
 
@@ -566,7 +571,7 @@ package object helper {
       rlist.foreach(c => {
         val pha: Option[TurnPhase.T] = getPhase(c)
         if (pha.isDefined)
-          if (pha.get == TurnPhase.Research) {
+          if (pha.get == phase) {
             lasttrade = c.param1.asInstanceOf[Int]
             wasresearch = true
           }
@@ -582,9 +587,29 @@ package object helper {
     lasttrade
   }
 
+
+  private def numberofTradenoresearch(b: GameBoard, civ: Civilization.T): Int =
+    numberofTradePhasenoresearch(b,civ,TurnPhase.Research)
+
+  private def numberofTradeTradenoresearch(b: GameBoard, civ: Civilization.T): Int =
+    numberofTradePhasenoresearch(b,civ,TurnPhase.Trade)
+
   def numberofTrade(b: GameBoard, civ: Civilization.T): TradeForCiv = {
+    if (b.tradecurrent) {
+      // cheating
+      val tra = numberofTradeCalculate(b,civ)
+      return TradeForCiv(tra.trade,0,0)
+    }
     val li: PlayerLimits = getLimits(b, civ)
-    TradeForCiv(numberofTradeTerrain(b, civ), numberofTradenoresearch(b, civ), reduceTradeBySpend(b, civ, li),
+    val tradecalculated : Int = numberofTradeTradenoresearch(b,civ)
+    val spendonprod : Int = reduceTradeBySpend(b, civ, li)
+    val loottrade : Int = numberofloottrade(b, civ)
+    TradeForCiv(tradecalculated,loottrade,spendonprod)
+  }
+
+  def numberofTradeCalculate(b: GameBoard, civ: Civilization.T): TradeForCivCalculate = {
+    val li: PlayerLimits = getLimits(b, civ)
+    TradeForCivCalculate(numberofTradeTerrain(b, civ), numberofTradenoresearch(b, civ), reduceTradeBySpend(b, civ, li),
       numberofloottrade(b, civ), getCoins(b, civ).coins)
   }
 

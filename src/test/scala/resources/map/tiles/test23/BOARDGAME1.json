@@ -1538,5 +1538,6 @@
       "PanamaCanal"
     ]
   },
-  "norotate": false
+  "norotate": false,
+  "tradecurrent" : true
 }

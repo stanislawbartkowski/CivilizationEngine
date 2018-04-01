@@ -50,6 +50,7 @@ package object action extends ImplicitMiximToJson with ImplicitMiximFromJson {
       val phase: TurnPhase.T = toTurnPhase(param)
 
       if (phase == TurnPhase.Research) new EndOfResearchAction
+      else if (phase == TurnPhase.Trade) new EndOfTradeAction
       else
         new AbstractCommand(phase) {
           override def execute(board: GameBoard) = Unit

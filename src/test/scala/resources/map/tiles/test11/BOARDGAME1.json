@@ -72,7 +72,8 @@
     "killedunits" : [],
     "buildings" : [],
     "wonders" : []
-  }
+  },
+  "tradecurrent" : true
 
 
 }

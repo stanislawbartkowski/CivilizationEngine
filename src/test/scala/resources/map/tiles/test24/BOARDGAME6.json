@@ -1,11 +1,11 @@
 {
   "players": [
     {
-      "civ": "Germany",
+      "civ": "Egypt",
       "gover": "Despotism",
       "tech": [
         {
-          "tech": "Metallurgy",
+          "tech": "Construction",
           "initial": true
         }
       ],
@@ -31,10 +31,10 @@
         {
           "name": "Mounted",
           "strength": [
-            1,
             2,
             3,
-            4
+            4,
+            5
           ]
         }
       ],
@@ -76,7 +76,7 @@
   ],
   "map": [
     {
-      "tname": "RTILEGERMANY.json",
+      "tname": "RTILEEGYPT.json",
       "p": {
         "row": 0,
         "col": 0
@@ -174,7 +174,7 @@
       ]
     },
     {
-      "tname": "RTILE5.json",
+      "tname": "RTILE12.json",
       "p": {
         "row": 1,
         "col": 0
@@ -193,442 +193,10 @@
             "building": null
           },
           {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          }
-        ],
-        [
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": {
-              "hv": "Hut",
-              "resource": "Wheat"
-            },
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          }
-        ],
-        [
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          }
-        ],
-        [
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
-          {
             "hv": {
               "hv": "Hut",
               "resource": "Spy"
             },
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          }
-        ]
-      ]
-    },
-    {
-      "tname": "RTILE13.json",
-      "p": {
-        "row": 2,
-        "col": 0
-      },
-      "orientation": null,
-      "squares": [
-        [
-          {
-            "hv": {
-              "hv": "Village",
-              "resource": "Spy"
-            },
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          }
-        ],
-        [
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          }
-        ],
-        [
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": {
-              "hv": "Hut",
-              "resource": "Silk"
-            },
-            "city": null,
-            "building": null
-          }
-        ],
-        [
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          }
-        ]
-      ]
-    },
-    {
-      "tname": "RTILE20.json",
-      "p": {
-        "row": 3,
-        "col": 0
-      },
-      "orientation": null,
-      "squares": [
-        [
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          }
-        ],
-        [
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          }
-        ],
-        [
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          }
-        ],
-        [
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          }
-        ]
-      ]
-    },
-    {
-      "tname": "RTILE4.json",
-      "p": {
-        "row": 0,
-        "col": 1
-      },
-      "orientation": null,
-      "squares": [
-        [
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": {
-              "hv": "Hut",
-              "resource": "Wheat"
-            },
-            "city": null,
-            "building": null
-          }
-        ],
-        [
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          }
-        ],
-        [
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": {
-              "hv": "Village",
-              "resource": "Spy"
-            },
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          }
-        ],
-        [
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          }
-        ]
-      ]
-    },
-    {
-      "tname": "RTILE16.json",
-      "p": {
-        "row": 1,
-        "col": 1
-      },
-      "orientation": null,
-      "squares": [
-        [
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": {
-              "hv": "Hut",
-              "resource": "Spy"
-            },
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          }
-        ],
-        [
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": null,
             "city": null,
             "building": null
           },
@@ -684,13 +252,237 @@
             "city": null,
             "building": null
           }
+        ],
+        [
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          }
         ]
       ]
     },
     {
-      "tname": "RTILE14.json",
+      "tname": "RTILE6.json",
       "p": {
         "row": 2,
+        "col": 0
+      },
+      "orientation": null,
+      "squares": [
+        [
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          }
+        ],
+        [
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": {
+              "hv": "Hut",
+              "resource": "Iron"
+            },
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          }
+        ],
+        [
+          {
+            "hv": {
+              "hv": "Village",
+              "resource": "Spy"
+            },
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          }
+        ],
+        [
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          }
+        ]
+      ]
+    },
+    {
+      "tname": "RTILEINDIA.json",
+      "p": {
+        "row": 3,
+        "col": 0
+      },
+      "orientation": null,
+      "squares": [
+        [
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          }
+        ],
+        [
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          }
+        ],
+        [
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          }
+        ],
+        [
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          }
+        ]
+      ]
+    },
+    {
+      "tname": "RTILE2.json",
+      "p": {
+        "row": 0,
         "col": 1
       },
       "orientation": null,
@@ -702,9 +494,56 @@
             "building": null
           },
           {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          }
+        ],
+        [
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": {
+              "hv": "Village",
+              "resource": "Iron"
+            },
+            "city": null,
+            "building": null
+          }
+        ],
+        [
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
             "hv": {
               "hv": "Hut",
-              "resource": "Incense"
+              "resource": "Wheat"
             },
             "city": null,
             "building": null
@@ -741,35 +580,18 @@
             "city": null,
             "building": null
           }
-        ],
+        ]
+      ]
+    },
+    {
+      "tname": "RTILE14.json",
+      "p": {
+        "row": 1,
+        "col": 1
+      },
+      "orientation": null,
+      "squares": [
         [
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          }
-        ],
-        [
-          {
-            "hv": null,
-            "city": null,
-            "building": null
-          },
           {
             "hv": null,
             "city": null,
@@ -787,12 +609,190 @@
             "hv": null,
             "city": null,
             "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          }
+        ],
+        [
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          }
+        ],
+        [
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          }
+        ],
+        [
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": {
+              "hv": "Hut",
+              "resource": "Spy"
+            },
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
           }
         ]
       ]
     },
     {
-      "tname": "RTILEINDIA.json",
+      "tname": "RTILE13.json",
+      "p": {
+        "row": 2,
+        "col": 1
+      },
+      "orientation": null,
+      "squares": [
+        [
+          {
+            "hv": {
+              "hv": "Village",
+              "resource": "Spy"
+            },
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          }
+        ],
+        [
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          }
+        ],
+        [
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": {
+              "hv": "Hut",
+              "resource": "Spy"
+            },
+            "city": null,
+            "building": null
+          }
+        ],
+        [
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          },
+          {
+            "hv": null,
+            "city": null,
+            "building": null
+          }
+        ]
+      ]
+    },
+    {
+      "tname": "RTILE19.json",
       "p": {
         "row": 3,
         "col": 1
@@ -838,7 +838,10 @@
             "building": null
           },
           {
-            "hv": null,
+            "hv": {
+              "hv": "Hut",
+              "resource": "Silk"
+            },
             "city": null,
             "building": null
           }
@@ -867,7 +870,10 @@
         ],
         [
           {
-            "hv": null,
+            "hv": {
+              "hv": "Hut",
+              "resource": "Wheat"
+            },
             "city": null,
             "building": null
           },
@@ -910,10 +916,6 @@
       },
       {
         "hv": "Village",
-        "resource": "Iron"
-      },
-      {
-        "hv": "Village",
         "resource": "Uranium"
       },
       {
@@ -926,14 +928,6 @@
       },
       {
         "hv": "Hut",
-        "resource": "Iron"
-      },
-      {
-        "hv": "Hut",
-        "resource": "Wheat"
-      },
-      {
-        "hv": "Hut",
         "resource": "Silk"
       },
       {
@@ -954,11 +948,19 @@
       },
       {
         "hv": "Hut",
-        "resource": "Silk"
+        "resource": "Wheat"
       },
       {
         "hv": "Hut",
         "resource": "Silk"
+      },
+      {
+        "hv": "Hut",
+        "resource": "Spy"
+      },
+      {
+        "hv": "Hut",
+        "resource": "Incense"
       },
       {
         "hv": "Hut",
@@ -974,19 +976,15 @@
       },
       {
         "hv": "Hut",
-        "resource": "Incense"
-      },
-      {
-        "hv": "Hut",
-        "resource": "Spy"
-      },
-      {
-        "hv": "Hut",
         "resource": "Silk"
       },
       {
         "hv": "Hut",
-        "resource": "Spy"
+        "resource": "Incense"
+      },
+      {
+        "hv": "Hut",
+        "resource": "Silk"
       },
       {
         "hv": "Hut",
@@ -1380,10 +1378,10 @@
       {
         "name": "Mounted",
         "strength": [
+          1,
           2,
           3,
-          4,
-          5
+          4
         ]
       },
       {
@@ -1526,21 +1524,20 @@
       }
     ],
     "wonders": [
-      "TheOracle",
-      "TheColossus",
-      "Stonehenge",
+      "TheGreatWall",
+      "ThePyramids",
       "TheGreatLighthouse",
-      "LeonardosWorkshop",
-      "BrandenburgGate",
-      "PorcelainTower",
+      "ChichenItza",
+      "AngkorWat",
       "TheLouvre",
+      "TajMahal",
+      "PorcelainTower",
       "ThePentagon",
-      "UnitedNations",
-      "CristoRedentor",
-      "TheKremlin"
+      "PanamaCanal",
+      "StatueofLiberty",
+      "UnitedNations"
     ]
   },
   "norotate": false,
-  "tradecurrent" : true
-
+  "tradecurrent": false
 }

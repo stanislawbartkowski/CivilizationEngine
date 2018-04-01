@@ -291,6 +291,10 @@ package object fromjson extends ImplicitMiximFromJson {
       // cheating
       val norotate: Option[Boolean] = (json \ "norotate").asOpt[Boolean]
       if (norotate.isDefined && norotate.get) g.norotate = true
+      // cheating
+      val tradecurrent : Option[Boolean] = (json \ "tradecurrent").asOpt[Boolean]
+      if (tradecurrent.isDefined && tradecurrent.get) g.tradecurrent = true
+
       JsSuccess(g)
     }
   }

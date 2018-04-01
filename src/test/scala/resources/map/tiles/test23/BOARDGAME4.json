@@ -1536,5 +1536,6 @@
       "BigBen"
     ]
   },
-  "norotate": false
+  "norotate": false,
+  "tradecurrent" : true
 }

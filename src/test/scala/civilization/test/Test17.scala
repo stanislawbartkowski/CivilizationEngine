@@ -125,7 +125,7 @@ class Test17 extends FunSuite with ImplicitMiximToJson {
     assert(expected == t)
   }
 
-  test("Test Attack Village and STart") {
+  test("Test Attack Village and Start") {
     val reg = Helper.readBoardAndPlayT("test17/BOARD2.json", "test17/GAME3.json", Civilization.Rome)
     val token: String = reg._1
     // defender

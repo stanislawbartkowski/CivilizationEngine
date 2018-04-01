@@ -17,7 +17,7 @@ import civilization.test.Helper._
 
 
 
-class Test24 extends FunSuite with ImplicitMiximFromJson  {
+class Test24 extends FunSuite with ImplicitMiximFromJson {
 
   Helper.I
 
@@ -29,9 +29,9 @@ class Test24 extends FunSuite with ImplicitMiximFromJson  {
     println(l)
     assert(l.find(_ == Command.POTTERYACTION).isDefined)
     assert(l.find(_ == Command.PHILOSOPHYACTION).isEmpty)
-    val ss = II.itemizeCommand(token,"POTTERYACTION")
+    val ss = II.itemizeCommand(token, "POTTERYACTION")
     println(ss)
-    val j : JsArray = toJ(ss).as[JsArray]
+    val j: JsArray = toJ(ss).as[JsArray]
     assert(!j.value.isEmpty)
   }
 
@@ -47,7 +47,7 @@ class Test24 extends FunSuite with ImplicitMiximFromJson  {
     val param = """[{"resource" : "Incense"},{"resource" : "Wheat"}]"""
     Helper.executeCommandH(token, "POTTERYACTION", 1, 2, param)
     var gg = I.getBoardForToken(token)
-    println(getCoins(gg,Civilization.Spain))
+    println(getCoins(gg, Civilization.Spain))
     // check number of coins
     j = Helper.getB(token)
     y = jyou(j)
@@ -56,31 +56,31 @@ class Test24 extends FunSuite with ImplicitMiximFromJson  {
     println(cc)
     assert(c + 1 == cc)
     // now check technology, coin on Pottery
-    val t : JsArray = (y \ "tech").as[JsArray]
-//    println(t)
+    val t: JsArray = (y \ "tech").as[JsArray]
+    //    println(t)
     var coinFound = false
-    t.value.foreach( tt => {
+    t.value.foreach(tt => {
       val tech = (tt \ "tech").as[String]
       val coin = (tt \ "coins").as[Int]
       if (tech == "Pottery") coinFound = coin == 1
     })
     assert(coinFound)
     // check resource
-    val r : JsArray = (y \ "resources").as[JsArray]
-    r.value.foreach( r => {
+    val r: JsArray = (y \ "resources").as[JsArray]
+    r.value.foreach(r => {
       println(r)
-      val num :Int = (r \ "num").as[Int]
+      val num: Int = (r \ "num").as[Int]
       // no resource
       assert(num == 0)
     })
     // check resource on board
     //println(j)
-    val res : JsArray = (j \ "board" \ "resources").as[JsArray]
+    val res: JsArray = (j \ "board" \ "resources").as[JsArray]
     //println(res)
-    res.value.foreach( r => {
+    res.value.foreach(r => {
       println(r)
       val na = (r \ "resource").as[String]
-      val num :Int = (r \ "num").as[Int]
+      val num: Int = (r \ "num").as[Int]
       if (na == "Wheat" || na == "Incense") assert(num == 1)
     })
   }
@@ -96,19 +96,19 @@ class Test24 extends FunSuite with ImplicitMiximFromJson  {
     val j = Helper.getB(token)
     val y = jyou(j)
     println(y)
-    val hv : JsArray = (y \ "hutvillages" \ "list").as[JsArray]
+    val hv: JsArray = (y \ "hutvillages" \ "list").as[JsArray]
     // all huts are used
     assert(hv.value.isEmpty)
-    val res : JsArray = (j \ "board" \ "resources").as[JsArray]
+    val res: JsArray = (j \ "board" \ "resources").as[JsArray]
     //println(res)
-    res.value.foreach( r => {
+    res.value.foreach(r => {
       println(r)
       val na = (r \ "resource").as[String]
-      val num :Int = (r \ "num").as[Int]
-      if (na == "Wheat" || na == "Incense" || na=="Iron") assert(num == 1)
+      val num: Int = (r \ "num").as[Int]
+      if (na == "Wheat" || na == "Incense" || na == "Iron") assert(num == 1)
     })
-//    println(j)
-    val hvu : JsValue = (j \ "board" \ "hutvillagesused").as[JsValue]
+    //    println(j)
+    val hvu: JsValue = (j \ "board" \ "hutvillagesused").as[JsValue]
     println(hvu)
     val num = (hvu \ "Hut").as[Int]
     assert(num == 2)
@@ -146,4 +146,15 @@ class Test24 extends FunSuite with ImplicitMiximFromJson  {
     assert(l.find(_ == Command.POTTERYACTION).isEmpty)
     assert(l.find(_ == Command.BUYARMY).isDefined)
   }
+
+  test("Test spend trade") {
+    val reg = Helper.readBoardAndPlayT("test24/BOARDGAME6.json", "test24/PLAY6.json", Civilization.Egypt)
+    val token: String = reg._1
+    val gg :GameBoard = I.getBoardForToken(token)
+    val trade = numberofTrade(gg,Civilization.Egypt)
+    println(trade)
+    println(trade.trade)
+    assert(trade.trade == 2)
+    assert(trade.toprod == 3)
   }
+}

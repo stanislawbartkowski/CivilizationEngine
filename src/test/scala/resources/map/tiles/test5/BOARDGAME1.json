@@ -62,7 +62,8 @@
     "buildings" : [],
     "wonders" : []
 
-  }
+  },
+  "tradecurrent" : true
 
 
 }

@@ -18,7 +18,7 @@ class Test12 extends FunSuite {
     var b: GameBoard = Helper.readBoardAndPlay("test11/BOARDGAME1.json", "test12/GAME1.json", Civilization.Rome)
     val token: String = registerGame(b, Civilization.Rome)
     var g: GameBoard = I.getBoardForToken(token)
-    var prod = numberofTrade(b, Civilization.Rome)
+    var prod = numberofTradeCalculate(b, Civilization.Rome)
     println(prod)
     assert(4 == prod.trade)
     var prodc = getProductionForCity(g, Civilization.Rome, P(2, 2))
@@ -26,7 +26,7 @@ class Test12 extends FunSuite {
     assert(6 == prodc.prod)
     Helper.executeCommandH(token, "SPENDTRADE", 2, 2, "1")
     b = I.getBoardForToken(token)
-    prod = numberofTrade(b, Civilization.Rome)
+    prod = numberofTradeCalculate(b, Civilization.Rome)
     println(prod)
     assert(4 == prod.terrain)
     assert(3 == prod.toprod)
@@ -40,7 +40,7 @@ class Test12 extends FunSuite {
     assert(1 == prodc.fromtrade)
     Helper.executeCommandH(token, "UNDOSPENDTRADE", 2, 2, null)
     b = I.getBoardForToken(token)
-    prod = numberofTrade(b, Civilization.Rome)
+    prod = numberofTradeCalculate(b, Civilization.Rome)
     println(prod)
     assert(4 == prod.trade)
     prodc = getProductionForCity(b, Civilization.Rome, P(2, 2))
@@ -49,7 +49,7 @@ class Test12 extends FunSuite {
     // again
     Helper.executeCommandH(token, "SPENDTRADE", 2, 2, "1")
     b = I.getBoardForToken(token)
-    prod = numberofTrade(b, Civilization.Rome)
+    prod = numberofTradeCalculate(b, Civilization.Rome)
     println(prod)
     assert(1 == prod.trade)
     prodc = getProductionForCity(b, Civilization.Rome, P(2, 2))
@@ -105,7 +105,7 @@ class Test12 extends FunSuite {
     val b: GameBoard = Helper.readBoardAndPlay("test5/BOARDGAME1.json", "test12/GAME3.json", Civilization.Germany)
     val token: String = registerGame(b, Civilization.Germany)
     var g: GameBoard = I.getBoardForToken(token)
-    var tra : TradeForCiv = numberofTrade(g, Civilization.Germany)
+    var tra : TradeForCivCalculate = numberofTradeCalculate(g, Civilization.Germany)
     println(tra)
     // trade spending should be included
     assert(6 == tra.trade)
@@ -113,7 +113,7 @@ class Test12 extends FunSuite {
     Helper.executeCommandH(token, "ENDOFPHASE", -1, -1, "\"Research\"")
     // reset spending at then beginning of next round
     g = I.getBoardForToken(token)
-    tra  = numberofTrade(g, Civilization.Germany)
+    tra  = numberofTradeCalculate(g, Civilization.Germany)
     println(tra)
     assert(9 == tra.trade)
   }

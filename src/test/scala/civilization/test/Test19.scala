@@ -102,8 +102,8 @@ class Test19 extends FunSuite with ImplicitMiximToJson {
     println(numam)
     Helper.executeCommandH(tokena, "ENDBATTLE", -1, -1, "\"trade\"")
     g = I.getBoardForToken(tokena)
-    val xnumar = numberofTrade(g, Civilization.Arabs)
-    val xnumam = numberofTrade(g, Civilization.America)
+    val xnumar = numberofTradeCalculate(g, Civilization.Arabs)
+    val xnumam = numberofTradeCalculate(g, Civilization.America)
     println(xnumar)
     println(xnumam)
     // cannot exceed 27

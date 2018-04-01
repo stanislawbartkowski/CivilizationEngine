@@ -1588,5 +1588,7 @@
       "SydneyOperaHouse"
     ]
   },
-  "norotate": false
+  "norotate": false,
+  "tradecurrent" : true
+
 }
