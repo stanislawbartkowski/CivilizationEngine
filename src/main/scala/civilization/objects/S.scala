@@ -65,6 +65,7 @@ object S {
   final val star = "star"
   final val productionT = "Production"
   final val cultureT = "Culture"
+  final val culture = "culture"
   final val tradeT = "Trade"
   final val battleT = "Battle"
   final val battle = "battle"

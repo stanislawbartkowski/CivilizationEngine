@@ -1,17 +1,32 @@
 package civilization.helper
 
-import civilization.action.AbstractCommand
+import civilization.action
+import civilization.action.{AbstractCommand, CommandPackage}
 import civilization.gameboard.{Figures, GameBoard}
+import civilization.helper.SetCityAction.SetCityAction
+import civilization.io.fromjson.ImplicitMiximFromJson
+import civilization.io.tojson.ImplicitMiximToJson
 import civilization.message.Mess
 import civilization.objects._
+import play.api.libs.json.JsValue
 
 
-object SetFigureAction {
+object SetFigureAction extends CommandPackage with ImplicitMiximFromJson with ImplicitMiximToJson {
 
+  // public because it is tested externally
   def itemizeForSetBuyFigures(b: GameBoard, civ: Civilization.T, com: Command.T): Seq[(P, P)] = {
+    if (firstRound(b,Some(TurnPhase.StartOfTurn))) {
+      if (com == Command.BUYSCOUT || com == Command.BUYARMY) return Nil
+      val count: (Int, Int) = getNumberOfArmies(b, civ)
+      if (com == Command.SETARMY  && count._1 != 0) return Nil
+      if (com == Command.SETSCOUT  && count._2 != 0) return Nil
+    }
+    else // !gameStart
+      if (com == Command.SETSCOUT || com == Command.SETARMY) return Nil
+
     val fi: Figure.T = if (com == Command.SETARMY || com == Command.BUYARMY) Figure.Army else Figure.Scout
 
-    val lcities : Seq[P] = if (com == Command.BUYSCOUT || com == Command.BUYARMY) CitiesCanAfford(b,civ,ObjectCost.getCost(fi)) else citiesForCivilization(b, civ).map(_.p)
+    val lcities: Seq[P] = if (com == Command.BUYSCOUT || com == Command.BUYARMY) CitiesCanAfford(b, civ, ObjectCost.getCost(fi)) else citiesForCivilization(b, civ).map(_.p)
     var alist: Seq[(P, P)] = lcities.flatMap(s => pointsAround(b, s).map(p => (s, p)).filter(po => isSquareForFigure(b, civ, fi, po._2).isEmpty))
     alist
   }
@@ -36,4 +51,16 @@ object SetFigureAction {
     def verify(board: GameBoard): Mess = verifySetFigure(board, civ, p, param._2, param._1, command).getOrElse(null)
   }
 
+  override def getSet: Set[Command.T] = Set(Command.SETARMY, Command.SETSCOUT, Command.BUYARMY, Command.BUYSCOUT)
+
+  //  private def allowedActionForCityManagement(b: GameBoard, civ: Civilization.T): Seq[Command.T] = {
+  //    var cu: Seq[Command.T] = Nil
+  //    if (!itemizeForSetBuyFigures(b, civ, Command.BUYSCOUT).isEmpty) cu = cu :+ Command.BUYSCOUT
+  //   if (!itemizeForSetBuyFigures(b, civ, Command.BUYARMY).isEmpty) cu = cu :+ Command.BUYARMY
+  //  cu
+  //}
+
+  override def itemize(b: GameBoard, civ: Civilization.T, com: Command.T): Seq[JsValue] = itemizeForSetBuyFigures(b, civ, com)
+
+  override def produceCommand(command: Command.T, civ: Civilization.T, p: P, param: JsValue) = new SetFigureAction(if (command == Command.SETARMY || command == Command.BUYARMY) Figure.Army else Figure.Scout, param)
 }

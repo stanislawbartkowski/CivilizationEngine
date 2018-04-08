@@ -16,7 +16,7 @@ object genboardj {
   // if empty square : number of original production
   // if city: number of city production
   case class MapSquareJ(revealed: Boolean, t: Terrain.T, trade: Int, production: Int, resource: Option[Resource.T], capForCiv: Option[Civilization.T],
-                        civ: Civilization.T, city: City.T, defence: Int, numberofArmies: Int, numberofScouts: Int, tile: String, hv: Option[HutVillage.T], building: Option[BuildingName.T], wonder : Option[Wonders.T])
+                        civ: Civilization.T, city: City.T, defence: Int, numberofArmies: Int, numberofScouts: Int, tile: String, hv: Option[HutVillage.T], building: Option[BuildingName.T], wonder : Option[Wonders.T],culture:Int)
 
   case class PlayerTech(val pl: PlayerTechnology, val level: Int,val coins: Int)
 
@@ -72,7 +72,8 @@ object genboardj {
     MapSquareJ(ss.revealed, t, trade, production, resource, cap, civ, city, defence, numberofArmies, numberofScouts, ss.t.tname,
       if (ss.s.hv.isDefined) Some(ss.s.hv.get.hv) else None,
       if (ss.s.building.isDefined) Some(ss.s.building.get.name) else None,
-      if (ss.s.wonder.isDefined) Some(ss.s.wonder.get.w) else None
+      if (ss.s.wonder.isDefined) Some(ss.s.wonder.get.w) else None,
+      if (ss.s.cityhere) cultureForCity(b,ss.p).culture else 0
     )
   }
 
@@ -138,7 +139,8 @@ object genboardj {
       "capciv" -> Option(m.capForCiv), S.civ -> Option(m.civ), S.city -> Option(m.city), "defence" -> m.defence, S.numberofArmies -> m.numberofArmies, S.numberofScouts -> m.numberofScouts,
       "tile" -> m.tile, S.hutvillage -> Option(m.hv),
       S.building -> m.building,
-      S.wonder -> m.wonder
+      S.wonder -> m.wonder,
+      S.culture -> m.culture
     )
   }
 

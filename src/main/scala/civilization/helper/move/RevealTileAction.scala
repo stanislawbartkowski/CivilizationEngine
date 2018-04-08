@@ -1,9 +1,10 @@
-package civilization.helper
+package civilization.helper.move
 
-import civilization.objects._
 import civilization.action.AbstractCommand
-import civilization.gameboard.{GameBoard, MapTile, PlayerFigures}
+import civilization.gameboard.{GameBoard, MapTile}
+import civilization.helper.{PlayerMove, getCurrentMove, getTile, revealTile}
 import civilization.message.{M, Mess}
+import civilization.objects._
 
 
 //Orientation.T

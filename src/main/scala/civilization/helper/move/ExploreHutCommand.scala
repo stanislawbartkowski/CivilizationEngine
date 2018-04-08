@@ -1,6 +1,7 @@
-package civilization.helper
+package civilization.helper.move
 
 import civilization.action.AbstractCommand
+import civilization.helper._
 import civilization.message.{M, Mess}
 import civilization.objects._
 import civilization.{gameboard, message}

@@ -73,9 +73,9 @@ class Test12 extends FunSuite {
     b = I.getBoardForToken(token)
     l = allowedCommands(b, Civilization.Rome)
     println(l)
-    assert(l.find(_ == Command.SPENDTRADE).isDefined)
-    assert(l.find(_ == Command.BUYSCOUT).isDefined)
-    assert(l.find(_ == Command.BUYARMY).isDefined)
+    assert(l contains Command.SPENDTRADE)
+    assert(l contains Command.BUYSCOUT)
+    assert(l contains Command.BUYARMY)
   }
 
   test("Spend and allow to buy") {

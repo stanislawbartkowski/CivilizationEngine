@@ -3,26 +3,27 @@ package civilization.helper
 import civilization.action.CommandContainer
 import civilization.gameboard.GameBoard
 import civilization.helper.SetFigureAction.itemizeForSetBuyFigures
+import civilization.helper.move.MoveItemize
 import civilization.io.tojson._
 import civilization.objects._
 import play.api.libs.json.{JsArray, JsValue, Json}
 
 object AllowedCommands {
 
-  private def allowedActionForCityManagement(b: GameBoard, civ: Civilization.T): Seq[Command.T] = {
-    var cu: Seq[Command.T] = Nil
-    if (!itemizeForSetBuyFigures(b, civ, Command.BUYSCOUT).isEmpty) cu = cu :+ Command.BUYSCOUT
-    if (!itemizeForSetBuyFigures(b, civ, Command.BUYARMY).isEmpty) cu = cu :+ Command.BUYARMY
-    cu
-  }
+//  private def allowedActionForCityManagement(b: GameBoard, civ: Civilization.T): Seq[Command.T] = {
+//    var cu: Seq[Command.T] = Nil
+//    if (!itemizeForSetBuyFigures(b, civ, Command.BUYSCOUT).isEmpty) cu = cu :+ Command.BUYSCOUT
+//    if (!itemizeForSetBuyFigures(b, civ, Command.BUYARMY).isEmpty) cu = cu :+ Command.BUYARMY
+//    cu
+//  }
 
 
   // set city
-  def itemizeForSetSity(b: GameBoard, civ: Civilization.T): Seq[P] =
-    getFigures(b, civ).filter(_.s.figures.numberofScouts > 0).map(_.p).filter(p => SetCityAction.verifySetCity(b, civ, p, Command.SETCITY).isEmpty)
-
-  def itemizeForSetCapital(b: GameBoard, civ: Civilization.T): Seq[P] =
-    allSquares(b).filter(p => SetCityAction.verifySetCity(b, civ, p.p, Command.SETCAPITAL).isEmpty).map(_.p)
+//  def itemizeForSetSity(b: GameBoard, civ: Civilization.T): Seq[P] =
+//    getFigures(b, civ).filter(_.s.figures.numberofScouts > 0).map(_.p).filter(p => SetCityAction.verifySetCity(b, civ, p, Command.SETCITY).isEmpty)
+//
+//  def itemizeForSetCapital(b: GameBoard, civ: Civilization.T): Seq[P] =
+//    allSquares(b).filter(p => SetCityAction.verifySetCity(b, civ, p.p, Command.SETCAPITAL).isEmpty).map(_.p)
 
   // ========
   // external
@@ -37,20 +38,22 @@ object AllowedCommands {
     // 2017/01/05
     if (!(cu.notcompleted contains civ)) return Nil
     co = CommandContainer.commandsAvail(b, civ, cu.turnPhase)
-    val count: (Int, Int) = getNumberOfArmies(b, civ)
     cu.turnPhase match {
       case TurnPhase.StartOfTurn => {
-        if (!isCapitalBuild(b, civ)) return List(Command.SETCAPITAL)
-        if (gameStart(b)) {
-          if (count._1 == 0) co = co :+ Command.SETARMY
-          if (count._2 == 0) co = co :+ Command.SETSCOUT
+//        if (!isCapitalBuild(b, civ)) return List(Command.SETCAPITAL)
+//        if (gameStart(b)) {
+//          val count: (Int, Int) = getNumberOfArmies(b, civ)
+//          if (count._1 == 0) co = co :+ Command.SETARMY
+//          if (count._2 == 0) co = co :+ Command.SETSCOUT
           // do not allow end of phase unless army and scout is deployed
-          if (count._1 == 0 || count._2 == 0) return co
+//          if (count._1 == 0 || count._2 == 0) return co
+//          if ((co contains Command.SETARMY) || (co contains Command.SETSCOUT) || (co contains Command.SETCAPITAL)) return co
+          if (co.find(Command.isBeginningOfGameCommand(_)).isDefined) return co
 
-        } else if (!itemizeForSetSity(b, civ).isEmpty) co = co :+ Command.SETCITY
+//        } // else if (!itemizeForSetSity(b, civ).isEmpty) co = co :+ Command.SETCITY
 
       }
-      case TurnPhase.CityManagement => co = co ++ allowedActionForCityManagement(b, civ)
+//      case TurnPhase.CityManagement => co = co ++ allowedActionForCityManagement(b, civ)
       case TurnPhase.Movement => {
         val r = MoveItemize.allowedCommands(b, civ)
         if (r._1) return co ++ r._2
@@ -76,16 +79,16 @@ object AllowedCommands {
     }
     else
       command match {
-        case Command.SETARMY | Command.SETSCOUT | Command.BUYARMY | Command.BUYSCOUT => {
-          val a: Seq[(P, P)] = itemizeForSetBuyFigures(b, civ, command)
-          l = a.map(o => Json.obj(S.p -> writesP(o._1), S.param -> writesP(o._2)))
-        }
-        case Command.SETCITY => {
-          l = itemizeForSetSity(b, civ).map(writesP(_))
-        }
-        case Command.SETCAPITAL => {
-          l = itemizeForSetCapital(b, civ).map(writesP(_))
-        }
+//        case Command.SETARMY | Command.SETSCOUT | Command.BUYARMY | Command.BUYSCOUT => {
+//          val a: Seq[(P, P)] = itemizeForSetBuyFigures(b, civ, command)
+//          l = a.map(o => Json.obj(S.p -> writesP(o._1), S.param -> writesP(o._2)))
+//        }
+//        case Command.SETCITY => {
+//          l = itemizeForSetSity(b, civ).map(writesP(_))
+//        }
+//        case Command.SETCAPITAL => {
+//          l = itemizeForSetCapital(b, civ).map(writesP(_))
+//        }
         case _ => None
       }
     if (pp == null) Json.prettyPrint(JsArray(l))

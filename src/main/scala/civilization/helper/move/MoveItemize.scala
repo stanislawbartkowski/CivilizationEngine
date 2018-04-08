@@ -1,11 +1,11 @@
-package civilization.helper
+package civilization.helper.move
 
 import civilization.gameboard.{Figures, GameBoard}
-import civilization.io.tojson.{writesFigures, writesP}
+import civilization.helper._
+import civilization.io.tojson.{writesFigures, writesP, _}
 import civilization.message.{M, Mess}
 import civilization.objects._
 import play.api.libs.json.{JsValue, Json}
-import civilization.io.tojson._
 
 
 object MoveItemize {

@@ -61,4 +61,6 @@ trait ImplicitMiximFromJson {
 
   implicit def toHVResourceSeq(j : JsValue) : Seq[HVResource] = j.as[Seq[HVResource]]
 
+  implicit def toSeqP(j : JsValue) : Seq[P] = j.as[Seq[P]]
+
 }

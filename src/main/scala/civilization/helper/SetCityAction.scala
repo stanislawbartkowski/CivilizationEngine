@@ -1,14 +1,20 @@
 package civilization.helper
 
-import civilization.action.{AbstractCommand, Command, constructCommand}
+import civilization.action.{AbstractCommand, Command, CommandPackage, constructCommand}
 import civilization.gameboard.{Figures, GameBoard, PlayerDeck}
+import civilization.helper.move.MoveAction
+import civilization.io.fromjson.ImplicitMiximFromJson
 import civilization.message.{M, Mess}
 import civilization.objects._
-import civilization.io.tojson.writesFigures
+import civilization.io.tojson.{ImplicitMiximToJson, writesFigures}
+import play.api.libs.json.JsValue
 
-object SetCityAction {
 
-  def verifySetCity(board: GameBoard, civ: Civilization.T, p: P, command: Command.T): Option[Mess] = {
+object SetCityAction extends CommandPackage with ImplicitMiximFromJson with ImplicitMiximToJson {
+
+  override def getSet: Set[Command.T] = Set(Command.SETCAPITAL, Command.SETCITY)
+
+  private def verifySetCity(board: GameBoard, civ: Civilization.T, p: P, command: Command.T): Option[Mess] = {
 
     val deck: PlayerDeck = board.playerDeck(civ)
     val mapp: MapSquareP = getSquare(board, p)
@@ -25,7 +31,7 @@ object SetCityAction {
     isSquareForCity(board, p, civ)
   }
 
-  class SetCityAction extends AbstractCommand {
+  protected class SetCityAction extends AbstractCommand {
 
     private def setcitycommandverify(board: GameBoard, civ: Civilization.T, p: P, command: Command.T): Mess = {
       verifySetCity(board, civ, p, command).getOrElse(null)
@@ -52,7 +58,11 @@ object SetCityAction {
           // try to position them around
           // checkFinalPoint
 
-          val moveto: Option[P] = squaresAround(board, p).filter(po => isSquareForFigure(board, civ, Figure.Army, p).isEmpty && MoveAction.checkFinalPoint(board, civ, po, f).isEmpty).map(_.p).headOption
+          val moveto: Option[P] = squaresAround(board, p).
+            filter(po => isSquareForFigure(board, civ, Figure.Army, po.p).isEmpty &&
+                         MoveAction.checkFinalPoint(board, civ, po, f).isEmpty).
+            map(_.p).headOption
+
           if (moveto.isDefined) {
             val command: Command = constructCommand(Command.FORCEDMOVEFIGURES, civ, moveto.get, writesFigures(f))
             // execute later
@@ -66,6 +76,21 @@ object SetCityAction {
     override def execute(board: GameBoard) = setcitycommandexecute(board, civ, p, command)
 
     override def verify(board: GameBoard): Mess = setcitycommandverify(board, civ, p, command)
+  }
+
+  override def produceCommand(command: Command.T, civ: Civilization.T, p: P, param: JsValue) = new SetCityAction
+
+  // set city
+  private def itemizeForSetCity(b: GameBoard, civ: Civilization.T): Seq[P] =
+    getFigures(b, civ).filter(_.s.figures.numberofScouts > 0).map(_.p).filter(p => verifySetCity(b, civ, p, Command.SETCITY).isEmpty)
+
+  // capital
+  private def itemizeForSetCapital(b: GameBoard, civ: Civilization.T): Seq[P] =
+    allSquares(b).filter(p => verifySetCity(b, civ, p.p, Command.SETCAPITAL).isEmpty).map(_.p)
+
+  override def itemize(b: GameBoard, civ: Civilization.T, com: Command.T): Seq[JsValue] = {
+    if (com == Command.SETCITY) itemizeForSetCity(b, civ)
+    else itemizeForSetCapital(b, civ)
   }
 
 }

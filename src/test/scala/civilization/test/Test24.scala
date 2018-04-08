@@ -16,7 +16,6 @@ import civilization.io.readdir.GenBoard.genBoard
 import civilization.test.Helper._
 
 
-
 class Test24 extends FunSuite with ImplicitMiximFromJson {
 
   Helper.I
@@ -150,11 +149,85 @@ class Test24 extends FunSuite with ImplicitMiximFromJson {
   test("Test spend trade") {
     val reg = Helper.readBoardAndPlayT("test24/BOARDGAME6.json", "test24/PLAY6.json", Civilization.Egypt)
     val token: String = reg._1
-    val gg :GameBoard = I.getBoardForToken(token)
-    val trade = numberofTrade(gg,Civilization.Egypt)
+    val gg: GameBoard = I.getBoardForToken(token)
+    val trade = numberofTrade(gg, Civilization.Egypt)
     println(trade)
     println(trade.trade)
     assert(trade.trade == 2)
     assert(trade.toprod == 3)
   }
-}
+
+  test("Check culture is exported for square") {
+    val token: String = II.getData(II.REGISTEROWNER, "China")
+    println(token)
+    val gg: GameBoard = I.getBoardForToken(token)
+    val seq = allSquares(gg)
+    var culture: Int = 0
+    seq.foreach(s => {
+      println(s)
+      if (s.revealed && s.resource.isDefined && s.resource.get == Resource.Culture) culture = culture + 1
+    })
+    println(culture)
+    assert(culture == 1)
+
+    val s = II.getData(II.GETBOARDGAME, token)
+    println(s)
+    val j = toJ(s)
+    val ma = jmap(j)
+    var mculture: Int = 0
+    ma.value.foreach(t => {
+      val a: JsArray = t.as[JsArray]
+      //      println(a)
+      a.value.foreach(s => {
+        println(s)
+        val re = (s \ "resource").asOpt[Resource.T]
+        if (re.isDefined && re.get != null) {
+          println(re.get)
+          if (re.get == Resource.Culture) mculture = mculture + 1
+        }
+      })
+    })
+    println(mculture)
+    assert(mculture == 1)
+  }
+
+  test("Gather culture for city") {
+    val reg = Helper.readBoardAndPlayT("test24/BOARDGAME7.json", "test24/PLAY7.json", Civilization.China)
+    val token = reg._1
+    println(token)
+    val gg: GameBoard = I.getBoardForToken(token)
+    val cul = cultureForCity(gg, P(1, 1))
+    println(cul)
+    assert(cul.culture == 2)
+    val s = II.getData(II.GETBOARDGAME, token)
+    val j = toJ(s)
+    val ma = jmap(j)
+    var was2 : Boolean = false
+    ma.value.foreach(t => {
+      val a: JsArray = t.as[JsArray]
+      //      println(a)
+      a.value.foreach(s => {
+        println(s)
+        val cul : Int = (s \ "culture").as[Int]
+        println(cul)
+        if (cul == 2) was2 = true
+      })
+    })
+    assert(was2)
+  }
+
+  test("Gather culture for city and from building") {
+    val reg = Helper.readBoardAndPlayT("test24/BOARDGAME7.json", "test24/PLAY8.json", Civilization.China)
+    val token = reg._1
+    println(token)
+    val gg: GameBoard = I.getBoardForToken(token)
+    // Library is built
+    val s = getSquare(gg, P(2,2))
+    println(s)
+    println(s.culture)
+    assert(s.culture == 1)
+    val cul = cultureForCity(gg, P(1, 1))
+    println(cul)
+    assert(cul.culture == 3)
+  }
+  }

@@ -512,6 +512,4 @@ package object fromjson extends ImplicitMiximFromJson {
   def toSeqOfWonders(j: JsValue): Seq[WondersOfTheWorld] = j.as[Seq[WondersOfTheWorld]]
 
   def toListOfBuildings(j: JsValue): Seq[Building] = j.as[Seq[Building]]
-
-//  def toBuildingPoint(j : JsValue) : BuildingPoint = j.as[BuildingPoint]
 }

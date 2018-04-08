@@ -82,7 +82,7 @@ object ResearchTechnology extends CommandPackage with ImplicitMiximFromJson with
 
   }
 
-  override def commandsAvail(b: GameBoard, civ: Civilization.T): Seq[Command.T] =
+  override def commandsAvail(b: GameBoard, civ: Civilization.T,phase: TurnPhase.T): Seq[Command.T] =
     if (isResearchDone(b, civ) || techologylevel(b, civ) == 0) Nil else List(Command.RESEARCH)
 
 

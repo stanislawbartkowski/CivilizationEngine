@@ -2,6 +2,7 @@ package civilization.io.tojson
 
 import civilization.gameboard._
 import civilization.helper._
+import civilization.helper.battle.BattleActions
 import civilization.objects._
 import play.api.libs.json._
 import civilization.io.tojson.CombatUnitJSon.unitstoJSON

@@ -1,0 +1,7 @@
+{
+  "game": [
+
+
+    {"command":"SETCAPITAL","civ":"China","p":{"row":1,"col":1},"param":null}
+
+    ]}

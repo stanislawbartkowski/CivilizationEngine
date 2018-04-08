@@ -1,6 +1,7 @@
-package civilization.helper
+package civilization.helper.battle
 
 import civilization.gameboard.{GameBoard, PlayerDeck, WinnerLoot}
+import civilization.helper._
 import civilization.objects._
 
 

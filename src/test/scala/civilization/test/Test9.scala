@@ -4,11 +4,12 @@ import civilization.I.{II, _}
 import civilization.gameboard.{Figures, GameBoard}
 import civilization.helper.AllowedCommands.allowedCommands
 import civilization.helper._
+import civilization.helper.move.MoveItemize
 import civilization.io.fromjson._
 import civilization.objects._
 import org.scalatest.FunSuite
 import play.api.libs.json._
-import civilization.helper.MoveItemize.{PossibleMove,itemizeForMove}
+import civilization.helper.move.MoveItemize.{PossibleMove, itemizeForMove}
 
 
 class Test9 extends FunSuite {

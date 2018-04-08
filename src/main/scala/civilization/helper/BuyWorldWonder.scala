@@ -9,8 +9,8 @@ import civilization.io.tojson.ImplicitMiximToJson
 import civilization.objects.{Civilization, Command, P, _}
 import civilization.{gameboard, message}
 import play.api.libs.json.JsValue
-
 object BuyWorldWonder extends CommandPackage with ImplicitMiximFromJson with ImplicitMiximToJson {
+
 
   private def canAffordWonder(b: GameBoard, pl: PlayerDeck, prod: ProdForCity, w: WondersOfTheWorld): Boolean = {
     if (prod.prod >= w.cost) return true

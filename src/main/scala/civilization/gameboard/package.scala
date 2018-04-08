@@ -39,6 +39,8 @@ package object gameboard {
 
     def incr(r: T) = table(r) = table(r) + 1
 
+    def incr(r: T, num : Int) = table(r) = table(r) + num
+
     def decr(r: T) = {
       require(table(r) > 0)
       table(r) = table(r) - 1

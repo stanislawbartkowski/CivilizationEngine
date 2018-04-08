@@ -2,6 +2,8 @@ package civilization
 
 import civilization.gameboard.GameBoard
 import civilization.helper._
+import civilization.helper.battle.AttackCommand
+import civilization.helper.move.{ExploreHutCommand, MoveAction, RevealTileAction}
 import civilization.io.fromjson._
 import civilization.io.tojson._
 import civilization.message.{FatalError, M, Mess}
@@ -31,17 +33,17 @@ package object action extends ImplicitMiximToJson with ImplicitMiximFromJson {
   private def produceCommand(command: Command.T, civ: Civilization.T, p: P, param: JsValue): Command = command match {
 
 
-    case Command.SETCAPITAL | Command.SETCITY => new SetCityAction.SetCityAction()
+//    case Command.SETCAPITAL | Command.SETCITY => new SetCityAction.SetCityAction()
 
-    case Command.SETSCOUT | Command.SETARMY => {
-      val p: P = toP(param)
-      new SetFigureAction.SetFigureAction(if (command == Command.SETARMY) Figure.Army else Figure.Scout, p)
-    }
+//    case Command.SETSCOUT | Command.SETARMY => {
+//      val p: P = toP(param)
+//      new SetFigureAction.SetFigureAction(if (command == Command.SETARMY) Figure.Army else Figure.Scout, p)
+//    }
 
-    case Command.BUYSCOUT | Command.BUYARMY => {
-      val p: P = toP(param)
-      new SetFigureAction.SetFigureAction(if (command == Command.BUYARMY) Figure.Army else Figure.Scout, p)
-    }
+  //  case Command.BUYSCOUT | Command.BUYARMY => {
+//      val p: P = toP(param)
+  //    new SetFigureAction.SetFigureAction(if (command == Command.BUYARMY) Figure.Army else Figure.Scout, p)
+//    }
 
     case Command.FORCEDMOVEFIGURES => new MoveAction.ForceMoveAction(toFigures(param))
 
@@ -127,7 +129,10 @@ package object action extends ImplicitMiximToJson with ImplicitMiximFromJson {
   trait CommandPackage {
     def getSet: Set[Command.T]
 
-    def commandsAvail(b: GameBoard, civ: Civilization.T): Seq[Command.T] = getSet.filter(!itemize(b, civ, _).isEmpty) toSeq
+    def commandsAvail(b: GameBoard, civ: Civilization.T,phase: TurnPhase.T): Seq[Command.T] =
+      getSet.
+        filter(Command.actionPhase(_) == phase).
+        filter(!itemize(b, civ, _).isEmpty) toSeq
 
     def itemize(b: GameBoard, civ: Civilization.T, com: Command.T): Seq[JsValue] = itemizeP(b, civ, com)
 

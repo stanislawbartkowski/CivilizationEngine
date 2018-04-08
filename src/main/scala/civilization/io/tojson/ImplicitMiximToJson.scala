@@ -2,7 +2,7 @@ package civilization.io.tojson
 
 import civilization.gameboard._
 import civilization.objects._
-import play.api.libs.json.{JsValue, Json, Writes}
+import play.api.libs.json.{JsArray, JsValue, Json, Writes}
 
 trait ImplicitMiximToJson {
 
@@ -28,13 +28,13 @@ trait ImplicitMiximToJson {
     S.p -> p._1,
     S.param -> p._2)
 
-  implicit def toJSonStartParam(p  : BattleStart) : JsValue = Json.toJson(p)
+  implicit def toJSonStartParam(p: BattleStart): JsValue = Json.toJson(p)
 
   implicit def writesFigures(f: Figures) = Json.toJson(f)
 
   implicit def writeCombatUnit(m: CombatUnit): JsValue = Json.toJson(m)
 
-  implicit def writeTakeWinnerLoot(m: TakeWinnerLoot) : JsValue = Json.toJson(m)
+  implicit def writeTakeWinnerLoot(m: TakeWinnerLoot): JsValue = Json.toJson(m)
 
   implicit val buildingpointWrites: Writes[BuildingPoint] = new Writes[BuildingPoint] {
     override def writes(o: BuildingPoint): JsValue = Json.obj(
@@ -43,5 +43,14 @@ trait ImplicitMiximToJson {
     )
   }
 
+  implicit def writePP(a: Seq[(P, P)]): Seq[JsValue] = a.map(writesCityPoint(_))
+
+  implicit def writePSeqP(a: Seq[(P, Seq[P])]): Seq[JsValue] = a.map(e => {
+    Json.obj(
+      S.p -> e._1,
+      S.list -> e._2
+    )
+  }
+  )
 
 }

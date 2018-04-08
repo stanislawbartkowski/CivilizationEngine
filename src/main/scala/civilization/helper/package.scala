@@ -33,6 +33,13 @@ package object helper {
       else if (s.wonder.isDefined) None
       else sm.resource
 
+    def culture : Int =
+      if (s.building.isDefined)
+        s.building.get.tokens.numofCulture
+      else if (s.wonder.isDefined) 0
+      else if (resource.isEmpty) 0
+      else if (resource.get == Resource.Culture) 1 else 0
+
     def suggestedCapitalForCiv: Option[Civilization.T] = if (suggestedCapital) Some(t.tile.civ) else None
 
     def civHere: Option[Civilization.T] = if (s.cityhere) Some(s.city.get.civ) else if (!s.figures.empty) Some(s.figures.civ) else None
@@ -74,6 +81,9 @@ package object helper {
 
   private def outskirtsForCivNotBlocked(b: GameBoard, civ: Civilization.T): Seq[MapSquareP] =
     outskirtsForCiv(b, civ).filter(squareNotBlocked(b, civ, _))
+
+  private def outskirtsForCityNotBlocked(b: GameBoard, civ: Civilization.T, p: P): Seq[MapSquareP] =
+    squaresAround(b, p).filter(squareNotBlocked(b, civ, _))
 
   def pointtoTile(p: P): P = P(p.row / TILESIZE, p.col / TILESIZE)
 
@@ -497,7 +507,12 @@ package object helper {
     null
   }
 
-  def gameStart(b: GameBoard): Boolean = currentPhase(b).roundno == 0
+  def firstRound(b: GameBoard,phase : Option[TurnPhase.T]): Boolean = {
+    val c = currentPhase(b)
+    if (c.roundno != 0) return false
+    if (phase.isEmpty) return true
+    return phase.get == c.turnPhase
+  }
 
   // ====================================
   // TRADE
@@ -529,7 +544,7 @@ package object helper {
     def trade: Int = Math.min(terrain + noresearch - toprod + loottrade + tradecoins, TRADEMAX)
   }
 
-  case class TradeForCiv(val tradecalculated: Int,val loottrade: Int, val toprod : Int ) {
+  case class TradeForCiv(val tradecalculated: Int, val loottrade: Int, val toprod: Int) {
     def trade: Int = Math.min(tradecalculated - toprod + loottrade, TRADEMAX)
   }
 
@@ -549,11 +564,11 @@ package object helper {
     loott
   }
 
-  private def numberofTradeTerrain(b: GameBoard, civ: Civilization.T): Integer = {
+  private def numberofTradeTerrain(b: GameBoard, civ: Civilization.T): Int = {
     //    val num: Int = citiesForCivilization(b, civ).flatMap(p => squaresAround(b, p.p)).map(_.numberOfTrade).foldLeft(0)(_ + _)
     val num: Int = outskirtsForCivNotBlocked(b, civ).map(_.numberOfTrade).sum
     // squareNotBlocked(b, civ, s
-    if (gameStart(b)) num * 2 else num
+    if (firstRound(b,None)) num * 2 else num
   }
 
   private def reduceTradeBySpend(b: GameBoard, civ: Civilization.T, playerLimits: PlayerLimits): Int = {
@@ -561,7 +576,7 @@ package object helper {
   }
 
 
-  private def numberofTradePhasenoresearch(b: GameBoard, civ: Civilization.T,phase : TurnPhase.T): Int = {
+  private def numberofTradePhasenoresearch(b: GameBoard, civ: Civilization.T, phase: TurnPhase.T): Int = {
     // commands : reverse
     val rlist: Seq[Command] = b.play.commands.reverse.filter(_.civ == civ)
 
@@ -589,22 +604,22 @@ package object helper {
 
 
   private def numberofTradenoresearch(b: GameBoard, civ: Civilization.T): Int =
-    numberofTradePhasenoresearch(b,civ,TurnPhase.Research)
+    numberofTradePhasenoresearch(b, civ, TurnPhase.Research)
 
   private def numberofTradeTradenoresearch(b: GameBoard, civ: Civilization.T): Int =
-    numberofTradePhasenoresearch(b,civ,TurnPhase.Trade)
+    numberofTradePhasenoresearch(b, civ, TurnPhase.Trade)
 
   def numberofTrade(b: GameBoard, civ: Civilization.T): TradeForCiv = {
     if (b.tradecurrent) {
       // cheating
-      val tra = numberofTradeCalculate(b,civ)
-      return TradeForCiv(tra.trade,0,0)
+      val tra = numberofTradeCalculate(b, civ)
+      return TradeForCiv(tra.trade, 0, 0)
     }
     val li: PlayerLimits = getLimits(b, civ)
-    val tradecalculated : Int = numberofTradeTradenoresearch(b,civ)
-    val spendonprod : Int = reduceTradeBySpend(b, civ, li)
-    val loottrade : Int = numberofloottrade(b, civ)
-    TradeForCiv(tradecalculated,loottrade,spendonprod)
+    val tradecalculated: Int = numberofTradeTradenoresearch(b, civ)
+    val spendonprod: Int = reduceTradeBySpend(b, civ, li)
+    val loottrade: Int = numberofloottrade(b, civ)
+    TradeForCiv(tradecalculated, loottrade, spendonprod)
   }
 
   def numberofTradeCalculate(b: GameBoard, civ: Civilization.T): TradeForCivCalculate = {
@@ -626,15 +641,20 @@ package object helper {
 
   // list of scouts used already for harvesting
   private def scoutForHarvest(b: GameBoard, civ: Civilization.T): Set[P] =
-    lastPhaseCommandsReverse(b, civ, TurnPhase.CityManagement).filter(_.civ == Command.HARVESTRESOURCE).
+    lastPhaseCommandsReverse(b, civ, TurnPhase.CityManagement).filter(_.command == Command.HARVESTRESOURCE).
       map(_.param.asInstanceOf[P]) toSet
 
-  // all scouts used for harvesting and sending production
+  private def scoutsForCulture(b : GameBoard, civ : Civilization.T) : Seq[P] =
+    lastPhaseCommandsReverse(b, civ, TurnPhase.CityManagement).filter(_.command == Command.DEVOUTTOCULTURE).
+      map(_.param.asInstanceOf[Seq[P]]) flatten
+
+  // all scouts used for harvesting and sending production and culture
   private def scoutsUsedAlready(b: GameBoard, civ: Civilization.T): Set[P] = {
     val harv: Set[P] = scoutForHarvest(b, civ)
     val sends: Set[P] = sendprodForScouts(b, civ).map(_._1) toSet
+    val culture : Set[P] = scoutsForCulture(b,civ) toSet
 
-    harv.union(sends)
+    harv.union(sends).union(culture)
   }
 
   private def allScouts(b: gameboard.GameBoard, civ: Civilization.T): Seq[MapSquareP]
@@ -668,7 +688,7 @@ package object helper {
     if (fig.find(_.p == param).isEmpty) return Some(Mess(M.NOSCOUTATTHISPOINT, (scout)))
     val out: Seq[MapSquareP] = outskirtsForCiv(b, civ)
     if (out.find(_.p == scout).isDefined)
-      return return Some(Mess(M.SCOUTISONCITYOUTSKIRT, (scout)))
+      return Some(Mess(M.SCOUTISONCITYOUTSKIRT, (scout)))
     return None
 
   }
@@ -691,7 +711,9 @@ package object helper {
 
   def getProductionForCity(b: GameBoard, civ: Civilization.T, p: P): ProdForCity = {
     //val num: Int = squaresAround(b, p).map(s => getSquare(b, s.p).numberOfProduction).foldLeft(0)(_ + _)
-    val num: Int = squaresAround(b, p).filter(squareNotBlocked(b, civ, _)).map(s => getSquare(b, s.p).numberOfProduction).sum
+
+    //    val num: Int = squaresAround(b, p).filter(squareNotBlocked(b, civ, _)).map(s => getSquare(b, s.p).numberOfProduction).sum
+    val num: Int = outskirtsForCityNotBlocked(b, civ, p).map(_.numberOfProduction).sum
 
     //val num: Int = outskirtsForCityResource(b, civ, p).map(_.numberOfProduction).sum
 
@@ -843,6 +865,23 @@ package object helper {
     val civhere: Option[Civilization.T] = s.civHere
     if (civhere.isEmpty) return true
     return civhere.get == civ
+  }
+
+  // ===========================
+  // culture for city
+  // ===========================
+  case class CultureForCity(cityculture: Int, outskirts: Int, scouts: Int) {
+    def culture: Int = cityculture + outskirts + scouts
+  }
+
+  def cultureForCity(b: GameBoard, p: P): CultureForCity = {
+    val c: Option[Mess] = checkCity(b, p)
+    if (c.isDefined) throw FatalError(c.get)
+    val ss: MapSquareP = getSquare(b, p)
+    val cityculture: Int = if (City.isCapital(ss.s.city.get.citytype)) CULTURECAPITAL else CULTURECITY
+    val outskirts: Int = outskirtsForCityNotBlocked(b, ss.civHere.get, p).map(_.culture).sum
+    val scouts: Int = 0
+    return CultureForCity(cityculture, outskirts, scouts)
   }
 
 

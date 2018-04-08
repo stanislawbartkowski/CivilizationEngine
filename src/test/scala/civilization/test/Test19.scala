@@ -11,6 +11,7 @@ import civilization.objects._
 import org.scalatest.FunSuite
 import play.api.libs.json._
 import civilization.helper._
+import civilization.helper.battle.BattleActions
 
 
 class Test19 extends FunSuite with ImplicitMiximToJson {

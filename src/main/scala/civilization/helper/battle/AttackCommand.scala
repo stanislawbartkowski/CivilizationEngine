@@ -1,14 +1,13 @@
-package civilization.helper
+package civilization.helper.battle
 
 import civilization.action.{AbstractCommand, AbstractCommandNone, Command, constructCommand}
-import civilization.io.tojson.ImplicitMiximToJson
-import civilization.message.{FatalError, M, Mess}
-import civilization.objects._
 import civilization.gameboard._
+import civilization.helper._
+import civilization.io.tojson.ImplicitMiximToJson
 import civilization.message
+import civilization.message.{M, Mess}
+import civilization.objects._
 import play.api.libs.json.JsValue
-
-import scala.util.control.Breaks.{breakable, _}
 
 object AttackCommand extends ImplicitMiximToJson {
 

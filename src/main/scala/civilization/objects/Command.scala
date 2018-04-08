@@ -11,15 +11,15 @@ object Command extends Enumeration {
   SETARMY, SETSCOUT, BUYARMY, BUYSCOUT, RESEARCH, FORCEDMOVEFIGURES, SPENDTRADE, UNDOSPENDTRADE,
   SENDPRODUCTION, UNDOSENDPRODUCTION, BUYINFANTRY, BUYMOUNTED, BUYARTILLERY, BUYAIRCRAFT,
   HARVESTRESOURCE, EXPLOREHUT, ATTACK, STARTBATTLE, PLAYUNIT, PLAYUNITIRON, ENDBATTLE, TAKEUNIT, TAKEWINNERLOOT,
-  BUYBUILDING, BUYWONDER, POTTERYACTION, PHILOSOPHYACTION = Value
+  BUYBUILDING, BUYWONDER, POTTERYACTION, PHILOSOPHYACTION,DEVOUTTOCULTURE = Value
 
   /** Assign action to game phases */
   def actionPhase(t: Value): TurnPhase.T = {
     t match {
-      case SETCAPITAL | SETCAPITAL | SETARMY | SETSCOUT => TurnPhase.StartOfTurn
+      case SETCAPITAL | SETCITY | SETARMY | SETSCOUT => TurnPhase.StartOfTurn
       case STARTMOVE | MOVE | ENDOFMOVE | REVEALTILE | EXPLOREHUT | ATTACK | STARTBATTLE | PLAYUNIT | PLAYUNITIRON | ENDBATTLE => TurnPhase.Movement
       case BUYARMY | BUYSCOUT | SPENDTRADE | UNDOSPENDTRADE | SENDPRODUCTION | UNDOSENDPRODUCTION |
-           BUYMOUNTED | BUYINFANTRY | BUYAIRCRAFT | BUYARTILLERY | HARVESTRESOURCE | BUYBUILDING | BUYWONDER | POTTERYACTION | PHILOSOPHYACTION => TurnPhase.CityManagement
+           BUYMOUNTED | BUYINFANTRY | BUYAIRCRAFT | BUYARTILLERY | HARVESTRESOURCE | BUYBUILDING | BUYWONDER | POTTERYACTION | PHILOSOPHYACTION | DEVOUTTOCULTURE => TurnPhase.CityManagement
       case RESEARCH => TurnPhase.Research
       case _ => null
     }
@@ -27,7 +27,7 @@ object Command extends Enumeration {
 
   /** Unique city actions. */
   def cityActionUnique(t: Value): Boolean = (t == BUYARMY || t == BUYSCOUT || t == BUYARTILLERY ||
-    t == BUYAIRCRAFT || t == BUYINFANTRY || t == BUYMOUNTED || t == HARVESTRESOURCE || t == BUYBUILDING || t == BUYWONDER || t == POTTERYACTION || t == PHILOSOPHYACTION)
+    t == BUYAIRCRAFT || t == BUYINFANTRY || t == BUYMOUNTED || t == HARVESTRESOURCE || t == BUYBUILDING || t == BUYWONDER || t == POTTERYACTION || t == PHILOSOPHYACTION || t == DEVOUTTOCULTURE)
 
   /** Movement action after starting the move */
   def actionMove(t: Value): Boolean =
@@ -36,6 +36,9 @@ object Command extends Enumeration {
 
   def isTechnologyResourceAction(t : Value) : Boolean =
     return (t == POTTERYACTION || t == PHILOSOPHYACTION)
+
+  def isBeginningOfGameCommand(t : Value) : Boolean =
+    (t == SETCAPITAL || t == SETARMY || t == SETSCOUT)
 
 }
 

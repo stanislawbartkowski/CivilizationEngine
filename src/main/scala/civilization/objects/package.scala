@@ -12,6 +12,8 @@ package object objects {
   val MAXLOOTTRADE = 3
   val WONDERWINDOW = 4
   val COINSCAPACITY = 4
+  val CULTURECITY = 1
+  val CULTURECAPITAL = 1
 
   case class GameConfig(val ironincreasedefend: Boolean)
 
@@ -88,6 +90,8 @@ package object objects {
   object City extends Enumeration {
     type T = Value
     val Capital, Normal, WalledCapital, WalledNormal = Value
+
+    def isCapital(c : Value) : Boolean = (c == Capital || c == WalledCapital)
   }
 
   object Figure extends Enumeration {
