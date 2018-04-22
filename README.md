@@ -810,6 +810,15 @@ Spend resources or hut/villages and put a coin on the technology
 
  Spend Hut with Spy and Iron to put coin on Pottery technology. The action is executed in city (1,2)
 
+## DEVOUTTOCULTURE
+
+Devout city to culture. City can be helped by scout standing on the squre having resource token.
+
+* executeCommand("secret token","DEVOUTTOCULTURE",row,col,[{"row":row,"col":col])
+
+*Parameters:
+* row,col : city to be devouted to culture
+* list : list of supporting scouts. If no scout is supporting empty list should be passed
 
 # itemizeCommand format
 
@@ -916,3 +925,14 @@ Example:
  [{"p":{"row":1,"col":5},
 ```
 Action can be execute in city (1,5)
+
+## DEVOUTTOCULTURE
+
+Return list of cities accompanied by list of scout ready to send the culture to the city
+
+Example
+
+```JSON
+[{"p":{"row":1,"col":1},"list":[]}]
+```
+City (1,1) can devout itself to culture. No scout can support.
