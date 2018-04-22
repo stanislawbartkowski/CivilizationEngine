@@ -79,12 +79,12 @@ object GenBoard extends ImplicitMiximFromJson {
     val players: List[PlayerDeck] = l.map(c => {
       val civ: CivilizationG = civs.find(_.civ == c).get
       val pt: PlayerTechnology = PlayerTechnology(civ.tech, Some(true))
-      PlayerDeck(c, List(pt), Nil, new BoardResources(), civ.gover)
+      PlayerDeck(c, List(pt), Nil, new BoardResources(), civ.gover, 0)
     }
     )
 
     val units: Seq[CombatUnit] = readListOfUnits
-    val market: Market = Market(units, Nil, readBuildingsResources,genWonders(GameResources.instance()))
+    val market: Market = Market(units, Nil, readBuildingsResources, genWonders(GameResources.instance()))
     val g: GameBoard = GameBoard(players, BoardMap(map), Resources(readHutVillages, Nil, readResources(l.length)), market)
     // reveal tiles
     lpatt.foreach(p => if (p.o.isDefined) revealTile(g, p.o.get, p.p))

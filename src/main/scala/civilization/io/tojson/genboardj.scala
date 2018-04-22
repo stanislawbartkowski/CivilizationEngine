@@ -119,7 +119,8 @@ object genboardj {
     S.hutvillages -> hvtojson(p.pl.hvlist, you),
     S.wonders -> p.wonders,
     S.coins -> p.coins,
-    "combatbonus" -> p.limits.combatBonus
+    "combatbonus" -> p.limits.combatBonus,
+    S.cultureprogress -> p.pl.cultureprogress
   )
 
   private def genBoardGameJ(g: GameBoard, civ: Civilization.T): BoardGameJ = {

@@ -73,4 +73,8 @@ object S {
   final val wondertT = "t"
   final val coin = "coin"
   final val coins = "coins"
+  final val last = "last"
+  final val greatperson = "greatperson"
+  final val culturetrack = "culturetrack"
+  final val cultureprogress = "cultureprogress"
 }

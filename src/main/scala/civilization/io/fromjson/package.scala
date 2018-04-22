@@ -6,6 +6,7 @@ import play.api.libs.functional.syntax._
 import civilization.objects._
 import civilization.gameboard._
 import civilization.io.readdir.GameResources
+import civilization.gameboard.CultureTrack._
 
 
 package object fromjson extends ImplicitMiximFromJson {
@@ -93,6 +94,17 @@ package object fromjson extends ImplicitMiximFromJson {
       (JsPath \ S.upgrade).readNullable[BuildingName.T] and
       (JsPath \ S.terrain).readNullable[Terrain.T]
     ) (Building.apply _)
+
+  implicit val culturetrackconstReads: Reads[CultureTrackCost] = (
+    (JsPath \ S.culture).read[Int] and
+      (JsPath \ S.trade).read[Int]
+    ) (CultureTrackCost.apply _)
+
+  implicit val culturetracksegmentReads: Reads[CultureTrackSegment] = (
+    (JsPath \ S.last).read[Int] and
+      (JsPath \ S.cost).read[CultureTrackCost] and
+      (JsPath \ S.greatperson).read[Seq[Int]]
+    ) (CultureTrackSegment.apply _)
 
   implicit val squareReads: Reads[Square] = new Reads[Square] {
     def reads(json: JsValue): JsResult[Square] = {
@@ -195,7 +207,7 @@ package object fromjson extends ImplicitMiximFromJson {
       val hv: Option[HutVillage] = (json \ S.hutvillage).asOpt[Option[HutVillage]].getOrElse(None)
       val figures: PlayerFigures = (json \ "figures").asOpt[PlayerFigures].getOrElse(null)
       val city: Option[City] = (json \ S.city).asOpt[Option[City]].getOrElse(None)
-      val building : BuildingName.T = (json \ S.building).asOpt[BuildingName.T].getOrElse(null)
+      val building: BuildingName.T = (json \ S.building).asOpt[BuildingName.T].getOrElse(null)
       val ma: MapSquare = MapSquare(hv, city)
       if (figures != null) {
         ma.figures.civ = figures.civ
@@ -245,7 +257,8 @@ package object fromjson extends ImplicitMiximFromJson {
       val tech: Seq[PlayerTechnology] = (json \ S.tech).as[Seq[PlayerTechnology]]
       val units: Seq[CombatUnit] = (json \ S.units).as[Seq[CombatUnit]]
       val resou: BoardResources = (json \ S.resources).as[BoardResources]
-      JsSuccess(PlayerDeck(civ, tech, units, resou, gover))
+      val cultureprogress: Option[Int] = (json \ S.cultureprogress).asOpt[Int]
+      JsSuccess(PlayerDeck(civ, tech, units, resou, gover, if (cultureprogress.isEmpty) 0 else cultureprogress.get))
     }
   }
 
@@ -292,7 +305,7 @@ package object fromjson extends ImplicitMiximFromJson {
       val norotate: Option[Boolean] = (json \ "norotate").asOpt[Boolean]
       if (norotate.isDefined && norotate.get) g.norotate = true
       // cheating
-      val tradecurrent : Option[Boolean] = (json \ "tradecurrent").asOpt[Boolean]
+      val tradecurrent: Option[Boolean] = (json \ "tradecurrent").asOpt[Boolean]
       if (tradecurrent.isDefined && tradecurrent.get) g.tradecurrent = true
 
       JsSuccess(g)
@@ -512,4 +525,6 @@ package object fromjson extends ImplicitMiximFromJson {
   def toSeqOfWonders(j: JsValue): Seq[WondersOfTheWorld] = j.as[Seq[WondersOfTheWorld]]
 
   def toListOfBuildings(j: JsValue): Seq[Building] = j.as[Seq[Building]]
+
+  def toCultureTrack(j: JsValue): Array[CultureTrackSegment] = j.as[Array[CultureTrackSegment]]
 }

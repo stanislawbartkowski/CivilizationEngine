@@ -33,18 +33,6 @@ package object action extends ImplicitMiximToJson with ImplicitMiximFromJson {
   private def produceCommand(command: Command.T, civ: Civilization.T, p: P, param: JsValue): Command = command match {
 
 
-//    case Command.SETCAPITAL | Command.SETCITY => new SetCityAction.SetCityAction()
-
-//    case Command.SETSCOUT | Command.SETARMY => {
-//      val p: P = toP(param)
-//      new SetFigureAction.SetFigureAction(if (command == Command.SETARMY) Figure.Army else Figure.Scout, p)
-//    }
-
-  //  case Command.BUYSCOUT | Command.BUYARMY => {
-//      val p: P = toP(param)
-  //    new SetFigureAction.SetFigureAction(if (command == Command.BUYARMY) Figure.Army else Figure.Scout, p)
-//    }
-
     case Command.FORCEDMOVEFIGURES => new MoveAction.ForceMoveAction(toFigures(param))
 
     case Command.ENDOFPHASE => {
@@ -120,7 +108,7 @@ package object action extends ImplicitMiximToJson with ImplicitMiximFromJson {
     def execute(board: GameBoard)
   }
 
-  abstract class AbstractCommandNone(val param: Any = null, val param1: Any = null) extends Command
+  abstract class AbstractCommandNone(val param: Any = null, var param1: Any = null) extends Command
 
   abstract class AbstractCommand[T](val param: T = null, val param1: Any = null) extends Command
 

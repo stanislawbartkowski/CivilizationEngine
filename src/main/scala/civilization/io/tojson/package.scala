@@ -1,6 +1,7 @@
 package civilization.io
 
 import civilization.gameboard._
+import civilization.gameboard.CultureTrack._
 import civilization.objects._
 import play.api.libs.functional.syntax._
 import play.api.libs.json
@@ -32,6 +33,21 @@ package object tojson extends ImplicitMiximToJson {
       S.hutvillages -> m.hv,
       S.hutvillagesused -> m.hvused,
       S.resources -> m.resou
+    )
+  }
+
+  implicit val culturecostWrites : Writes[CultureTrackCost] = new Writes[CultureTrackCost] {
+    override def writes(o: CultureTrackCost): JsValue = Json.obj(
+      S.culture -> o.culture,
+      S.trade -> o.trade
+    )
+  }
+
+  implicit val culturesegmentWrites = new Writes[CultureTrackSegment] {
+    override def writes(o: CultureTrackSegment): JsValue = Json.obj(
+      S.last -> o.last,
+      S.cost -> o.cost,
+      S.greatperson -> o.greatperson
     )
   }
 
@@ -70,7 +86,8 @@ package object tojson extends ImplicitMiximToJson {
       S.gover -> m.gover,
       S.tech -> m.tech,
       S.units -> m.units,
-      S.resources -> m.resou
+      S.resources -> m.resou,
+      S.cultureprogress -> m.cultureprogress
     )
   }
 
@@ -296,5 +313,9 @@ package object tojson extends ImplicitMiximToJson {
   def writeListOfBuilding(m: Seq[Building]): JsValue = Json.toJson(m)
 
   def writeListOfWondersNames(l : Seq[Wonders.T]) : JsValue = Json.toJson(l)
+
+  def writeCultureTrack(c : CultureTrack) : JsValue = Json.toJson(c)
+
+  def writeCultureTrackCost( c : CultureTrackCost) : JsValue = Json.toJson(c)
 
 }

@@ -33,7 +33,7 @@ package object helper {
       else if (s.wonder.isDefined) None
       else sm.resource
 
-    def culture : Int =
+    def culture: Int =
       if (s.building.isDefined)
         s.building.get.tokens.numofCulture
       else if (s.wonder.isDefined) 0
@@ -268,6 +268,10 @@ package object helper {
     list
   }
 
+  private def currentTurnReverseForCiv(b: GameBoard, civ: Civilization.T): Seq[Command] =
+    currentTurnReverse(b).filter(_.civ == civ)
+
+
   def currentPhase(b: GameBoard): CurrentPhase = {
 
     // reverse command, analyze from end
@@ -329,7 +333,8 @@ package object helper {
 
   def technologyResourceUsed(b: GameBoard, civ: Civilization.T): Boolean = {
     // all commands in the current phase
-    val com: Seq[Command] = currentTurnReverse(b).filter(_.civ == civ)
+    //    val com: Seq[Command] = currentTurnReverse(b).filter(_.civ == civ)
+    val com: Seq[Command] = currentTurnReverseForCiv(b, civ)
     // only technology commands
     // technology resource command is used
     com.find(co => Command.isTechnologyResourceAction(co.command)).isDefined
@@ -449,7 +454,7 @@ package object helper {
     val current: CurrentPhase = currentPhase(b)
     val phase: TurnPhase.T = Command.actionPhase(command.command)
     if (phase != null && phase != current.turnPhase) return Mess(M.ACTIONCANNOTBEEXECUTEDINTHISPHASE, (command, current.turnPhase, phase))
-    if (phase != null && phase == TurnPhase.CityManagement) {
+    if (phase != null && phase == TurnPhase.CityManagement && Command.actionInCity(command.command)) {
       // check if city correct
       checkP(b, command.p)
       var res: Option[Mess] = checkCity(b, command.p)
@@ -507,7 +512,7 @@ package object helper {
     null
   }
 
-  def firstRound(b: GameBoard,phase : Option[TurnPhase.T]): Boolean = {
+  def firstRound(b: GameBoard, phase: Option[TurnPhase.T]): Boolean = {
     val c = currentPhase(b)
     if (c.roundno != 0) return false
     if (phase.isEmpty) return true
@@ -540,12 +545,12 @@ package object helper {
   def spendProdForCities(b: GameBoard, civ: Civilization.T): Map[P, Int] =
     spendTradeCommands(b, civ) map { case (p, seq) => (p, spendProdForCity(seq)) }
 
-  case class TradeForCivCalculate(val terrain: Int, val noresearch: Int, val toprod: Int, val loottrade: Int, val tradecoins: Int) {
-    def trade: Int = Math.min(terrain + noresearch - toprod + loottrade + tradecoins, TRADEMAX)
+  case class TradeForCivCalculate(val terrain: Int, val noresearch: Int, val toprod: Int, val loottrade: Int, val tradecoins: Int, val tradespendCulture: Int) {
+    def trade: Int = Math.min(terrain + noresearch - toprod + loottrade + tradecoins - tradespendCulture, TRADEMAX)
   }
 
-  case class TradeForCiv(val tradecalculated: Int, val loottrade: Int, val toprod: Int) {
-    def trade: Int = Math.min(tradecalculated - toprod + loottrade, TRADEMAX)
+  case class TradeForCiv(val tradecalculated: Int, val loottrade: Int, val toprod: Int, val spendOnCulture: Int) {
+    def trade: Int = Math.min(tradecalculated - toprod - spendOnCulture + loottrade, TRADEMAX)
   }
 
 
@@ -568,7 +573,7 @@ package object helper {
     //    val num: Int = citiesForCivilization(b, civ).flatMap(p => squaresAround(b, p.p)).map(_.numberOfTrade).foldLeft(0)(_ + _)
     val num: Int = outskirtsForCivNotBlocked(b, civ).map(_.numberOfTrade).sum
     // squareNotBlocked(b, civ, s
-    if (firstRound(b,None)) num * 2 else num
+    if (firstRound(b, None)) num * 2 else num
   }
 
   private def reduceTradeBySpend(b: GameBoard, civ: Civilization.T, playerLimits: PlayerLimits): Int = {
@@ -602,6 +607,18 @@ package object helper {
     lasttrade
   }
 
+  private def tradeSpendOnCulture(b: GameBoard, civ: Civilization.T): Int = {
+    val com: Seq[Command] = currentTurnReverseForCiv(b, civ)
+    com.foldLeft(0) { (sum, i) => {
+      if (i.command == Command.ADVANCECULTURE) {
+        val cul: CultureTrack.CultureTrackCost = i.param1.asInstanceOf[CultureTrack.CultureTrackCost]
+        sum + cul.trade
+      }
+      else sum
+    }
+    }
+  }
+
 
   private def numberofTradenoresearch(b: GameBoard, civ: Civilization.T): Int =
     numberofTradePhasenoresearch(b, civ, TurnPhase.Research)
@@ -613,19 +630,21 @@ package object helper {
     if (b.tradecurrent) {
       // cheating
       val tra = numberofTradeCalculate(b, civ)
-      return TradeForCiv(tra.trade, 0, 0)
+      return TradeForCiv(tra.trade, 0, 0, 0)
     }
     val li: PlayerLimits = getLimits(b, civ)
     val tradecalculated: Int = numberofTradeTradenoresearch(b, civ)
     val spendonprod: Int = reduceTradeBySpend(b, civ, li)
     val loottrade: Int = numberofloottrade(b, civ)
-    TradeForCiv(tradecalculated, loottrade, spendonprod)
+    val spendonculture: Int = tradeSpendOnCulture(b, civ)
+
+    TradeForCiv(tradecalculated, loottrade, spendonprod, spendonculture)
   }
 
   def numberofTradeCalculate(b: GameBoard, civ: Civilization.T): TradeForCivCalculate = {
     val li: PlayerLimits = getLimits(b, civ)
     TradeForCivCalculate(numberofTradeTerrain(b, civ), numberofTradenoresearch(b, civ), reduceTradeBySpend(b, civ, li),
-      numberofloottrade(b, civ), getCoins(b, civ).coins)
+      numberofloottrade(b, civ), getCoins(b, civ).coins, tradeSpendOnCulture(b, civ))
   }
 
   // ===================================
@@ -644,7 +663,7 @@ package object helper {
     lastPhaseCommandsReverse(b, civ, TurnPhase.CityManagement).filter(_.command == Command.HARVESTRESOURCE).
       map(_.param.asInstanceOf[P]) toSet
 
-  private def scoutsForCulture(b : GameBoard, civ : Civilization.T) : Seq[P] =
+  private def scoutsForCulture(b: GameBoard, civ: Civilization.T): Seq[P] =
     lastPhaseCommandsReverse(b, civ, TurnPhase.CityManagement).filter(_.command == Command.DEVOUTTOCULTURE).
       map(_.param.asInstanceOf[Seq[P]]) flatten
 
@@ -652,7 +671,7 @@ package object helper {
   private def scoutsUsedAlready(b: GameBoard, civ: Civilization.T): Set[P] = {
     val harv: Set[P] = scoutForHarvest(b, civ)
     val sends: Set[P] = sendprodForScouts(b, civ).map(_._1) toSet
-    val culture : Set[P] = scoutsForCulture(b,civ) toSet
+    val culture: Set[P] = scoutsForCulture(b, civ) toSet
 
     harv.union(sends).union(culture)
   }

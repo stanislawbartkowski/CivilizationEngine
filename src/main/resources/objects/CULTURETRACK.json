@@ -1,0 +1,17 @@
+[
+  {
+    "last" : 7,
+    "cost" : { "culture" : 3, "trade" : 0},
+    "greatperson" : [3,7]
+  },
+  {
+    "last" : 14,
+    "cost" : { "culture" : 5,"trade" : 3},
+    "greatperson" : [12]
+  },
+  {
+    "last" : 20,
+    "cost" : { "culture" : 7,"trade" : 6},
+    "greatperson" : [18]
+  }
+]

@@ -53,4 +53,6 @@ trait ImplicitMiximToJson {
   }
   )
 
+  implicit def writeCultureCost(l: Seq[CultureTrack.CultureTrackCost]): Seq[JsValue] = l.map(writeCultureTrackCost)
+
 }

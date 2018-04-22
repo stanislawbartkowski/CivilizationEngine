@@ -37,13 +37,11 @@ package object gameboard {
 
     def setResNum(r: T, num: Int) = table.put(r, num)
 
-    def incr(r: T) = table(r) = table(r) + 1
+    def incr(r: T, num : Int = 1) = table(r) = table(r) + num
 
-    def incr(r: T, num : Int) = table(r) = table(r) + num
-
-    def decr(r: T) = {
-      require(table(r) > 0)
-      table(r) = table(r) - 1
+    def decr(r: T, num : Int = 1) = {
+      require(table(r) >= num)
+      table(r) = table(r) - num
     }
 
     def nof(r: T): Int = table(r)
@@ -203,7 +201,7 @@ package object gameboard {
 
   case class Resources(var hv: Seq[HutVillage], var hvused: Seq[HutVillage], val resou: BoardResources)
 
-  case class PlayerDeck(val civ: Civilization.T, var tech: Seq[PlayerTechnology], var units: Seq[CombatUnit], val resou: BoardResources, var gover: GovernmentName.T) {
+  case class PlayerDeck(val civ: Civilization.T, var tech: Seq[PlayerTechnology], var units: Seq[CombatUnit], val resou: BoardResources, var gover: GovernmentName.T,var cultureprogress : Int) {
 
     val defaultcitylimit: Int = 2
     val defaultarmieslimit: Int = 6
@@ -318,6 +316,5 @@ package object gameboard {
 
     def getBuilding(b : BuildingName.T) : Building = GameResources.getBuilding(b)
   }
-
 
 }

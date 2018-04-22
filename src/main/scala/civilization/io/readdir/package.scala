@@ -9,6 +9,7 @@ import play.api.libs.functional.syntax._
 import civilization.io.fromjson._
 import civilization.objects._
 import civilization.gameboard._
+import civilization.gameboard.CultureTrack._
 import civilization.action._
 import civilization.helper._
 import civilization.message._
@@ -67,6 +68,11 @@ package object readdir {
   def readListOfBuildings : Seq[Building] = {
     val j : JsValue = readJSON("objects","BUILDINGS.json")
     toListOfBuildings(j)
+  }
+
+  def readCultureTrack : CultureTrack = {
+    val j : JsValue = readJSON("objects","CULTURETRACK.json")
+    toCultureTrack(j)
   }
 
   def readGameBoard(j: JsValue): GameBoard = {
