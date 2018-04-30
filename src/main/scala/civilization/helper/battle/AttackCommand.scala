@@ -5,7 +5,7 @@ import civilization.gameboard._
 import civilization.helper._
 import civilization.io.tojson.ImplicitMiximToJson
 import civilization.message
-import civilization.message.{M, Mess}
+import civilization.message.{J, M, Mess}
 import civilization.objects._
 import play.api.libs.json.JsValue
 
@@ -33,7 +33,8 @@ object AttackCommand extends ImplicitMiximToJson {
     val li: PlayerLimits = getLimits(board, civ)
     val pl: PlayerDeck = board.playerDeck(civ)
     // can use iron
-    BattleFieldSide(createEmptyFighting(p), units, Nil, pl.combatlevel, li.combatBonus, pl.resou.nof(Resource.Iron) > 0, false)
+    //    BattleFieldSide(createEmptyFighting(p), units, Nil, pl.combatlevel, li.combatBonus, pl.resou.nof(Resource.Iron) > 0, false)
+    BattleFieldSide(createEmptyFighting(p), units, Nil, pl.combatlevel, li.combatBonus, existResourceAndTech(board, civ, Resource.Iron, TechnologyName.Metallurgy), false)
   }
 
   private def createBattleSideForVillages(p: BattleStart): BattleFieldSide =
@@ -57,7 +58,7 @@ object AttackCommand extends ImplicitMiximToJson {
   def battlesideaftermatch(b: GameBoard, s: BattleFieldSide, p: MapSquareP, plfig: Figures, winner: Boolean): Option[Figures] = {
     b.market.killedunits = b.market.killedunits ++ s.killed
     //    val civattacker: Civilization.T = p.civHere.get
-    if (s.ironused > -1) b.resources.resou.incr(Resource.Iron)
+    // if (s.ironused > -1) b.resources.resou.incr(Resource.Iron)
     val survived: Seq[CombatUnit] = finghtingtocombat(s.fighting)
     //  val pl: PlayerDeck = b.playerDeck(civattacker)
     // return survived units
@@ -177,7 +178,7 @@ object AttackCommand extends ImplicitMiximToJson {
       if (defeciv.isEmpty)
       // if village all unit return to killed
         board.market.killedunits = board.market.killedunits ++ batt.defender.killed ++ finghtingtocombat(batt.defender.fighting)
-      else battlesideaftermatch(board, batt.defender, defe, defe.s.figures.toFigures,!batt.attackerwinner)
+      else battlesideaftermatch(board, batt.defender, defe, defe.s.figures.toFigures, !batt.attackerwinner)
       // attacker will lose figures if battle is lost
       // so get civilization before
       // move all village units to killed
@@ -191,12 +192,7 @@ object AttackCommand extends ImplicitMiximToJson {
           // remove village
           defe.s.hv = None
         }
-      //        else {
-      //          // kill enemy figures
-      //          defe.s.figures.kill()
-      //        }
       // loot
-
       if (isExecute) {
         if (batt.attackerwinner) {
           // move army to this point
@@ -213,6 +209,10 @@ object AttackCommand extends ImplicitMiximToJson {
         if (defeciv.isDefined)
           prepareloot(board, batt, param, attackciv, defeciv.get)
       }
+      // who is the winner
+      // implement CodeOfLaws
+      if (batt.attackerwinner) TechnologyAction.BattleWinner(board, attackciv)
+      else if (defeciv.isDefined) TechnologyAction.BattleWinner(board, defeciv.get)
     }
   }
 
@@ -273,11 +273,14 @@ object AttackCommand extends ImplicitMiximToJson {
       if (iron) {
         attackstrength = attackstrength + IRONSTRENGTH
         // remove iron
-        val pl: PlayerDeck = board.playerDeck(if (board.battle.get.attackermove) board.battle.get.attackerciv else board.battle.get.defenderciv)
-        pl.resou.decr(Resource.Iron)
+        //        val pl: PlayerDeck = board.playerDeck(if (board.battle.get.attackermove) board.battle.get.attackerciv else board.battle.get.defenderciv)
+        //        pl.resou.decr(Resource.Iron)
+        val civ: Civilization.T = if (board.battle.get.attackermove) board.battle.get.attackerciv else board.battle.get.defenderciv
+        decrResourceHVForTech(board, civ, Resource.Iron, TechnologyName.Metallurgy)
         // mark iron
         ba.canuseiron = false
         ba.ironused = to
+        addToJournal(board, civ, J.ATTACKWITHIRON, null, Some(TechnologyName.Metallurgy))
       }
       if (board.conf.ironincreasedefend) defendstrength = attackstrength
       ba.fighting(to) = Some(FrontUnit(pUnit, attackstrength, defendstrength, 0))

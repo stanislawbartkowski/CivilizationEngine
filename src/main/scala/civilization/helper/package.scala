@@ -2,7 +2,7 @@ package civilization
 
 import civilization.action.Command
 import civilization.gameboard._
-import civilization.message.{FatalError, M, Mess}
+import civilization.message.{FatalError, M, Mess, J}
 import civilization.objects._
 
 import scala.util.control.Breaks._
@@ -495,7 +495,8 @@ package object helper {
     }
     command.execute(b)
     f(command)
-    b.play.commands = b.play.commands :+ command
+//    b.play.commands = b.play.commands :+ command
+    b.play.addCommand(command)
     null
   }
 
@@ -753,7 +754,7 @@ package object helper {
   def getCoins(b: GameBoard, civ: Civilization.T): EconomyForCiv = {
     val pl: PlayerDeck = b.playerDeck(civ)
     // check technologies
-    val tech: Int = pl.tech.map(t => if (t.coins.isEmpty) 0 else t.coins.get).sum
+    val tech: Int = pl.tech.map(_.coins).sum
     // coins from tech abilities
     val techabilities: Int = pl.tech.map(t => b.getTech(t.tech)).map(te => if (te.coins.isEmpty) 0 else te.coins.get).sum
 
@@ -902,6 +903,77 @@ package object helper {
     val scouts: Int = 0
     return CultureForCity(cityculture, outskirts, scouts)
   }
+
+  // ==================================
+  // journal
+  // ==================================
+
+  def addToJournal(b: GameBoard, civ: Civilization.T, j: J.J, content: AnyRef, tech: Option[TechnologyName.T] = None) = {
+    val curr = currentPhase(b)
+    b.addJ(JournalElem(j, curr.turnPhase, curr.roundno, civ, content, tech))
+  }
+
+  // ==================================
+  // PlayerTechnology
+  // ==================================
+  def addCoinToTechnology(b:GameBoard, te : PlayerTechnology) = {
+    val curr = currentPhase(b)
+    te.addRound(curr.roundno)
+  }
+
+  def TechnologyUsedAlready(b:GameBoard, te : PlayerTechnology) : Boolean = {
+    val curr = currentPhase(b)
+    te.roundAlready(curr.roundno)
+  }
+
+  // ================================
+  // resources or hut/village
+  // ================================
+
+  def decrResource(b:GameBoard, civ :Civilization.T, res : Resource.T) = {
+    val pl : PlayerDeck = b.playerDeck(civ)
+    // remove resource from player deck
+    pl.resou.decr(res)
+    // return resource to the market
+    b.resources.resou.incr(res)
+  }
+
+  def decrHVResource(b:GameBoard, civ :Civilization.T, res : Resource.T, hv : Option[HutVillage.T]=None) = {
+    // hut/village
+    val pl : PlayerDeck = b.playerDeck(civ)
+    val hvfound : Option[HutVillage] = pl.hvlist.find(hh => hh.resource == res && (hv.isEmpty || hv.get == hh.hv))
+    if (hvfound.isEmpty)
+      throw FatalError(Mess(M.CANNOTFINDHUTVILLAGEINPLAYERDECK, (res,hv)))
+    // remove from player's resource
+    pl.hvlist = pl.hvlist.filter(_ != hvfound.get)
+    // return hut/village to board hv used
+    b.resources.hvused = b.resources.hvused :+ hvfound.get
+  }
+
+
+  def existResourceAndTech(b:GameBoard, civ :Civilization.T, res : Resource.T, tech : TechnologyName.T) : Boolean = {
+    val pl : PlayerDeck = b.playerDeck(civ)
+//    pl.tech.find(t => t.tech == tech).isDefined && (pl.hvlist.find(_.resource == res).isDefined || pl.resou.nof(res) > 0)
+    // no resource
+    if (!(pl.hvlist.find(_.resource == res).isDefined || pl.resou.nof(res) > 0)) return false
+    // check technology
+    val te : Option[PlayerTechnology] = pl.tech.find(_.tech == tech)
+    // no technology
+    if (te.isEmpty) return false
+    // used only once
+    !TechnologyUsedAlready(b,te.get)
+  }
+
+  def decrResourceHVForTech(b:GameBoard, civ :Civilization.T, res : Resource.T,tech : TechnologyName.T) = {
+    val pl : PlayerDeck = b.playerDeck(civ)
+    if (pl.resou.nof(res) > 0) decrResource(b,civ,res)
+    else decrHVResource(b,civ,res)
+    val te : Option[PlayerTechnology] = pl.tech.find(_.tech == tech)
+    if (te.isEmpty)
+      throw FatalError(Mess(M.CANNOTFINDTECHNOLOGYINPLAYERDECK, (civ,tech)))
+    addCoinToTechnology(b,te.get)
+  }
+
 
 
 }

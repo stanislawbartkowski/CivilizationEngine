@@ -5,10 +5,16 @@ import java.util.Calendar
 import civilization.objects._
 import civilization.action.{Command, Play}
 import civilization.io.readdir.GameResources
+import civilization.message.J.J
+import play.api.libs.json.JsValue
 
 
 /** Placeholder for objects and definitions related to the gameboard. */
 package object gameboard {
+
+  case class JournalElem(val l: J, val pha: TurnPhase.T, val roundno: Int, val civ: Civilization.T, val content: AnyRef, val tech: Option[TechnologyName.T] = None, val priv: Boolean = false)
+
+  type Journal = collection.mutable.ListBuffer[JournalElem]
 
   type BattleArmy = Array[Option[FrontUnit]]
   /** Version: used during storing and retrieving gameboard from datastore.
@@ -37,9 +43,9 @@ package object gameboard {
 
     def setResNum(r: T, num: Int) = table.put(r, num)
 
-    def incr(r: T, num : Int = 1) = table(r) = table(r) + num
+    def incr(r: T, num: Int = 1) = table(r) = table(r) + num
 
-    def decr(r: T, num : Int = 1) = {
+    def decr(r: T, num: Int = 1) = {
       require(table(r) >= num)
       table(r) = table(r) - num
     }
@@ -58,9 +64,19 @@ package object gameboard {
 
   /** TODO : consider
     *
-    * @param tech
+    * @param tech    Technology name
+    * @param initial Technology assigned to the player
+    * @param coins   Number of coins put on the technology so far
     */
-  case class PlayerTechnology(val tech: TechnologyName.T, val initial: Option[Boolean] = None, var coins : Option[Int] = None)
+  case class PlayerTechnology(val tech: TechnologyName.T, val initial: Option[Boolean] = None) {
+    private val phases: collection.mutable.Set[Int] = collection.mutable.Set()
+
+    def coins = if (tech == TechnologyName.Metallurgy) 0 else phases.size
+
+    def roundAlready(roundno: Int) = phases contains roundno
+
+    def addRound(roundno: Int) = phases += roundno
+  }
 
   /** Figures on the square, can be staked
     *
@@ -201,7 +217,7 @@ package object gameboard {
 
   case class Resources(var hv: Seq[HutVillage], var hvused: Seq[HutVillage], val resou: BoardResources)
 
-  case class PlayerDeck(val civ: Civilization.T, var tech: Seq[PlayerTechnology], var units: Seq[CombatUnit], val resou: BoardResources, var gover: GovernmentName.T,var cultureprogress : Int) {
+  case class PlayerDeck(val civ: Civilization.T, var tech: Seq[PlayerTechnology], var units: Seq[CombatUnit], val resou: BoardResources, var gover: GovernmentName.T, var cultureprogress: Int) {
 
     val defaultcitylimit: Int = 2
     val defaultarmieslimit: Int = 6
@@ -243,7 +259,7 @@ package object gameboard {
   case class WondersDiscount(val cost: Int, tech: TechnologyName.T)
 
   case class WondersOfTheWorld(val name: Wonders.T, val phase: Option[TurnPhase.T], val age: WondersAge.T, val cost: Int, val discount: Option[WondersDiscount], val desc: String, val t: String, val notimplemented: Option[Boolean]) {
-    def ni : Boolean = notimplemented.isDefined && notimplemented.get
+    def ni: Boolean = notimplemented.isDefined && notimplemented.get
   }
 
   case class TakeWinnerLoot(val winner: Civilization.T, val loser: Civilization.T, val loot: WinnerLoot, val reso: Option[Resource.T], val trade: Int)
@@ -289,22 +305,24 @@ package object gameboard {
     // do not rotate
     var norotate: Boolean = false
     // cheating, calculate trade from current data
-    var tradecurrent : Boolean = false
+    var tradecurrent: Boolean = false
     var metadata: GameMetaData = new GameMetaData("")
     // force command to execute next
     // TODO: I'm not happy with that
     var forcednext: List[Command] = Nil
     var play: Play.Play = new Play.Play()
     var battle: Option[BattleField] = None
+    val journal: Journal = collection.mutable.ListBuffer() // empty
+
 
     def rotateplorder: Unit = if (!norotate) pllist = rotaterightList(pllist)
 
     def addForcedCommand(com: Command) = forcednext = forcednext :+ com
 
-    def playerDeck(civ: Civilization.T): PlayerDeck = {
+    def playerDeck(civ: Civilization.T): PlayerDeck =
       // assuming exist
       players.find(p => p.civ == civ).get
-    }
+
 
     def conf: GameConfig = GameConfig(false)
 
@@ -312,9 +330,11 @@ package object gameboard {
 
     def getCurrentWonders(): Seq[Wonders.T] = market.wonders.take(WONDERWINDOW)
 
-    def getTech(t : TechnologyName.T) : Technology = GameResources.getTechnology(t)
+    def getTech(t: TechnologyName.T): Technology = GameResources.getTechnology(t)
 
-    def getBuilding(b : BuildingName.T) : Building = GameResources.getBuilding(b)
+    def getBuilding(b: BuildingName.T): Building = GameResources.getBuilding(b)
+
+    def addJ(e: JournalElem) = journal += e
   }
 
 }

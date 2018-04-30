@@ -2,7 +2,7 @@ package civilization.test
 
 import civilization.I
 import civilization.I.II
-import civilization.gameboard.GameBoard
+import civilization.gameboard._
 import civilization.gameboard.CultureTrack._
 import civilization.helper.AllowedCommands.allowedCommands
 import civilization.io.fromjson.ImplicitMiximFromJson
@@ -82,7 +82,7 @@ class Test25 extends FunSuite with ImplicitMiximToJson {
     val cu = gg.playerDeck(Civilization.China).resou.nof(Resource.Culture)
     println(cu)
     assert(cu == 0)
-    Helper.executeCommandH(token, "DEVOUTTOCULTURE", 1, 1,"[]")
+    Helper.executeCommandH(token, "DEVOUTTOCULTURE", 1, 1, "[]")
     val gg1 = I.getBoardForToken(token)
     val cu1 = gg1.playerDeck(Civilization.China).resou.nof(Resource.Culture)
     println(cu1)
@@ -91,11 +91,11 @@ class Test25 extends FunSuite with ImplicitMiximToJson {
     val l1 = allowedCommands(gg1, Civilization.China)
     println(l1)
     assert(!(l1 contains Command.DEVOUTTOCULTURE))
-    val ss = II.getData(II.GETBOARDGAME,token)
+    val ss = II.getData(II.GETBOARDGAME, token)
     val j = Helper.jyou(toJ(ss))
     println(j)
     val res = (j \ "resources").as[JsArray]
-    var resnum : Int = 0
+    var resnum: Int = 0
     res.value.foreach(a => {
       println(a)
       val res = (a \ "resource").as[String]
@@ -112,7 +112,7 @@ class Test25 extends FunSuite with ImplicitMiximToJson {
     val l = allowedCommands(gg, Civilization.China)
     println(l)
     assert(l contains Command.DEVOUTTOCULTURE)
-    val j = AllowedCommands.itemizeCommandS(gg,Civilization.China,Command.DEVOUTTOCULTURE)
+    val j = AllowedCommands.itemizeCommandS(gg, Civilization.China, Command.DEVOUTTOCULTURE)
     // list with scout 0,0
     println(j)
     Helper.executeCommandFail(token, "DEVOUTTOCULTURE", 2, 2,"""[{"row" : 0, "col" : 1}]""")
@@ -130,8 +130,8 @@ class Test25 extends FunSuite with ImplicitMiximToJson {
     assert(!gr.civ.isEmpty)
     assert(!gr.culturetrack.isEmpty)
     assert(gr.culturetrack.length == 3)
-    gr.culturetrack.foreach( c => {
-      val se : CultureTrackSegment = c
+    gr.culturetrack.foreach(c => {
+      val se: CultureTrackSegment = c
       println(se)
       se.greatperson.foreach(println)
     })
@@ -154,6 +154,10 @@ class Test25 extends FunSuite with ImplicitMiximToJson {
     var l = allowedCommands(gg, Civilization.China)
     println(l)
     assert(l contains Command.ADVANCECULTURE)
+    var ite = II.getData(II.iTEMIZECOMMAND, token, "ADVANCECULTURE")
+    println(ite)
+    val item: JsArray = toJ(ite).as[JsArray]
+    assert(item.value.length == 1)
     Helper.executeCommandH(token, "ADVANCECULTURE", -1, -1)
     gg = I.getBoardForToken(token)
     l = allowedCommands(gg, Civilization.China)
@@ -164,15 +168,53 @@ class Test25 extends FunSuite with ImplicitMiximToJson {
     // culture spend
     assert(cu1 == 0)
     // trade
-    val t = numberofTrade(gg,Civilization.China)
+    val t = numberofTrade(gg, Civilization.China)
     println(t)
     assert(t.trade == 3)
-    val ss = II.getData(II.GETBOARDGAME,token)
+    val ss = II.getData(II.GETBOARDGAME, token)
     val j = Helper.jyou(toJ(ss))
     println(j)
-    val culprogress : Int = (j \ "cultureprogress").as[Int]
+    val culprogress: Int = (j \ "cultureprogress").as[Int]
     println(culprogress)
     assert(culprogress == 1)
   }
 
+  test("Spend culture to advance next level") {
+    val reg = Helper.readBoardAndPlayT("test25/BOARDGAME6.json", "test25/PLAY7.json", Civilization.China)
+    val token = reg._1
+    var ite = II.getData(II.iTEMIZECOMMAND, token, "ADVANCECULTURE")
+    println(ite)
+    val item: JsArray = toJ(ite).as[JsArray]
+    assert(item.value.length == 1)
+    item.value.foreach(c => {
+      println(c)
+    })
+    var gg = I.getBoardForToken(token)
+    val cu1 = gg.playerDeck(Civilization.China).resou.nof(Resource.Culture)
+    println(cu1)
+    assert(cu1 == 6)
+    val tra = numberofTrade(gg, Civilization.China)
+    println(tra)
+    Helper.executeCommandH(token, "ADVANCECULTURE", -1, -1)
+    gg = I.getBoardForToken(token)
+    val cu2 = gg.playerDeck(Civilization.China).resou.nof(Resource.Culture)
+    println(cu2)
+    assert(cu2 == 1)
+    val tra1 = numberofTrade(gg, Civilization.China)
+    println(tra1)
+    assert(tra1.spendOnCulture == 3)
+    assert(tra1.trade == 7)
   }
+
+  test("Implemet TradingPost research") {
+    val reg = Helper.readBoardAndPlayT("test25/BOARDGAME8.json", "test25/PLAY8.json", Civilization.China)
+    val token = reg._1
+    val gg = I.getBoardForToken(token)
+    val co = getCoins(gg,Civilization.China)
+    println(co)
+    assert(co.coins == 1)
+    gg.journal.foreach(println)
+    assert(gg.journal.nonEmpty)
+  }
+
+}

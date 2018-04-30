@@ -144,7 +144,6 @@
   },
   {
     "name": "Metallurgy",
-    "ni" : true,
     "level": 1,
     "building" : "Barracks",
     "resource" : "Iron",
@@ -152,7 +151,6 @@
   },
   {
     "name": "CodeOfLaw",
-    "ni" : true,
     "gover": "Republic",
     "building" : "TradingPost",
     "level": 1,
@@ -194,6 +192,13 @@
     "building" : "Harbor",
     "level": 1,
     "desc" : "You may cross water, but you may not end your movement in it"
+  },
+  {
+    "name": "Navy",
+    "ni" : true,
+    "building" : "Shipyard",
+    "level": 1,
+    "desc" : "Each time you build an army with a city action, you may place that unit in the outskirt of a city with a shipyard"
   },
   {
     "name": "AnimalHusbandry",

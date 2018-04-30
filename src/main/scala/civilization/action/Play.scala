@@ -3,7 +3,8 @@ package civilization.action
 object Play {
 
   class Play {
-    var commands: Seq[Command] = Nil
+    val commands: collection.mutable.ListBuffer[Command] = collection.mutable.ListBuffer()
+    def addCommand(com : Command) = commands += com
   }
 
 }

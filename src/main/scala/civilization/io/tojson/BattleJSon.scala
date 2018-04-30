@@ -27,7 +27,8 @@ object BattleJSon {
   def genbattlefileSide(b: BattleFieldSide, details: Boolean, turn: Boolean, civ: Civilization.T) = Json.obj(
     S.combatbonus -> b.combatBonus,
     "front" -> b.fighting,
-    "canuseiron" -> b.canuseiron,
+    // canuseiron only visible for you
+    "canuseiron" -> { if (details) b.canuseiron else false },
     "ironused" -> b.ironused,
     S.killedunits -> b.killed,
     "waiting" -> unitstoJSON(b.waiting, details, b.strength),

@@ -16,9 +16,9 @@ object genboardj {
   // if empty square : number of original production
   // if city: number of city production
   case class MapSquareJ(revealed: Boolean, t: Terrain.T, trade: Int, production: Int, resource: Option[Resource.T], capForCiv: Option[Civilization.T],
-                        civ: Civilization.T, city: City.T, defence: Int, numberofArmies: Int, numberofScouts: Int, tile: String, hv: Option[HutVillage.T], building: Option[BuildingName.T], wonder : Option[Wonders.T],culture:Int)
+                        civ: Civilization.T, city: City.T, defence: Int, numberofArmies: Int, numberofScouts: Int, tile: String, hv: Option[HutVillage.T], building: Option[BuildingName.T], wonder: Option[Wonders.T], culture: Int)
 
-  case class PlayerTech(val pl: PlayerTechnology, val level: Int,val coins: Int)
+  case class PlayerTech(val pl: PlayerTechnology, val level: Int, val coins: Int)
 
   private def plToJson(pl: PlayerTech): JsValue = Json.obj(
     S.tech -> pl.pl.tech,
@@ -29,7 +29,7 @@ object genboardj {
 
   implicit def plSeqToJ(pl: Seq[PlayerTech]): Seq[JsValue] = pl.map(plToJson)
 
-  case class PlayerDeckJ(civ: Civilization.T, numberofTrade: Int, commands: Seq[Command.T], limits: PlayerLimits, technologylevel: Int, tech: Seq[PlayerTech], pl: PlayerDeck, wonders : Seq[Wonders.T],coins : Int)
+  case class PlayerDeckJ(civ: Civilization.T, numberofTrade: Int, commands: Seq[Command.T], limits: PlayerLimits, technologylevel: Int, tech: Seq[PlayerTech], pl: PlayerDeck, wonders: Seq[Wonders.T], coins: Int)
 
   case class Game(active: Civilization.T, roundno: Int, phase: TurnPhase.T)
 
@@ -73,7 +73,7 @@ object genboardj {
       if (ss.s.hv.isDefined) Some(ss.s.hv.get.hv) else None,
       if (ss.s.building.isDefined) Some(ss.s.building.get.name) else None,
       if (ss.s.wonder.isDefined) Some(ss.s.wonder.get.w) else None,
-      if (ss.s.cityhere) cultureForCity(b,ss.p).culture else 0
+      if (ss.s.cityhere) cultureForCity(b, ss.p).culture else 0
     )
   }
 
@@ -87,16 +87,16 @@ object genboardj {
     Game(civ, cu.roundno, cu.turnPhase)
   }
 
-  private def wondersForPlayers(g: GameBoard, civ: Civilization.T) : Seq[Wonders.T] =
-    citiesForCivilization(g,civ).map(c => pointsAround(g,c.p)).flatten.map(p => getSquare(g,p)).filter(m => m.s.wonder.isDefined).map(m => m.s.wonder.get.w)
+  private def wondersForPlayers(g: GameBoard, civ: Civilization.T): Seq[Wonders.T] =
+    citiesForCivilization(g, civ).map(c => pointsAround(g, c.p)).flatten.map(p => getSquare(g, p)).filter(m => m.s.wonder.isDefined).map(m => m.s.wonder.get.w)
 
 
   private def genPlayerDeckJ(g: GameBoard, civ: Civilization.T): PlayerDeckJ =
     PlayerDeckJ(civ, numberofTrade(g, civ).trade, allowedCommands(g, civ), getLimits(g, civ),
       ResearchTechnology.techologylevel(g, civ),
-      g.playerDeck(civ).tech.map(t => PlayerTech(t, g.techlevel(t),if (t.coins.isEmpty) 0 else t.coins.get)),
-      g.playerDeck(civ), wondersForPlayers(g,civ),
-      getCoins(g,civ).coins)
+      g.playerDeck(civ).tech.map(t => PlayerTech(t, g.techlevel(t), t.coins)),
+      g.playerDeck(civ), wondersForPlayers(g, civ),
+      getCoins(g, civ).coins)
 
   private def commandToArray(l: Seq[Command.T]): JsArray = {
     JsArray(l.map(c => Json.obj(S.command -> c)).foldLeft(List[JsObject]())(_ :+ _))

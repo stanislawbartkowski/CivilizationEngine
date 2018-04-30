@@ -91,6 +91,20 @@ object Helper {
     assert(expected == t)
   }
 
+  def verifyiron(token : String, canuse : Boolean): Unit = {
+    val s = II.getData(II.GETBOARDGAME, token)
+    val js: JsValue = toJ(s)
+    val batt: JsValue = (js \ "board" \ "battle").get
+    println(batt)
+    val attacker = (batt \ "attacker").get
+    println(attacker)
+    val canuseiron = (attacker \ "canuseiron").as[Boolean]
+    println(canuseiron)
+    // can use iron
+    assert (canuseiron == canuse)
+
+  }
+
   def getB(token : String) = {
     val s = II.getData(II.GETBOARDGAME, token)
     toJ(s)
@@ -114,6 +128,9 @@ object Helper {
 
   def jmap(j : JsValue) : JsArray =
     (j \ "board" \ "map").as[JsArray]
+
+  def jresources(j : JsValue) : JsArray =
+    (j \ "board" \ "resources").as[JsArray]
 
 }
 

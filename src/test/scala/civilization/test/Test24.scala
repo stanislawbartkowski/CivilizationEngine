@@ -111,6 +111,11 @@ class Test24 extends FunSuite with ImplicitMiximFromJson {
     println(hvu)
     val num = (hvu \ "Hut").as[Int]
     assert(num == 2)
+    // try again
+    gg = I.getBoardForToken(token)
+    l = allowedCommands(gg, Civilization.Rome)
+    println(l)
+    assert(!(l contains Command.POTTERYACTION))
   }
 
   test("Verify combat bonus, two barracks built") {
@@ -126,13 +131,17 @@ class Test24 extends FunSuite with ImplicitMiximFromJson {
 
   test("Verify combat bonus, RailRoad, additional coin") {
     val reg = Helper.readBoardAndPlayT("test24/BOARDGAME2.json", "test24/PLAY4.json", Civilization.Rome)
+    // Rome has Code of Low initially
     val token: String = reg._1
+    var gg = I.getBoardForToken(token)
+    val coi = getCoins(gg,Civilization.Rome)
+    println(coi)
     val j = Helper.getB(token)
     val y = jyou(j)
     println(y)
     val co = (y \ "coins").as[Int]
     println(co)
-    assert(co == 1)
+    assert(co == 2)
   }
 
   test("Repeated technology resource action") {

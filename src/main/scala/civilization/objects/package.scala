@@ -235,6 +235,7 @@ package object objects {
     Agriculture,
     Education,
     Combustion,
+    Navy,
     Banking = Value
   }
 

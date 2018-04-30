@@ -15,12 +15,7 @@ object PotteryPhilosophyAction extends CommandPackage with ImplicitMiximFromJson
 //  override def getSet: Set[Command.T] = Set(Command.POTTERYACTION, Command.PHILOSOPHYACTION)
   override def getSet: Set[Command.T] = Set(Command.POTTERYACTION)
 
-  private def increaseCoins(tp: PlayerTechnology) = {
-    // increase number of coins
-    tp.coins = if (tp.coins.isEmpty) Some(1) else Some(tp.coins.get + 1)
-  }
-
-  private def removeResource(b: GameBoard, civ: Civilization.T, h: HVResource) = {
+  private def oldremoveResource(b: GameBoard, civ: Civilization.T, h: HVResource) = {
     val pl: PlayerDeck = b.playerDeck(civ)
     if (h.hv.isEmpty) {
       // resource only
@@ -39,6 +34,11 @@ object PotteryPhilosophyAction extends CommandPackage with ImplicitMiximFromJson
       // return hut/village to board hv used
       b.resources.hvused = b.resources.hvused :+ HutVillage(h.hv.get, h.resource)
     }
+  }
+
+  private def removeResource(b: GameBoard, civ: Civilization.T, h: HVResource) = {
+    if (h.hv.isEmpty) decrResource(b,civ,h.resource)
+    else decrHVResource(b,civ,h.resource,h.hv)
   }
 
   private def numofAnyResources(b: GameBoard, civ: Civilization.T): Int = {
@@ -67,8 +67,10 @@ object PotteryPhilosophyAction extends CommandPackage with ImplicitMiximFromJson
     def tp: Option[PlayerTechnology] = findpltechnology(b, civ, com)
 
     if (tp.isEmpty) return Nil
+    // only once per turn
+    if (TechnologyUsedAlready(b,tp.get)) return Nil
     // check capacity on technology
-    if (tp.get.coins.isDefined && tp.get.coins.get >= COINSCAPACITY) return Nil
+    if (tp.get.coins >= COINSCAPACITY) return Nil
 
     def resany: Int = resnum(com)
     // not enough resources
@@ -88,7 +90,7 @@ object PotteryPhilosophyAction extends CommandPackage with ImplicitMiximFromJson
     override def execute(board: gameboard.GameBoard): Unit = {
       def tp: PlayerTechnology = findpltechnology(board, civ, command).get
       // increase number of coins
-      increaseCoins(tp)
+      addCoinToTechnology(board, tp)
       // remove hut and villages
       param.foreach(removeResource(board, civ, _))
     }
