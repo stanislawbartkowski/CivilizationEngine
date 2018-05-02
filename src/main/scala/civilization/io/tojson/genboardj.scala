@@ -120,7 +120,10 @@ object genboardj {
     S.wonders -> p.wonders,
     S.coins -> p.coins,
     "combatbonus" -> p.limits.combatBonus,
-    S.cultureprogress -> p.pl.cultureprogress
+    S.cultureprogress -> p.pl.cultureprogress,
+    "handsize" -> p.limits.handsize,
+    "travelspeed" -> p.limits.travelSpeed,
+    "stacklimit" -> p.limits.stackinglimit
   )
 
   private def genBoardGameJ(g: GameBoard, civ: Civilization.T): BoardGameJ = {

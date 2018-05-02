@@ -2,7 +2,6 @@
   {
     "name": "Irrigation",
     "level": 2,
-    "ni" : true,
     "desc" : "Maximum Cities : 3"
   },
   {
@@ -188,7 +187,6 @@
   },
   {
     "name": "Navigation",
-    "ni" : true,
     "building" : "Harbor",
     "level": 1,
     "desc" : "You may cross water, but you may not end your movement in it"
@@ -209,7 +207,6 @@
   },
   {
     "name": "Currency",
-    "ni" : true,
     "level": 1,
     "building" : "Market",
     "resource" : "Incense",

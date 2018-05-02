@@ -237,6 +237,8 @@ package object objects {
     Combustion,
     Navy,
     Banking = Value
+
+    def isCoinTechnology(t : Value) : Boolean = (t == Pottery || t == CodeOfLaw)
   }
 
   def levelTrade(level: Int): Int = MINTRADE + (level - 1) * 5

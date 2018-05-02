@@ -1,0 +1,16 @@
+{
+  "game": [
+
+    {"command":"SETCAPITAL","civ":"Spain","p":{"row":1,"col":2},"param":null},
+{"command":"SETARMY","civ":"Spain","p":{"row":1,"col":2},"param":{"row":2,"col":1}},
+{"command":"SETSCOUT","civ":"Spain","p":{"row":1,"col":2},"param":{"row":2,"col":2}},
+{"command":"ENDOFPHASE","civ":"Spain","p":null,"param":"StartOfTurn"},
+{"command":"ENDOFPHASE","civ":"Spain","p":null,"param":"Trade"},
+{"command":"HARVESTRESOURCE","civ":"Spain","p":{"row":1,"col":2},"param":{"row":1,"col":1}},
+{"command":"ENDOFPHASE","civ":"Spain","p":null,"param":"CityManagement"},
+{"command":"STARTMOVE","civ":"Spain","p":{"row":2,"col":2},"param":{"numberofArmies":0,"numberofScouts":1}},
+{"command":"MOVE","civ":"Spain","p":{"row":3,"col":2},"param":null},
+{"command":"REVEALTILE","civ":"Spain","p":{"row":1,"col":0},"param":"Down"},
+{"command":"ENDOFMOVE","civ":"Spain","p":null,"param":null},
+{"command":"STARTMOVE","civ":"Spain","p":{"row":2,"col":1},"param":{"numberofArmies":1,"numberofScouts":0}}
+    ]}

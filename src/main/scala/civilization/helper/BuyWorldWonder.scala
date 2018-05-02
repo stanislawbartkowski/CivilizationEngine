@@ -17,7 +17,8 @@ object BuyWorldWonder extends CommandPackage with ImplicitMiximFromJson with Imp
     // check discount
     if (w.discount.isEmpty) return false
     // player has technology ?
-    if (pl.tech.find(_.tech == w.discount.get.tech).isEmpty) return false
+//    if (pl.tech.find(_.tech == w.discount.get.tech).isEmpty) return false
+    if (!pl.hasTechnology(w.discount.get.tech)) return false
     // check against discount
     return prod.prod >= w.discount.get.cost
   }

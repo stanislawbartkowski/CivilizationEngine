@@ -12,40 +12,17 @@ import play.api.libs.json.JsValue
 
 object PotteryPhilosophyAction extends CommandPackage with ImplicitMiximFromJson with ImplicitMiximToJson {
 
-//  override def getSet: Set[Command.T] = Set(Command.POTTERYACTION, Command.PHILOSOPHYACTION)
   override def getSet: Set[Command.T] = Set(Command.POTTERYACTION)
-
-  private def oldremoveResource(b: GameBoard, civ: Civilization.T, h: HVResource) = {
-    val pl: PlayerDeck = b.playerDeck(civ)
-    if (h.hv.isEmpty) {
-      // resource only
-      // remove resource from player deck
-      pl.resou.decr(h.resource)
-      // return resource to the market
-      b.resources.resou.incr(h.resource)
-    }
-    else {
-      // hut/village
-      var firstfound = false
-      pl.hvlist = pl.hvlist.filter(hh => firstfound || (hh.hv != h.hv.get || hh.resource != h.resource || {
-        firstfound = true;
-        false
-      }))
-      // return hut/village to board hv used
-      b.resources.hvused = b.resources.hvused :+ HutVillage(h.hv.get, h.resource)
-    }
-  }
 
   private def removeResource(b: GameBoard, civ: Civilization.T, h: HVResource) = {
     if (h.hv.isEmpty) decrResource(b,civ,h.resource)
-    else decrHVResource(b,civ,h.resource,h.hv)
+    else decrHVResource(b,civ,h)
   }
 
   private def numofAnyResources(b: GameBoard, civ: Civilization.T): Int = {
     val pl: PlayerDeck = b.playerDeck(civ)
     // sum of resource and hut/villages
-    pl.resou.table.filter(r => r._1 != Resource.Coin && r._1 != Resource.Culture).map(_._2).sum +
-      pl.hvlist.length
+    pl.resou.table.filter(r => r._1 != Resource.Coin && r._1 != Resource.Culture).map(_._2).sum + pl.hvlist.length
   }
 
   private def technology(command: Command.T): TechnologyName.T = if (command == Command.POTTERYACTION) TechnologyName.Pottery else TechnologyName.Philosophy
@@ -95,7 +72,6 @@ object PotteryPhilosophyAction extends CommandPackage with ImplicitMiximFromJson
       param.foreach(removeResource(board, civ, _))
     }
   }
-
 
   override def produceCommand(command: Command.T, civ: Civilization.T, p: P, param: JsValue): Command = new PotteryPhilosophyAction(param)
 

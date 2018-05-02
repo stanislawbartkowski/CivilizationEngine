@@ -35,7 +35,7 @@ class Test26 extends FunSuite with ImplicitMiximToJson {
     val reg = Helper.readBoardAndPlayT("test26/BOARDGAME2.json", "test26/PLAY2.json", Civilization.Germany)
     val token = reg._1
     // Germany: Metallurgy, initial technology
-    Helper.verifyiron(token,true)
+    Helper.verifyiron(token, true)
   }
 
   test("Iron in battle only in case of Barrack Rome") {
@@ -43,15 +43,15 @@ class Test26 extends FunSuite with ImplicitMiximToJson {
     val reg = Helper.readBoardAndPlayT("test26/BOARDGAME3.json", "test26/PLAY3.json", Civilization.Rome)
     val token = reg._1
     // cannot use iron
-    Helper.verifyiron(token,false)
- }
+    Helper.verifyiron(token, false)
+  }
 
   test("Iron in battle only in case of Barrack Rome cannot use for the second time") {
 
     val reg = Helper.readBoardAndPlayT("test26/BOARDGAME3.json", "test26/PLAY4.json", Civilization.Rome)
     val token = reg._1
     // cannot use iron
-    Helper.verifyiron(token,false)
+    Helper.verifyiron(token, false)
   }
 
   test("Use iron from village") {
@@ -59,7 +59,7 @@ class Test26 extends FunSuite with ImplicitMiximToJson {
     val reg = Helper.readBoardAndPlayT("test26/BOARDGAME5.json", "test26/PLAY5.json", Civilization.Germany)
     val token = reg._1
     // can user
-    Helper.verifyiron(token,true)
+    Helper.verifyiron(token, true)
   }
 
   test("Use iron from village and spend it") {
@@ -80,7 +80,7 @@ class Test26 extends FunSuite with ImplicitMiximToJson {
     val j: JsValue = toJ(s)
     val r = Helper.jresources(j)
     println(r)
-    var nofiron : Int = 0
+    var nofiron: Int = 0
     r.value.foreach(r => {
       val reso = (r \ "resource").as[String]
       val num = (r \ "num").as[Int]
@@ -96,18 +96,64 @@ class Test26 extends FunSuite with ImplicitMiximToJson {
     val tokenA = reg._1
     val tokenC = reg._2
     // iron visible for China
-    Helper.verifyiron(tokenC,true)
-//    val s = II.getData(II.GETBOARDGAME, tokenA)
-//    val js: JsValue = toJ(s)
-//    val batt: JsValue = (js \ "board" \ "battle").get
-//    println(batt)
+    Helper.verifyiron(tokenC, true)
     // from point of view America, the defender, iron should be invisible
-    Helper.verifyiron(tokenA,false)
-
-
-
-
+    Helper.verifyiron(tokenA, false)
   }
 
+  test("Research navigation") {
 
+    val reg = Helper.readBoardAndPlayT("test26/BOARDGAME8.json", "test26/PLAY8.json", Civilization.Spain)
+    val token = reg._1
+    val gg = I.getBoardForToken(token)
+    val l = allowedCommands(gg, Civilization.Spain)
+    println(l)
+    val ss = II.itemizeCommand(token, "MOVE")
+    val j: JsArray = (toJ(ss) \  "moves").as[JsArray]
+    println(j)
+    // should contains points in water
+    assert(j.value.length == 4)
+    // contains 2,0
+    assert(j.value.find( e => {
+      val p : P = toP(e)
+      p == P(2,0)
+    }).isDefined)
+    // test handsize
+    val s = II.getData(II.GETBOARDGAME, token)
+    //        println(s)
+    val ju: JsValue = Helper.jyou(toJ(s))
+    println(ju)
+    val handsize = (ju \ "handsize").as[Int]
+    assert(handsize == 2)
+  }
+
+  test("Code of law, incrase handsize") {
+
+    val reg = Helper.readBoardAndPlayT("test26/BOARDGAME8.json", "test26/PLAY9.json", Civilization.Spain)
+    val token = reg._1
+    val s = II.getData(II.GETBOARDGAME, token)
+    val ju: JsValue = Helper.jyou(toJ(s))
+    println(ju)
+    val handsize = (ju \ "handsize").as[Int]
+    println(handsize)
+    assert(handsize == 3)
+    val travelspeed = (ju \ "travelspeed").as[Int]
+    println(travelspeed)
+    assert(travelspeed == 2)
+    val stacklimit = (ju \ "stacklimit").as[Int]
+    println(stacklimit)
+    assert(stacklimit == 2)
+  }
+
+  test("Irrigation, increase city limit") {
+
+    val reg = Helper.readBoardAndPlayT("test26/BOARDGAME10.json", "test26/PLAY10.json", Civilization.Russia)
+    val token = reg._1
+    val gg = I.getBoardForToken(token)
+    val limits = getLimits(gg,Civilization.Russia)
+    println(limits)
+    // irrigation
+    println(limits.citieslimit)
+    assert(limits.citieslimit == 2)
+  }
 }

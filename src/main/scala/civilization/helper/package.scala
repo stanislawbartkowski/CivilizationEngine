@@ -495,7 +495,7 @@ package object helper {
     }
     command.execute(b)
     f(command)
-//    b.play.commands = b.play.commands :+ command
+    //    b.play.commands = b.play.commands :+ command
     b.play.addCommand(command)
     null
   }
@@ -774,20 +774,25 @@ package object helper {
 
   // ==============================================
 
-  case class PlayerLimits(val citieslimit: Int, val stackinglimit: Integer, val watercrossingallowed: Boolean, val waterstopallowed: Boolean,
+  case class PlayerLimits(val citieslimit: Int, val stackinglimit: Int, val watercrossingallowed: Boolean, val waterstopallowed: Boolean,
                           val armieslimit: Int, val scoutslimit: Int, val travelSpeed: Int, val tradeforProd: Int,
-                          val playerStrength: CombatUnitStrength, val aircraftUnlocked: Boolean, val scoutscanExplore: Boolean, val isFundametialism: Boolean, val combatBonus: Int) {
+                          val playerStrength: CombatUnitStrength, val aircraftUnlocked: Boolean, val scoutscanExplore: Boolean, val isFundametialism: Boolean, val combatBonus: Int, val handsize: Int) {
 
     def prodForTrade(prod: Int): Int = prod * tradeforProd
   }
 
   def getLimits(b: GameBoard, civ: Civilization.T): PlayerLimits = {
     val deck: PlayerDeck = b.playerDeck(civ)
-    val citieslimit: Int = deck.defaultcitylimit - citiesForCivilization(b, civ).length
+    val citieslimit: Int = deck.defaultcitylimit + (if (deck.hasTechnology(TechnologyName.Irrigation)) 1 else 0) - citiesForCivilization(b, civ).length
     val count: (Int, Int) = getNumberOfArmies(b, civ)
     val armieslimit: Int = deck.defaultarmieslimit - count._1
     val scoutslimit: Int = deck.defaultscoutslimit - count._2
-    PlayerLimits(citieslimit, deck.defaultstackinglimit, false, false, armieslimit, scoutslimit, deck.defaulttravelspeed, DEFAULTTRADEFORPROD, deck.combatlevel, false, false, false, calculateCombatBonus(b, civ))
+    val handsize: Int = deck.defaultculturehandsize +
+      (if (deck.hasTechnology(TechnologyName.CodeOfLaw)) 1 else 0)
+
+    PlayerLimits(citieslimit, deck.defaultstackinglimit,
+      deck.hasTechnology(TechnologyName.Navigation),
+      false, armieslimit, scoutslimit, deck.defaulttravelspeed, DEFAULTTRADEFORPROD, deck.combatlevel, false, false, false, calculateCombatBonus(b, civ), handsize)
   }
 
   // =====================================
@@ -916,12 +921,12 @@ package object helper {
   // ==================================
   // PlayerTechnology
   // ==================================
-  def addCoinToTechnology(b:GameBoard, te : PlayerTechnology) = {
+  def addCoinToTechnology(b: GameBoard, te: PlayerTechnology) = {
     val curr = currentPhase(b)
     te.addRound(curr.roundno)
   }
 
-  def TechnologyUsedAlready(b:GameBoard, te : PlayerTechnology) : Boolean = {
+  def TechnologyUsedAlready(b: GameBoard, te: PlayerTechnology): Boolean = {
     val curr = currentPhase(b)
     te.roundAlready(curr.roundno)
   }
@@ -930,20 +935,20 @@ package object helper {
   // resources or hut/village
   // ================================
 
-  def decrResource(b:GameBoard, civ :Civilization.T, res : Resource.T) = {
-    val pl : PlayerDeck = b.playerDeck(civ)
+  def decrResource(b: GameBoard, civ: Civilization.T, res: Resource.T) = {
+    val pl: PlayerDeck = b.playerDeck(civ)
     // remove resource from player deck
     pl.resou.decr(res)
     // return resource to the market
     b.resources.resou.incr(res)
   }
 
-  def decrHVResource(b:GameBoard, civ :Civilization.T, res : Resource.T, hv : Option[HutVillage.T]=None) = {
+  def decrHVResource(b: GameBoard, civ: Civilization.T, hvres: HVResource) = {
     // hut/village
-    val pl : PlayerDeck = b.playerDeck(civ)
-    val hvfound : Option[HutVillage] = pl.hvlist.find(hh => hh.resource == res && (hv.isEmpty || hv.get == hh.hv))
+    val pl: PlayerDeck = b.playerDeck(civ)
+    val hvfound: Option[HutVillage] = pl.hvlist.find(hh => hh.resource == hvres.resource && (hvres.hv.isEmpty || hvres.hv.get == hh.hv))
     if (hvfound.isEmpty)
-      throw FatalError(Mess(M.CANNOTFINDHUTVILLAGEINPLAYERDECK, (res,hv)))
+      throw FatalError(Mess(M.CANNOTFINDHUTVILLAGEINPLAYERDECK, (hvres)))
     // remove from player's resource
     pl.hvlist = pl.hvlist.filter(_ != hvfound.get)
     // return hut/village to board hv used
@@ -951,29 +956,27 @@ package object helper {
   }
 
 
-  def existResourceAndTech(b:GameBoard, civ :Civilization.T, res : Resource.T, tech : TechnologyName.T) : Boolean = {
-    val pl : PlayerDeck = b.playerDeck(civ)
-//    pl.tech.find(t => t.tech == tech).isDefined && (pl.hvlist.find(_.resource == res).isDefined || pl.resou.nof(res) > 0)
+  def existResourceAndTech(b: GameBoard, civ: Civilization.T, res: Resource.T, tech: TechnologyName.T): Boolean = {
+    val pl: PlayerDeck = b.playerDeck(civ)
     // no resource
     if (!(pl.hvlist.find(_.resource == res).isDefined || pl.resou.nof(res) > 0)) return false
     // check technology
-    val te : Option[PlayerTechnology] = pl.tech.find(_.tech == tech)
+    val te: Option[PlayerTechnology] = pl.tech.find(_.tech == tech)
     // no technology
     if (te.isEmpty) return false
     // used only once
-    !TechnologyUsedAlready(b,te.get)
+    !TechnologyUsedAlready(b, te.get)
   }
 
-  def decrResourceHVForTech(b:GameBoard, civ :Civilization.T, res : Resource.T,tech : TechnologyName.T) = {
-    val pl : PlayerDeck = b.playerDeck(civ)
-    if (pl.resou.nof(res) > 0) decrResource(b,civ,res)
-    else decrHVResource(b,civ,res)
-    val te : Option[PlayerTechnology] = pl.tech.find(_.tech == tech)
+  def decrResourceHVForTech(b: GameBoard, civ: Civilization.T, res: Resource.T, tech: TechnologyName.T) = {
+    val pl: PlayerDeck = b.playerDeck(civ)
+    if (pl.resou.nof(res) > 0) decrResource(b, civ, res)
+    else decrHVResource(b, civ, HVResource(None,res))
+    val te: Option[PlayerTechnology] = pl.tech.find(_.tech == tech)
     if (te.isEmpty)
-      throw FatalError(Mess(M.CANNOTFINDTECHNOLOGYINPLAYERDECK, (civ,tech)))
-    addCoinToTechnology(b,te.get)
+      throw FatalError(Mess(M.CANNOTFINDTECHNOLOGYINPLAYERDECK, (civ, tech)))
+    addCoinToTechnology(b, te.get)
   }
-
 
 
 }

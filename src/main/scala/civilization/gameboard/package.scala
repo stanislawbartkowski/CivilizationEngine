@@ -71,7 +71,7 @@ package object gameboard {
   case class PlayerTechnology(val tech: TechnologyName.T, val initial: Option[Boolean] = None) {
     private val phases: collection.mutable.Set[Int] = collection.mutable.Set()
 
-    def coins = if (tech == TechnologyName.Metallurgy) 0 else phases.size
+    def coins = if (TechnologyName.isCoinTechnology(tech)) phases.size else 0
 
     def roundAlready(roundno: Int) = phases contains roundno
 
@@ -227,6 +227,7 @@ package object gameboard {
     val defaulttravelspeed: Int = 2
     val combatlevel: CombatUnitStrength = CombatUnitStrength()
     var hvlist: Seq[HutVillage] = Nil
+    def hasTechnology(te : TechnologyName.T) : Boolean = tech.find(_.tech == te ).isDefined
   }
 
   case class Market(var units: Seq[CombatUnit], var killedunits: Seq[CombatUnit], val buildings: BuildingsResources, var wonders: Seq[Wonders.T])
