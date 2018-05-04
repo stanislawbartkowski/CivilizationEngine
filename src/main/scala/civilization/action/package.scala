@@ -55,6 +55,8 @@ package object action extends ImplicitMiximToJson with ImplicitMiximFromJson {
 
     case Command.ENDOFMOVE => new MoveAction.EndOfMoveAction(toFiguresNull(param))
 
+    case Command.KILLFIGURE => new MoveAction.KillFigureAction(toFiguresNull(param))
+
     case Command.REVEALTILE => new RevealTileAction(toOrientation(param))
 
     case Command.EXPLOREHUT => new ExploreHutCommand.ExploreHutCommand()

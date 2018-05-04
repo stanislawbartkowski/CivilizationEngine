@@ -19,20 +19,7 @@ object MoveItemize {
 
   /** not private, used in test */
   def itemizeforStartOfMove(b: GameBoard, civ: Civilization.T): Seq[(Figures, P)] = {
-    /*
-    val lastp: Seq[(Figures, P, P)] = civLastMoves(b, civ).map(o => (o.f.toFigures, o.begstop._1.p.get, o.begstop._2.p.get))
-    //TODO: can be done better,2 traversals, use mutable map and fold
-    //    val startmap : Map[P,Figures] = lastp.map(t => t._3 -> Figures(0,0)) toMap
-    //    val lastm: Map[P, Figures] = lastp.map(t => t._3 -> t._1).toMap
-    // current points on board belonging to civilization
-    //    val current: Seq[(Figures, P)] = allSquares(b).filter(p => p.s.figures.civOccupying.isDefined && p.s.figures.civOccupying.get == civ).map(m => (m.s.figures.toFigures, m.p))
-    // sum all figures finishing at given point
-    val lastm: Map[P, Figures] = lastp.groupBy(_._3).map(e => e._1 -> e._2.foldLeft[Figures](Figures(0, 0))((f, p) => {
-      f + p._1;
-      f
-    }))
-    */
-    val lastm: Map[P, Figures] = finishedAtPoint(b,civ)
+    val lastm: Map[P, Figures] = finishedAtPoint(b, civ)
     val current: Seq[(Figures, P)] = getFigures(b, civ).map(m => (m.s.figures.toFigures, m.p))
     // remove all figures which has moved already
     current.foreach(f => {
@@ -45,7 +32,8 @@ object MoveItemize {
 
   // reveal: figure point, tile point, orientation
   /** not private, used in test */
-  case class PossibleMove(var p: P, val reveal: Seq[(P, Orientation.T)], val move: Seq[P], val hut: Option[P], val enemy: Seq[P])
+  case class PossibleMove(val p: P, val endofmove: Boolean, val reveal: Seq[(P, Orientation.T)], val move: Seq[P],
+                          val hut: Option[P], val enemy: Seq[P])
 
   // return
   //  None : no move
@@ -59,8 +47,9 @@ object MoveItemize {
     val lim: PlayerLimits = getLimits(b, civ)
     // only ENDMOVE possible
     val last: PlayerMove = ll.last
-    if (last.len == lim.travelSpeed) return Some(null)
     val p: P = last.lastp
+    val canstay: Boolean = MoveAction.checkFinalPoint(b, civ, getSquare(b, p), last.f.toFigures).isEmpty
+    if (last.len == lim.travelSpeed) return Some(PossibleMove(p, canstay, Nil, Nil, None, Nil))
     // only direct point, 4 directions
     val around: Seq[MapSquareP] = squaresAround(b, p)
     val points: Seq[(MapSquareP, Option[Mess])] = around.map(p => (p, MoveAction.figureMovePointCheck(b, civ, last, p.p, last.len + 1 == lim.travelSpeed)))
@@ -81,30 +70,30 @@ object MoveItemize {
             if (figo.get.f.numberofArmies > 0 || (figo.get.f.numberofScouts > 0 && lim.scoutscanExplore))
               hut = Some(pp._1.p)
           }
-          if (mess.m == M.CANNOTSETFIGUREONVILLAGE  || mess.m == M.CANNOTSETFIGUREONALIENCIV /* || mess.m == M.CANNOTSETFGUREONALIENCITY || mess.m == M.CANNOTSETFIGUREONALIENCIV */ ) {
+          if (mess.m == M.CANNOTSETFIGUREONVILLAGE || mess.m == M.CANNOTSETFIGUREONALIENCIV /* || mess.m == M.CANNOTSETFGUREONALIENCITY || mess.m == M.CANNOTSETFIGUREONALIENCIV */ ) {
             val figo: Option[PlayerMove] = getCurrentMove(b, civ)
             if (figo.get.f.numberofArmies > 0)
               enemy = enemy :+ pp._1.p
           }
       }
     )
-    Some(PossibleMove(p, reveal, move, hut, enemy))
+    Some(PossibleMove(p, canstay, reveal, move, hut, enemy))
   }
 
   private def toActions(m: PossibleMove): Seq[Command.T] = {
-    var li: Seq[Command.T] = Seq(Command.ENDOFMOVE)
-    if (m == null) return li
+    var li: Seq[Command.T] = if (m.endofmove) Seq(Command.ENDOFMOVE) else Nil
     if (!m.reveal.isEmpty) li = li :+ Command.REVEALTILE
     if (!m.move.isEmpty) li = li :+ Command.MOVE
     if (m.hut.isDefined) li = li :+ Command.EXPLOREHUT
     if (!m.enemy.isEmpty) li = li :+ Command.ATTACK
+    if (li.isEmpty) li = Seq(Command.KILLFIGURE)
     li
   }
 
   def allowedCommands(b: GameBoard, civ: Civilization.T): (Boolean, Seq[Command.T]) = {
     val move: Option[PossibleMove] = itemizeForMove(b, civ)
     if (move.isDefined) return (true, toActions(move.get))
-    (false,allowedActionForMovement(b, civ))
+    (false, allowedActionForMovement(b, civ))
   }
 
   def itemizeCommand(b: GameBoard, civ: Civilization.T, command: Command.T): (String, P, Seq[JsValue]) = {
@@ -147,7 +136,7 @@ object MoveItemize {
         l = o.get.enemy
       }
     }
-    (name,pp,l)
+    (name, pp, l)
   }
 
 }

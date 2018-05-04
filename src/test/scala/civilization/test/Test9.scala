@@ -89,7 +89,8 @@ class Test9 extends FunSuite {
     a = allowedCommands(b, Civilization.Rome)
     println(a)
     assert(a.find(_ == Command.MOVE).isDefined)
-    assert(a.find(_ == Command.ENDOFMOVE).isDefined)
+    // does not contains end of move, cannot stop in city
+    assert(!(a contains Command.ENDOFMOVE))
     assert(a.find(_ == Command.REVEALTILE).isEmpty)
     s = executeCommand(token, "MOVE", 2, 2, null)
     println(s)
@@ -161,7 +162,7 @@ class Test9 extends FunSuite {
     assert(last.last.lastp == P(3, 1))
     o = itemizeForMove(b, Civilization.Rome)
     // only end of move
-    assert(o.get == null)
+    assert(o.get.endofmove)
     //    println(o.get.move)
     //    println(o.get.reveal)
     a = allowedCommands(b, Civilization.Rome)

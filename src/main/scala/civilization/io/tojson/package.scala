@@ -36,7 +36,7 @@ package object tojson extends ImplicitMiximToJson {
     )
   }
 
-  implicit val culturecostWrites : Writes[CultureTrackCost] = new Writes[CultureTrackCost] {
+  implicit val culturecostWrites: Writes[CultureTrackCost] = new Writes[CultureTrackCost] {
     override def writes(o: CultureTrackCost): JsValue = Json.obj(
       S.culture -> o.culture,
       S.trade -> o.trade
@@ -57,6 +57,37 @@ package object tojson extends ImplicitMiximToJson {
       S.level -> o.level
     )
   }
+
+  implicit val greatpersontypewrite: Writes[GreatPersonType] = new Writes[GreatPersonType] {
+    override def writes(o: GreatPersonType): JsValue = Json.obj(
+      S.name -> o.name,
+      S.tokens -> o.tokens
+    )
+  }
+
+  implicit val greatpersonwrite: Writes[GreatPerson] = new Writes[GreatPerson] {
+    override def writes(o: GreatPerson): JsValue = Json.obj(
+      S.name -> o.name,
+      S.notimplemented -> o.notimplemented,
+      S.nameshort -> o.short,
+      S.persontype -> o.ptype,
+      S.phase -> o.phase,
+      S.desc -> o.desc
+    )
+  }
+
+  implicit val culturecardswrite: Writes[CultureCard] = new Writes[CultureCard] {
+    override def writes(o: CultureCard): JsValue = Json.obj(
+      S.name -> o.name,
+      S.level -> o.level,
+      S.notimplemented -> o.notimplemented,
+      S.num -> o.num,
+      S.phase -> o.phase,
+      S.desc -> o.desc
+    )
+
+  }
+
 
   implicit val technologyWrite: Writes[Technology] = new Writes[Technology] {
     override def writes(o: Technology): JsValue = Json.obj(
@@ -238,7 +269,7 @@ package object tojson extends ImplicitMiximToJson {
       S.phase -> o.phase,
       S.discount -> o.discount,
       S.desc -> o.desc,
-      S.wondertT -> o.t,
+      S.nameshort -> o.t,
       S.notimplemented -> o.ni
     )
   }
@@ -310,12 +341,18 @@ package object tojson extends ImplicitMiximToJson {
 
   def writeListOfWonders(m: Seq[WondersOfTheWorld]): JsValue = Json.toJson(m)
 
-  def writeListOfBuilding(m: Seq[Building]): JsValue = Json.toJson(m)
+  implicit def writeListOfBuilding(m: Seq[Building]): JsValue = Json.toJson(m)
 
-  def writeListOfWondersNames(l : Seq[Wonders.T]) : JsValue = Json.toJson(l)
+  def writeListOfWondersNames(l: Seq[Wonders.T]): JsValue = Json.toJson(l)
 
-  def writeCultureTrack(c : CultureTrack) : JsValue = Json.toJson(c)
+  def writeCultureTrack(c: CultureTrack): JsValue = Json.toJson(c)
 
-  def writeCultureTrackCost( c : CultureTrackCost) : JsValue = Json.toJson(c)
+  implicit def writeCultureTrackCost(c: CultureTrackCost): JsValue = Json.toJson(c)
+
+  implicit def writeGreatPersonTypes(t: Seq[GreatPersonType]): JsValue = Json.toJson(t)
+
+  implicit def writeGreatPerson(t: Seq[GreatPerson]): JsValue = Json.toJson(t)
+
+  implicit def writeCultureCards(t : Seq[CultureCard]) : JsValue = Json.toJson(t)
 
 }

@@ -1,0 +1,297 @@
+[
+  {
+    "name": "AGiftfromAfar",
+    "level": 1,
+    "ni": true,
+    "num": 3,
+    "desc": "Any Time: Play this card as one of the following resources. Then, choose another player. That player adds a coin token to his civilization sheet. (Iron, Wheat, Spy, Silk)"
+  },
+  {
+    "name": "BarbarianEncampment",
+    "level": 1,
+    "ni": true,
+    "num": 2,
+    "phase": "StartOfTurn",
+    "desc": "Start of Turn : Choose an empty square not in the outskirts of a city. Place a village token on that square."
+  },
+  {
+    "name": "BreadandCircuses",
+    "level": 1,
+    "ni": true,
+    "num": 2,
+    "desc": "Any Time: Cancel a culture event targeting you, one of your figures, or any square or building in one of your cities."
+  },
+  {
+    "name": "Counterfeiters",
+    "level": 1,
+    "ni": true,
+    "num": 2,
+    "phase": "StartOfTurn",
+    "desc": "Start of Turn: Choose another player. That player must discard one coin token of your choice. This cannot affect investments."
+  },
+  {
+    "name": "Defection",
+    "level": 1,
+    "ni": true,
+    "num": 2,
+    "phase": "Movement",
+    "desc": "Movement: Choose a figure within 4 squares (no diagonals) of one of your figures or cities. Kill the chosen figure. This may interrupt a figure's movement."
+  },
+  {
+    "name": "Disoriented",
+    "level": 1,
+    "ni": true,
+    "num": 1,
+    "phase": "CityManagement",
+    "desc": "City Management: Choose a square. Move all figures belonging to another player in that square up to two squares as a group (no diagonals or crossing water). Figures cannot be forced to start a battle."
+  },
+  {
+    "name": "Drought",
+    "level": 1,
+    "ni": true,
+    "num": 2,
+    "phase": "StartOfTurn",
+    "desc": "Start of Turn: Choose a non-mountain square that does not contain any buildings or wonders. Place a disaster token on that square, desert side up. That square is a desert square for the rest of the game."
+  },
+  {
+    "name": "DutyandHonor",
+    "level": 1,
+    "ni": true,
+    "num": 2,
+    "desc": "Battle: Before drawing your battle force, build 1 unlocked unit for free."
+  },
+  {
+    "name": "ExchangeofIdeas",
+    "level": 1,
+    "ni": true,
+    "num": 3,
+    "phase": "StartOfTurn",
+    "desc": "Start of Turn: Choose another player. Learn a level I tech of your choice belonging to that player for free. That player then learns a level I tech of their choice belonging to you for free."
+  },
+  {
+    "name": "Migrants",
+    "level": 1,
+    "ni": true,
+    "num": 2,
+    "phase": "CityManagement",
+    "desc": "City Management : Switch one of your social policies. / Movement : Move one of your figures up to 2 squares to an empty square."
+  },
+  {
+    "name": "Sabotage",
+    "level": 1,
+    "ni": true,
+    "num": 2,
+    "phase": "StartOfTurn",
+    "desc": "Start of Turn: Choose a building within 4 squares (no diagonals) of one of your figures or cities. Destroy the chosen building and return it to the market."
+  },
+  {
+    "name": "TheCitizensareRevolting",
+    "level": 1,
+    "ni": true,
+    "num": 1,
+    "phase": "StartOfTurn",
+    "desc": "Start of Turn: Choose another player. That player's government changes to anarchy."
+  },
+  {
+    "name": "WeLovetheDespotDay",
+    "level": 1,
+    "ni": true,
+    "num": 1,
+    "phase": "CityManagement",
+    "desc": "City Management: Choose one of your cities. It produces 4 extra hammers this turn."
+  },
+  {
+    "name": "AGenerousGift",
+    "level": 2,
+    "ni": true,
+    "num": 3,
+    "desc": "Any Time: Play this card as one of the following resources. (Iron, Wheat, Spy, Silk)"
+  },
+  {
+    "name": "Catastrophe",
+    "level": 2,
+    "ni": true,
+    "num": 1,
+    "phase": "StartOfTurn",
+    "desc": "Start of Turn: Choose a building within 6 squares (no diagonals) of one of your figures or cities. Destroy the chosen building and return it to the market."
+  },
+  {
+    "name": "Colonists",
+    "level": 2,
+    "ni": true,
+    "num": 2,
+    "phase": "CityManagement",
+    "desc": "City Management : Switch up to 2 of social policies. / Movement : Move one of your figures up to 4 squares to an empty square."
+  },
+  {
+    "name": "Deforestation",
+    "level": 2,
+    "ni": true,
+    "num": 2,
+    "phase": "StartOfTurn",
+    "desc": "Start of Turn: Choose a forest square that does not contain any buildings or wonders. Place a disaster token on that square, grassland side up. That square is a grassland square for the rest of the game."
+  },
+  {
+    "name": "Depression",
+    "level": 2,
+    "ni": true,
+    "num": 1,
+    "phase": "StartOfTurn",
+    "desc": "Start of Turn: Choose up to 2 other players. Each player must discard 1 coin token of your choice. This cannot affect investments."
+  },
+  {
+    "name": "Flooding",
+    "level": 2,
+    "ni": true,
+    "num": 1,
+    "phase": "StartOfTurn",
+    "desc": "Start of Turn: Choose a non-mountain square that does not contain any figures or tokens. Place a disaster token on that square, water side up. That square is a water square for the rest of the game."
+  },
+  {
+    "name": "JoustingTourney",
+    "level": 2,
+    "ni": true,
+    "num": 2,
+    "desc": "Any Time: Cancel a culture event."
+  },
+  {
+    "name": "KnowledgeShared",
+    "level": 2,
+    "ni": true,
+    "num": 3,
+    "phase": "StartOfTurn",
+    "desc": "Start of Turn: Choose another player. Learn a level I or II tech of your choice belonging to that player for free. That player then learns a level I or II tech of their choice belonging to you for free."
+  },
+  {
+    "name": "Lost",
+    "level": 2,
+    "ni": true,
+    "num": 1,
+    "phase": "CityManagement",
+    "desc": "City Management: Choose a square. Move all figures belonging to another player in that square up to three squares as a group (no diagonals or crossing water). Figures cannot be forced to start a battle."
+  },
+  {
+    "name": "MassDefection",
+    "level": 2,
+    "ni": true,
+    "num": 1,
+    "phase": "Movement",
+    "desc": "Movement: Choose a square within 6 squares (no diagonals) of one of your figures or cities. Kill a great person or up to 2 figures in the chosen square. This may interrupt a figure's movement."
+  },
+  {
+    "name": "Nationalism",
+    "level": 2,
+    "ni": true,
+    "num": 2,
+    "desc": "Battle: Before drawing your battle force, build up to 2 unlocked units for free."
+  },
+  {
+    "name": "RoamingHorde",
+    "level": 2,
+    "ni": true,
+    "num": 2,
+    "phase": "Movement",
+    "desc": "Movement : Choose an army figure or city token within four squares (no diagonals) of a village token or revealed village icon. That figure or city is immediately attacked by rank II barbarians."
+  },
+  {
+    "name": "TheCitizensareRevoltingII",
+    "level": 2,
+    "ni": true,
+    "num": 1,
+    "phase": "StartOfTurn",
+    "desc": "Start of Turn: Choose another player. That player's government changes to anarchy."
+  },
+  {
+    "name": "WeLovetheQueenDay",
+    "level": 2,
+    "ni": true,
+    "num": 2,
+    "phase": "CityManagement",
+    "desc": "City Management: Choose one of your cities. It produces 6 extra hammers this turn."
+  },
+  {
+    "name": "APrincelyGift",
+    "level": 3,
+    "ni": true,
+    "num": 2,
+    "desc": "Any Time: Play this card as one of the following resources. (Iron, Uranium, Spy, Wheat, Silk)"
+  },
+  {
+    "name": "BankScandal",
+    "level": 3,
+    "ni": true,
+    "num": 1,
+    "phase": "StartOfTurn",
+    "desc": "Start of Turn: Every player except you must discard 1 coin token of your choice. This cannot affect investments."
+  },
+  {
+    "name": "Disaster",
+    "level": 3,
+    "ni": true,
+    "num": 1,
+    "phase": "StartOfTurn",
+    "desc": "Start of Turn: Destroy up to two buildings of your choice belonging to any other player or players and retun the destroyed buildings to the market."
+  },
+  {
+    "name": "Immigrants",
+    "level": 3,
+    "ni": true,
+    "num": 2,
+    "phase": "CityManagement",
+    "desc": "City Management : Switch up to 3 of your social policies.  Movement : Move one of your figures up to 6 squares to an empty square."
+  },
+  {
+    "name": "OutofPosition",
+    "level": 3,
+    "ni": true,
+    "num": 1,
+    "phase": "CityManagement",
+    "desc": "City Management: Choose a square. Move all figures belonging to another player in that square up to four squares as a group (no diagonals or crossing water). Figures cannot be forced to start a battle."
+  },
+  {
+    "name": "Patriotism",
+    "level": 3,
+    "ni": true,
+    "num": 1,
+    "desc": "Battle: Before drawing your battle force, build up to 3 unlocked units for free."
+  },
+  {
+    "name": "PrimetimeTV",
+    "level": 3,
+    "ni": true,
+    "num": 2,
+    "desc": "Any Time: Cancel a culture event or a resource ability. If canceling a resource ability, the resources spent to activate the ability are lost."
+  },
+  {
+    "name": "SupplyDrop",
+    "level": 3,
+    "ni": true,
+    "num": 2,
+    "phase": "StartOfTurn",
+    "desc": "Start of Turn : Gain 7 trades. / City Management : Take an additional action with one of your non-capital cities."
+  },
+  {
+    "name": "ThinkTank",
+    "level": 3,
+    "ni": true,
+    "num": 2,
+    "phase": "StartOfTurn",
+    "desc": "Start of Turn: Choose another player. Learn a level III or less tech of your choice belonging to that player for free. That player then learns a level III or less tech of their choice belonging to you for free."
+  },
+  {
+    "name": "WeLovethePresidentDay",
+    "level": 3,
+    "ni": true,
+    "num": 1,
+    "phase": "CityManagement",
+    "desc": "City Management: Choose one of your cities. It produces 8 extra hammers this turn."
+  },
+  {
+    "name": "WholesaleDefection",
+    "level": 3,
+    "ni": true,
+    "num": 2,
+    "phase": "Movement",
+    "desc": "Movement: Choose a square. Kill a great person or up to 2 figures in the chosen square. This may interrupt a figure's movement."
+  }
+]

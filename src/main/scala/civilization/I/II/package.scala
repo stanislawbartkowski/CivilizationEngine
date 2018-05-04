@@ -11,7 +11,7 @@ object II {
   final val UNREGISTERTOKEN = I.UNREGISTERTOKEN
   final val LISTOFWAITINGGAMES = I.LISTOFWAITINGGAMES
   final val REGISTEROWNERTWOGAME = I.REGISTEROWNERTWOGAME
-  final val iTEMIZECOMMAND = I.ITEMIZECOMMAND
+  final val ITEMIZECOMMAND = I.ITEMIZECOMMAND
 
   def getData(what: Int, tokenorciv: String = null, param : String = null): String = I.getData(what, tokenorciv,param)
 

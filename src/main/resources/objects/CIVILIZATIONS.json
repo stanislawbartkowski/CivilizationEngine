@@ -1,57 +1,58 @@
 [
   {
-  "civ" : "America",
-   "tech" : "Currency",
-   "gover" : "Despotism",
-    "ni" : true,
-    "desc" : "The Americans start with a free, random great person. When Americans spend trade for production, they receive 2 production points instead of 1."
+    "civ": "America",
+    "tech": "Currency",
+    "gover": "Despotism",
+    "ni": true,
+    "desc": "The Americans start with a free, random great person. When Americans spend trade for production, they receive 2 production points instead of 1."
   },
   {
-    "civ" : "China",
-    "tech" : "Writing",
-    "gover" : "Despotism",
-    "ni" : true,
-    "desc" : "The Chinese start with city walls in their capital. The Chinese gain 3 culture each time they explore a hut or conquer a village. The Chinese may save one of their killed unit after each battle, returning it to their standing force."
-  },
-  {"civ" : "Egypt",
-  "tech" : "Construction",
-   "gover" : "Despotism",
-   "ni" : true,
-    "desc" : "The Egyptians start with a free random ancient wonder in their capital. Once per turn, during City Management, the Egyptians may build an unlocked building for free by using an action."
+    "civ": "China",
+    "tech": "Writing",
+    "gover": "Despotism",
+    "ni": true,
+    "desc": "The Chinese start with city walls in their capital. The Chinese gain 3 culture each time they explore a hut or conquer a village. The Chinese may save one of their killed unit after each battle, returning it to their standing force."
   },
   {
-    "civ" : "Germany",
-    "tech" : "Metallurgy",
-    "gover" : "Despotism",
-    "ni" : true,
-    "desc" : "The Germans start with 2 extra infantry units. After setup, each time the Germans research a tech that upgrades or unlocked a unit, they build one of that unit for free and gain one resource of their choice from the market."
+    "civ": "Egypt",
+    "tech": "Construction",
+    "gover": "Despotism",
+    "ni": true,
+    "desc": "The Egyptians start with a free random ancient wonder in their capital. Once per turn, during City Management, the Egyptians may build an unlocked building for free by using an action."
   },
   {
-    "civ" : "Rome",
-    "tech" : "CodeOfLaw",
-    "gover" : "Republic",
-    "ni" : true,
-    "desc" : "The Romans advance one space on the culture track for free each time they build a wonder or city, and each time they conquer a city or village."
+    "civ": "Germany",
+    "tech": "Metallurgy",
+    "gover": "Despotism",
+    "ni": true,
+    "desc": "The Germans start with 2 extra infantry units. After setup, each time the Germans research a tech that upgrades or unlocked a unit, they build one of that unit for free and gain one resource of their choice from the market."
   },
   {
-    "civ" : "Russia",
-    "tech" : "Communism",
-    "ni" : true,
-    "gover" : "Communism",
-    "desc" : "The Russians start with 2 armies, and their stacking limit is increased by 1. Once per turn, the Russians maybe move an army or scout into an enemy city and sacrifice that figure to research a tech known by that civilization for free. Armies sacrificed this way cannot be also attack."
+    "civ": "Rome",
+    "tech": "CodeOfLaw",
+    "gover": "Republic",
+    "ni": true,
+    "desc": "The Romans advance one space on the culture track for free each time they build a wonder or city, and each time they conquer a city or village."
   },
   {
-    "civ" : "Spain",
-    "tech" : "Navigation",
-    "gover" : "Despotism",
-    "ni" : true,
-    "desc" : "The Spanish start with 2 scouts. The travel speed of the Spanish is increased by 1. When the Spanish discover an unexplored map tile, they may immediately build a basic (non-upgraded) building in any of their cities for free, even if they haven't unlocked that building."
+    "civ": "Russia",
+    "tech": "Communism",
+    "ni": true,
+    "gover": "Communism",
+    "desc": "The Russians start with 2 armies, and their stacking limit is increased by 1. Once per turn, the Russians maybe move an army or scout into an enemy city and sacrifice that figure to research a tech known by that civilization for free. Armies sacrificed this way cannot be also attack."
   },
   {
-    "civ" : "Arabs",
-    "tech" : "Mathematics",
-    "gover" : "Despotism",
-    "ni" : true,
-    "desc" : "The Arabs start having every piece of resource from the market. When they spend any resource, the receive 1 culture for any resource in return. When they invest a coin, they move forward one step on culture track."
+    "civ": "Spain",
+    "tech": "Navigation",
+    "gover": "Despotism",
+    "ni": true,
+    "desc": "The Spanish start with 2 scouts. The travel speed of the Spanish is increased by 1. When the Spanish discover an unexplored map tile, they may immediately build a basic (non-upgraded) building in any of their cities for free, even if they haven't unlocked that building."
+  },
+  {
+    "civ": "Arabs",
+    "tech": "Mathematics",
+    "gover": "Despotism",
+    "ni": true,
+    "desc": "The Arabs start having every piece of resource from the market. When they spend any resource, the receive 1 culture for any resource in return. When they invest a coin, they move forward one step on culture track."
   }
 ]

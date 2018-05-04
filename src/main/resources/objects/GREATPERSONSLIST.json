@@ -1,0 +1,319 @@
+[
+  {
+    "name": "AkiraKurosawa",
+    "ni": true,
+    "t": "AK",
+    "type": "Artist",
+    "phase": "CityManagement",
+    "desc": "City Management: Each time another player devotes a city to the arts, you gain 1 culture."
+  },
+  {
+    "name": "FridaKahlo",
+    "ni": true,
+    "t": "FK",
+    "type": "Artist",
+    "desc": "Any Time: You may discard this card to discard any culture events you don't want and then draw enough culture events to fill your hand. Draw from the culture deck for the area on the culture track that your"
+  },
+  {
+    "name": "JerryGarcia",
+    "ni": true,
+    "t": "JG",
+    "type": "Artist",
+    "phase": "CityManagement",
+    "desc": "City Management: As your capital's city action, you may discard this card to devote all of your cities to the arts. This action cannot be canceled and your other cities may still take their actions."
+  },
+  {
+    "name": "MarkTwain",
+    "ni": true,
+    "t": "MT",
+    "type": "Artist",
+    "desc": "Any Time: You may discard this card to cancel a city action, a resource ability, or a culture event. If you cancel a resource ability, the resources used to pay for it are lost."
+  },
+  {
+    "name": "Michelangelo",
+    "ni": true,
+    "t": "MA",
+    "type": "Artist",
+    "phase": "CityManagement",
+    "desc": "City Management: You may discard this card to build a wonder for 5 hammers less than its normal cost. This stacks with other discounts."
+  },
+  {
+    "name": "Valmiki",
+    "ni": true,
+    "t": "VM",
+    "type": "Artist",
+    "desc": "Your culture hand size is increased by 2."
+  },
+  {
+    "name": "WilliamShakespeare",
+    "ni": true,
+    "t": "WS",
+    "type": "Artist",
+    "desc": "Any Time: When advancing on the culture track, you may skip any space that contains another player's marker. Only pay the cost and receive the reward for the space you land in."
+  },
+  {
+    "name": "AdaLovelace",
+    "ni": true,
+    "t": "AL",
+    "type": "Builder",
+    "phase": "CityManagement",
+    "desc": "City Management: You may discard this card to take an extra city action with one of your cities. This action cannot be canceled. You may use this to take an action with your capital during anarchy."
+  },
+  {
+    "name": "Archimedes",
+    "ni": true,
+    "t": "AM",
+    "type": "Builder",
+    "desc": "Any Time: Gain 3 culture each time you research a tech that no other player knows or is researching that turn."
+  },
+  {
+    "name": "FrankLloydWright",
+    "ni": true,
+    "t": "FW",
+    "type": "Builder",
+    "phase": "CityManagement",
+    "desc": "City Management: You may discard this card to gain both trade and culture equal to the total number of buildings in all your cities."
+  },
+  {
+    "name": "HenryFord",
+    "ni": true,
+    "t": "HF",
+    "type": "Builder",
+    "desc": "Your travel speed is increased by 1."
+  },
+  {
+    "name": "NikolaTesla",
+    "ni": true,
+    "t": "NT",
+    "type": "Builder",
+    "phase": "Research",
+    "desc": "Research: You may discard this card when adding a tech of level II, III, or IV to your tech pyramid to place it one level lower in the pyramid than normal."
+  },
+  {
+    "name": "OrvilleWright",
+    "ni": true,
+    "t": "OW",
+    "type": "Builder",
+    "phase": "StartOfTurn",
+    "desc": "Start of Turn: You may discard this card to build one aircraft unit for free, even if you haven't unlocked aircraft units."
+  },
+  {
+    "name": "ThomasEdison",
+    "ni": true,
+    "t": "TE",
+    "type": "Builder",
+    "phase": "StartOfTurn",
+    "desc": "Start of Turn: You may discard this card to choose a tech that another player has learned and research it for free."
+  },
+  {
+    "name": "GeorgyZhukov",
+    "ni": true,
+    "t": "GZ",
+    "type": "General",
+    "desc": "Battle: Each time one of your units is killed during a battle, deal 1 wound to an enemy unit of your choice."
+  },
+  {
+    "name": "GustavusAdolphus",
+    "ni": true,
+    "t": "GA",
+    "type": "General",
+    "desc": "Battle: You may discard this card at the start of a battle to kill all units in your battle force (they cannot be saved) and build an equal number of unlocked units for free, immediately adding them to your battle force."
+  },
+  {
+    "name": "Hannibal",
+    "ni": true,
+    "t": "HB",
+    "type": "General",
+    "phase": "CityManagement",
+    "desc": "City Management: You may discard this card to choose a square. Move any or all of your figures in that square to any other square on the map containing at least on of your figures. You may not exceed your stacking limit."
+  },
+  {
+    "name": "JoanofArc",
+    "ni": true,
+    "t": "JA",
+    "type": "General",
+    "phase": "CityManagement",
+    "desc": "Battle: You may discard this card at the start of a battle in which you are the defender to increase your combat bonus by an amount equal to your unspent culture. This lasts until the end of the battle."
+  },
+  {
+    "name": "KhalidibnalWalid",
+    "ni": true,
+    "t": "KW",
+    "type": "General",
+    "desc": "Start of Any Phase: You may discard this card to become the first player and place the first player marker in front of you. Next turn, the marker passes clockwise from you."
+  },
+  {
+    "name": "Leonidas",
+    "ni": true,
+    "t": "LD",
+    "type": "General",
+    "desc": "Battle: Each time you start a battle as defender with fewer units in your battle force than your opponent, your combat bonus is increased by 8 until the end of the battle."
+  },
+  {
+    "name": "SunTzu",
+    "ni": true,
+    "t": "SZ",
+    "type": "General",
+    "desc": "Battle: Once per battle, you may spend 3 trade to pass your turn instead of playing a unit."
+  },
+  {
+    "name": "DrMartinLutherKing",
+    "ni": true,
+    "t": "MK",
+    "type": "Humanitarian",
+    "desc": "Your city actions can't be canceled. In addition, you are immune to anarchy."
+  },
+  {
+    "name": "FlorenceNightingale",
+    "ni": true,
+    "t": "FN",
+    "type": "Humanitarian",
+    "desc": "Battle: You may discard this card to save all of your killed units after a battle, returning them to your standing forces."
+  },
+  {
+    "name": "JacquesCousteau",
+    "ni": true,
+    "t": "JC",
+    "type": "Humanitarian",
+    "phase": "StartOfTurn",
+    "desc": "Start of Turn: You may discard this card to build up to 3 Harbors in your cities for free, even if you have not unlocked Harbors."
+  },
+  {
+    "name": "JimHenson",
+    "ni": true,
+    "t": "JH",
+    "type": "Humanitarian",
+    "phase": "CityManagement",
+    "desc": "City Management: Each time you build a wonder, place a wound marker on this card. Start of Turn: Gain culture and trade equal to the number of wound markers on this card."
+  },
+  {
+    "name": "MotherTeresa",
+    "ni": true,
+    "t": "MT",
+    "type": "Humanitarian",
+    "phase": "StartOfTurn",
+    "desc": "Start of Turn: Once per turn, you may give one of your coin tokens to another player, placing it on that player's civilization sheet. If you do so, advance one space on the culture track for free."
+  },
+  {
+    "name": "StFrancisofAssisi",
+    "ni": true,
+    "t": "FA",
+    "type": "Humanitarian",
+    "phase": "CityManagement",
+    "desc": "City Management: You may discard this card to gain 3 culture for every unbuilt army figure you have."
+  },
+  {
+    "name": "SusanBAnthony",
+    "ni": true,
+    "t": "SA",
+    "type": "Humanitarian",
+    "desc": "All of your cities produce +2 hammers."
+  },
+  {
+    "name": "APGiannini",
+    "ni": true,
+    "t": "AG",
+    "type": "Merchant",
+    "phase": "StartOfTurn",
+    "desc": "Start of Turn: Each time you invest a coin, build an unlocked building in one of your cities for free."
+  },
+  {
+    "name": "AdamSmith",
+    "ni": true,
+    "t": "AS",
+    "type": "Merchant",
+    "desc": "+1 coin."
+  },
+  {
+    "name": "AndrewCarnegie",
+    "ni": true,
+    "t": "AC",
+    "type": "Merchant",
+    "phase": "CityManagement",
+    "desc": "City Management: You may discard this card to advance one space on the culture track for free for every 3 coins you have."
+  },
+  {
+    "name": "CaptainJamesCook",
+    "ni": true,
+    "t": "JC",
+    "type": "Merchant",
+    "phase": "Movement",
+    "desc": "Movement: You may discard this card to double your travel speed until the end of the turn."
+  },
+  {
+    "name": "LorenzodeMedici",
+    "ni": true,
+    "t": "LM",
+    "type": "Merchant",
+    "phase": "StartOfTurn",
+    "desc": "Start of Turn: Gain 1 culture for every 3 coins you have."
+  },
+  {
+    "name": "MarcoPolo",
+    "ni": true,
+    "t": "MP",
+    "type": "Merchant",
+    "desc": "Any Time: You may discard this card to gain 27 trade."
+  },
+  {
+    "name": "ZhengHe",
+    "ni": true,
+    "t": "ZH",
+    "type": "Merchant",
+    "desc": "Any Time: You may discard this card to look under every hut and village token on the map and/or owned by other players."
+  },
+  {
+    "name": "AlanTuring",
+    "ni": true,
+    "t": "AT",
+    "type": "Scientist",
+    "phase": "StartOfTurn",
+    "desc": "Start of Turn: Gain 1 trade and 1 culture for every 2 unbuilt army figures you have."
+  },
+  {
+    "name": "AlbertEinstein",
+    "ni": true,
+    "t": "AE",
+    "type": "Scientist",
+    "phase": "CityManagement",
+    "desc": "City Management: You may discard this card to spend any amount of trade to gain an equal amount of culture or spend any amount of unspent culture to gain an equal amount of trade."
+  },
+  {
+    "name": "CharlesDarwin",
+    "ni": true,
+    "t": "CD",
+    "type": "Scientist",
+    "phase": "CityManagement",
+    "desc": "City Management: Once per turn, when you devote a city to the arts, you may change all of the culture produced by the city into trade on a 1-for-1 basis."
+  },
+  {
+    "name": "GalileoGalilei",
+    "ni": true,
+    "t": "GG",
+    "type": "Scientist",
+    "phase": "CityManagement",
+    "desc": "City Management: You may discard this card to choose a square on the outer edge of the map. Move your figures in that square to any empty square on the outer edge of the map. They cannot move again this turn"
+  },
+  {
+    "name": "LouisPasteur",
+    "ni": true,
+    "t": "LP",
+    "type": "Scientist",
+    "desc": "Your stacking limit is increased by 1."
+  },
+  {
+    "name": "MarieCurie",
+    "ni": true,
+    "t": "MC",
+    "type": "Scientist",
+    "desc": "Any Time: You may discard this card when you would spend a uranium to spend a different resource instead."
+  },
+  {
+    "name": "SirIsaacNewton",
+    "ni": true,
+    "t": "IN",
+    "type": "Scientist",
+    "phase": "Research",
+    "desc": "Research: Before researching, you may place this card facedown in your tech pyramid as a blank tech card of level IV or less. It remains in your tech pyramid for the rest of the game, even if Newton dies."
+  }
+]

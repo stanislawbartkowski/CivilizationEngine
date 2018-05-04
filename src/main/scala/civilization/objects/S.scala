@@ -70,11 +70,12 @@ object S {
   final val battleT = "Battle"
   final val battle = "battle"
   final val coinT = "Coin"
-  final val wondertT = "t"
   final val coin = "coin"
   final val coins = "coins"
   final val last = "last"
   final val greatperson = "greatperson"
   final val culturetrack = "culturetrack"
   final val cultureprogress = "cultureprogress"
+  final val nameshort = "t"
+  final val persontype = "type"
 }

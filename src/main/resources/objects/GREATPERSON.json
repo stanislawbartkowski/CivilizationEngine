@@ -1,0 +1,45 @@
+[
+  {
+    "name": "Artist",
+    "tokens": {
+      "Culture": 2,
+      "Trade": 1
+    }
+  },
+  {
+    "name": "Builder",
+    "tokens": {
+      "Production": 2,
+      "Coin": 1
+    }
+  },
+  {
+    "name": "General",
+    "tokens": {
+      "Battle": 4
+    }
+  },
+  {
+    "name": "Humanitarian",
+    "tokens": {
+      "Culture": 1,
+      "Trade": 1,
+      "Production": 1,
+      "Coin": 1
+    }
+  },
+  {
+    "name": "Merchant",
+    "tokens": {
+      "Culture": 2,
+      "Coin": 1
+    }
+  },
+  {
+    "name": "Scientist",
+    "tokens": {
+      "Trade": 2,
+      "Production": 1
+    }
+  }
+]

@@ -361,7 +361,7 @@ package object helper {
 
     def len: Int = moves.filter(_.p.isDefined).length - 1
 
-    def isFinished = moves.last.command == Command.ENDOFMOVE || moves.last.command == Command.EXPLOREHUT
+    def isFinished = moves.last.command == Command.ENDOFMOVE || moves.last.command == Command.EXPLOREHUT || moves.last.command == Command.KILLFIGURE
 
     def lastp: P = begstop._2.p.get
   }
@@ -384,7 +384,7 @@ package object helper {
     // if null then Reveal
     var moves: Seq[Move] = Nil
     p.foreach(co => co.command match {
-      case Command.MOVE | Command.ENDOFMOVE | Command.EXPLOREHUT =>
+      case Command.MOVE | Command.ENDOFMOVE | Command.EXPLOREHUT | Command.KILLFIGURE =>
         moves = moves :+ Move(co.command, if (co.p == null) None else Some(co.p))
         // 2017/12/23
         if (co.param != null) {
@@ -413,10 +413,6 @@ package object helper {
   def finishedAtPoint(b: GameBoard, civ: Civilization.T): Map[P, Figures] = {
     val lastp: Seq[(Figures, P, P)] = civLastMoves(b, civ).map(o => (o.f.toFigures, o.begstop._1.p.get, o.begstop._2.p.get))
     //TODO: can be done better,2 traversals, use mutable map and fold
-    //    val startmap : Map[P,Figures] = lastp.map(t => t._3 -> Figures(0,0)) toMap
-    //    val lastm: Map[P, Figures] = lastp.map(t => t._3 -> t._1).toMap
-    // current points on board belonging to civilization
-    //    val current: Seq[(Figures, P)] = allSquares(b).filter(p => p.s.figures.civOccupying.isDefined && p.s.figures.civOccupying.get == civ).map(m => (m.s.figures.toFigures, m.p))
     // sum all figures finishing at given point
     val lastm: Map[P, Figures] = lastp.groupBy(_._3).map(e => e._1 -> e._2.foldLeft[Figures](Figures(0, 0))((f, p) => {
       f + p._1;
@@ -863,14 +859,14 @@ package object helper {
     moveFigures(b, civ, p, None)
   }
 
-  def moveFigures(b: GameBoard, civ: Civilization.T, p: P, fparam: Option[Figures]) = {
+  def moveFigures(b: GameBoard, civ: Civilization.T, p: P, fparam: Option[Figures],kill : Boolean = false) = {
     val fig: PlayerMove = getCurrentMove(b, civ).get
     val last: P = fig.lastp
     val f: Figures = if (fparam.isEmpty) fig.f.toFigures else fparam.get
     // remove from last
     putFigures(b, civ, last, -f)
     // new position
-    putFigures(b, civ, p, f)
+    if (!kill) putFigures(b, civ, p, f)
   }
 
   // ===================================

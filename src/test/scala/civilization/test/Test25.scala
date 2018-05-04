@@ -154,7 +154,7 @@ class Test25 extends FunSuite with ImplicitMiximToJson {
     var l = allowedCommands(gg, Civilization.China)
     println(l)
     assert(l contains Command.ADVANCECULTURE)
-    var ite = II.getData(II.iTEMIZECOMMAND, token, "ADVANCECULTURE")
+    var ite = II.getData(II.ITEMIZECOMMAND, token, "ADVANCECULTURE")
     println(ite)
     val item: JsArray = toJ(ite).as[JsArray]
     assert(item.value.length == 1)
@@ -182,7 +182,7 @@ class Test25 extends FunSuite with ImplicitMiximToJson {
   test("Spend culture to advance next level") {
     val reg = Helper.readBoardAndPlayT("test25/BOARDGAME6.json", "test25/PLAY7.json", Civilization.China)
     val token = reg._1
-    var ite = II.getData(II.iTEMIZECOMMAND, token, "ADVANCECULTURE")
+    var ite = II.getData(II.ITEMIZECOMMAND, token, "ADVANCECULTURE")
     println(ite)
     val item: JsArray = toJ(ite).as[JsArray]
     assert(item.value.length == 1)

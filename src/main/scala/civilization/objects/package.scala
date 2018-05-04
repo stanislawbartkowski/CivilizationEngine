@@ -91,7 +91,7 @@ package object objects {
     type T = Value
     val Capital, Normal, WalledCapital, WalledNormal = Value
 
-    def isCapital(c : Value) : Boolean = (c == Capital || c == WalledCapital)
+    def isCapital(c: Value): Boolean = (c == Capital || c == WalledCapital)
   }
 
   object Figure extends Enumeration {
@@ -238,7 +238,7 @@ package object objects {
     Navy,
     Banking = Value
 
-    def isCoinTechnology(t : Value) : Boolean = (t == Pottery || t == CodeOfLaw)
+    def isCoinTechnology(t: Value): Boolean = (t == Pottery || t == CodeOfLaw)
   }
 
   def levelTrade(level: Int): Int = MINTRADE + (level - 1) * 5
@@ -298,5 +298,41 @@ package object objects {
     UnitedNations
     = Value
   }
+
+  object GreatPersonTypeName extends Enumeration {
+    type T = Value
+    val Artist, Builder, General, Humanitarian, Merchant, Scientist
+    = Value
+  }
+
+  case class GreatPersonType(val name: GreatPersonTypeName.T, val tokens: Tokens)
+
+  object GreatPersonName extends Enumeration {
+    type T = Value
+    val
+    AkiraKurosawa, FridaKahlo, JerryGarcia, MarkTwain, Michelangelo, Valmiki, WilliamShakespeare,
+    AdaLovelace, Archimedes, FrankLloydWright, HenryFord, NikolaTesla, OrvilleWright, ThomasEdison,
+    GeorgyZhukov, GustavusAdolphus, Hannibal, JoanofArc, KhalidibnalWalid, Leonidas, SunTzu,
+    DrMartinLutherKing, FlorenceNightingale, JacquesCousteau, JimHenson, MotherTeresa, StFrancisofAssisi, SusanBAnthony,
+    APGiannini, AdamSmith, AndrewCarnegie, CaptainJamesCook, LorenzodeMedici, MarcoPolo, ZhengHe,
+    AlanTuring, AlbertEinstein, CharlesDarwin, GalileoGalilei, LouisPasteur, MarieCurie, SirIsaacNewton
+    = Value
+  }
+
+  case class GreatPerson(val name: GreatPersonName.T, val notimplemented: Option[Boolean], val short: String, val ptype: GreatPersonTypeName.T, val phase: Option[TurnPhase.T], val desc: String)
+
+  object CultureCardName extends Enumeration {
+    type T = Value
+    val
+    AGiftfromAfar, BarbarianEncampment, BreadandCircuses, Counterfeiters, Defection, Disoriented, Drought, DutyandHonor, ExchangeofIdeas,
+    Migrants, Sabotage, TheCitizensareRevolting, WeLovetheDespotDay,
+    AGenerousGift, Catastrophe, Colonists, Deforestation, Depression, Flooding, JoustingTourney, KnowledgeShared, Lost,
+    MassDefection, Nationalism, RoamingHorde, TheCitizensareRevoltingII, WeLovetheQueenDay,
+    APrincelyGift, BankScandal, Disaster, Immigrants, OutofPosition, Patriotism, PrimetimeTV, SupplyDrop, ThinkTank, WeLovethePresidentDay,
+    WholesaleDefection
+    = Value
+  }
+
+  case class CultureCard(val name: CultureCardName.T, val level: Int, val notimplemented: Option[Boolean], val num: Int, val phase: Option[TurnPhase.T], val desc: String)
 
 }

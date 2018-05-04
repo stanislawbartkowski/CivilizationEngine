@@ -47,33 +47,26 @@ package object readdir {
 
   private def readTileFromFile(f: String): Tile = {
     val j: JsValue = readJSON("map/tiles", f)
-    return toTile(j)
+    toTile(j)
   }
 
-  def readListOfTiles: Seq[TilesRead] = {
+  def readListOfTiles: Seq[TilesRead] =
     // only files starting with R
     readdirJSON("map/tiles").filter(_._1.startsWith("R")).map(f => TilesRead(f._1, toTile(f._2))).toList
-  }
 
-  def readListOfCivs: Seq[CivilizationG] = {
-    val j: JsValue = readJSON("objects", "CIVILIZATIONS.json")
-    toCivilizations(j)
-  }
+  def readListOfCivs: Seq[CivilizationG] = readJSON("objects", "CIVILIZATIONS.json")
 
-  def readListOfWonders : Seq[WondersOfTheWorld] = {
-    val j : JsValue = readJSON("objects","WONDERS.json")
-    toSeqOfWonders(j)
-  }
+  def readListOfWonders : Seq[WondersOfTheWorld] = readJSON("objects","WONDERS.json")
 
-  def readListOfBuildings : Seq[Building] = {
-    val j : JsValue = readJSON("objects","BUILDINGS.json")
-    toListOfBuildings(j)
-  }
+  def readListOfGreatPersonType : Seq[GreatPersonType] = readJSON("objects","GREATPERSON.json")
 
-  def readCultureTrack : CultureTrack = {
-    val j : JsValue = readJSON("objects","CULTURETRACK.json")
-    toCultureTrack(j)
-  }
+  def readListOfGreatPersons : Seq[GreatPerson] = readJSON("objects","GREATPERSONSLIST.json")
+
+  def readListOfBuildings : Seq[Building] = readJSON("objects","BUILDINGS.json")
+
+  def readCultureTrack : CultureTrack = readJSON("objects","CULTURETRACK.json")
+
+  def readCultureCards : Seq[CultureCard] = readJSON("objects","CULTURECARDS.json")
 
   def readGameBoard(j: JsValue): GameBoard = {
     //    val l: Seq[TilesRead] = readListOfTiles
@@ -90,11 +83,7 @@ package object readdir {
     toSeqParams(js)
   }
 
-  def readTechnologies: Seq[Technology] = {
-
-    val j: JsValue = readJSON("objects", "TECHNOLOGIES.json")
-    toTechnologies(j)
-  }
+  def readTechnologies: Seq[Technology] = readJSON("objects", "TECHNOLOGIES.json")
 
   case class NumCombatUnit(val no: Int, val unit: CombatUnit)
 
