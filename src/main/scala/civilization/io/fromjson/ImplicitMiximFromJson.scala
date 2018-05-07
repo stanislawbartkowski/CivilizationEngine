@@ -63,4 +63,8 @@ trait ImplicitMiximFromJson {
 
   implicit def toSeqP(j : JsValue) : Seq[P] = j.as[Seq[P]]
 
+  implicit def toCultureCard(j : JsValue) : CultureCardName.T = j.as[CultureCardName.T]
+
+  implicit def toGreatPerson(j : JsValue) : GreatPersonName.T = j.as[GreatPersonName.T]
+
 }

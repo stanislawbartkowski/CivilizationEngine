@@ -123,7 +123,8 @@ object genboardj {
     S.cultureprogress -> p.pl.cultureprogress,
     "handsize" -> p.limits.handsize,
     "travelspeed" -> p.limits.travelSpeed,
-    "stacklimit" -> p.limits.stackinglimit
+    "stacklimit" -> p.limits.stackinglimit,
+    "cultureresource" -> CultureResourcesToJSon.cultureToJSon(p.pl.cultureresource,you)
   )
 
   private def genBoardGameJ(g: GameBoard, civ: Civilization.T): BoardGameJ = {
@@ -182,7 +183,8 @@ object genboardj {
       // only first 4 wonders
       S.wonders -> writeListOfWondersNames(g.market.wonders.take(WONDERWINDOW)),
       S.battle -> genBattleJson(g, civ),
-      S.buildings -> Json.toJson(g.market.buildings)
+      S.buildings -> Json.toJson(g.market.buildings),
+      "cultureused" -> CultureResourcesToJSon.cultureToJSon(g.cultureused,true)
     ))))
   }
 

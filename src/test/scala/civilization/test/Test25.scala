@@ -177,6 +177,14 @@ class Test25 extends FunSuite with ImplicitMiximToJson {
     val culprogress: Int = (j \ "cultureprogress").as[Int]
     println(culprogress)
     assert(culprogress == 1)
+    // verify culturecard
+    println(gg.playerDeck(Civilization.China).cultureresource.cards)
+    assert(gg.playerDeck(Civilization.China).cultureresource.cards.length == 1)
+    // verify json
+    val cul = (j \ "cultureresource" \ "cards").as[JsArray]
+    print(cul)
+    assert(cul.value.length == 1)
+
   }
 
   test("Spend culture to advance next level") {
@@ -204,13 +212,14 @@ class Test25 extends FunSuite with ImplicitMiximToJson {
     println(tra1)
     assert(tra1.spendOnCulture == 3)
     assert(tra1.trade == 7)
+    println(gg.playerDeck(Civilization.China).cultureresource.cards)
   }
 
   test("Implemet TradingPost research") {
     val reg = Helper.readBoardAndPlayT("test25/BOARDGAME8.json", "test25/PLAY8.json", Civilization.China)
     val token = reg._1
     val gg = I.getBoardForToken(token)
-    val co = getCoins(gg,Civilization.China)
+    val co = getCoins(gg, Civilization.China)
     println(co)
     assert(co.coins == 1)
     gg.journal.foreach(println)

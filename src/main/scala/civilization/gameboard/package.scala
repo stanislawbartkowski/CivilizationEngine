@@ -126,6 +126,8 @@ package object gameboard {
     def toFigures: Figures = Figures(numberofArmies, numberofScouts)
   }
 
+  case class CultureResources(var cards : Seq[CultureCardName.T] = Nil,var persons: Seq[GreatPersonName.T] = Nil,var personsexposed : Seq[GreatPersonName.T] = Nil)
+
   case class WonderSquare(val w: Wonders.T, var obsolete: Boolean)
 
   case class MapSquare(var hv: Option[HutVillage] = None, var city: Option[City] = None, var building: Option[Building] = None, var wonder: Option[WonderSquare] = None) {
@@ -228,6 +230,7 @@ package object gameboard {
     val combatlevel: CombatUnitStrength = CombatUnitStrength()
     var hvlist: Seq[HutVillage] = Nil
     def hasTechnology(te : TechnologyName.T) : Boolean = tech.find(_.tech == te ).isDefined
+    val cultureresource : CultureResources = CultureResources()
   }
 
   case class Market(var units: Seq[CombatUnit], var killedunits: Seq[CombatUnit], val buildings: BuildingsResources, var wonders: Seq[Wonders.T])
@@ -314,7 +317,7 @@ package object gameboard {
     var play: Play.Play = new Play.Play()
     var battle: Option[BattleField] = None
     val journal: Journal = collection.mutable.ListBuffer() // empty
-
+    val cultureused : CultureResources = CultureResources()
 
     def rotateplorder: Unit = if (!norotate) pllist = rotaterightList(pllist)
 

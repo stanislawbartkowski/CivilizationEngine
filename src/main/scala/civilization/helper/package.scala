@@ -2,7 +2,8 @@ package civilization
 
 import civilization.action.Command
 import civilization.gameboard._
-import civilization.message.{FatalError, M, Mess, J}
+import civilization.io.readdir.GameResources
+import civilization.message.{FatalError, J, M, Mess}
 import civilization.objects._
 
 import scala.util.control.Breaks._
@@ -859,7 +860,7 @@ package object helper {
     moveFigures(b, civ, p, None)
   }
 
-  def moveFigures(b: GameBoard, civ: Civilization.T, p: P, fparam: Option[Figures],kill : Boolean = false) = {
+  def moveFigures(b: GameBoard, civ: Civilization.T, p: P, fparam: Option[Figures], kill: Boolean = false) = {
     val fig: PlayerMove = getCurrentMove(b, civ).get
     val last: P = fig.lastp
     val f: Figures = if (fparam.isEmpty) fig.f.toFigures else fparam.get
@@ -967,12 +968,47 @@ package object helper {
   def decrResourceHVForTech(b: GameBoard, civ: Civilization.T, res: Resource.T, tech: TechnologyName.T) = {
     val pl: PlayerDeck = b.playerDeck(civ)
     if (pl.resou.nof(res) > 0) decrResource(b, civ, res)
-    else decrHVResource(b, civ, HVResource(None,res))
+    else decrHVResource(b, civ, HVResource(None, res))
     val te: Option[PlayerTechnology] = pl.tech.find(_.tech == tech)
     if (te.isEmpty)
       throw FatalError(Mess(M.CANNOTFINDTECHNOLOGYINPLAYERDECK, (civ, tech)))
     addCoinToTechnology(b, te.get)
   }
 
+  // --------------------------------------------------
+  // random culture or greatperson
+  // --------------------------------------------------
 
+  private def minusE[T](all: Map[T, Int], list: Seq[T]): Seq[T] = {
+    // change list of enums to map
+    val mlist: Map[T, Int] = list.groupBy(e => e).map(e => e._1 -> e._2.length)
+    // minus
+    // assuming all values in list are contained in all
+    val min: Map[T, Int] = all.map(e => e._1 -> (e._2 - (if (mlist.get(e._1).isDefined) mlist.get(e._1).get else 0)))
+    // flatten file
+    min.map(e => Seq.fill(e._2)(e._1)).toSeq flatten
+  }
+
+
+  private def getRandomEnum[T](all: Map[T, Int], list: Seq[T]): T = {
+    val rest: Seq[T] = minusE(all, list)
+    getRandom(rest)
+  }
+
+  def getRandomPerson(b: GameBoard): GreatPersonName.T = {
+    val all: Set[GreatPersonName.T] = GameResources.instance().greatpersons.map(_.name) toSet
+    val used: Set[GreatPersonName.T] = b.cultureused.persons.toSet
+    val allused: Set[GreatPersonName.T] = b.players.foldLeft[Set[GreatPersonName.T]](used)((h, re) => h ++
+      re.cultureresource.persons.toSet ++
+      re.cultureresource.personsexposed.toSet)
+    val available: Set[GreatPersonName.T] = all -- used
+    getRandom(available toSeq)
+  }
+
+  def getRandomCard(b: GameBoard): CultureCardName.Value = {
+    val allcards: Map[CultureCardName.Value, Int] = GameResources.instance().culturecards.map(c => c.name -> c.num) toMap
+    val allused: Seq[CultureCardName.Value] = b.players.foldLeft[Seq[CultureCardName.Value]](b.cultureused.cards)((h, t) => h ++ t.cultureresource.cards)
+    val r : CultureCardName.Value = getRandomEnum(allcards, allused)
+    r
+  }
 }

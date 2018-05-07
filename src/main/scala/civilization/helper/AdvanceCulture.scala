@@ -1,12 +1,11 @@
 package civilization.helper
 
-import civilization.action.{AbstractCommand, CommandPackage}
+import civilization.action.{AbstractCommand, CommandPackage, _}
 import civilization.io.fromjson.ImplicitMiximFromJson
 import civilization.io.tojson.ImplicitMiximToJson
 import civilization.objects._
 import civilization.objects.Command.T
 import play.api.libs.json.JsValue
-import civilization.action._
 import civilization.gameboard._
 import civilization.{gameboard, message}
 import civilization.gameboard.CultureTrack._
@@ -15,7 +14,7 @@ import civilization.message.{FatalError, M, Mess}
 
 object AdvanceCulture extends CommandPackage with ImplicitMiximFromJson with ImplicitMiximToJson {
 
-  override def getSet: Set[T] = Set(Command.ADVANCECULTURE)
+  override def getSet: Set[T] = Set(Command.ADVANCECULTURE, Command.CULTURECARD, Command.CULTURECARD)
 
   private def getCultureCost(cult: Int): CultureTrackCost = {
     val culturetrack: CultureTrack = GameResources.instance().culturetrack
@@ -36,6 +35,13 @@ object AdvanceCulture extends CommandPackage with ImplicitMiximFromJson with Imp
     Some(cost)
   }
 
+  private def isGreatPerson(cult: Int): Boolean = {
+    val culturetrack: CultureTrack = GameResources.instance().culturetrack
+    for (i <- 0 until culturetrack.length)
+      if (cult <= culturetrack(i).last)
+        return (culturetrack(i).greatperson.find(_ == cult)).isDefined
+    false
+  }
 
   protected class AdvanceCulture extends AbstractCommandNone {
 
@@ -53,11 +59,35 @@ object AdvanceCulture extends CommandPackage with ImplicitMiximFromJson with Imp
       param1 = cul
       // increase culture
       pl.cultureprogress = pl.cultureprogress + 1
+      if (isExecute) {
+        val commandC: Command = if (isGreatPerson(pl.cultureprogress)) constructCommand(Command.GREATPERSON, civ, null, getRandomPerson(board))
+        else constructCommand(Command.CULTURECARD, civ, null, getRandomCard(board))
+        board.addForcedCommand(commandC)
+      }
     }
   }
 
+  protected class TakeCultureCard(override val param: CultureCardName.T) extends AbstractCommand(param) {
+    override def verify(board: GameBoard): Mess = null
 
-  override def produceCommand(command: Command.T, civ: Civilization.T, p: P, param: JsValue) = new AdvanceCulture
+    override def execute(board: GameBoard): Unit =
+      board.playerDeck(civ).cultureresource.cards = board.playerDeck(civ).cultureresource.cards :+ param
+  }
+
+  protected class TakeGreatPerson(override val param: GreatPersonName.T) extends AbstractCommand(param) {
+    override def verify(board: GameBoard): Mess = null
+
+    override def execute(board: GameBoard): Unit =
+      board.playerDeck(civ).cultureresource.persons = board.playerDeck(civ).cultureresource.persons :+ param
+  }
+
+
+  override def produceCommand(command: Command.T, civ: Civilization.T, p: P, param: JsValue) =
+    command match {
+      case Command.ADVANCECULTURE => new AdvanceCulture()
+      case Command.CULTURECARD => new TakeCultureCard(param)
+      case Command.GREATPERSON => new TakeGreatPerson(param)
+    }
 
   override def itemize(b: GameBoard, civ: Civilization.T, com: Command.T): Seq[JsValue] = {
     val c: Option[CultureTrackCost] = advanceCulture(b, civ)
