@@ -34,6 +34,8 @@ object AllowedCommands {
       }
       case _ => {}
     }
+    val restricted : Seq[Command.T] = co.filter(Command.isBlockingCommand(_))
+    if (!restricted.isEmpty) return restricted
     if (cu.notcompleted.find(_ == civ).isDefined) co = co ++ List(Command.ENDOFPHASE)
     co
   }

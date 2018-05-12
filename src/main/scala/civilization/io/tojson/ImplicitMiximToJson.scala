@@ -58,4 +58,5 @@ trait ImplicitMiximToJson {
   implicit def writeGreatPerson(p : GreatPersonName.T) : JsValue = Json.toJson(p)
   implicit def writeCultureCard(p : CultureCardName.T) : JsValue = Json.toJson(p)
 
+  implicit def writeListCultureCard(p : Seq[CultureCardName.T]) : Seq[JsValue] = p.map(writeCultureCard)
 }

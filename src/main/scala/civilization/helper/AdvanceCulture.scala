@@ -14,7 +14,7 @@ import civilization.message.{FatalError, M, Mess}
 
 object AdvanceCulture extends CommandPackage with ImplicitMiximFromJson with ImplicitMiximToJson {
 
-  override def getSet: Set[T] = Set(Command.ADVANCECULTURE, Command.CULTURECARD, Command.CULTURECARD)
+  override def getSet: Set[T] = Set(Command.ADVANCECULTURE, Command.CULTURECARD, Command.GREATPERSON)
 
   private def getCultureCost(cult: Int): CultureTrackCost = {
     val culturetrack: CultureTrack = GameResources.instance().culturetrack
@@ -43,6 +43,15 @@ object AdvanceCulture extends CommandPackage with ImplicitMiximFromJson with Imp
     false
   }
 
+  private def cultureLevel(cult : Int) : Int = {
+    val culturetrack: CultureTrack = GameResources.instance().culturetrack
+    for (i <- 0 until culturetrack.length)
+      if (cult <= culturetrack(i).last)
+        return i+1
+    // TODO: throws exception
+    return 0
+  }
+
   protected class AdvanceCulture extends AbstractCommandNone {
 
     override def verify(board: gameboard.GameBoard): message.Mess = {
@@ -61,7 +70,7 @@ object AdvanceCulture extends CommandPackage with ImplicitMiximFromJson with Imp
       pl.cultureprogress = pl.cultureprogress + 1
       if (isExecute) {
         val commandC: Command = if (isGreatPerson(pl.cultureprogress)) constructCommand(Command.GREATPERSON, civ, null, getRandomPerson(board))
-        else constructCommand(Command.CULTURECARD, civ, null, getRandomCard(board))
+        else constructCommand(Command.CULTURECARD, civ, null, getRandomCard(board,cultureLevel(pl.cultureprogress)))
         board.addForcedCommand(commandC)
       }
     }

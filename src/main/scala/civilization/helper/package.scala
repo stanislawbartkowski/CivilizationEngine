@@ -985,8 +985,8 @@ package object helper {
     // minus
     // assuming all values in list are contained in all
     val min: Map[T, Int] = all.map(e => e._1 -> (e._2 - (if (mlist.get(e._1).isDefined) mlist.get(e._1).get else 0)))
-    // flatten file
-    min.map(e => Seq.fill(e._2)(e._1)).toSeq flatten
+    // flatten file and filter already used
+    min.filter(_._2 != 0).map(e => Seq.fill(e._2)(e._1)).toSeq flatten
   }
 
 
@@ -1005,10 +1005,10 @@ package object helper {
     getRandom(available toSeq)
   }
 
-  def getRandomCard(b: GameBoard): CultureCardName.Value = {
-    val allcards: Map[CultureCardName.Value, Int] = GameResources.instance().culturecards.map(c => c.name -> c.num) toMap
+  def getRandomCard(b: GameBoard, level: Int): CultureCardName.Value = {
+    val allcards: Map[CultureCardName.Value, Int] = GameResources.instance().culturecards.filter(_.level == level).map(c => c.name -> c.num) toMap
     val allused: Seq[CultureCardName.Value] = b.players.foldLeft[Seq[CultureCardName.Value]](b.cultureused.cards)((h, t) => h ++ t.cultureresource.cards)
-    val r : CultureCardName.Value = getRandomEnum(allcards, allused)
+    val r: CultureCardName.Value = getRandomEnum(allcards, allused)
     r
   }
 }
