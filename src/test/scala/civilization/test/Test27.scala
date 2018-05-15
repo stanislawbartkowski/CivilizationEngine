@@ -10,6 +10,7 @@ import civilization.objects.Civilization
 import org.scalatest.FunSuite
 import civilization.objects.Command
 import civilization.objects._
+import gherkin.deps.com.google.gson.JsonNull
 import play.api.libs.json.{JsArray, JsValue}
 
 
@@ -102,7 +103,7 @@ class Test27 extends FunSuite with ImplicitMiximToJson {
     assert(gper.length == 1)
   }
 
-  test("Advance cultuer and discard card") {
+  test("Advance culture and iscard card") {
     val reg = Helper.readBoardAndPlayT("test27/BOARDGAME3.json", "test27/PLAY4.json", Civilization.China)
     val token = reg._1
     var gg = I.getBoardForToken(token)
@@ -127,5 +128,57 @@ class Test27 extends FunSuite with ImplicitMiximToJson {
     assert(cu.length == 1)
   }
 
-
+  test("Advance culture, get great person and resign put on map") {
+    val reg = Helper.readBoardAndPlayT("test27/BOARDGAME5.json", "test27/PLAY5.json", Civilization.China)
+    val token = reg._1
+    var gg = I.getBoardForToken(token)
+    var l = allowedCommands(gg, Civilization.China)
+    println(l)
+    assert(l.length == 2)
+    assert(l contains Command.GREATPERSONPUTNOW)
+    assert(l contains Command.GREATPERSONPUTNOWRESIGN)
+    var ite = II.getData(II.ITEMIZECOMMAND, token, "GREATPERSONPUTNOW")
+    println(ite)
+    Helper.executeCommandH(token, "GREATPERSONPUTNOWRESIGN", -1, -1)
+    gg = I.getBoardForToken(token)
+    l = allowedCommands(gg, Civilization.China)
+    println(l)
+    assert(!(l contains Command.GREATPERSONPUTNOW))
+    assert(!(l contains Command.GREATPERSONPUTNOWRESIGN))
   }
+
+  test("Advance culture, get great person and put on map") {
+    val reg = Helper.readBoardAndPlayT("test27/BOARDGAME5.json", "test27/PLAY5.json", Civilization.China)
+    val token = reg._1
+    var gg = I.getBoardForToken(token)
+    var l = allowedCommands(gg, Civilization.China)
+    println(l)
+    val c =
+      """{"p":{"row":1,"col":2},"greatperson":"JimHenson"}"""
+    Helper.executeCommandH(token, "GREATPERSONPUTNOW", 1, 1, c)
+    gg = I.getBoardForToken(token)
+    l = allowedCommands(gg, Civilization.China)
+    println(l)
+    assert(!(l contains Command.GREATPERSONPUTNOW))
+    assert(!(l contains Command.GREATPERSONPUTNOWRESIGN))
+    val co = getCoins(gg, Civilization.China)
+    println(co)
+    assert(co.coins == 1)
+    val s = toJ(II.getData(II.GETBOARDGAME, token))
+    val ma = Helper.jmap(s)
+    println(ma)
+    var gtype :String = ""
+    ma.value.foreach(t => {
+      val ta: JsArray = t.as[JsArray]
+      ta.value.foreach(m => {
+        println(m)
+        val ptype : Option[String] = (m \ "greatpersontype").asOpt[String]
+        if (ptype.isDefined) gtype = ptype.get
+      }
+      )
+    }
+    )
+    println(gtype)
+    assert(gtype == "Humanitarian")
+  }
+}

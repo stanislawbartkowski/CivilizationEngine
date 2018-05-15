@@ -16,7 +16,8 @@ object genboardj {
   // if empty square : number of original production
   // if city: number of city production
   case class MapSquareJ(revealed: Boolean, t: Terrain.T, trade: Int, production: Int, resource: Option[Resource.T], capForCiv: Option[Civilization.T],
-                        civ: Civilization.T, city: City.T, defence: Int, numberofArmies: Int, numberofScouts: Int, tile: String, hv: Option[HutVillage.T], building: Option[BuildingName.T], wonder: Option[Wonders.T], culture: Int)
+                        civ: Civilization.T, city: City.T, defence: Int, numberofArmies: Int, numberofScouts: Int, tile: String, hv: Option[HutVillage.T], building: Option[BuildingName.T], wonder: Option[Wonders.T], culture: Int,
+                        greatperson : Option[GreatPersonName.T], greatpersontype : Option[GreatPersonTypeName.T])
 
   case class PlayerTech(val pl: PlayerTechnology, val level: Int, val coins: Int)
 
@@ -73,7 +74,9 @@ object genboardj {
       if (ss.s.hv.isDefined) Some(ss.s.hv.get.hv) else None,
       if (ss.s.building.isDefined) Some(ss.s.building.get.name) else None,
       if (ss.s.wonder.isDefined) Some(ss.s.wonder.get.w) else None,
-      if (ss.s.cityhere) cultureForCity(b, ss.p).culture else 0
+      if (ss.s.cityhere) cultureForCity(b, ss.p).culture else 0,
+      None,
+      if (ss.s.greatperson.isDefined) Some(ss.s.greatperson.get.ptype) else None
     )
   }
 
@@ -124,7 +127,7 @@ object genboardj {
     "handsize" -> p.limits.handsize,
     "travelspeed" -> p.limits.travelSpeed,
     "stacklimit" -> p.limits.stackinglimit,
-    "cultureresource" -> CultureResourcesToJSon.cultureToJSon(p.pl.cultureresource,you)
+    "cultureresource" -> CultureResourcesToJSon.cultureToJSon(p.pl.cultureresource, you)
   )
 
   private def genBoardGameJ(g: GameBoard, civ: Civilization.T): BoardGameJ = {
@@ -145,7 +148,9 @@ object genboardj {
       "tile" -> m.tile, S.hutvillage -> Option(m.hv),
       S.building -> m.building,
       S.wonder -> m.wonder,
-      S.culture -> m.culture
+      S.culture -> m.culture,
+      S.greatperson -> m.greatperson,
+      "greatpersontype" -> m.greatpersontype
     )
   }
 
@@ -184,7 +189,7 @@ object genboardj {
       S.wonders -> writeListOfWondersNames(g.market.wonders.take(WONDERWINDOW)),
       S.battle -> genBattleJson(g, civ),
       S.buildings -> Json.toJson(g.market.buildings),
-      "cultureused" -> CultureResourcesToJSon.cultureToJSon(g.cultureused,true)
+      "cultureused" -> CultureResourcesToJSon.cultureToJSon(g.cultureused, true)
     ))))
   }
 

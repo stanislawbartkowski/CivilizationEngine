@@ -86,7 +86,8 @@ package object fromjson extends ImplicitMiximFromJson {
   implicit val buildingpointReads: Reads[BuildingPoint] = (
     (JsPath \ S.p).read[P] and
       (JsPath \ S.building).readNullable[BuildingName.T] and
-      (JsPath \ S.wonder).readNullable[Wonders.T]
+      (JsPath \ S.wonder).readNullable[Wonders.T] and
+      (JsPath \ S.greatperson).readNullable[GreatPersonName.T]
     ) (BuildingPoint.apply _)
 
   implicit val builingReads: Reads[Building] = (

@@ -138,6 +138,15 @@ package object gameboard {
 
     def cityhere: Boolean = city.isDefined
 
+    var greatperson : Option[GreatPerson] = None
+    var greatpersonype : GreatPersonType = null
+
+    def setGreatPerson(g : GreatPersonName.T) = {
+      greatperson = Some(GameResources.getGreatPerson(g))
+      greatpersonype = GameResources.getGreatPersonType(greatperson.get.ptype)
+    }
+
+    def removeGreatPerson() = greatperson = None
 
     def setBuilding(b: BuildingName.T) = building = Some(GameResources.getBuilding(b))
 
@@ -287,17 +296,20 @@ package object gameboard {
     def attackerwinner: Boolean = attacker.points > defender.points
   }
 
-  case class BuildingPoint(val p: P, val bui: Option[BuildingName.T], val won: Option[Wonders.T]) {
-    require(bui.isDefined && won.isEmpty || bui.isEmpty && won.isDefined)
+  case class BuildingPoint(val p: P, val bui: Option[BuildingName.T], val won: Option[Wonders.T], val gp : Option[GreatPersonName.T]) {
+    require(bui.isDefined && won.isEmpty&&gp.isEmpty || bui.isEmpty&& won.isDefined&&gp.isEmpty || bui.isEmpty&&won.isEmpty&&gp.isDefined)
 
     def ==(that: BuildingPoint): Boolean =
-      p == that.p &&
-        (bui.isDefined && that.bui.isDefined && bui.get == that.bui.get ||
-          (won.isDefined && that.won.isDefined && won.get == that.won.get))
+      p == that.p  &&
+        (bui.isDefined && that.bui.isDefined && b == that.b ||
+          (won.isDefined && that.won.isDefined && w == that.w) ||
+          (gp.isDefined && that.gp.isDefined && g == that.g))
 
     def b = bui.get
 
     def w = won.get
+
+    def g = gp.get
   }
 
   case class GameBoard(val players: Seq[PlayerDeck], val map: BoardMap, val resources: Resources, val market: Market) {

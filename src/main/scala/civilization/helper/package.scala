@@ -20,13 +20,22 @@ package object helper {
     def numberOfTrade: Int =
     // if building trade from building
       if (s.building.isDefined) s.building.get.tokens.numofTrade
+      else if (s.wonder.isDefined) 0
+      else if (s.greatperson.isDefined) s.greatpersonype.tokens.numofTrade
       else sm.token.numofTrade
 
     def numberOfProduction: Int =
     // if wonder, no production
       if (s.wonder.isDefined) 0
-      else /* if building, production from building */ if (s.building.isDefined) s.building.get.tokens.numofProduction
+      else if (s.building.isDefined) s.building.get.tokens.numofProduction
+      else if (s.greatperson.isDefined) s.greatpersonype.tokens.numofProduction
       else sm.token.numofProduction
+
+    def numofCoins : Int =
+      if (s.greatperson.isDefined) s.greatpersonype.tokens.numofCoins
+      else if (resource.isDefined)
+        if (resource.get == Resource.Coin) 1 else 0
+      else 0
 
     def resource: Option[Resource.T] =
     // building covers resource
@@ -37,6 +46,7 @@ package object helper {
     def culture: Int =
       if (s.building.isDefined)
         s.building.get.tokens.numofCulture
+      else if (s.greatperson.isDefined) s.greatpersonype.tokens.numofCulture
       else if (s.wonder.isDefined) 0
       else if (resource.isEmpty) 0
       else if (resource.get == Resource.Culture) 1 else 0
@@ -83,7 +93,7 @@ package object helper {
   private def outskirtsForCivNotBlocked(b: GameBoard, civ: Civilization.T): Seq[MapSquareP] =
     outskirtsForCiv(b, civ).filter(squareNotBlocked(b, civ, _))
 
-  private def outskirtsForCityNotBlocked(b: GameBoard, civ: Civilization.T, p: P): Seq[MapSquareP] =
+  def outskirtsForCityNotBlocked(b: GameBoard, civ: Civilization.T, p: P): Seq[MapSquareP] =
     squaresAround(b, p).filter(squareNotBlocked(b, civ, _))
 
   def pointtoTile(p: P): P = P(p.row / TILESIZE, p.col / TILESIZE)
@@ -727,12 +737,8 @@ package object helper {
   }
 
   def getProductionForCity(b: GameBoard, civ: Civilization.T, p: P): ProdForCity = {
-    //val num: Int = squaresAround(b, p).map(s => getSquare(b, s.p).numberOfProduction).foldLeft(0)(_ + _)
 
-    //    val num: Int = squaresAround(b, p).filter(squareNotBlocked(b, civ, _)).map(s => getSquare(b, s.p).numberOfProduction).sum
     val num: Int = outskirtsForCityNotBlocked(b, civ, p).map(_.numberOfProduction).sum
-
-    //val num: Int = outskirtsForCityResource(b, civ, p).map(_.numberOfProduction).sum
 
     val prod: Option[Int] = spendProdForCities(b, civ).get(p)
     val prodfromtrade: Int = if (prod.isDefined) prod.get else 0
@@ -756,18 +762,18 @@ package object helper {
     val techabilities: Int = pl.tech.map(t => b.getTech(t.tech)).map(te => if (te.coins.isEmpty) 0 else te.coins.get).sum
 
     // number of squares with coins
-    val squares: Int = outskirtsForCivNotBlocked(b, civ).
-      filter(s => s.resource.isDefined && s.resource.get == Resource.Coin).length
+    val squares: Int = outskirtsForCivNotBlocked(b, civ).map(m => m.numofCoins).sum
+//      filter(s => s.resource.isDefined && s.resource.get == Resource.Coin).length
     val scouts: Int = allScoutsOutside(b, civ).filter(s => s.resource.isDefined && s.resource.get == Resource.Coin).length
     EconomyForCiv(tech, squares, scouts, techabilities)
   }
 
   // ==============================================
 
-  private def calculateCombatBonus(b: GameBoard, civ: Civilization.T): Int = {
-    // all buildings
+  private def calculateCombatBonus(b: GameBoard, civ: Civilization.T): Int =
+  // all buildings
     outskirtsForCivNotBlocked(b, civ).filter(_.s.building.isDefined).foldLeft(0) { (sum, s) => sum + s.s.building.get.tokens.numofBattle }
-  }
+
 
   // ==============================================
 
@@ -883,16 +889,27 @@ package object helper {
 
   def removeWonder(b: GameBoard, s: MapSquareP) = s.s.wonder = None
 
-  def canBuild(s: MapSquareP, civ: Civilization.T): Boolean = {
-    val civhere: Option[Civilization.T] = s.civHere
-    if (civhere.isEmpty) return true
-    return civhere.get == civ
+  def getStructureHere(p: MapSquareP): Seq[P] = if (p.s.building.isDefined || p.s.wonder.isDefined || p.s.greatperson.isDefined) Seq(p.p) else Nil
+
+  def getOutskirtsForBuild(b: GameBoard, civ: Civilization.T, city: P): Seq[MapSquareP] = outskirtsForCityNotBlocked(b, civ, city).
+    filter(_.sm.terrain != Terrain.Water)
+
+
+  def removeStructure(b: GameBoard, ma: MapSquareP) = {
+    if (ma.s.building.isDefined)
+      removeBuilding(b, ma)
+    // remove wonder if exist
+    if (ma.s.wonder.isDefined)
+      removeWonder(b, ma)
+    // remove great person
+    if (ma.s.greatperson.isDefined)
+      ma.s.greatperson = None
   }
 
   // ===========================
   // culture for city
   // ===========================
-  case class CultureForCity(cityculture: Int, outskirts: Int, scouts: Int) {
+  case class CultureForCity(val cityculture: Int, val outskirts: Int, val scouts: Int) {
     def culture: Int = cityculture + outskirts + scouts
   }
 
@@ -1008,7 +1025,23 @@ package object helper {
   def getRandomCard(b: GameBoard, level: Int): CultureCardName.Value = {
     val allcards: Map[CultureCardName.Value, Int] = GameResources.instance().culturecards.filter(_.level == level).map(c => c.name -> c.num) toMap
     val allused: Seq[CultureCardName.Value] = b.players.foldLeft[Seq[CultureCardName.Value]](b.cultureused.cards)((h, t) => h ++ t.cultureresource.cards)
-    val r: CultureCardName.Value = getRandomEnum(allcards, allused)
-    r
+    getRandomEnum(allcards, allused)
+  }
+
+  // ------------------------------
+  // great person gained now
+  // ------------------------------
+
+  def isGreatPersonNow(b: GameBoard, civ: Civilization.T): Option[GreatPersonName.T] = {
+    val p: Array[Command] = lastPhaseCommandsReverse(b, civ, TurnPhase.CityManagement) toArray
+
+    for (i <- 0 until p.length) {
+      if (p(i).command == Command.ADVANCECULTURE && i > 0 && p(i - 1).command == Command.GREATPERSON) {
+        val gp: GreatPersonName.T = p(i - 1).param.asInstanceOf[GreatPersonName.T]
+        if (i == 1) return Some(gp)
+        return None
+      }
+    }
+    return None
   }
 }

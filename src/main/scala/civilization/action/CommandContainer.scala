@@ -10,7 +10,7 @@ object CommandContainer {
   val commands: Seq[CommandPackage] = Seq(BuyUnit, SpendTrade, SendProduction, HarvestResource, ResearchTechnology,
     BuyBuildingCommand, BuyWorldWonder,
     PotteryPhilosophyAction, SetCityAction,
-    SetFigureAction, DevoutToCultureCommand, AdvanceCulture,CurrencyAction, DiscardCard)
+    SetFigureAction, DevoutToCultureCommand, AdvanceCulture,CurrencyAction, DiscardCard, GreatPersonAction)
 
   val comset: Map[Command.T, CommandPackage] = commands.map(c => c.getSet.map(co => (co, c))).flatten.map(c => c._1 -> c._2) toMap
 

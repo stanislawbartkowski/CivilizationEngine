@@ -39,21 +39,21 @@ object BuyWorldWonder extends CommandPackage with ImplicitMiximFromJson with Imp
     if (m.isDefined) Some(m.get.p) else None
   }
 
-  private def getablePoints(b: GameBoard, civ: Civilization.T, city: P): Seq[MapSquareP] = squaresAround(b, city).filter(ss => canBuild(ss, civ) && ss.sm.terrain != Terrain.Water)
+//  private def getablePoints(b: GameBoard, civ: Civilization.T, city: P): Seq[MapSquareP] = squaresAround(b, city).filter(ss => canBuild(ss, civ) && ss.sm.terrain != Terrain.Water)
 
   private def possibleWonders(b: GameBoard, civ: Civilization.T, city: P): Seq[BuildSquare] = {
     var res: Seq[BuildSquare] = Nil
     // possible squares, all except Water
-    var points: Seq[MapSquareP] = getablePoints(b, civ, city)
+    var points: Seq[MapSquareP] = getOutskirtsForBuild(b, civ, city)
     val wond: Option[P] = findBuiltWonder(points)
     // TODO: improve,
     wondersForCity(b, civ, city).foreach(w => {
       res = res ++ points.map(p => {
         // remove existing wonder
-        var remove: Seq[P] = if (wond.isDefined) Seq(wond.get) else Nil
-        // remove also building if exists
-        if (p.s.building.isDefined) remove = remove :+ p.p
-        BuildSquare.BuildSquare(BuildingPoint(p.p, None, Some(w)), remove)
+        val r : Seq[P] = if (wond.isDefined && wond.get != p.p) Seq(wond.get) else Nil
+        val remove : Seq[P] = r ++ getStructureHere(p)
+
+        BuildSquare.BuildSquare(BuildingPoint(p.p, None, Some(w),None), remove)
       })
     })
     res
@@ -68,7 +68,7 @@ object BuyWorldWonder extends CommandPackage with ImplicitMiximFromJson with Imp
       verifyB(board, civ, p, param, message.M.CANNOTBUYWONDERGHERE, possibleWonders)
 
     override def execute(board: gameboard.GameBoard): Unit = {
-      val wond: Option[P] = findBuiltWonder(getablePoints(board, civ, p))
+      val wond: Option[P] = findBuiltWonder(outskirtsForCityNotBlocked(board, civ, p))
       if (wond.isDefined) {
         val w: MapSquareP = getSquare(board, wond.get)
         // remove existing wonder
@@ -76,7 +76,8 @@ object BuyWorldWonder extends CommandPackage with ImplicitMiximFromJson with Imp
       }
       val ww: MapSquareP = getSquare(board, param.p)
       // destroy building if exist
-      if (ww.s.building.isDefined) removeBuilding(board, ww)
+//      if (ww.s.building.isDefined) removeBuilding(board, ww)
+      removeStructure(board,ww)
       // build wonder
       ww.s.wonder = Some(WonderSquare(param.w, false))
       // remove wonder from list
@@ -87,5 +88,5 @@ object BuyWorldWonder extends CommandPackage with ImplicitMiximFromJson with Imp
   override def produceCommand(command: Command.T, civ: Civilization.T, p: P, param: JsValue) = new BuyWonder(param)
 
   override def itemize(b: GameBoard, civ: Civilization.T, com: Command.T): Seq[JsValue] =
-    itemizeB(b, civ, possibleWonders)
+    itemizeB(b, civ, false, possibleWonders)
 }

@@ -40,4 +40,7 @@ object GameResources {
 
   def getWonder(t: Wonders.T): WondersOfTheWorld = instance().wonders.find(_.name == t).get
 
+  def getGreatPerson(p : GreatPersonName.T) = instance().greatpersons.find(_.name == p).get
+
+  def getGreatPersonType(t : GreatPersonTypeName.T) = instance().greatpersontype.find(_.name == t).get
 }
