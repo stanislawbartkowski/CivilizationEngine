@@ -1,16 +1,16 @@
 package civilization.test
 
 import civilization.gameboard.GameBoard
-import civilization.io.readdir._
 import civilization.objects._
 import civilization.io.tojson._
 import civilization.io.fromjson._
 import play.api.libs.json._
 import org.scalatest.FunSuite
-import civilization.I.II._
 import civilization.helper._
 import civilization.message.Mess
 import civilization.io.readdir.GenBoard.genBoard
+import Helper.II
+
 
 
 class Test7 extends FunSuite {
@@ -59,11 +59,11 @@ class Test7 extends FunSuite {
 
   test("Register") {
 
-    val s: String = getData(REGISTEROWNER, "Germany")
+    val s: String = II.getData(II.REGISTEROWNER, "Germany")
     println(s)
-    val b: String = getData(GETBOARDGAME, s)
+    val b: String = II.getData(II.GETBOARDGAME, s)
     println(b)
-    val ll = getData(LISTOFRES, null)
+    val ll = II.getData(II.LISTOFRES, null)
     println(ll)
 
   }
@@ -83,14 +83,14 @@ class Test7 extends FunSuite {
   }
 
   test("Execute command") {
-    val token: String = getData(REGISTEROWNER, "Germany")
-    var m: String = executeCommand(token, "SETCAPITAL", 2, 3, null)
+    val token: String = II.getData(II.REGISTEROWNER, "Germany")
+    var m: String = II.executeCommand(token, "SETCAPITAL", 2, 3, null)
     println(m)
     assert(m != null)
-    m = executeCommand(token, "SETCAPITAL", 2, 2, null)
+    m = II.executeCommand(token, "SETCAPITAL", 2, 2, null)
     println(m)
     assert(m == null)
-    m = executeCommand(token, "SETCAPITAL", 2, 2, null)
+    m = II.executeCommand(token, "SETCAPITAL", 2, 2, null)
     println(m)
     assert(m != null)
   }

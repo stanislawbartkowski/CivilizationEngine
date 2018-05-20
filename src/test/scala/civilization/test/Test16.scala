@@ -9,6 +9,8 @@ import civilization.io.fromjson._
 import civilization.objects.{Civilization, Command, _}
 import org.scalatest.FunSuite
 import play.api.libs.json.{JsArray, JsValue, _}
+import Helper.II
+
 
 class Test16  extends FunSuite {
 

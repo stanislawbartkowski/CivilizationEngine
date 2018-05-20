@@ -12,6 +12,7 @@ import civilization.objects.{Civilization, Command}
 import org.scalatest.FunSuite
 import play.api.libs.json._
 import civilization.objects._
+import Helper.II
 
 class Test17 extends FunSuite with ImplicitMiximToJson {
 

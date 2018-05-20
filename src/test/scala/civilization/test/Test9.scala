@@ -10,6 +10,8 @@ import civilization.objects._
 import org.scalatest.FunSuite
 import play.api.libs.json._
 import civilization.helper.move.MoveItemize.{PossibleMove, itemizeForMove}
+import Helper.II
+
 
 
 class Test9 extends FunSuite {

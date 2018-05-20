@@ -1,7 +1,6 @@
 package civilization.test
 
 import civilization.I
-import civilization.I.II
 import civilization.gameboard.GameBoard
 import civilization.helper.AllowedCommands.allowedCommands
 import civilization.io.fromjson.ImplicitMiximFromJson
@@ -11,6 +10,7 @@ import civilization.objects._
 import play.api.libs.json._
 import civilization.io.fromjson.{toJ, _}
 import civilization.helper._
+import Helper.II
 
 class Test21 extends FunSuite with ImplicitMiximFromJson {
 

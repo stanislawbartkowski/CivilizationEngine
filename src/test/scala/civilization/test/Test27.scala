@@ -1,20 +1,17 @@
 package civilization.test
 
 import civilization.I
-import civilization.I.{II, executeCommand}
 import civilization.helper.AllowedCommands.allowedCommands
 import civilization.helper._
-import civilization.io.fromjson.toJ
+import civilization.io.fromjson._
 import civilization.io.tojson.ImplicitMiximToJson
-import civilization.objects.Civilization
+import civilization.objects.{Civilization, Command, _}
+import civilization.test.Helper.II
 import org.scalatest.FunSuite
-import civilization.objects.Command
-import civilization.objects._
-import gherkin.deps.com.google.gson.JsonNull
 import play.api.libs.json.{JsArray, JsValue}
 
 
-class Test27 extends FunSuite with ImplicitMiximToJson {
+class Test27 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJson {
 
   Helper.I
 
@@ -167,12 +164,12 @@ class Test27 extends FunSuite with ImplicitMiximToJson {
     val s = toJ(II.getData(II.GETBOARDGAME, token))
     val ma = Helper.jmap(s)
     println(ma)
-    var gtype :String = ""
+    var gtype: String = ""
     ma.value.foreach(t => {
       val ta: JsArray = t.as[JsArray]
       ta.value.foreach(m => {
         println(m)
-        val ptype : Option[String] = (m \ "greatpersontype").asOpt[String]
+        val ptype: Option[String] = (m \ "greatpersontype").asOpt[String]
         if (ptype.isDefined) gtype = ptype.get
       }
       )
@@ -181,4 +178,51 @@ class Test27 extends FunSuite with ImplicitMiximToJson {
     println(gtype)
     assert(gtype == "Humanitarian")
   }
+
+  test("Buiding on water") {
+    val reg = Helper.readBoardAndPlayT("test27/BOARDGAME6.json", "test27/PLAY6.json", Civilization.China)
+    val token = reg._1
+    val gg = I.getBoardForToken(token)
+    val l = allowedCommands(gg, Civilization.China)
+    println(l)
+    assert(l contains Command.BUYBUILDING)
+    val ite: JsArray = toJ(II.getData(II.ITEMIZECOMMAND, token, "BUYBUILDING")).as[JsArray]
+    println(ite)
+    val ci = ite.value.head
+    val li = (ci \ "list").as[JsArray]
+    println(li)
+    val ma = getSquare(gg, P(0, 1))
+    println(ma)
+    // (0,1) water, cannot build here
+    assert(ma.terrain == Terrain.Water)
+    li.value.foreach(t => {
+      println(t)
+      val p = (t \ "p").as[P]
+      println(p)
+      val ss = getSquare(gg, p)
+      assert(ss.terrain != Terrain.Water)
+    }
+    )
+  }
+
+  test("Start of the game, great person") {
+    val reg = Helper.readBoardAndPlayT("test27/BOARDGAME7.json", "test27/PLAY7.json", Civilization.China)
+    val token = reg._1
+    var gg = I.getBoardForToken(token)
+    var l = allowedCommands(gg, Civilization.China)
+    println(l)
+    assert(l contains Command.GREATPERSONPUT)
+    val ite: JsArray = toJ(II.getData(II.ITEMIZECOMMAND, token, "GREATPERSONPUT")).as[JsArray]
+    println(ite)
+    val c =
+      """{"p":{"row":0,"col":0},"greatperson":"Valmiki"}"""
+    Helper.executeCommandH(token, "GREATPERSONPUT", 1, 1, c)
+    // command again
+    gg = I.getBoardForToken(token)
+    l = allowedCommands(gg, Civilization.China)
+    println(l)
+    assert(!(l contains Command.GREATPERSONPUT))
+  }
+
 }
+

@@ -8,6 +8,8 @@ import civilization.message._
 import civilization.objects._
 import org.scalatest.FunSuite
 import play.api.libs.json.JsValue
+import Helper.II
+
 
 class Test5 extends FunSuite {
 

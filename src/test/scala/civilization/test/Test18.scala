@@ -1,7 +1,6 @@
 package civilization.test
 
 import civilization.I
-import civilization.I.II
 import civilization.gameboard.GameBoard
 import civilization.helper.AllowedCommands.allowedCommands
 import civilization.helper.{MapSquareP, getSquare}
@@ -9,6 +8,8 @@ import civilization.io.fromjson.toJ
 import civilization.io.tojson.ImplicitMiximToJson
 import civilization.objects._
 import org.scalatest.FunSuite
+import Helper.II
+
 
 class Test18 extends FunSuite with ImplicitMiximToJson {
 

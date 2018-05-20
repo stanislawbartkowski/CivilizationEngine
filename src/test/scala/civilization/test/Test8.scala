@@ -8,6 +8,8 @@ import civilization.io.fromjson.{toJ, _}
 import civilization.objects._
 import org.scalatest.FunSuite
 import play.api.libs.json.{JsValue, _}
+import Helper.II
+
 
 class Test8 extends FunSuite {
 

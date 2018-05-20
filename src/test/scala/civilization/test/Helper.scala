@@ -8,15 +8,24 @@ import civilization.io.readdir.{readGameBoard, readPlay, readTestJSON}
 import civilization.message.{FatalError, Mess}
 import civilization.objects.{CommandValues, _}
 import play.api.libs.json._
-import civilization.I.II
 import civilization.io.fromjson.toJ
+import civilization.II.factory._
 
 object Helper {
 
+
+//  RR.setConnection("localhost", 6379, 1)
+  //    R.setConnection("redis://localhost:6379")
+//  civilization.I.setR(RR.RA)
+  val II = Factory.getI
+  val RA = Factory.getR
+  RA.getConn.setConnection("localhost", 6379, 1)
+  II.setR(RA)
+
   def I = {
-    RR.setConnection("localhost", 6379, 1)
+//    RR.setConnection("localhost", 6379, 1)
     //    R.setConnection("redis://localhost:6379")
-    civilization.I.setR(RR.RA)
+//    civilization.I.setR(RR.RA)
   }
 
   def getBoard(path: String): GameBoard = {
@@ -47,7 +56,7 @@ object Helper {
     val g: GameBoard = gg._2
     val token: String = gg._1
     val p: Seq[CommandValues] = getPlay(playPath)
-    val game: CurrentGame = RR.RA.getCurrentGame(token)
+    val game: CurrentGame = RA.getCurrentGame(token)
     p.foreach(co =>  executeC((game, g), co))
     (token, g)
   }
@@ -57,7 +66,7 @@ object Helper {
   def ReadAndPlayForTwo(boardpath: String, playPath: String, civ1: Civilization.T, civ2: Civilization.T): (String, String) = {
     val cu = readBoardAndPlayT(boardpath, playPath, civ1)
     val token: String = cu._1
-    val game: CurrentGame = RR.RA.getCurrentGame(token)
+    val game: CurrentGame = RA.getCurrentGame(token)
     val gameid: Int = game.gameid
     val ctoken: String = II.joinGame(gameid, civ2.toString)
     return (token, ctoken)

@@ -8,6 +8,8 @@ import civilization.helper.AllowedCommands.allowedCommands
 import civilization.helper._
 import civilization.objects.{Civilization, Command, P}
 import org.scalatest.FunSuite
+import Helper.II
+
 
 
 class Test12 extends FunSuite {

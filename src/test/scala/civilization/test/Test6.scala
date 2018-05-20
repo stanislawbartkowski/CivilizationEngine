@@ -8,6 +8,8 @@ import civilization.io.readdir.GenBoard.genBoard
 import civilization.message._
 import civilization.objects._
 import org.scalatest.FunSuite
+import Helper.II
+
 
 
 class Test6 extends FunSuite {

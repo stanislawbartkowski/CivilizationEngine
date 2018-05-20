@@ -14,7 +14,7 @@ import civilization.helper.BuyWorldWonder.possibleWonders
 
 object GreatPersonAction extends CommandPackage with ImplicitMiximFromJson with ImplicitMiximToJson {
 
-  override def getSet: Set[Command.T] = Set(Command.GREATPERSONPUTNOW, Command.GREATPERSONPUTNOWRESIGN)
+  override def getSet: Set[Command.T] = Set(Command.GREATPERSONPUTNOW, Command.GREATPERSONPUTNOWRESIGN, Command.GREATPERSONPUT)
 
   private def possibleGreatPersons(gp: Seq[GreatPersonName.T])(b: GameBoard, civ: Civilization.T, city: P): Seq[BuildSquare] = {
     getOutskirtsForBuild(b, civ, city).flatMap(pp => gp.map(g =>
@@ -43,12 +43,16 @@ object GreatPersonAction extends CommandPackage with ImplicitMiximFromJson with 
 
 
   override def itemize(b: GameBoard, civ: Civilization.T, com: Command.T): Seq[JsValue] = {
-    val gp: Option[GreatPersonName.T] = isGreatPersonNow(b, civ)
-    if (gp.isEmpty) return Nil
-    if (com == Command.GREATPERSONPUTNOWRESIGN) return Seq(gp.get)
-
+    var l : Seq[GreatPersonName.T] = Nil
+    if (com != Command.GREATPERSONPUT) {
+      val gp: Option[GreatPersonName.T] = isGreatPersonNow(b, civ)
+      if (gp.isEmpty) return Nil
+      l = Seq(gp.get)
+      if (com == Command.GREATPERSONPUTNOWRESIGN) return l
+    }
+    else l = greatPersonReady(b,civ)
     // curry function
-    def f: PossibleP = possibleGreatPersons(Seq(gp.get))
+    def f: PossibleP = possibleGreatPersons(l)
     itemizeB(b, civ, true, f)
   }
 

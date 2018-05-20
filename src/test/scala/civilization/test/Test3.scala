@@ -4,6 +4,8 @@ import civilization.gameboard.GameBoard
 import civilization.objects._
 import civilization.helper._
 import org.scalatest.FunSuite
+import Helper.II
+
 
 class Test3 extends FunSuite {
 

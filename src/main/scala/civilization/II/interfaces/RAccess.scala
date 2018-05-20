@@ -1,6 +1,8 @@
-package civilization.I
+package civilization.II.interfaces
 
 trait RAccess {
+
+  def getConn : RConnection
 
   // current game cache
   def getCurrentGame(token: String): String

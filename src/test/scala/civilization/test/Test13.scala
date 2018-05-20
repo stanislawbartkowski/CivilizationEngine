@@ -1,7 +1,6 @@
 package civilization.test
 
 import civilization.I
-import civilization.I.II
 import civilization.I.registerGame
 import civilization.gameboard.GameBoard
 import civilization.helper.AllowedCommands.allowedCommands
@@ -10,6 +9,8 @@ import civilization.objects.{Civilization, Command, P}
 import org.scalatest.FunSuite
 import civilization.io.fromjson._
 import play.api.libs.json.JsArray
+import Helper.II
+
 
 class Test13 extends FunSuite {
 

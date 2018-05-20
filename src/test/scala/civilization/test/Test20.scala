@@ -1,6 +1,6 @@
 package civilization.test
 
-import civilization.I.{CurrentGame, II, executeCommand}
+import civilization.I.{CurrentGame, executeCommand}
 import civilization.{I, RR}
 import civilization.gameboard.GameBoard
 import civilization.gameboard._
@@ -14,6 +14,8 @@ import civilization.io.readdir._
 import civilization.io.fromjson.ImplicitMiximFromJson
 import civilization.io.readdir.GenBoard.genBoard
 import civilization.io.readdir.GameResources
+import Helper.{II,RA}
+
 
 class Test20 extends FunSuite with ImplicitMiximFromJson {
 
@@ -22,7 +24,7 @@ class Test20 extends FunSuite with ImplicitMiximFromJson {
   test("Two players game") {
     val token: String = II.getData(II.REGISTEROWNERTWOGAME, "Rome,China")
     println(token)
-    val game: CurrentGame = RR.RA.getCurrentGame(token)
+    val game: CurrentGame = RA.getCurrentGame(token)
     val gameid: Int = game.gameid
     println(gameid)
     val ctoken: String = II.joinGame(gameid, Civilization.China.toString)
@@ -96,7 +98,7 @@ class Test20 extends FunSuite with ImplicitMiximFromJson {
   test("Two players game, build capital on the other player home tile") {
     val token: String = II.getData(II.REGISTEROWNERTWOGAME, "Rome,China")
     println(token)
-    val game: CurrentGame = RR.RA.getCurrentGame(token)
+    val game: CurrentGame = RA.getCurrentGame(token)
     val gameid: Int = game.gameid
     println(gameid)
     val ctoken: String = II.joinGame(gameid, Civilization.China.toString)
@@ -121,7 +123,7 @@ class Test20 extends FunSuite with ImplicitMiximFromJson {
   test("Two players game, building in turn") {
     val token: String = II.getData(II.REGISTEROWNERTWOGAME, "Rome,China")
     println(token)
-    val game: CurrentGame = RR.RA.getCurrentGame(token)
+    val game: CurrentGame = RA.getCurrentGame(token)
     val gameid: Int = game.gameid
     println(gameid)
     val ctoken: String = II.joinGame(gameid, Civilization.China.toString)
@@ -167,7 +169,7 @@ class Test20 extends FunSuite with ImplicitMiximFromJson {
   test("Two players game, check JSon for technologies") {
     val token: String = II.getData(II.REGISTEROWNERTWOGAME, "Rome,China")
     println(token)
-    val game: CurrentGame = RR.RA.getCurrentGame(token)
+    val game: CurrentGame = RA.getCurrentGame(token)
     val gameid: Int = game.gameid
     println(gameid)
     val ctoken: String = II.joinGame(gameid, Civilization.China.toString)

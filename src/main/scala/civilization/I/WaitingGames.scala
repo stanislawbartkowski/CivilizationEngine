@@ -1,6 +1,7 @@
 package civilization.I
 
 
+import civilization.II.interfaces.RAccess
 import civilization.io.fromjson._
 import civilization.objects._
 import play.api.libs.json.{JsValue, Json}

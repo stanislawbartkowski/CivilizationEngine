@@ -4,6 +4,7 @@ import java.math.BigInteger
 import java.security.SecureRandom
 
 import civilization.RR
+import civilization.II.factory._
 
 object Main5 {
 
@@ -12,7 +13,7 @@ object Main5 {
   private def genToken(): String = new BigInteger(130, random).toString(32)
 
   def main1(): Unit = {
-    val r = RR.RA
+    val r = Factory.getR
     val token: String = genToken()
     r.registerCurrentGame(token, "aaaa")
     println(r.getCurrentGame(token))
@@ -35,14 +36,14 @@ object Main5 {
   }
 
   def main2() = {
-    val r = RR.RA
+    val r = Factory.getR
     val p: Seq[(Int, String)] = r.getGames()
     p.foreach(println)
   }
 
   def main(args: Array[String]): Unit = {
 
-    RR.setConnection("localhost", 6379)
+    Factory.getR.getConn.setConnection("localhost", 6379)
     //    main1
     main2
 

@@ -1,6 +1,6 @@
 package civilization
 
-import civilization.I.RAccess
+import civilization.II.interfaces.{RAccess, RConnection}
 import com.redis._
 
 package object R {
@@ -33,7 +33,7 @@ package object R {
     //    private final val expireT: Int = 3600 * 24
     private final val expireT: Int = 3600
 
-    private final val r: RedisClientPool = rr.get
+    private final def r: RedisClientPool = rr.get
 
     private def currentKey(token: String) = CIVILIZATION + "." + CURRENT + "." + token
 
@@ -105,6 +105,13 @@ package object R {
       keys.map(extractGameId(_)).map(g => (g, getMetaData(g)))
     }
 
+    override def getConn : RConnection = new RConnection () {
+      override def setConnection(host: String, port: Int, database: Int): Unit =
+        RR.setConnection(host,port,database)
+
+      override def setConnection(url: String): Unit = RR.setConnection(url)
+    }
+
   }
 
   private var rr: Option[RedisClientPool] = None
@@ -127,17 +134,12 @@ package object R {
     if (rr.isEmpty) rr = Some(new RedisClientPool(u.getHost, u.getPort, secret = psecret))
   }
 
-  // multiply R instances but accessing single connection all the time
-  def R: RAccess = new R()
-
 }
 
+private object RR {
 
-// to be visible from Java
-object RR {
   def setConnection(host: String, port: Int, database: Int = 0) = R.setConnection(host, port, database)
 
   def setConnection(url: String): Unit = R.setConnection(url)
 
-  def RA: RAccess = R.R
 }

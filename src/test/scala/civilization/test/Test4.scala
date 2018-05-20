@@ -7,6 +7,8 @@ import civilization.io.fromjson._
 import civilization.message.Mess
 import civilization.objects._
 import org.scalatest.FunSuite
+import Helper.II
+
 
 class Test4 extends FunSuite {
 

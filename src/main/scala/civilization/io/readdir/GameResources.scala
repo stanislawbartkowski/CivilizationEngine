@@ -8,7 +8,7 @@ import civilization.io.readdir._
 import civilization.io.tojson._
 import play.api.libs.json.{JsValue, Json}
 
-case class GameResources private(val civ: Seq[CivilizationG], val tech: Seq[Technology], val wonders: Seq[WondersOfTheWorld], val buldings: Seq[Building], val culturetrack: CultureTrack, val greatpersontype : Seq[GreatPersonType], val greatpersons : Seq[GreatPerson], val culturecards : Seq[CultureCard])
+case class GameResources private(val civ: Seq[CivilizationG], val tech: Seq[Technology], val wonders: Seq[WondersOfTheWorld], val buldings: Seq[Building], val culturetrack: CultureTrack, val greatpersontype: Seq[GreatPersonType], val greatpersons: Seq[GreatPerson], val culturecards: Seq[CultureCard])
 
 object GameResources {
 
@@ -16,7 +16,7 @@ object GameResources {
 
   def instance() = {
     if (_instance == null)
-      _instance = new GameResources(readListOfCivs, readTechnologies, readListOfWonders, readListOfBuildings, readCultureTrack,readListOfGreatPersonType,readListOfGreatPersons, readCultureCards)
+      _instance = new GameResources(readListOfCivs, readTechnologies, readListOfWonders, readListOfBuildings, readCultureTrack, readListOfGreatPersonType, readListOfGreatPersons, readCultureCards)
     _instance
   }
 
@@ -40,7 +40,7 @@ object GameResources {
 
   def getWonder(t: Wonders.T): WondersOfTheWorld = instance().wonders.find(_.name == t).get
 
-  def getGreatPerson(p : GreatPersonName.T) = instance().greatpersons.find(_.name == p).get
+  def getGreatPerson(p: GreatPersonName.T) = instance().greatpersons.find(_.name == p).get
 
-  def getGreatPersonType(t : GreatPersonTypeName.T) = instance().greatpersontype.find(_.name == t).get
+  def getGreatPersonType(t: GreatPersonTypeName.T) = instance().greatpersontype.find(_.name == t).get
 }

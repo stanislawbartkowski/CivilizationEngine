@@ -4,7 +4,7 @@ import java.math.BigInteger
 import java.security.SecureRandom
 import java.util.Calendar
 
-import civilization.I.RAccess
+import civilization.II.interfaces.RAccess
 import civilization.action._
 import civilization.gameboard.{GameBoard, GameMetaData}
 import civilization.helper._

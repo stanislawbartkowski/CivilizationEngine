@@ -44,7 +44,7 @@ object BuyBuildingCommand extends CommandPackage with ImplicitMiximFromJson with
   }
 
   private def canbebuiltHere(m: MapSquareP, b: Building): Boolean = {
-      if (b.terrain.isEmpty) true else b.terrain.get == m.sm.terrain
+    if (b.terrain.isEmpty) m.terrain != Terrain.Water else b.terrain.get == m.sm.terrain
   }
 
   private def possibleBuildings(b: GameBoard, civ: Civilization.T, city: P): Seq[BuildSquare] = {
@@ -54,11 +54,11 @@ object BuyBuildingCommand extends CommandPackage with ImplicitMiximFromJson with
     var points: Seq[MapSquareP] = outskirtsForCityNotBlocked(b, civ, city)
     val l: Seq[BuildSquare] = points.flatMap(p => blist.filter(canbebuiltHere(p, _)).map(
       bui => {
-//        var po: Seq[P] = if (p.s.building.isDefined || p.s.wonder.isDefined || p.s.greatperson.isDefined) Seq(p.p) else Nil
-        var po : Seq[P] = getStructureHere(p)
+        //        var po: Seq[P] = if (p.s.building.isDefined || p.s.wonder.isDefined || p.s.greatperson.isDefined) Seq(p.p) else Nil
+        var po: Seq[P] = getStructureHere(p)
         // throw off star building
         if (bui.star.isDefined && star.isDefined && p.p != star.get.p) po = po :+ star.get.p
-        BuildSquare.BuildSquare(BuildingPoint(p.p, Some(bui.name), None,None), po)
+        BuildSquare.BuildSquare(BuildingPoint(p.p, Some(bui.name), None, None), po)
       }
     ))
     // remove building on the same place
@@ -84,12 +84,12 @@ object BuyBuildingCommand extends CommandPackage with ImplicitMiximFromJson with
       }
       val ma: MapSquareP = getSquare(board, param.p)
       // remove existing if exists
-//      if (ma.s.building.isDefined)
-//        removeBuilding(board, ma)
+      //      if (ma.s.building.isDefined)
+      //        removeBuilding(board, ma)
       // remove wonder if exist
-//      if (ma.s.wonder.isDefined)
-//        removeWonder(board, ma)
-      removeStructure(board,ma)
+      //      if (ma.s.wonder.isDefined)
+      //        removeWonder(board, ma)
+      removeStructure(board, ma)
       // withdraw from market
       board.market.buildings.incdevBuilding(param.b, false)
       // built

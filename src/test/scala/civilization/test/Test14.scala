@@ -1,8 +1,6 @@
 package civilization.test
 
 import org.scalatest.FunSuite
-import civilization.I
-import civilization.I.registerGame
 import civilization.gameboard.GameBoard
 import civilization.helper._
 import civilization.objects._
@@ -11,6 +9,7 @@ import civilization.io.readdir.GenBoard.genBoard
 import civilization.io.tojson._
 import civilization.io.readdir._
 import play.api.libs.json.{JsArray, JsValue}
+import Helper.II
 
 class Test14   extends FunSuite {
 

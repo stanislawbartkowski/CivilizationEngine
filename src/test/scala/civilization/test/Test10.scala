@@ -9,6 +9,7 @@ import civilization.{I, RR}
 import org.scalatest.FunSuite
 import org.scalatest.Matchers._
 import play.api.libs.json.{JsArray, JsValue}
+import Helper.{II,RA}
 
 
 class Test10 extends FunSuite {
@@ -29,7 +30,7 @@ class Test10 extends FunSuite {
   test("Waiting for player to join") {
     val cu = Helper.getBoardAndRegister("test10/BOARDGAME1.json", Civilization.Rome)
     val token: String = cu._1
-    val game: CurrentGame = RR.RA.getCurrentGame(token)
+    val game: CurrentGame = RA.getCurrentGame(token)
     val gameid: Int = game.gameid
     println(gameid)
     assert(!II.allPlayersReady(token))
@@ -51,27 +52,27 @@ class Test10 extends FunSuite {
   test("Read two player game") {
     val cu = Helper.getBoardAndRegister("test10/BOARDGAME1.json", Civilization.Rome)
     val token: String = cu._1
-    val game: CurrentGame = RR.RA.getCurrentGame(token)
+    val game: CurrentGame = RA.getCurrentGame(token)
     val gameid: Int = game.gameid
     println(gameid)
-    var res = WaitingGames.findListOfWaitingGames(RR.RA)
+    var res = WaitingGames.findListOfWaitingGames(RA)
     assert(res.map(_.gameid).contains(gameid))
-    var res1 = WaitingGames.listofCurrentGames(RR.RA)
+    var res1 = WaitingGames.listofCurrentGames(RA)
     println(res1)
     // should be on waiting list, not current in play
     assert(!res.contains(gameid))
     val ctoken: String = II.joinGame(gameid, "China")
     println(ctoken)
-    res = WaitingGames.findListOfWaitingGames(RR.RA)
+    res = WaitingGames.findListOfWaitingGames(RA)
     println(res)
     // should be removed from waiting list
     assert(!res.map(_.gameid).contains(gameid))
     // should be on the current game
-    res1 = WaitingGames.listofCurrentGames(RR.RA)
+    res1 = WaitingGames.listofCurrentGames(RA)
     assert(res1.contains(gameid))
 
-    val gamerome: CurrentGame = RR.RA.getCurrentGame(token)
-    val gamechina: CurrentGame = RR.RA.getCurrentGame(ctoken)
+    val gamerome: CurrentGame = RA.getCurrentGame(token)
+    val gamechina: CurrentGame = RA.getCurrentGame(ctoken)
     // should be the same game now
     gamerome.gameid should equal(gamechina.gameid)
   }
@@ -79,7 +80,7 @@ class Test10 extends FunSuite {
   test("Two players game") {
     val cu = Helper.getBoardAndRegister("test10/BOARDGAME2.json", Civilization.Rome)
     val token: String = cu._1
-    val game: CurrentGame = RR.RA.getCurrentGame(token)
+    val game: CurrentGame = RA.getCurrentGame(token)
     val gameid: Int = game.gameid
     println(gameid)
     val ctoken: String = II.joinGame(gameid, "China")
@@ -155,9 +156,9 @@ class Test10 extends FunSuite {
   test("Check two players game") {
     val token : String = II.getData(II.REGISTEROWNERTWOGAME,"Rome,China")
     println(token)
-    val res1 = WaitingGames.findListOfWaitingGames(RR.RA)
+    val res1 = WaitingGames.findListOfWaitingGames(RA)
     println(res1)
-    val game: CurrentGame = RR.RA.getCurrentGame(token)
+    val game: CurrentGame = RA.getCurrentGame(token)
     val gameid: Int = game.gameid
     println(game)
     println(gameid)

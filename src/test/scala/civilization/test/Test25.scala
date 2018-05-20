@@ -1,19 +1,17 @@
 package civilization.test
 
 import civilization.I
-import civilization.I.II
-import civilization.gameboard._
 import civilization.gameboard.CultureTrack._
 import civilization.helper.AllowedCommands.allowedCommands
-import civilization.io.fromjson.ImplicitMiximFromJson
-import civilization.io.tojson.ImplicitMiximToJson
-import civilization.objects.Civilization
-import org.scalatest.FunSuite
 import civilization.helper._
-import civilization.objects._
-import play.api.libs.json.{JsArray, JsValue}
 import civilization.io.fromjson._
 import civilization.io.readdir.GameResources
+import civilization.io.tojson.ImplicitMiximToJson
+import civilization.objects.{Civilization, _}
+import civilization.test.Helper.II
+import org.scalatest.FunSuite
+import play.api.libs.json.{JsArray, JsValue}
+
 
 class Test25 extends FunSuite with ImplicitMiximToJson {
 

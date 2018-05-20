@@ -9,6 +9,8 @@ import civilization.objects._
 import civilization.helper._
 import civilization.io.fromjson.toJ
 import play.api.libs.json.JsValue
+import Helper.II
+
 
 class Test2 extends FunSuite {
 

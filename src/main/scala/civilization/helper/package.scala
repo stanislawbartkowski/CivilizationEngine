@@ -1044,4 +1044,13 @@ package object helper {
     }
     return None
   }
+
+  def greatPersonReady(b: GameBoard, civ: Civilization.T) : Seq[GreatPersonName.T] = {
+    // great persons available for player
+    val gp : Set[GreatPersonName.T] = b.playerDeck(civ).cultureresource.persons toSet
+    // great persons on board
+    val p : Set[GreatPersonName.T] = outskirtsForCivNotBlocked(b,civ).filter(_.s.greatperson.isDefined).map(_.s.greatperson.get.name) toSet
+
+    (gp -- p) toSeq
+  }
 }

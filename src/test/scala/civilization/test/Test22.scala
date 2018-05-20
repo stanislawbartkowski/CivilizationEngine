@@ -1,25 +1,19 @@
 package civilization.test
 
-  import civilization.I
-  import civilization.I.II
-  import civilization.gameboard.GameBoard
-  import civilization.gameboard._
-  import civilization.helper.AllowedCommands.allowedCommands
-  import civilization.helper._
-  import civilization.io.fromjson.ImplicitMiximFromJson
-  import civilization.io.readdir._
-  import civilization.objects._
-  import org.scalatest.FunSuite
-  import play.api.libs.json._
-  import civilization.io.fromjson.{toJ, _}
-  import civilization.io.readdir.GenBoard.genBoard
-  import civilization.test.Helper._
+import civilization.gameboard.{GameBoard, _}
+import civilization.helper.AllowedCommands.allowedCommands
+import civilization.helper._
+import civilization.io.fromjson.{ImplicitMiximFromJson, toJ}
+import civilization.io.readdir._
+import civilization.objects._
+import civilization.test.Helper.{II, _}
+import org.scalatest.FunSuite
+import play.api.libs.json._
+import civilization.I
 
+class Test22 extends FunSuite with ImplicitMiximFromJson {
 
-
-  class Test22 extends FunSuite with ImplicitMiximFromJson {
-
-    Helper.I
+  Helper.I
 
   test("Wonders") {
     val token: String = II.getData(II.REGISTEROWNER, "China")
@@ -34,7 +28,7 @@ package civilization.test
     val reg = Helper.readBoardAndPlayT("test22/BOARDGAME1.json", "test22/PLAY1.json", Civilization.Arabs)
     val token: String = reg._1
     var gg: GameBoard = I.getBoardForToken(token)
-    val p  = getSquare(gg,P(2,1))
+    val p = getSquare(gg, P(2, 1))
     println(p)
     // should be upgrade to IronMine
     assert(p.s.building.get.name == BuildingName.IronMine)
@@ -56,14 +50,14 @@ package civilization.test
     var l = allowedCommands(gg, Civilization.Germany)
     println(l)
     assert(l.find(_ == Command.BUYWONDER).isDefined)
-    val ss = II.itemizeCommand(token,"BUYWONDER")
+    val ss = II.itemizeCommand(token, "BUYWONDER")
     println(ss)
     // buy wonder
     val c =
       """{"p":{"row":1,"col":1},"wonder":"Stonehenge"}"""
     Helper.executeCommandH(token, "BUYWONDER", 2, 2, c)
     gg = I.getBoardForToken(token)
-    val p : MapSquareP = getSquare(gg,P(1,1))
+    val p: MapSquareP = getSquare(gg, P(1, 1))
     println(p)
     assert(p.s.wonder.get.w == Wonders.Stonehenge)
     // test wonders
@@ -84,17 +78,17 @@ package civilization.test
     }
   }
 
-    test("Check visible wonders") {
-      val reg = Helper.readBoardAndPlayT("test22/BOARDGAME1.json", "test22/PLAY1.json", Civilization.Arabs)
-      val token: String = reg._1
-      val b = II.getData(II.GETBOARDGAME,token)
-      val j:JsValue = toJ(b)
-      println(j)
-      val w : JsArray = (j \ "board" \ "wonders").as[JsArray]
-      println(w)
-      println(w.value.length)
-      assert(w.value.length == 4)
-    }
+  test("Check visible wonders") {
+    val reg = Helper.readBoardAndPlayT("test22/BOARDGAME1.json", "test22/PLAY1.json", Civilization.Arabs)
+    val token: String = reg._1
+    val b = II.getData(II.GETBOARDGAME, token)
+    val j: JsValue = toJ(b)
+    println(j)
+    val w: JsArray = (j \ "board" \ "wonders").as[JsArray]
+    println(w)
+    println(w.value.length)
+    assert(w.value.length == 4)
+  }
 
   test("Can affort two wonders") {
     val reg = Helper.readBoardAndPlayT("test22/BOARDGAME6.json", "test22/PLAY6.json", Civilization.Spain)
@@ -109,19 +103,19 @@ package civilization.test
     val jb = toJ(ss)
     val jy = jyou(jb)
     println(jy)
-    val b = getProductionForCity(gg,Civilization.Spain,P(2,2))
+    val b = getProductionForCity(gg, Civilization.Spain, P(2, 2))
     println(b.prod)
     assert(b.prod == 11)
 
-    val ii = toJ(II.itemizeCommand(token,"BUYWONDER")).as[JsArray]
+    val ii = toJ(II.itemizeCommand(token, "BUYWONDER")).as[JsArray]
     println(ii)
     val pp = ii.value(0)
     println(pp)
     val li = (pp \ "list").as[JsArray]
     println(li)
-    var isStonehege:Boolean = false
-    var isPyramids : Boolean = false
-    var isOracle : Boolean = false
+    var isStonehege: Boolean = false
+    var isPyramids: Boolean = false
+    var isOracle: Boolean = false
     li.value.foreach(ee => {
       println(ee)
       val w = (ee \ "wonder").as[String]
@@ -148,9 +142,9 @@ package civilization.test
     var buildno = 0
     var wonderno = 0
     jm.value.foreach(t => {
-      val ta : JsArray = t.as[JsArray]
+      val ta: JsArray = t.as[JsArray]
       ta.value.foreach(m => {
-//        println(m)
+        //        println(m)
         val b = (m \ "building").asOpt[String]
         if (b.isDefined) {
           buildno = buildno + 1
@@ -174,7 +168,7 @@ package civilization.test
     val reg = Helper.readBoardAndPlayT("test22/BOARDGAME6.json", "test22/PLAY6.json", Civilization.Spain)
     val token: String = reg._1
     var gg: GameBoard = I.getBoardForToken(token)
-    var b = getProductionForCity(gg,Civilization.Spain,P(2,2))
+    var b = getProductionForCity(gg, Civilization.Spain, P(2, 2))
     println(b.prod)
     assert(b.prod == 11)
     val c =
@@ -186,7 +180,7 @@ package civilization.test
     assert(l.find(_ == Command.BUYWONDER).isEmpty)
     assert(l.find(_ == Command.BUYBUILDING).isEmpty)
     // check production  for city
-    b = getProductionForCity(gg,Civilization.Spain,P(2,2))
+    b = getProductionForCity(gg, Civilization.Spain, P(2, 2))
     // wonder, 0 production from square
     println(b.prod)
     assert(b.prod == 10)
@@ -196,7 +190,7 @@ package civilization.test
     val jb = toJ(ss)
     val jy = jyou(jb)
     println(jy)
-    val wA : JsArray = (jy \ "wonders").as[JsArray]
+    val wA: JsArray = (jy \ "wonders").as[JsArray]
     println(wA)
     val s = wA.value(0).as[String]
     println(s)
@@ -211,7 +205,7 @@ package civilization.test
   }
 
   test("Check wonder not implemented") {
-    val w : WondersOfTheWorld =GameResources.getWonder(Wonders.Stonehenge)
+    val w: WondersOfTheWorld = GameResources.getWonder(Wonders.Stonehenge)
     println(w.notimplemented)
     assert(w.ni)
   }
@@ -220,10 +214,10 @@ package civilization.test
     println("Test wonders")
     val s: String = II.getData(II.LISTOFRES)
     val j: JsValue = toJ(s)
-    val w : JsArray = (j \ "wonders").as[JsArray]
+    val w: JsArray = (j \ "wonders").as[JsArray]
     println(w)
     var wasS = false
-    w.value.foreach( w => {
+    w.value.foreach(w => {
       println(w)
       val n = (w \ "name").as[String]
       if (n == "Stonehenge") {
@@ -240,11 +234,11 @@ package civilization.test
     println("Test technologies")
     val s: String = II.getData(II.LISTOFRES)
     val j: JsValue = toJ(s)
-    val w : JsArray = (j \ "tech").as[JsArray]
-//    println(w)
+    val w: JsArray = (j \ "tech").as[JsArray]
+    //    println(w)
     var wasC = false
     var wasSM = false;
-    w.value.foreach( w => {
+    w.value.foreach(w => {
       println(w)
       val n = (w \ "name").as[String]
       if (n == "RailRoad") {
@@ -262,4 +256,4 @@ package civilization.test
   }
 
 
-  }
+}
