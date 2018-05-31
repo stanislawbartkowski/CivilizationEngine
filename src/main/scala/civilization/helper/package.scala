@@ -51,7 +51,7 @@ package object helper {
       else if (resource.isEmpty) 0
       else if (resource.get == Resource.Culture) 1 else 0
 
-    def suggestedCapitalForCiv: Option[Civilization.T] = if (suggestedCapital) Some(t.tile.civ) else None
+    def suggestedCapitalForCiv: Option[Civilization.T] = t.tile.civ
 
     def civHere: Option[Civilization.T] = if (s.cityhere) Some(s.city.get.civ) else if (!s.figures.empty) Some(s.figures.civ) else None
   }
@@ -791,7 +791,7 @@ package object helper {
     val armieslimit: Int = deck.defaultarmieslimit - count._1
     val scoutslimit: Int = deck.defaultscoutslimit - count._2
     val handsize: Int = deck.defaultculturehandsize +
-      (if (deck.hasTechnology(TechnologyName.CodeOfLaw)) 1 else 0)
+      (if (deck.hasTechnology(TechnologyName.Pottery)) 1 else 0)
 
     PlayerLimits(citieslimit, deck.defaultstackinglimit,
       deck.hasTechnology(TechnologyName.Navigation),

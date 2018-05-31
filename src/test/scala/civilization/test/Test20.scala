@@ -116,7 +116,7 @@ class Test20 extends FunSuite with ImplicitMiximFromJson {
       println(s.t.tile.civhome)
       println(s.t.tile.civ)
       assert(s.t.tile.civhome)
-      assert(s.t.tile.civ == Civilization.Rome)
+      assert(s.t.tile.civ.get == Civilization.Rome)
     })
   }
 

@@ -100,17 +100,17 @@ class Test1 extends FunSuite {
     val l: JsValue = readTestJSON("resources/map/tiles/TILE1.json")
     println(l)
     val t: Tile = convert[TileJ](TileJ(l))
-    assert(Civilization.Rome == t.civ)
-    assert(1 == t.suggestedcapital.row)
-    assert(2 == t.suggestedcapital.col)
+    assert(Civilization.Rome == t.civ.get)
+    assert(1 == t.suggestedcapital.get.row)
+    assert(2 == t.suggestedcapital.get.col)
   }
 
   test("Read tile not civilized from JSON ") {
     val l: JsValue = readTestJSON("resources/map/tiles/TILE2.json")
     println(l)
     val t: Tile = convert[TileJ](TileJ(l))
-    assert(null == t.civ)
-    assert(null == t.suggestedcapital)
+    assert(t.civ.isEmpty)
+    assert(t.suggestedcapital.isEmpty)
   }
 
   test("Read list of available tiles ") {
@@ -209,9 +209,9 @@ class Test1 extends FunSuite {
     println(l)
     val t: Tile = convert[TileJ](TileJ(l))
     println(t)
-    assert(Civilization.Rome == t.civ)
-    assert(1 == t.suggestedcapital.row)
-    assert(2 == t.suggestedcapital.col)
+    assert(Civilization.Rome == t.civ.get)
+    assert(1 == t.suggestedcapital.get.row)
+    assert(2 == t.suggestedcapital.get.col)
     val s: Square = t.terrain(1)(2)
     println(s)
     assert(s.terrain == Terrain.Grassland)

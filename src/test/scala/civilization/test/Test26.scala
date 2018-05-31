@@ -123,7 +123,7 @@ class Test26 extends FunSuite with ImplicitMiximToJson {
     assert(handsize == 2)
   }
 
-  test("Code of law, increase handsize") {
+  test("Code of law, do not increase handsize") {
 
     val reg = Helper.readBoardAndPlayT("test26/BOARDGAME8.json", "test26/PLAY9.json", Civilization.Spain)
     val token = reg._1
@@ -132,7 +132,7 @@ class Test26 extends FunSuite with ImplicitMiximToJson {
     println(ju)
     val handsize = (ju \ "handsize").as[Int]
     println(handsize)
-    assert(handsize == 3)
+    assert(handsize == 2)
     val travelspeed = (ju \ "travelspeed").as[Int]
     println(travelspeed)
     assert(travelspeed == 2)

@@ -48,8 +48,8 @@ package object objects {
     def empty: Boolean = row == -1 && col == -1
   }
 
-  case class Tile(val terrain: TileTerrain, val civ: Civilization.T, val suggestedcapital: P) {
-    def civhome: Boolean = civ != null
+  case class Tile(val terrain: TileTerrain, val civ: Option[Civilization.T], val suggestedcapital: Option[P]) {
+    def civhome: Boolean = civ.isDefined
   }
 
   case class Player(civ: Civilization.T)
@@ -236,6 +236,8 @@ package object objects {
     Education,
     Combustion,
     Navy,
+    Logistics,
+    Bureaucracy,
     Banking = Value
 
     def isCoinTechnology(t: Value): Boolean = (t == Pottery || t == CodeOfLaw)
@@ -248,7 +250,7 @@ package object objects {
   case class CivilizationG(val civ: Civilization.T, val tech: TechnologyName.T, val gover: GovernmentName.T, val desc: String, val notimplemented: Option[Boolean])
 
 
-  case class TechnologyUnit(val unit: CombatUnitType.T, val level: Int)
+  case class TechnologyUnit(val unit: Option[CombatUnitType.T], val level: Int)
 
   /** Technology dictionary
     *
@@ -256,7 +258,7 @@ package object objects {
     * @param gover Option,if technology enables government
     * @param level Level of this technology
     */
-  case class Technology(val tech: TechnologyName.T, val gover: Option[GovernmentName.T], val level: Int, val notimplemented: Option[Boolean], val building: Option[BuildingName.T], val resource: Option[Resource.T], val desc: String, val resourceany: Option[Int], val units: Option[Seq[TechnologyUnit]], val coins: Option[Int])
+  case class Technology(val tech: TechnologyName.T, val gover: Option[GovernmentName.T], val level: Int, val notimplemented: Option[Boolean], val building: Option[BuildingName.T], val resource: Option[Resource.T], val desc: String, val resourceany: Option[Int], val unit: Option[TechnologyUnit], val coins: Option[Int])
 
   object WondersAge extends Enumeration {
     type T = Value

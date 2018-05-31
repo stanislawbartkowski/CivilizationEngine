@@ -17,7 +17,7 @@
     "ni" : true,
     "level": 3,
     "resource" : "Spy",
-    "units" : [{"name" : "Artillery", "level" : 2}],
+    "units" : {"name" : "Artillery", "level" : 2},
     "desc" : "Incense-CityManagement : Gain 7 culture"
   },
   {
@@ -46,7 +46,7 @@
     "name": "GunPowder",
     "ni" : true,
     "level": 3,
-    "units" : [{"name" : "Infantry", "level" : 3}],
+    "units" : {"name" : "Infantry", "level" : 3},
     "resourceany" : 2,
     "desc" : "Any 2-City Management : Obsolete an ancient or medieval wonder, or destroy a building of your choice"
   },
@@ -61,7 +61,7 @@
     "name": "ReplaceableParts",
     "level": 4,
     "ni" : true,
-    "units" : [{"name" : "Infantry", "level" : 4}],
+    "units" : {"name" : "Infantry", "level" : 4},
     "desc" : "Stacking Limit : 6"
   },
   {
@@ -86,7 +86,7 @@
     "name": "Flight",
     "ni" : true,
     "level": 4,
-    "units" : [{"name" : "Aircraft", "level" : 4}],
+    "units" : {"name" : "Aircraft", "level" : 4},
     "desc" : "You may cross or end your movement in water. Also, you may ignore enemy figures, huts, villages and cities when moving."
   },
   {
@@ -100,7 +100,7 @@
     "name": "Democracy",
     "ni" : true,
     "gover": "Democracy",
-    "units" : [{"name" : "Infantry", "level" : 2}],
+    "units" : {"name" : "Infantry", "level" : 2},
     "level": 2,
     "desc" : "Once per turn, you may spend 6 trade during City Management to add 1 coin token to this tech (max 4)."
   },
@@ -123,7 +123,7 @@
     "ni" : true,
     "level": 2,
     "resource" : "Iron",
-    "units" : [{"name" : "Artillery", "level" : 2}],
+    "units" : {"name" : "Artillery", "level" : 2},
     "desc" : "Iron-Battle: When involved in a battle, deal up 3 wounds, spread across enemy units however you choose."
   },
   {
@@ -245,7 +245,7 @@
     "level": 3,
     "coin" : 1,
     "building" : "IronMine",
-    "units" : [{"name" : "Mounted", "level" : 3}],
+    "units" : {"name" : "Mounted", "level" : 3},
     "desc" : "1 Coin"
   },
   {
@@ -277,6 +277,22 @@
     "desc" : "Incense-City Management : Gain 5 culture"
   },
   {
+    "name": "Logistics",
+    "ni" : true,
+    "level": 2,
+    "units" : { "level" : 2},
+    "desc" : ""
+  },
+
+  {
+    "name": "Bureaucracy",
+    "ni": true,
+    "level": 2,
+    "coin" : 1,
+    "desc" : "Once per turn, you may switch one of your social policies during research"
+  },
+
+  {
     "name": "Banking",
     "ni": true,
     "level": 3,
@@ -295,7 +311,7 @@
     "name": "Combustion",
     "ni" : true,
     "level": 4,
-    "units" : [{"name" : "Mounted", "level" : 4}],
+    "units" : {"name" : "Mounted", "level" : 4},
     "desc" : "Once per turn, when one of your armies ends its movement on a building, destroy that building. If one of your armies attacks a city with walls, the walls are destroyed before the battle."
   }
 

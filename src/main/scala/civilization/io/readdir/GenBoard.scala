@@ -61,7 +61,7 @@ object GenBoard extends ImplicitMiximFromJson {
         if (sciv.isEmpty) throw FatalError(Mess(M.MORECIVTTILESTHENCIVDECLARED))
         // take first civ
         val civ: Civilization.T = sciv.head
-        tile = tilesciv.find(_.tile.civ == civ).getOrElse(null)
+        tile = tilesciv.find(_.tile.civ.get == civ).getOrElse(null)
         if (tile == null) throw FatalError(Mess(M.CANNOTFINDHOMETILEFORCIV, civ))
         // remove element from set
         sciv = sciv - civ

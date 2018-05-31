@@ -179,7 +179,7 @@ package object fromjson extends ImplicitMiximFromJson {
     ) (City.apply _)
 
   implicit val techbuildReads: Reads[TechnologyUnit] = (
-    (JsPath \ S.name).read[CombatUnitType.T] and
+    (JsPath \ S.name).readNullable[CombatUnitType.T] and
       (JsPath \ S.level).read[Int]
     ) (TechnologyUnit.apply _)
 
@@ -192,7 +192,7 @@ package object fromjson extends ImplicitMiximFromJson {
       (JsPath \ S.resource).readNullable[Resource.T] and
       (JsPath \ S.desc).read[String] and
       (JsPath \ S.resourceany).readNullable[Int] and
-      (JsPath \ S.units).readNullable[Seq[TechnologyUnit]] and
+      (JsPath \ S.units).readNullable[TechnologyUnit] and
       (JsPath \ S.coin).readNullable[Int]
     ) (Technology.apply _)
 
@@ -215,8 +215,8 @@ package object fromjson extends ImplicitMiximFromJson {
         if (terrain(i).length != TILESIZE)
           return JsError("All rows should have " + TILESIZE + " squares. For row + " + i + " found " + terrain(i))
 
-      val homeciv: Civilization.T = (json \ S.civ).asOpt[Civilization.T].getOrElse(null)
-      val suggestedcapital: P = (json \ "suggestedcapital").asOpt[P].getOrElse(null)
+      val homeciv: Option[Civilization.T] = (json \ S.civ).asOpt[Civilization.T]
+      val suggestedcapital: Option[P] = (json \ "suggestedcapital").asOpt[P]
       JsSuccess(Tile(terrain, homeciv, suggestedcapital))
     }
   }

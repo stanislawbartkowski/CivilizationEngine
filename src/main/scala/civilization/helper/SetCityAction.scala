@@ -21,7 +21,7 @@ object SetCityAction extends CommandPackage with ImplicitMiximFromJson with Impl
     command match {
       case Command.SETCAPITAL =>
         if (isCapitalBuild(board, civ)) return Some(Mess(M.CAPITALALREADYBUILD))
-        if (!mapp.t.tile.civhome || mapp.t.tile.civ != civ)
+        if (!mapp.t.tile.civhome || mapp.t.tile.civ.get != civ)
           return Some(Mess(M.CAPITALCANBEBUILDONLYONHOMETILE, p))
       case Command.SETCITY => {
         if (getLimits(board, civ).citieslimit == 0) return Some(Mess(M.CITYLIMITEXCEEDED))

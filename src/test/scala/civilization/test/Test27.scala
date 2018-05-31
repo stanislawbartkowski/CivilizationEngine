@@ -224,5 +224,18 @@ class Test27 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
     assert(!(l contains Command.GREATPERSONPUT))
   }
 
+  test("China handsize should be increased to 3") {
+    val reg = Helper.ReadAndPlayForTwo("test27/BOARDGAME8.json", "test27/PLAY8.json", Civilization.China, Civilization.America)
+    val tokenC = reg._1
+    val tokenA = reg._2
+    var gg = I.getBoardForToken(tokenC)
+    val li = getLimits(gg,Civilization.China)
+    println(li.handsize)
+    assert(li.handsize == 3)
+    val lia = getLimits(gg,Civilization.America)
+    println(lia.handsize)
+    assert(lia.handsize == 2)
+
+  }
 }
 
