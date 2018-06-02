@@ -237,5 +237,14 @@ class Test27 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
     assert(lia.handsize == 2)
 
   }
-}
+
+  test("Great General incresed the combat bonus") {
+    val reg = Helper.readBoardAndPlayT("test27/BOARDGAME9.json", "test27/PLAY9.json", Civilization.America)
+    val token = reg._1
+    var gg = I.getBoardForToken(token)
+    val pl : PlayerLimits = getLimits(gg,Civilization.America)
+    println(pl.combatBonus)
+    assert(pl.combatBonus == 4)
+  }
+  }
 

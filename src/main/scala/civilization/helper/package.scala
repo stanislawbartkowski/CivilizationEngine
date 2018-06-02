@@ -51,6 +51,11 @@ package object helper {
       else if (resource.isEmpty) 0
       else if (resource.get == Resource.Culture) 1 else 0
 
+    def combatBonus : Int =
+      if (s.building.isDefined) s.building.get.tokens.numofBattle
+      else if (s.greatperson.isDefined) s.greatpersonype.tokens.numofBattle
+      else 0
+
     def suggestedCapitalForCiv: Option[Civilization.T] = t.tile.civ
 
     def civHere: Option[Civilization.T] = if (s.cityhere) Some(s.city.get.civ) else if (!s.figures.empty) Some(s.figures.civ) else None
@@ -772,8 +777,8 @@ package object helper {
 
   private def calculateCombatBonus(b: GameBoard, civ: Civilization.T): Int =
   // all buildings
-    outskirtsForCivNotBlocked(b, civ).filter(_.s.building.isDefined).foldLeft(0) { (sum, s) => sum + s.s.building.get.tokens.numofBattle }
-
+//    outskirtsForCivNotBlocked(b, civ).filter(_.s.building.isDefined).foldLeft(0) { (sum, s) => sum + s.s.building.get.tokens.numofBattle }
+    outskirtsForCivNotBlocked(b, civ).map(_.combatBonus).sum
 
   // ==============================================
 
