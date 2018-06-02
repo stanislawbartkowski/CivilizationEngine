@@ -777,16 +777,16 @@ package object helper {
 
   private def calculateCombatBonus(b: GameBoard, civ: Civilization.T): Int =
   // all buildings
-//    outskirtsForCivNotBlocked(b, civ).filter(_.s.building.isDefined).foldLeft(0) { (sum, s) => sum + s.s.building.get.tokens.numofBattle }
     outskirtsForCivNotBlocked(b, civ).map(_.combatBonus).sum
 
   // ==============================================
 
   case class PlayerLimits(val citieslimit: Int, val stackinglimit: Int, val watercrossingallowed: Boolean, val waterstopallowed: Boolean,
                           val armieslimit: Int, val scoutslimit: Int, val travelSpeed: Int, val tradeforProd: Int,
-                          val playerStrength: CombatUnitStrength, val aircraftUnlocked: Boolean, val scoutscanExplore: Boolean, val isFundametialism: Boolean, val combatBonus: Int, val handsize: Int) {
+                          val playerStrength: CombatUnitStrength, val aircraftUnlocked: Boolean, val scoutscanExplore: Boolean, val isFundametialism: Boolean, val combatBonus: Int, val handsize: Int,
+                          val prodfortrade : Int) {
 
-    def prodForTrade(prod: Int): Int = prod * tradeforProd
+    def prodForTrade(prod: Int): Int = (prod / prodfortrade).toInt * tradeforProd
   }
 
   def getLimits(b: GameBoard, civ: Civilization.T): PlayerLimits = {
@@ -798,9 +798,12 @@ package object helper {
     val handsize: Int = deck.defaultculturehandsize +
       (if (deck.hasTechnology(TechnologyName.Pottery)) 1 else 0)
 
+    val tradeforprod : Int = DEFAULTTRADEFORPROD;
+    val prodfortrade : Int = CivilizationFeatures.prodfortrade(civ)
+
     PlayerLimits(citieslimit, deck.defaultstackinglimit,
       deck.hasTechnology(TechnologyName.Navigation),
-      false, armieslimit, scoutslimit, deck.defaulttravelspeed, DEFAULTTRADEFORPROD, deck.combatlevel, false, false, false, calculateCombatBonus(b, civ), handsize)
+      false, armieslimit, scoutslimit, deck.defaulttravelspeed, tradeforprod, deck.combatlevel, false, false, false, calculateCombatBonus(b, civ), handsize,prodfortrade)
   }
 
   // =====================================

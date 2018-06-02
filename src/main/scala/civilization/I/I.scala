@@ -66,9 +66,6 @@ package object I {
   private def toC(com: Command): CommandValues = CommandValues(com.command, com.civ, com.p, com.j)
 
   private def getBoardForCiv(token: String): String = {
-//    val g = getBoard(token)
-//    val civ: Civilization.T = g._1.civ
-//    Json.prettyPrint(genboardj.genBoardGameJson(g._2, civ))
     val game: CurrentGame = r.getCurrentGame(token)
      // game metadata
     val m: GameMetaData = toMetaData(toJ(r.getMetaData(game.gameid)))
@@ -84,7 +81,6 @@ package object I {
   def getData(what: Int, tokenorciv: String, param: String): String = {
     synchronized {
       what match {
-//        case LISTOFCIV => getListOfCiv()
         case REGISTEROWNER => registerOwnerPlay(tokenorciv, "GAME1.json")
         case REGISTEROWNERTWOGAME => registerOwnerPlay(tokenorciv, "GAME2.json")
         case GETBOARDGAME => getBoardForCiv(tokenorciv)
@@ -96,18 +92,12 @@ package object I {
         case LISTOFWAITINGGAMES => listOfWaitingGames
         case ITEMIZECOMMAND => itemizeCommand(tokenorciv, param)
         case LISTOFRES => {
-//          val j : JsValue = writeListOfCivs(readListOfCivs)
           val j:JsValue = GameResources.instance()
           Json.prettyPrint(j)
         }
       }
     }
   }
-
-//  private def getListOfCiv(): String = {
-//    val tiles: Set[Civilization.T] = readListOfTiles.filter(_.tile.civhome).map(_.tile.civ).toSet
-//    Json.prettyPrint(writeListOfCiv(tiles contains _))
-//  }
 
   private def toCiv(civ: String): Civilization.T = Civilization.withName(civ)
 

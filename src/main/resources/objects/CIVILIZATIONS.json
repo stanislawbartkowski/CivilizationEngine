@@ -3,7 +3,7 @@
     "civ": "America",
     "tech": "Currency",
     "gover": "Despotism",
-    "ni": true,
+    "ni": false,
     "desc": "The Americans start with a free, random great person. When Americans spend trade for production, they receive 2 production points instead of 1."
   },
   {

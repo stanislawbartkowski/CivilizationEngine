@@ -1,16 +1,18 @@
 package civilization.io.readdir
 
+import civilization.action.constructCommand
 import civilization.gameboard._
-import civilization.helper.{revealTile, getThreeRandomUnits, getRandomHutVillage, getRandom}
+import civilization.helper._
 import civilization.io.fromjson.{toArrayHutVillages, toSeqPatterMap}
-import civilization.message.{FatalError, M, Mess}
+import civilization.message.{FatalError, M, Mess,J}
 import civilization.objects._
 import play.api.libs.json.JsValue
 import civilization.io.fromjson.ImplicitMiximFromJson
+import civilization.io.tojson.ImplicitMiximToJson
 
 import scala.collection.mutable.Buffer
 
-object GenBoard extends ImplicitMiximFromJson {
+object GenBoard extends ImplicitMiximFromJson with ImplicitMiximToJson {
 
   private def readHutVillages: Array[HutVillage] = {
     val j: JsValue = readJSON("map/market", "HUTVILLAGES.json")
@@ -92,6 +94,14 @@ object GenBoard extends ImplicitMiximFromJson {
     g.players.foreach(p => p.units = getThreeRandomUnits(g, true))
     // assing resources to hut and villages
     map.foreach(m => assignResources(g, m))
+    g.players.foreach(pl => {
+      if (CivilizationFeatures.freeGreatPersonAtTheBeginning(pl.civ)) {
+        addToJournal(g,pl.civ,J.YOUARERECEIVINGFREEGREATPERSON,null)
+        val commandC = constructCommand(Command.GREATPERSON, pl.civ, null, getRandomPerson(g))
+        //g.addForcedCommand(commandC)
+        playCommand(g,commandC)
+      }
+    })
     g
   }
 
