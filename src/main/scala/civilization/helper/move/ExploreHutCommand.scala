@@ -1,6 +1,7 @@
 package civilization.helper.move
 
-import civilization.action.AbstractCommand
+import civilization.action.{AbstractCommand, Command, constructCommand}
+import civilization.helper.SetCityAction.writesFigures
 import civilization.helper._
 import civilization.message.{M, Mess}
 import civilization.objects._
@@ -22,7 +23,10 @@ object ExploreHutCommand {
       return null
     }
 
-    override def execute(board: gameboard.GameBoard): Unit = exploreHutOrVillage(board,civ,p)
+    override def execute(board: gameboard.GameBoard): Unit = {
+      exploreHutOrVillage(board,civ,p)
+      cultureforhutvillage(board,civ,isExecute)
+    }
   }
 
 

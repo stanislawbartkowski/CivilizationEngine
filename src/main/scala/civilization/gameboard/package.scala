@@ -210,7 +210,7 @@ package object gameboard {
       * @param b   Building
       * @param inc increase or decrease
       */
-    def incdevBuilding(b: BuildingName.T, inc: Boolean) = {
+    def incdecBuilding(b: BuildingName.T, inc: Boolean) = {
       var bd: BuildingName.T = toBaseBuilding(b)
       require(inc || nof(bd) > 0)
       if (inc) incr(bd)
@@ -230,16 +230,19 @@ package object gameboard {
 
   case class PlayerDeck(val civ: Civilization.T, var tech: Seq[PlayerTechnology], var units: Seq[CombatUnit], val resou: BoardResources, var gover: GovernmentName.T, var cultureprogress: Int) {
 
-    val defaultcitylimit: Int = 2
     val defaultarmieslimit: Int = 6
     val defaultscoutslimit: Int = 2
     val defaultculturehandsize: Int = 2
-    val defaultstackinglimit: Int = 2
     val defaulttravelspeed: Int = 2
     val combatlevel: CombatUnitStrength = CombatUnitStrength()
     var hvlist: Seq[HutVillage] = Nil
     def hasTechnology(te : TechnologyName.T) : Boolean = tech.find(_.tech == te ).isDefined
     val cultureresource : CultureResources = CultureResources()
+    def hasTechnologyFeature(feature : TechnologyName.T => Boolean) : Boolean = tech.find(te => feature(te.tech)).isDefined
+    def numofTechnologyFeatures(feature : TechnologyName.T => Boolean) : Int = tech.filter(te => feature(te.tech)).length
+    def stackLimit : Int = if (tech.isEmpty) DEFAULTSTACKLIMT else tech.map(te => TechnologyFeatures.stackSize(te.tech)) max
+    var freeWonder : Option[Wonders.T] = None
+    var takefreeResources : Boolean = false
   }
 
   case class Market(var units: Seq[CombatUnit], var killedunits: Seq[CombatUnit], val buildings: BuildingsResources, var wonders: Seq[Wonders.T])
@@ -279,7 +282,7 @@ package object gameboard {
 
   case class FrontUnit(val unit: CombatUnit, var attackstrength: Int, var defendstrenght: Int, var wounds: Int)
 
-  case class BattleFieldSide(val fighting: BattleArmy, var waiting: Seq[CombatUnit], var killed: Seq[CombatUnit], val strength: CombatUnitStrength, val combatBonus: Int, var canuseiron: Boolean, val isvillage: Boolean) {
+  case class BattleFieldSide(val fighting: BattleArmy, var waiting: Seq[CombatUnit], var killed: Seq[CombatUnit], val strength: CombatUnitStrength, val combatBonus: Int, var canuseiron: Boolean, val isvillage: Boolean, var savedunit : Option[Int] = None) {
     var ironused: Int = -1
 
     def points: Int = {

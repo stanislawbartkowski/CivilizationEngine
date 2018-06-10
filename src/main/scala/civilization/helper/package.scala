@@ -1,7 +1,7 @@
 package civilization
 
-import civilization.action.Command
-import civilization.gameboard._
+import civilization.action.{Command, constructCommand}
+import civilization.gameboard.{BattleFieldSide, _}
 import civilization.io.readdir.GameResources
 import civilization.message.{FatalError, J, M, Mess}
 import civilization.objects._
@@ -31,7 +31,7 @@ package object helper {
       else if (s.greatperson.isDefined) s.greatpersonype.tokens.numofProduction
       else sm.token.numofProduction
 
-    def numofCoins : Int =
+    def numofCoins: Int =
       if (s.greatperson.isDefined) s.greatpersonype.tokens.numofCoins
       else if (resource.isDefined)
         if (resource.get == Resource.Coin) 1 else 0
@@ -51,9 +51,10 @@ package object helper {
       else if (resource.isEmpty) 0
       else if (resource.get == Resource.Culture) 1 else 0
 
-    def combatBonus : Int =
+    def combatBonus: Int =
       if (s.building.isDefined) s.building.get.tokens.numofBattle
       else if (s.greatperson.isDefined) s.greatpersonype.tokens.numofBattle
+      else if (s.wonder.isDefined) WonderFeatures.combatBonus(s.wonder.get.w)
       else 0
 
     def suggestedCapitalForCiv: Option[Civilization.T] = t.tile.civ
@@ -83,11 +84,13 @@ package object helper {
   def allSquares(b: GameBoard): Seq[MapSquareP] =
     allPoints(b).map(getSquare(b, _))
 
-  def isCapitalBuild(board: GameBoard, civ: Civilization.T): Boolean =
-    citiesForCivilization(board, civ).exists(p => p.s.city.get.citytype == City.Capital || p.s.city.get.citytype == City.WalledCapital)
-
   def citiesForCivilization(board: GameBoard, civ: Civilization.T): Seq[MapSquareP] =
     allPoints(board).map(getSquare(board, _)).filter(s => s.s.cityhere && s.s.city.get.belongsTo(civ)).toList
+
+  def foundCapitalForCiv(board: GameBoard, civ: Civilization.T): Option[MapSquareP] =
+    citiesForCivilization(board, civ).find(s => City.isCapital(s.s.city.get.citytype))
+
+  def isCapitalBuild(board: GameBoard, civ: Civilization.T): Boolean = foundCapitalForCiv(board,civ).isDefined
 
   private def outskirtsForCiv(b: GameBoard, civ: Civilization.T): Seq[MapSquareP] =
     citiesForCivilization(b, civ).flatMap(p => squaresAround(b, p.p))
@@ -347,6 +350,9 @@ package object helper {
     clist
   }
 
+  def commandUsedAlready(b: GameBoard, civ: Civilization.T, pha: TurnPhase.T,com : Command.T) : Boolean =
+    lastPhaseCommandsReverse(b,civ,pha).exists(_.command == com)
+
   def technologyResourceUsed(b: GameBoard, civ: Civilization.T): Boolean = {
     // all commands in the current phase
     //    val com: Seq[Command] = currentTurnReverse(b).filter(_.civ == civ)
@@ -369,6 +375,9 @@ package object helper {
 
   def CitiesCanAfford(b: GameBoard, civ: Civilization.T, cost: Int): Seq[P] =
     CityAvailableForAction(b, civ).filter(city => getProductionForCity(b, civ, city).prod >= cost)
+
+  def CitiesCanAfford(b: GameBoard, civ: Civilization.T, com: Command.T): Seq[P] =
+    CitiesCanAfford(b, civ, CityActionCost.actionCost(com))
 
   case class Move(val command: Command.T, val p: Option[P])
 
@@ -409,7 +418,7 @@ package object helper {
           // some figures could be killed in the battle
           fig = toFig(co)
         }
-      case Command.ATTACK | Command.STARTBATTLE | Command.PLAYUNIT | Command.PLAYUNITIRON | Command.ENDBATTLE =>
+      case Command.ATTACK | Command.STARTBATTLE | Command.PLAYUNIT | Command.PLAYUNITIRON | Command.ENDBATTLE | Command.SAVEUNIT =>
         moves = moves :+ Move(co.command, None)
       case Command.REVEALTILE => moves = moves :+ moves.last // for reveal repeat last
       case _ => {
@@ -491,7 +500,7 @@ package object helper {
     if (phase == TurnPhase.Research && current.turnPhase == TurnPhase.Research) {
       //      val p: Seq[Command] = lastPhaseCommandsReverse(b, command.civ, TurnPhase.Research)
       // 2018/01/05
-      if (isResearchDone(b, command.civ)) return Mess(M.CANNOTRESEARCHMORETHENONCEINSINGLETURN, command)
+      if (isResearchDone(b, command.civ) && command.command == Command.RESEARCH) return Mess(M.CANNOTRESEARCHMORETHENONCEINSINGLETURN, command)
     }
     null
   }
@@ -500,7 +509,7 @@ package object helper {
     var m: Mess = commandForPhase(b, command)
     if (m != null) return m
     // test if point on board
-    if (command.p != null && !isPointOnBoard(b, command.p)) return Mess(M.POINTOUTSIDEBOARD, command.p)
+    if (command.p != null && !Command.commandNotPoint(command.command) && !isPointOnBoard(b, command.p)) return Mess(M.POINTOUTSIDEBOARD, command.p)
     m = command.verify(b)
     if (m != null) {
       return m
@@ -540,7 +549,6 @@ package object helper {
     val p: Seq[Command] = lastPhaseCommandsReverse(b, civ, TurnPhase.CityManagement).reverse
     p.filter(pfilt).groupBy(_.p)
   }
-
 
   private def spendProdForCity(c: Seq[Command]): Int = {
     val no = c.foldLeft(0) { (sum, i) =>
@@ -768,7 +776,7 @@ package object helper {
 
     // number of squares with coins
     val squares: Int = outskirtsForCivNotBlocked(b, civ).map(m => m.numofCoins).sum
-//      filter(s => s.resource.isDefined && s.resource.get == Resource.Coin).length
+    //      filter(s => s.resource.isDefined && s.resource.get == Resource.Coin).length
     val scouts: Int = allScoutsOutside(b, civ).filter(s => s.resource.isDefined && s.resource.get == Resource.Coin).length
     EconomyForCiv(tech, squares, scouts, techabilities)
   }
@@ -783,27 +791,28 @@ package object helper {
 
   case class PlayerLimits(val citieslimit: Int, val stackinglimit: Int, val watercrossingallowed: Boolean, val waterstopallowed: Boolean,
                           val armieslimit: Int, val scoutslimit: Int, val travelSpeed: Int, val tradeforProd: Int,
-                          val playerStrength: CombatUnitStrength, val aircraftUnlocked: Boolean, val scoutscanExplore: Boolean, val isFundametialism: Boolean, val combatBonus: Int, val handsize: Int,
-                          val prodfortrade : Int) {
+                          val playerStrength: CombatUnitStrength, val aircraftUnlocked: Boolean, val scoutscanExplore: Boolean, val combatBonus: Int, val handsize: Int,
+                          val prodfortrade: Int) {
 
     def prodForTrade(prod: Int): Int = (prod / prodfortrade).toInt * tradeforProd
   }
 
   def getLimits(b: GameBoard, civ: Civilization.T): PlayerLimits = {
     val deck: PlayerDeck = b.playerDeck(civ)
-    val citieslimit: Int = deck.defaultcitylimit + (if (deck.hasTechnology(TechnologyName.Irrigation)) 1 else 0) - citiesForCivilization(b, civ).length
+    val citieslimit: Int = (if (deck.hasTechnologyFeature(TechnologyFeatures.citiesLimitIs3)) 3 else DEFAULTCITYLIMIT) - citiesForCivilization(b, civ).length
     val count: (Int, Int) = getNumberOfArmies(b, civ)
     val armieslimit: Int = deck.defaultarmieslimit - count._1
     val scoutslimit: Int = deck.defaultscoutslimit - count._2
-    val handsize: Int = deck.defaultculturehandsize +
-      (if (deck.hasTechnology(TechnologyName.Pottery)) 1 else 0)
+    //    val handsize: Int = deck.defaultculturehandsize + TechnologyFeatures.increaseHandSize(deck.tech)
+    ///      (if (deck.hasTechnology(TechnologyName.Pottery)) 1 else 0)
+    val handsize: Int = deck.defaultculturehandsize + deck.numofTechnologyFeatures(TechnologyFeatures.increaseHandSize)
 
-    val tradeforprod : Int = DEFAULTTRADEFORPROD;
-    val prodfortrade : Int = CivilizationFeatures.prodfortrade(civ)
+    val tradeforprod: Int = DEFAULTTRADEFORPROD;
+    val prodfortrade: Int = CivilizationFeatures.prodfortrade(civ)
 
-    PlayerLimits(citieslimit, deck.defaultstackinglimit,
-      deck.hasTechnology(TechnologyName.Navigation),
-      false, armieslimit, scoutslimit, deck.defaulttravelspeed, tradeforprod, deck.combatlevel, false, false, false, calculateCombatBonus(b, civ), handsize,prodfortrade)
+    PlayerLimits(citieslimit, deck.stackLimit,
+      deck.hasTechnologyFeature(TechnologyFeatures.watercrossingAllowed),
+      false, armieslimit, scoutslimit, deck.defaulttravelspeed, tradeforprod, deck.combatlevel, false, false, calculateCombatBonus(b, civ), handsize, prodfortrade)
   }
 
   // =====================================
@@ -884,13 +893,20 @@ package object helper {
     if (!kill) putFigures(b, civ, p, f)
   }
 
+  def cultureforhutvillage(b: GameBoard, civ: Civilization.T, isExecute: Boolean) = {
+    if (isExecute && CivilizationFeatures.get3CultureForHutOrVillage(civ)) {
+      val command: Command = constructCommand(Command.GET3CULTURE, civ, null)
+      b.addForcedCommand(command)
+    }
+  }
+
   // ===================================
   // buildings
   // ===================================
 
   def removeBuilding(b: GameBoard, s: MapSquareP) = {
     // return building to the market
-    b.market.buildings.incdevBuilding(s.s.building.get.name, true)
+    b.market.buildings.incdecBuilding(s.s.building.get.name, true)
     // remove building
     s.s.removeBuilding()
   }
@@ -956,6 +972,11 @@ package object helper {
   // ================================
   // resources or hut/village
   // ================================
+
+  def takeResourceFromBoard(b: GameBoard, civ: Civilization.T, reso: Resource.T) = {
+    b.playerDeck(civ).resou.incr(reso)
+    b.resources.resou.decr(reso)
+  }
 
   def decrResource(b: GameBoard, civ: Civilization.T, res: Resource.T) = {
     val pl: PlayerDeck = b.playerDeck(civ)
@@ -1053,12 +1074,24 @@ package object helper {
     return None
   }
 
-  def greatPersonReady(b: GameBoard, civ: Civilization.T) : Seq[GreatPersonName.T] = {
+  def greatPersonReady(b: GameBoard, civ: Civilization.T): Seq[GreatPersonName.T] = {
     // great persons available for player
-    val gp : Set[GreatPersonName.T] = b.playerDeck(civ).cultureresource.persons toSet
+    val gp: Set[GreatPersonName.T] = b.playerDeck(civ).cultureresource.persons toSet
     // great persons on board
-    val p : Set[GreatPersonName.T] = outskirtsForCivNotBlocked(b,civ).filter(_.s.greatperson.isDefined).map(_.s.greatperson.get.name) toSet
+    val p: Set[GreatPersonName.T] = outskirtsForCivNotBlocked(b, civ).filter(_.s.greatperson.isDefined).map(_.s.greatperson.get.name) toSet
 
     (gp -- p) toSeq
+  }
+
+  // -----------------------------------
+
+  def canSaveUnitForCiv(civ: Civilization.T, side: BattleFieldSide): Boolean =
+    !side.isvillage && CivilizationFeatures.canSaveUnit(civ) && !side.killed.isEmpty && side.savedunit.isEmpty
+
+  // -------------------
+  def getRandomAncientWonder(b : GameBoard) : Wonders.T = {
+    val wonders : Seq[Wonders.T] = b.getCurrentWonders().map(w => GameResources.getWonder(w)).filter(_.age == WondersAge.Ancient).map(_.name)
+    val ra : Wonders.T = getRandom(wonders)
+    ra
   }
 }

@@ -15,6 +15,8 @@ package object objects {
   val COINSCAPACITY = 4
   val CULTURECITY = 1
   val CULTURECAPITAL = 1
+  val DEFAULTSTACKLIMT = 2
+  val DEFAULTCITYLIMIT = 2
 
   case class GameConfig(val ironincreasedefend: Boolean)
 
@@ -93,6 +95,11 @@ package object objects {
     val Capital, Normal, WalledCapital, WalledNormal = Value
 
     def isCapital(c: Value): Boolean = (c == Capital || c == WalledCapital)
+
+    def isWalled(c: Value): Boolean = (c == WalledCapital) || (c == WalledNormal)
+
+    def toWalled(c: Value): Value =
+      if (c == Capital) return WalledCapital else return WalledNormal
   }
 
   object Figure extends Enumeration {

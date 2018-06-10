@@ -73,6 +73,8 @@ package object action extends ImplicitMiximToJson with ImplicitMiximFromJson {
 
     case Command.TAKEWINNERLOOT => new AttackCommand.TakeWinnerLootCommand(param)
 
+    case Command.SAVEUNIT => new AttackCommand.SaveUnitCommand
+
     case _ => throw FatalError(Mess(M.NOTIMPLEMENTEDYET, command))
   }
 

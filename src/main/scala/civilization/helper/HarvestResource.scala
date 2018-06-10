@@ -20,8 +20,9 @@ object HarvestResource extends CommandPackage with ImplicitMiximFromJson with Im
 
     override def execute(board: gameboard.GameBoard): Unit = {
       val reso: Resource.T = getSquare(board, param).resource.get
-      board.playerDeck(civ).resou.incr(reso)
-      board.resources.resou.decr(reso)
+      takeResourceFromBoard(board, civ, reso)
+        //      board.playerDeck(civ).resou.incr(reso)
+//      board.resources.resou.decr(reso)
     }
   }
 

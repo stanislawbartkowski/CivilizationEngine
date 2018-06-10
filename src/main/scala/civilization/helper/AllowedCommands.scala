@@ -6,7 +6,7 @@ import civilization.helper.SetFigureAction.itemizeForSetBuyFigures
 import civilization.helper.move.MoveItemize
 import civilization.io.tojson._
 import civilization.objects._
-import play.api.libs.json.{JsArray, JsValue, Json}
+import play.api.libs.json.{JsArray, JsNull, JsValue, Json}
 
 object AllowedCommands {
 
@@ -41,6 +41,7 @@ object AllowedCommands {
   }
 
   def itemizeCommandS(b: GameBoard, civ: Civilization.T, command: Command.T): String = {
+    if (Command.internalAction(command)) return null
     var pp: P = null
     var name: String = null
     var l: Seq[JsValue] = Nil

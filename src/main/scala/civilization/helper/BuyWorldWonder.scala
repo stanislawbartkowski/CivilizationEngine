@@ -9,6 +9,7 @@ import civilization.io.tojson.ImplicitMiximToJson
 import civilization.objects.{Civilization, Command, P, _}
 import civilization.{gameboard, message}
 import play.api.libs.json.JsValue
+
 object BuyWorldWonder extends CommandPackage with ImplicitMiximFromJson with ImplicitMiximToJson {
 
 
@@ -17,19 +18,23 @@ object BuyWorldWonder extends CommandPackage with ImplicitMiximFromJson with Imp
     // check discount
     if (w.discount.isEmpty) return false
     // player has technology ?
-//    if (pl.tech.find(_.tech == w.discount.get.tech).isEmpty) return false
+    //    if (pl.tech.find(_.tech == w.discount.get.tech).isEmpty) return false
     if (!pl.hasTechnology(w.discount.get.tech)) return false
     // check against discount
     return prod.prod >= w.discount.get.cost
   }
 
   private def wondersForCity(b: GameBoard, civ: Civilization.T, city: P): Seq[Wonders.T] = {
+
+    // player deck
+    val pl: PlayerDeck = b.playerDeck(civ)
+    // tricky
+    if (pl.freeWonder.isDefined) return Seq(pl.freeWonder.get)
+
     // production for city
     val prod: ProdForCity = getProductionForCity(b, civ, city)
     // wonders available
     val wond: Seq[WondersOfTheWorld] = b.getCurrentWonders().map(GameResources.getWonder(_))
-    // player deck
-    val pl: PlayerDeck = b.playerDeck(civ)
     // filter out wonders too expensive
     wond.filter(canAffordWonder(b, pl, prod, _)).map(_.name)
   }
@@ -38,8 +43,6 @@ object BuyWorldWonder extends CommandPackage with ImplicitMiximFromJson with Imp
     val m: Option[MapSquareP] = points.find(_.s.wonder.isDefined)
     if (m.isDefined) Some(m.get.p) else None
   }
-
-//  private def getablePoints(b: GameBoard, civ: Civilization.T, city: P): Seq[MapSquareP] = squaresAround(b, city).filter(ss => canBuild(ss, civ) && ss.sm.terrain != Terrain.Water)
 
   private def possibleWonders(b: GameBoard, civ: Civilization.T, city: P): Seq[BuildSquare] = {
     var res: Seq[BuildSquare] = Nil
@@ -50,18 +53,18 @@ object BuyWorldWonder extends CommandPackage with ImplicitMiximFromJson with Imp
     wondersForCity(b, civ, city).foreach(w => {
       res = res ++ points.map(p => {
         // remove existing wonder
-        val r : Seq[P] = if (wond.isDefined && wond.get != p.p) Seq(wond.get) else Nil
-        val remove : Seq[P] = r ++ getStructureHere(p)
+        val r: Seq[P] = if (wond.isDefined && wond.get != p.p) Seq(wond.get) else Nil
+        val remove: Seq[P] = r ++ getStructureHere(p)
 
-        BuildSquare.BuildSquare(BuildingPoint(p.p, None, Some(w),None), remove)
+        BuildSquare.BuildSquare(BuildingPoint(p.p, None, Some(w), None), remove)
       })
     })
     res
   }
 
-  private def removeWonderFromMarket(b : GameBoard, w : Wonders.T) = b.market.wonders = b.market.wonders.filter(_ != w)
+  private def removeWonderFromMarket(b: GameBoard, w: Wonders.T) = b.market.wonders = b.market.wonders.filter(_ != w)
 
-  override def getSet: Set[Command.T] = Set(Command.BUYWONDER);
+  override def getSet: Set[Command.T] = Set(Command.BUYWONDER, Command.RANDOMWONDER,Command.FREEWONDER);
 
   protected class BuyWonder(override val param: BuildingPoint) extends AbstractCommand(param) {
     override def verify(board: gameboard.GameBoard): message.Mess =
@@ -76,16 +79,30 @@ object BuyWorldWonder extends CommandPackage with ImplicitMiximFromJson with Imp
       }
       val ww: MapSquareP = getSquare(board, param.p)
       // destroy building if exist
-//      if (ww.s.building.isDefined) removeBuilding(board, ww)
-      removeStructure(board,ww)
+      //      if (ww.s.building.isDefined) removeBuilding(board, ww)
+      removeStructure(board, ww)
       // build wonder
       ww.s.wonder = Some(WonderSquare(param.w, false))
       // remove wonder from list
-      removeWonderFromMarket(board,param.w)
+      removeWonderFromMarket(board, param.w)
+      // remove free
+      board.playerDeck(civ).freeWonder = None
     }
   }
 
-  override def produceCommand(command: Command.T, civ: Civilization.T, p: P, param: JsValue) = new BuyWonder(param)
+  protected class RandomWonder(override val param: Wonders.T) extends AbstractCommand(param) {
+    override def verify(board: GameBoard): message.Mess = null
+
+    override def execute(board: GameBoard): Unit = {
+      val pl: PlayerDeck = board.playerDeck(civ)
+      pl.freeWonder = Some(param)
+    }
+  }
+
+  override def produceCommand(command: Command.T, civ: Civilization.T, p: P, param: JsValue) =
+    if (command == Command.BUYWONDER) new BuyWonder(param)
+    else if (command == Command.RANDOMWONDER) new RandomWonder(param)
+    else new BuyWonder(param)
 
   override def itemize(b: GameBoard, civ: Civilization.T, com: Command.T): Seq[JsValue] =
     itemizeB(b, civ, false, possibleWonders)

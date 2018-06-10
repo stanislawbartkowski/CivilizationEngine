@@ -40,7 +40,18 @@ object SetCityAction extends CommandPackage with ImplicitMiximFromJson with Impl
     private def setcitycommandexecute(board: GameBoard, civ: Civilization.T, p: P, command: Command.T) = {
       val sq: MapSquareP = getSquare(board, p)
       // build city
-      if (command == Command.SETCAPITAL) sq.s.city = Some(City(civ, City.Capital))
+      if (command == Command.SETCAPITAL) {
+        sq.s.city = Some(City(civ, City.Capital))
+        if (isExecute && CivilizationFeatures.buildWallInCapital(civ)) {
+          val command: Command = constructCommand(Command.BUILDCITYWALLFORFREE, civ, p)
+          board.addForcedCommand(command)
+        }
+        if (isExecute && CivilizationFeatures.freeWonderOfTheWorldAtTheBeginning(civ)) {
+          val wonder : Wonders.T = getRandomAncientWonder(board)
+          val command: Command = constructCommand(Command.RANDOMWONDER, civ, p, wonder)
+          board.addForcedCommand(command)
+        }
+      }
       else {
         // only for regular city
         sq.s.city = Option(City(civ, City.Normal))
@@ -60,7 +71,7 @@ object SetCityAction extends CommandPackage with ImplicitMiximFromJson with Impl
 
           val moveto: Option[P] = squaresAround(board, p).
             filter(po => isSquareForFigure(board, civ, Figure.Army, po.p).isEmpty &&
-                         MoveAction.checkFinalPoint(board, civ, po, f).isEmpty).
+              MoveAction.checkFinalPoint(board, civ, po, f).isEmpty).
             map(_.p).headOption
 
           if (moveto.isDefined) {

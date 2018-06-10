@@ -56,18 +56,22 @@ object AttackCommand extends ImplicitMiximToJson {
     aa.filter(f => f.isDefined).map(_.get.unit)
 
   def battlesideaftermatch(b: GameBoard, s: BattleFieldSide, p: MapSquareP, plfig: Figures, winner: Boolean): Option[Figures] = {
-    b.market.killedunits = b.market.killedunits ++ s.killed
-    //    val civattacker: Civilization.T = p.civHere.get
-    // if (s.ironused > -1) b.resources.resou.incr(Resource.Iron)
-    val survived: Seq[CombatUnit] = finghtingtocombat(s.fighting)
-    //  val pl: PlayerDeck = b.playerDeck(civattacker)
+    var survived: Seq[CombatUnit] = finghtingtocombat(s.fighting)
+    val saved : Seq[CombatUnit] = if (s.savedunit.isDefined) Seq(s.killed(s.savedunit.get)) else Nil
+    b.market.killedunits = removeUnits(b.market.killedunits ++ s.killed,saved)
     // return survived units
     if (winner) {
       val pl: PlayerDeck = b.playerDeck(p.civHere.get)
-      pl.units = pl.units ++ survived
+      pl.units = pl.units ++ survived ++ saved
     }
     // else kill them all
-    else b.market.killedunits = b.market.killedunits ++ survived
+    else {
+      b.market.killedunits = b.market.killedunits ++ survived
+      if (!s.isvillage) {
+        val pl: PlayerDeck = b.playerDeck(p.civHere.get)
+        pl.units = pl.units ++ saved
+      }
+    }
     // fugures participating in the battle
     // important: 2017/12/24
     // p.civHere.get not civ !
@@ -108,7 +112,7 @@ object AttackCommand extends ImplicitMiximToJson {
     val reso: Option[Resource.T] =
       if (param.hv.isDefined) Some(takerandomresohv(g.playerDeck(loserciv), param.hv.get)) else if (param.res.isDefined) param.res else None
 
-    var trade: Integer = 0
+    var trade: Int = 0
     if (param.trade) {
       val tradeloser = numberofTrade(g, loserciv).trade
       trade = Math.min(MAXLOOTTRADE, tradeloser)
@@ -160,7 +164,7 @@ object AttackCommand extends ImplicitMiximToJson {
         return Mess(M.BATTLEISNOTFINISHED)
       val res: Option[Mess] = verifyloot(board, param)
       if (res.isDefined) return res.get
-      return null
+      null
     }
 
     override def execute(board: GameBoard): Unit = {
@@ -213,6 +217,9 @@ object AttackCommand extends ImplicitMiximToJson {
       // implement CodeOfLaws
       if (batt.attackerwinner) TechnologyAction.BattleWinner(board, attackciv)
       else if (defeciv.isDefined) TechnologyAction.BattleWinner(board, defeciv.get)
+      // import: at the end, not before
+      // only if village is taken
+      if (batt.attackerwinner && defeciv.isEmpty) cultureforhutvillage(board, civ, isExecute)
     }
   }
 
@@ -325,6 +332,34 @@ object AttackCommand extends ImplicitMiximToJson {
 
   }
 
+  class SaveUnitCommand extends AbstractCommandNone {
+
+    private def getBattleSide(board: GameBoard): BattleFieldSide =
+      if (civ == board.battle.get.attackerciv) board.battle.get.attacker
+      else board.battle.get.defender
+
+    override def verify(board: GameBoard): Mess = {
+      assert(board.battle.isDefined)
+      val battle: BattleField = board.battle.get
+      if (!battle.endofbattle)
+        return Mess(M.BATTLEISNOTFINISHED)
+      if (!CivilizationFeatures.canSaveUnit(civ)) return Mess(M.YOUARENOTENTITLETOSAVEUNIT)
+      val side : BattleFieldSide = getBattleSide(board)
+      if (side.isvillage) return Mess(M.VILLAGEISNOTENTITLEDFORUNITTAKING)
+      if (side.savedunit.isDefined) return Mess(M.YOUALREADYSAVEUNIT)
+      val pos = p.row
+      if (pos < 0 || pos >= side.killed.length)
+        return Mess(M.SAVEDUNITINDEXOUTOFRANGE)
+      null
+    }
+
+    override def execute(board: GameBoard): Unit = {
+      val pos = p.row
+      val side : BattleFieldSide = getBattleSide(board)
+      side.savedunit = Some(pos)
+    }
+  }
+
   class AttackCommand extends AbstractCommandNone {
 
     override def verify(b: GameBoard): message.Mess = {
@@ -364,9 +399,7 @@ object AttackCommand extends ImplicitMiximToJson {
         // execute later
         board.addForcedCommand(command)
       }
-
     }
-
   }
 
 }

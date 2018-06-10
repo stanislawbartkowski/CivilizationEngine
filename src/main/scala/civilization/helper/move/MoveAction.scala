@@ -1,13 +1,12 @@
 package civilization.helper.move
 
-import civilization.action.AbstractCommand
+import civilization.action.{AbstractCommand, Command, constructCommand}
 import civilization.gameboard.{Figures, GameBoard}
 import civilization.helper._
 import civilization.message.{J, M, Mess}
 import civilization.objects._
 
 object MoveAction {
-
 
   private def directMove(p: P, next: P): Boolean = {
     // removed: 2017.08.21

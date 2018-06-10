@@ -14,9 +14,15 @@ import play.api.libs.json.JsValue
 
 object BuyBuildingCommand extends CommandPackage with ImplicitMiximFromJson with ImplicitMiximToJson {
 
-  override def getSet: Set[T] = Set(Command.BUYBUILDING)
+  override def getSet: Set[T] = Set(Command.BUYBUILDING, Command.FREEBUILDINGCITYACTION)
 
   private def findBuildings(b: GameBoard, city: P): Seq[MapSquareP] = squaresAround(b, city).filter(_.s.building.isDefined)
+
+  private def elligibleforFree(b: GameBoard, civ: Civilization.T): Boolean = {
+    if (!CivilizationFeatures.freeUnlockedBuildingCityManagement(civ)) return false
+    // check if build already
+    !commandUsedAlready(b, civ, TurnPhase.CityManagement, Command.FREEBUILDINGCITYACTION)
+  }
 
   private def findStarBuilding(b: GameBoard, city: P): Option[MapSquareP] = {
     val blds: Seq[MapSquareP] = findBuildings(b, city)
@@ -25,8 +31,7 @@ object BuyBuildingCommand extends CommandPackage with ImplicitMiximFromJson with
     if (stars.isEmpty) None else Some(stars.head)
   }
 
-  private def listofunblocked(b: GameBoard, civ: Civilization.T, p: P): Seq[Building] = {
-    val prod: ProdForCity = getProductionForCity(b, civ, p)
+  private def listofunblocked(b: GameBoard, civ: Civilization.T, p: P, prod: Int): Seq[Building] = {
     val pl: PlayerDeck = b.playerDeck(civ)
     val alltechs: Seq[Technology] = pl.tech.map(t => GameResources.getTechnology(t.tech))
     // all unlocked buildings
@@ -39,7 +44,7 @@ object BuyBuildingCommand extends CommandPackage with ImplicitMiximFromJson with
     // remove upgraded already
     // remove buildings city cannot afford
     allb.filter(p =>
-      (p.upgrade.isEmpty || !setb.contains(p.upgrade.get)) && (p.cost <= prod.prod)
+      (p.upgrade.isEmpty || !setb.contains(p.upgrade.get)) && (p.cost <= prod)
     )
   }
 
@@ -47,14 +52,14 @@ object BuyBuildingCommand extends CommandPackage with ImplicitMiximFromJson with
     if (b.terrain.isEmpty) m.terrain != Terrain.Water else b.terrain.get == m.sm.terrain
   }
 
-  private def possibleBuildings(b: GameBoard, civ: Civilization.T, city: P): Seq[BuildSquare] = {
+  private def possibleBuildings(free : Boolean)(b: GameBoard, civ: Civilization.T, city: P): Seq[BuildSquare] = {
     val star: Option[MapSquareP] = findStarBuilding(b, city)
-    val blist: Seq[Building] = listofunblocked(b, civ, city)
+    val blist: Seq[Building] = listofunblocked(b, civ, city, if (free) 9999 else getProductionForCity(b, civ, city).prod)
+
     // TODO : improve it
     var points: Seq[MapSquareP] = outskirtsForCityNotBlocked(b, civ, city)
     val l: Seq[BuildSquare] = points.flatMap(p => blist.filter(canbebuiltHere(p, _)).map(
       bui => {
-        //        var po: Seq[P] = if (p.s.building.isDefined || p.s.wonder.isDefined || p.s.greatperson.isDefined) Seq(p.p) else Nil
         var po: Seq[P] = getStructureHere(p)
         // throw off star building
         if (bui.star.isDefined && star.isDefined && p.p != star.get.p) po = po :+ star.get.p
@@ -72,7 +77,8 @@ object BuyBuildingCommand extends CommandPackage with ImplicitMiximFromJson with
   protected class BuyBuilding(override val param: BuildingPoint) extends AbstractCommand(param) {
 
     override def verify(board: GameBoard): message.Mess = {
-      verifyB(board, civ, p, param, message.M.CANNOTBUYBUILDINGHERE, possibleBuildings)
+      val free : Boolean = command == Command.FREEBUILDINGCITYACTION
+      verifyB(board, civ, p, param, message.M.CANNOTBUYBUILDINGHERE, possibleBuildings(free))
     }
 
     override def execute(board: GameBoard): Unit = {
@@ -83,15 +89,9 @@ object BuyBuildingCommand extends CommandPackage with ImplicitMiximFromJson with
         if (sta.isDefined) removeBuilding(board, sta.get)
       }
       val ma: MapSquareP = getSquare(board, param.p)
-      // remove existing if exists
-      //      if (ma.s.building.isDefined)
-      //        removeBuilding(board, ma)
-      // remove wonder if exist
-      //      if (ma.s.wonder.isDefined)
-      //        removeWonder(board, ma)
       removeStructure(board, ma)
       // withdraw from market
-      board.market.buildings.incdevBuilding(param.b, false)
+      board.market.buildings.incdecBuilding(param.b, false)
       // built
       ma.s.setBuilding(param.b)
     }
@@ -100,7 +100,11 @@ object BuyBuildingCommand extends CommandPackage with ImplicitMiximFromJson with
   override def produceCommand(command: Command.T, civ: Civilization.T, p: P, param: JsValue) = new BuyBuilding(param)
 
   override def itemize(b: GameBoard, civ: Civilization.T, com: Command.T): Seq[JsValue] = {
-    itemizeB(b, civ, false, possibleBuildings)
+    val elligible = elligibleforFree(b, civ)
+    //curry function
+    if (com == Command.BUYBUILDING)
+      if (elligible) Nil else itemizeB(b, civ, false, possibleBuildings(false))
+    else if (elligible) itemizeB(b, civ, false, possibleBuildings(true)) else Nil
   }
 
 }

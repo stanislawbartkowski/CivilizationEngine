@@ -3,21 +3,18 @@
     "civ": "America",
     "tech": "Currency",
     "gover": "Despotism",
-    "ni": false,
     "desc": "The Americans start with a free, random great person. When Americans spend trade for production, they receive 2 production points instead of 1."
   },
   {
     "civ": "China",
     "tech": "Writing",
     "gover": "Despotism",
-    "ni": true,
     "desc": "The Chinese start with city walls in their capital. The Chinese gain 3 culture each time they explore a hut or conquer a village. The Chinese may save one of their killed unit after each battle, returning it to their standing force."
   },
   {
     "civ": "Egypt",
     "tech": "Construction",
     "gover": "Despotism",
-    "ni": true,
     "desc": "The Egyptians start with a free random ancient wonder in their capital. Once per turn, during City Management, the Egyptians may build an unlocked building for free by using an action."
   },
   {

@@ -67,4 +67,8 @@ trait ImplicitMiximFromJson {
 
   implicit def toGreatPerson(j : JsValue) : GreatPersonName.T = j.as[GreatPersonName.T]
 
+  implicit def toWorldWonder(j : JsValue) : Wonders.T = j.as[Wonders.T]
+
+  implicit def toResource(j : JsValue) : Resource.T = j.as[Resource.T]
+
 }

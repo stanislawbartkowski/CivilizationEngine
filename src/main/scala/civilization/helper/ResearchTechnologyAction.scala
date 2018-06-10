@@ -4,7 +4,7 @@ import civilization.action
 import civilization.gameboard.{GameBoard, PlayerDeck, PlayerTechnology}
 import civilization.message.{M, Mess}
 import civilization.objects._
-import civilization.action.{AbstractCommand, CommandPackage}
+import civilization.action.{AbstractCommand, CommandPackage, constructCommand}
 import civilization.helper.HarvestResource.HarvestResource
 import civilization.io.fromjson.ImplicitMiximFromJson
 import civilization.io.readdir.GameResources
@@ -35,8 +35,27 @@ object ResearchTechnology extends CommandPackage with ImplicitMiximFromJson with
     return 1 // first level
   }
 
-  private def upgradeB(b: GameBoard, civ : Civilization.T, tech: TechnologyName.T) : Unit = {
-    val t : Technology = GameResources.getTechnology(tech)
+  private def applyNewStrength(str : CombatUnitStrength,t : CombatUnitType.T,newval : Int) =
+    str.setStrength(t,math.max(str.getStrength(t),newval))
+
+  private def upgradeMilitary(str : CombatUnitStrength, tech : Technology): Option[CombatUnitType.T] = {
+    if (tech.unit.isEmpty) return None
+    val s : TechnologyUnit = tech.unit.get
+    val newlevel : Int = s.level-1
+    if (s.unit.isDefined) {
+      if (newlevel > str.getStrength(s.unit.get)) {
+        str.setStrength(s.unit.get,newlevel)
+        return Some(s.unit.get)
+      }
+    }
+    else
+    // apply new level to all units
+      CombatUnitType.values.foreach(applyNewStrength(str,_,newlevel))
+    None
+  }
+
+
+  private def upgradeB(b: GameBoard, civ : Civilization.T, t: Technology) : Unit = {
     // technology do not unlock any building
     if (t.building.isEmpty) return
     citiesForCivilization(b,civ).foreach(
@@ -73,7 +92,18 @@ object ResearchTechnology extends CommandPackage with ImplicitMiximFromJson with
       val deck: PlayerDeck = b.playerDeck(civ)
       deck.tech = deck.tech :+ new PlayerTechnology(tech)
       // upgrade buildings
-      upgradeB(b,civ,tech)
+      val t : Technology = GameResources.getTechnology(tech)
+      upgradeB(b,civ,t)
+      // upgrade military strength
+      val upgrade : Option[CombatUnitType.T] = upgradeMilitary(deck.combatlevel,t)
+      if (upgrade.isDefined && CivilizationFeatures.takefreeResourceAfterUpgradingMilitary(civ)) {
+        deck.takefreeResources = true
+        if (isExecute) {
+          val commandC = constructCommand(Command.TAKEUNIT, civ, null, getRandomUnit(b, upgrade.get, false))
+          //          playCommand(g, commandC)
+          b.addForcedCommand(commandC)
+        }
+      }
     }
 
     override def execute(board: GameBoard) = researchTechnologyExecute(board, civ, param)

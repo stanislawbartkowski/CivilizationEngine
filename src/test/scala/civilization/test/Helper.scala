@@ -88,6 +88,10 @@ object Helper {
 
   // TEST, battle
 
+  def getBattle(j: JsValue): JsValue =
+    (j \ "board"\ "battle").get
+
+
   def checkendofgame(j: JsValue, expected: Boolean): Unit = {
     val t: Boolean = (j \ "endofbattle").get.as[Boolean]
     println(t)

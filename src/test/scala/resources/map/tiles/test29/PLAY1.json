@@ -1,0 +1,7 @@
+{
+  "game": [
+
+    {"command":"SETCAPITAL","civ":"Egypt","p":{"row":2,"col":2},"param":null},
+{"command":"RANDOMWONDER","civ":"Egypt","p":{"row":2,"col":2},"param":"StatueofZeus"},
+{"command":"FREEWONDER","civ":"Egypt","p":{"row":2,"col":2},"param":{"p":{"row":2,"col":3},"wonder":"StatueofZeus"}}
+]}

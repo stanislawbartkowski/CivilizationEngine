@@ -1,0 +1,15 @@
+package civilization.objects
+
+object TechnologyFeatures {
+
+  def increaseHandSize(tech : TechnologyName.T) : Boolean = (tech == TechnologyName.Pottery)
+
+  def citiesLimitIs3(tech : TechnologyName.T) : Boolean = tech == TechnologyName.Irrigation
+
+  def watercrossingAllowed(tech : TechnologyName.T) : Boolean = tech == TechnologyName.Navigation
+
+  def stackSize(tech : TechnologyName.T) : Int = if (tech == TechnologyName.Masonry) 3 else DEFAULTSTACKLIMT
+
+  def buyCityWall(tech : TechnologyName.T) : Boolean = tech == TechnologyName.Masonry
+
+}

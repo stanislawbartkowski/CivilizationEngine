@@ -43,7 +43,7 @@ trait ImplicitMiximToJson {
     )
   }
 
-  implicit def writePP(a: Seq[(P, P)]): Seq[JsValue] = a.map(writesCityPoint(_))
+  implicit def writePP(a: Seq[(P, P)]): Seq[JsValue] = a.map(writesCityPoint)
 
   implicit def writePSeqP(a: Seq[(P, Seq[P])]): Seq[JsValue] = a.map(e => {
     Json.obj(
@@ -61,5 +61,11 @@ trait ImplicitMiximToJson {
   implicit def writeListCultureCard(p : Seq[CultureCardName.T]) : Seq[JsValue] = p.map(writeCultureCard)
 
   implicit def writeListGreatPersonName(p : Seq[GreatPersonName.T]) : Seq[JsValue] = p.map(writeGreatPerson)
+
+  implicit def writesWonder(w : Wonders.T) : JsValue = Json.toJson(w)
+
+  implicit def writeResource(r : Resource.T) : JsValue = Json.toJson(r)
+
+  implicit def writeListOfResources(p : Seq[Resource.T]) : Seq[JsValue] = p.map(writeResource)
 
 }

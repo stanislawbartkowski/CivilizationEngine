@@ -17,7 +17,7 @@
     "ni" : true,
     "level": 3,
     "resource" : "Spy",
-    "units" : {"name" : "Artillery", "level" : 2},
+    "units" : {"name" : "Artillery", "level" : 3},
     "desc" : "Incense-CityManagement : Gain 7 culture"
   },
   {
@@ -214,7 +214,6 @@
   },
   {
     "name": "Masonry",
-    "ni" : true,
     "level": 1,
     "desc" : "Stacking Limit:3, You may build City Walls in your cities for 7 production. This is indicated by flipping the city marker to its walled side"
   },

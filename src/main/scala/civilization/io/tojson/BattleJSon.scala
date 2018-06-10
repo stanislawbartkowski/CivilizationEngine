@@ -36,6 +36,7 @@ object BattleJSon {
     "turn" -> turn,
     "points" -> b.points,
     "isvillage" -> b.isvillage,
+    "saveunit" -> canSaveUnitForCiv(civ,b),
     S.civ -> civ
   )
 

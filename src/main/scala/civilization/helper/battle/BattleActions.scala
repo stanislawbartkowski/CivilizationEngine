@@ -12,13 +12,14 @@ object BattleActions {
     var battleforce: Int = UNITSBATTLE
     // barbarians village
     if (m.s.hvhere) return (battleforce, None)
-    val li: PlayerLimits = getLimits(b, m.civHere.get)
+    val civ : Civilization.T = m.civHere.get
+    val li: PlayerLimits = getLimits(b, civ)
     // increase for city
     if (m.s.cityhere) battleforce = battleforce + 3
     // figures
-    else battleforce = battleforce + m.s.figures.numberofArmies * 2
+    else battleforce = battleforce + (m.s.figures.numberofArmies -1) * 2
     // premium for fundamentalism
-    if (li.isFundametialism) battleforce = battleforce + 1
+    if (GovernmentFeatures.increaseBattleHand(b.playerDeck(civ).gover)) battleforce = battleforce + 1
     (battleforce, m.civHere)
   }
 

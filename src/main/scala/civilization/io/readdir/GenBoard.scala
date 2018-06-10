@@ -101,6 +101,15 @@ object GenBoard extends ImplicitMiximFromJson with ImplicitMiximToJson {
         //g.addForcedCommand(commandC)
         playCommand(g,commandC)
       }
+      if (CivilizationFeatures.takefree2Infantry(pl.civ)) {
+        addToJournal(g,pl.civ,J.YOUARERECEIVING2FREEINFANTRYUNITS,null)
+        // do twice
+        for (i <- 0 to 1) {
+          val commandC = constructCommand(Command.TAKEUNIT, pl.civ, null, getRandomUnit(g, CombatUnitType.Infantry, false))
+//          playCommand(g, commandC)
+          g.play.addCommand(commandC)
+        }
+      }
     })
     g
   }
