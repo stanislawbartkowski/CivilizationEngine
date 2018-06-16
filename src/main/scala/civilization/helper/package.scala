@@ -90,7 +90,7 @@ package object helper {
   def foundCapitalForCiv(board: GameBoard, civ: Civilization.T): Option[MapSquareP] =
     citiesForCivilization(board, civ).find(s => City.isCapital(s.s.city.get.citytype))
 
-  def isCapitalBuild(board: GameBoard, civ: Civilization.T): Boolean = foundCapitalForCiv(board,civ).isDefined
+  def isCapitalBuild(board: GameBoard, civ: Civilization.T): Boolean = foundCapitalForCiv(board, civ).isDefined
 
   private def outskirtsForCiv(b: GameBoard, civ: Civilization.T): Seq[MapSquareP] =
     citiesForCivilization(b, civ).flatMap(p => squaresAround(b, p.p))
@@ -350,8 +350,8 @@ package object helper {
     clist
   }
 
-  def commandUsedAlready(b: GameBoard, civ: Civilization.T, pha: TurnPhase.T,com : Command.T) : Boolean =
-    lastPhaseCommandsReverse(b,civ,pha).exists(_.command == com)
+  def commandUsedAlready(b: GameBoard, civ: Civilization.T, pha: TurnPhase.T, com: Command.T): Boolean =
+    lastPhaseCommandsReverse(b, civ, pha).exists(_.command == com)
 
   def technologyResourceUsed(b: GameBoard, civ: Civilization.T): Boolean = {
     // all commands in the current phase
@@ -1089,9 +1089,21 @@ package object helper {
     !side.isvillage && CivilizationFeatures.canSaveUnit(civ) && !side.killed.isEmpty && side.savedunit.isEmpty
 
   // -------------------
-  def getRandomAncientWonder(b : GameBoard) : Wonders.T = {
-    val wonders : Seq[Wonders.T] = b.getCurrentWonders().map(w => GameResources.getWonder(w)).filter(_.age == WondersAge.Ancient).map(_.name)
-    val ra : Wonders.T = getRandom(wonders)
+  def getRandomAncientWonder(b: GameBoard): Wonders.T = {
+    val wonders: Seq[Wonders.T] = b.getCurrentWonders().map(w => GameResources.getWonder(w)).filter(_.age == WondersAge.Ancient).map(_.name)
+    val ra: Wonders.T = getRandom(wonders)
     ra
   }
+
+  // --------------------------
+  def advanceCultureForFree(b: GameBoard, civ: Civilization.T, isExecute: Boolean) = {
+    if (CivilizationFeatures.advanceCultureWonderCityVillage(civ) && isExecute) {
+      val commandC = action.constructCommand(Command.ADVANCECULTUREFORFREE, civ, null)
+      b.addForcedCommand(commandC)
+    }
+  }
+
+  // ----------------------------
+  def hasWonderFeature(b: GameBoard, civ: Civilization.T, hasfeature : (Wonders.T) => Boolean) : Boolean =
+    outskirtsForCivNotBlocked(b,civ).exists(s => s.s.wonder.isDefined && hasfeature(s.s.wonder.get.w))
 }

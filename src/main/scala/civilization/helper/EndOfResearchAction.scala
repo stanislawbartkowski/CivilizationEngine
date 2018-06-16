@@ -1,8 +1,9 @@
 package civilization.helper
 
+import civilization.action
 import civilization.action.AbstractCommand1
 import civilization.gameboard.GameBoard
-import civilization.message
+import civilization.action
 import civilization.message.{M, Mess}
 import civilization.objects._
 
@@ -20,5 +21,10 @@ class EndOfResearchAction extends AbstractCommand1(TurnPhase.Research, 0) {
     // additional action : rotate order of players
     val c : CurrentPhase = currentPhase(board)
     if (c.notcompleted.length == 1 && c.notcompleted.head == civ) board.rotateplorder
+    if (isExecute && hasWonderFeature(board,civ,WonderFeatures.getFreeCultureStartOfTurn)) {
+      // StartOfTurn
+      val commandC = action.constructCommand(Command.GETCULTURE, civ, null)
+      board.addForcedCommand(commandC)
+    }
   }
 }

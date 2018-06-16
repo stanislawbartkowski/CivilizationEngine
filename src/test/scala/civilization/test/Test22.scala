@@ -205,7 +205,7 @@ class Test22 extends FunSuite with ImplicitMiximFromJson {
   }
 
   test("Check wonder not implemented") {
-    val w: WondersOfTheWorld = GameResources.getWonder(Wonders.Stonehenge)
+    val w: WondersOfTheWorld = GameResources.getWonder(Wonders.PanamaCanal)
     println(w.notimplemented)
     assert(w.ni)
   }
@@ -220,10 +220,10 @@ class Test22 extends FunSuite with ImplicitMiximFromJson {
     w.value.foreach(w => {
       println(w)
       val n = (w \ "name").as[String]
-      if (n == "Stonehenge") {
+      if (n == "UnitedNations") {
         wasS = true
         val ni = (w \ "ni").as[Boolean]
-        println("Stonehenge, check not implemented")
+        println("UnitedNations, check not implemented")
         assert(ni)
       }
     })

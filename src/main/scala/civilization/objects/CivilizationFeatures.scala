@@ -20,4 +20,6 @@ object CivilizationFeatures {
 
   def takefreeResourceAfterUpgradingMilitary(civ : Civilization.T) : Boolean = civ == Civilization.Germany
 
+  def advanceCultureWonderCityVillage(civ : Civilization.T) : Boolean = civ == Civilization.Rome
+
 }

@@ -42,7 +42,7 @@ class Test30 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
     // additional unit
     assert(pl.units.length == 6)
     println(pl.takefreeResources)
-    assert(pl.takefreeResources)
+    assert(pl.takefreeResources > 0)
     var l = allowedCommands(gg, Civilization.Germany)
     println(l)
     var ite = II.getData(II.ITEMIZECOMMAND, token, "GETFREERESOURCE")
@@ -53,6 +53,111 @@ class Test30 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
     assert(noi == 1)
     val pl1 = gg.playerDeck(Civilization.Germany)
     println(pl1.takefreeResources)
-    assert(!pl1.takefreeResources)
+    assert(pl1.takefreeResources == 0)
   }
-}
+
+  test("Technology navigation, upgrade for 2 type of units") {
+    val reg = Helper.readBoardAndPlayT("test30/BOARDGAME2.json", "test30/PLAY2.json", Civilization.Germany)
+    val token = reg._1
+    var gg = I.getBoardForToken(token)
+    var pl = gg.playerDeck(Civilization.Germany)
+    println(pl.units.length)
+    assert(pl.units.length == 5)
+    Helper.executeCommandH(token, "RESEARCH", -1, -1,""""Logistics"""")
+    // should be eight
+    gg = I.getBoardForToken(token)
+    pl = gg.playerDeck(Civilization.Germany)
+    println(pl.units.length)
+    assert(pl.units.length == 8)
+    // free resource
+    var l = allowedCommands(gg, Civilization.Germany)
+    println(l)
+    var ite = II.getData(II.ITEMIZECOMMAND, token, "GETFREERESOURCE")
+    println(ite)
+    assert(l contains Command.GETFREERESOURCE)
+    // take 3 resources
+    Helper.executeCommandH(token, "GETFREERESOURCE", -1, -1,""""Incense"""")
+    gg = I.getBoardForToken(token)
+    l = allowedCommands(gg, Civilization.Germany)
+    assert(l contains Command.GETFREERESOURCE)
+    Helper.executeCommandH(token, "GETFREERESOURCE", -1, -1,""""Silk"""")
+    gg = I.getBoardForToken(token)
+    l = allowedCommands(gg, Civilization.Germany)
+    assert(l contains Command.GETFREERESOURCE)
+    Helper.executeCommandH(token, "GETFREERESOURCE", -1, -1,""""Iron"""")
+    gg = I.getBoardForToken(token)
+    l = allowedCommands(gg, Civilization.Germany)
+    println(l)
+    assert(!(l contains Command.GETFREERESOURCE))
+  }
+
+  test("Technology navigation, upgrade for 2 type of units, only 2 resources can be taken") {
+    val reg = Helper.readBoardAndPlayT("test30/BOARDGAME3.json", "test30/PLAY3.json", Civilization.Germany)
+    val token = reg._1
+    var gg = I.getBoardForToken(token)
+    var pl = gg.playerDeck(Civilization.Germany)
+    var l = allowedCommands(gg, Civilization.Germany)
+    println(l)
+    assert(!(l contains Command.GETFREERESOURCE))
+  }
+
+  test("Rome bonus") {
+    val token: String = II.getData(II.REGISTEROWNER, "Rome")
+    println(token)
+    var gg = I.getBoardForToken(token)
+    var l = allowedCommands(gg, Civilization.Rome)
+    println(l)
+    var ite = II.getData(II.ITEMIZECOMMAND, token, "SETCAPITAL")
+    println(ite)
+    Helper.executeCommandH(token, "SETCAPITAL", 2, 2)
+    gg = I.getBoardForToken(token)
+    var pl = gg.playerDeck(Civilization.Rome)
+    println(pl.cultureprogress)
+    // culture progress 1
+    assert(pl.cultureprogress == 1)
+    println(pl.cultureresource.cards.length)
+    // one culture card
+    assert(pl.cultureresource.cards.length == 1)
+  }
+
+  test("Rome bonus after building a wonder") {
+    val reg = Helper.readBoardAndPlayT("test30/BOARDGAME4.json", "test30/PLAY4.json", Civilization.Rome)
+    val token = reg._1
+    var gg = I.getBoardForToken(token)
+    var pl = gg.playerDeck(Civilization.Rome)
+    println(pl.cultureprogress)
+    // culture progress 2
+    assert(pl.cultureprogress == 2)
+    println(pl.cultureresource.cards.length)
+    // two culture cards
+    assert(pl.cultureresource.cards.length == 2)
+  }
+
+  test("Rome bonus after building a conquiering a village") {
+    val reg = Helper.readBoardAndPlayT("test30/BOARDGAME4.json", "test30/PLAY5.json", Civilization.Rome)
+    val token = reg._1
+    var gg = I.getBoardForToken(token)
+    var pl = gg.playerDeck(Civilization.Rome)
+    println(pl.cultureprogress)
+    // culture progress 3
+    assert(pl.cultureprogress == 3)
+    println(pl.cultureresource.cards.length)
+    // two culture cards
+    assert(pl.cultureresource.cards.length == 2)
+    println(pl.cultureresource.persons.length)
+    // single great person
+    assert(pl.cultureresource.persons.length == 1)
+  }
+
+  test("Stonehedge") {
+    val reg = Helper.readBoardAndPlayT("test30/BOARDGAME6.json", "test30/PLAY6.json", Civilization.China)
+    val token = reg._1
+    Helper.executeCommandH(token, "ENDOFPHASE", -1, -1,""""Research"""")
+    var gg = I.getBoardForToken(token)
+    var pl = gg.playerDeck(Civilization.China)
+    println(pl.resou.nof(Resource.Culture))
+    // one culture
+    assert(pl.resou.nof(Resource.Culture) == 1)
+  }
+
+  }

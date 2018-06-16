@@ -84,7 +84,10 @@ object SetCityAction extends CommandPackage with ImplicitMiximFromJson with Impl
     }
 
 
-    override def execute(board: GameBoard) = setcitycommandexecute(board, civ, p, command)
+    override def execute(board: GameBoard) = {
+      setcitycommandexecute(board, civ, p, command)
+      advanceCultureForFree(board,civ,isExecute)
+    }
 
     override def verify(board: GameBoard): Mess = setcitycommandverify(board, civ, p, command)
   }

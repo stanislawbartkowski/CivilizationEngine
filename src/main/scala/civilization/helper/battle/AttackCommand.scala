@@ -219,7 +219,11 @@ object AttackCommand extends ImplicitMiximToJson {
       else if (defeciv.isDefined) TechnologyAction.BattleWinner(board, defeciv.get)
       // import: at the end, not before
       // only if village is taken
-      if (batt.attackerwinner && defeciv.isEmpty) cultureforhutvillage(board, civ, isExecute)
+      if (batt.attackerwinner && defeciv.isEmpty) {
+        cultureforhutvillage(board, civ, isExecute)
+        // bonus for winning the village
+        advanceCultureForFree(board,civ,isExecute)
+      }
     }
   }
 

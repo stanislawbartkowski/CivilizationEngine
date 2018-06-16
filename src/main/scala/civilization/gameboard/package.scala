@@ -242,7 +242,8 @@ package object gameboard {
     def numofTechnologyFeatures(feature : TechnologyName.T => Boolean) : Int = tech.filter(te => feature(te.tech)).length
     def stackLimit : Int = if (tech.isEmpty) DEFAULTSTACKLIMT else tech.map(te => TechnologyFeatures.stackSize(te.tech)) max
     var freeWonder : Option[Wonders.T] = None
-    var takefreeResources : Boolean = false
+    // number of free resources to take, can be 3 for Navigation
+    var takefreeResources : Int = 0
   }
 
   case class Market(var units: Seq[CombatUnit], var killedunits: Seq[CombatUnit], val buildings: BuildingsResources, var wonders: Seq[Wonders.T])

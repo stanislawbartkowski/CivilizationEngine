@@ -21,14 +21,12 @@
     "civ": "Germany",
     "tech": "Metallurgy",
     "gover": "Despotism",
-    "ni": true,
     "desc": "The Germans start with 2 extra infantry units. After setup, each time the Germans research a tech that upgrades or unlocked a unit, they build one of that unit for free and gain one resource of their choice from the market."
   },
   {
     "civ": "Rome",
     "tech": "CodeOfLaw",
     "gover": "Republic",
-    "ni": true,
     "desc": "The Romans advance one space on the culture track for free each time they build a wonder or city, and each time they conquer a city or village."
   },
   {

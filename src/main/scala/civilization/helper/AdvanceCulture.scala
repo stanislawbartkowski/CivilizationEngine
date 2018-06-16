@@ -14,7 +14,7 @@ import civilization.message.{FatalError, M, Mess}
 
 object AdvanceCulture extends CommandPackage with ImplicitMiximFromJson with ImplicitMiximToJson {
 
-  override def getSet: Set[T] = Set(Command.GET3CULTURE, Command.ADVANCECULTURE, Command.CULTURECARD, Command.GREATPERSON, Command.ADVANCECULTUREFORFREE)
+  override def getSet: Set[T] = Set(Command.GET3CULTURE, Command.GETCULTURE, Command.ADVANCECULTURE, Command.CULTURECARD, Command.GREATPERSON, Command.ADVANCECULTUREFORFREE)
 
   private def getCultureCost(cult: Int): CultureTrackCost = {
     val culturetrack: CultureTrack = GameResources.instance().culturetrack
@@ -108,12 +108,12 @@ object AdvanceCulture extends CommandPackage with ImplicitMiximFromJson with Imp
       }
       case Command.CULTURECARD => new TakeCultureCard(param)
       case Command.GREATPERSON => new TakeGreatPerson(param)
-      case Command.GET3CULTURE => new AbstractCommandNone() {
+      case Command.GET3CULTURE | Command.GETCULTURE => new AbstractCommandNone() {
         override def verify(board: GameBoard): Mess = null
 
         override def execute(board: GameBoard): Unit = {
           val pl: PlayerDeck = board.playerDeck(civ)
-          pl.resou.incr(Resource.Culture, 3)
+          pl.resou.incr(Resource.Culture, if (command == Command.GET3CULTURE) 3 else 1)
         }
       }
     }

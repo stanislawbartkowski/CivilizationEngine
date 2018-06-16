@@ -12,6 +12,7 @@ import play.api.libs.json.JsValue
 
 object BuyWorldWonder extends CommandPackage with ImplicitMiximFromJson with ImplicitMiximToJson {
 
+  override def getSet: Set[Command.T] = Set(Command.BUYWONDER, Command.RANDOMWONDER, Command.FREEWONDER);
 
   private def canAffordWonder(b: GameBoard, pl: PlayerDeck, prod: ProdForCity, w: WondersOfTheWorld): Boolean = {
     if (prod.prod >= w.cost) return true
@@ -64,8 +65,6 @@ object BuyWorldWonder extends CommandPackage with ImplicitMiximFromJson with Imp
 
   private def removeWonderFromMarket(b: GameBoard, w: Wonders.T) = b.market.wonders = b.market.wonders.filter(_ != w)
 
-  override def getSet: Set[Command.T] = Set(Command.BUYWONDER, Command.RANDOMWONDER,Command.FREEWONDER);
-
   protected class BuyWonder(override val param: BuildingPoint) extends AbstractCommand(param) {
     override def verify(board: gameboard.GameBoard): message.Mess =
       verifyB(board, civ, p, param, message.M.CANNOTBUYWONDERGHERE, possibleWonders)
@@ -87,6 +86,7 @@ object BuyWorldWonder extends CommandPackage with ImplicitMiximFromJson with Imp
       removeWonderFromMarket(board, param.w)
       // remove free
       board.playerDeck(civ).freeWonder = None
+      if (command == Command.BUYWONDER) advanceCultureForFree(board, civ, isExecute)
     }
   }
 

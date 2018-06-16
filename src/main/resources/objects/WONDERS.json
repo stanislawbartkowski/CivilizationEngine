@@ -18,7 +18,6 @@
   },
   {
     "t" : "SH",
-    "ni" : true,
     "name" : "Stonehenge",
     "phase" : "StartOfTurn",
     "age" : "Ancient",
