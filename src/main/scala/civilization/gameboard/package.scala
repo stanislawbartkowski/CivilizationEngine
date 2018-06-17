@@ -240,7 +240,7 @@ package object gameboard {
     val cultureresource : CultureResources = CultureResources()
     def hasTechnologyFeature(feature : TechnologyName.T => Boolean) : Boolean = tech.find(te => feature(te.tech)).isDefined
     def numofTechnologyFeatures(feature : TechnologyName.T => Boolean) : Int = tech.filter(te => feature(te.tech)).length
-    def stackLimit : Int = if (tech.isEmpty) DEFAULTSTACKLIMT else tech.map(te => TechnologyFeatures.stackSize(te.tech)) max
+    def stackLimit : Int = math.max(CivilizationFeatures.startStackingLimit(civ),if (tech.isEmpty) 0 else tech.map(te => TechnologyFeatures.stackSize(te.tech)) max)
     var freeWonder : Option[Wonders.T] = None
     // number of free resources to take, can be 3 for Navigation
     var takefreeResources : Int = 0

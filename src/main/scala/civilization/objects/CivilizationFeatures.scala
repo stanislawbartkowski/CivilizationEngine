@@ -22,4 +22,10 @@ object CivilizationFeatures {
 
   def advanceCultureWonderCityVillage(civ : Civilization.T) : Boolean = civ == Civilization.Rome
 
+  def startStackingLimit(civ : Civilization.T) : Int = if (civ == Civilization.Russia) 3 else 2
+
+  def numberofArmiesToStart(civ : Civilization.T) : Int = if (civ == Civilization.Russia) 2 else 1
+
+  def canSacrificeFigureForTech(civ : Civilization.T) : Boolean = civ == Civilization.Russia
+
 }

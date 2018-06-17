@@ -71,7 +71,7 @@ object SetCityAction extends CommandPackage with ImplicitMiximFromJson with Impl
 
           val moveto: Option[P] = squaresAround(board, p).
             filter(po => isSquareForFigure(board, civ, Figure.Army, po.p).isEmpty &&
-              MoveAction.checkFinalPoint(board, civ, po, f).isEmpty).
+              checkFinalPoint(board, civ, po, f).isEmpty).
             map(_.p).headOption
 
           if (moveto.isDefined) {
@@ -86,7 +86,7 @@ object SetCityAction extends CommandPackage with ImplicitMiximFromJson with Impl
 
     override def execute(board: GameBoard) = {
       setcitycommandexecute(board, civ, p, command)
-      advanceCultureForFree(board,civ,isExecute)
+      if (command == Command.SETCITY) advanceCultureForFree(board,civ,isExecute)
     }
 
     override def verify(board: GameBoard): Mess = setcitycommandverify(board, civ, p, command)

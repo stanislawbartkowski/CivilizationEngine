@@ -867,6 +867,47 @@ package object helper {
 
   // move figures
 
+  def checkFinalPoint(b: GameBoard, civ: Civilization.T, s: MapSquareP, fig: Figures): Option[Mess] = {
+    val li: PlayerLimits = getLimits(b, civ)
+    val figdesc: (P, Figures) = (s.p, fig)
+    // 2017/12/30 : error, water
+    if (s.sm.terrain == Terrain.Water && !li.waterstopallowed) return Some(Mess(M.CANNOTSTOPINWATER, figdesc))
+    if (s.s.cityhere && s.s.city.get.belongsTo(civ)) return Some(Mess(M.CANNOTSTOPINCITY, figdesc))
+    // 2017/08/28 figures already on the point
+    None
+  }
+
+  private def directMove(p: P, next: P): Boolean = {
+    // removed: 2017.08.21
+    //    if (p.row == next.row && p.col == next.col) return true
+    if ((p.row == next.row) && ((p.col + 1 == next.col) || (p.col - 1 == next.col))) return true
+    if ((p.col == next.col) && ((p.row + 1 == next.row) || (p.row - 1 == next.row))) return true
+    false
+  }
+
+  case class FiguresParam(f: Figures, lastp: P, len: Int)
+
+  def toFiguresParam(fig: PlayerMove): FiguresParam = FiguresParam(fig.f.toFigures, fig.lastp, fig.len)
+
+  def figureMovePointCheck(b: GameBoard, civ: Civilization.T, fig: FiguresParam, p: P, endofmove: Boolean): Option[Mess] = {
+    assert(p != null || endofmove)
+    if (p == null) return checkFinalPoint(b, civ, getSquare(b, fig.lastp), fig.f)
+    val figdesc: (P, FiguresParam) = (p, fig)
+    // endofmove can be the same point as last
+    if (!endofmove || fig.lastp != p)
+      if (!directMove(fig.lastp, p)) return Some(Mess(M.MOVENOTCONSECUTIVE, figdesc))
+    val li: PlayerLimits = getLimits(b, civ)
+    // ignore first STARTMOVE
+    if (fig.len + 1 > li.travelSpeed) return Some(Mess(M.TRAVELSPEEDEXCEEDED, (figdesc, li.travelSpeed)))
+    val s: MapSquareP = getSquare(b, p)
+    if (!s.revealed) return Some(Mess(M.POINTNOTREVEALED, p))
+    if (s.sm.terrain == Terrain.Water && !li.watercrossingallowed) return Some(Mess(M.CANNOTCROSSWATER, figdesc))
+    val mess: Option[Mess] = isSquareForFigures(b, civ, fig.f, s.s, li)
+    if (mess.isDefined) return mess
+    if (endofmove) checkFinalPoint(b, civ, s, fig.f) else None
+  }
+
+
   def putFigures(b: GameBoard, civ: Civilization.T, p: P, f: Figures) = {
     val s: MapSquareP = getSquare(b, p)
     s.s.figures.civ = civ
@@ -898,6 +939,33 @@ package object helper {
       val command: Command = constructCommand(Command.GET3CULTURE, civ, null)
       b.addForcedCommand(command)
     }
+  }
+
+  def allMoves(b: GameBoard, civ: Civilization.T, fig: Figures, startp: P, foreigncities: Boolean): Seq[P] = {
+    // search breadth
+    val lim = getLimits(b, civ) // speed
+    var visited: Set[P] = Set()
+    var foreign: Set[P] = Set()
+    var level: Seq[P] = Seq(startp) // current level, starting point
+    for (i <- 1 to lim.travelSpeed) {
+      var nextlevel: Seq[P] = Nil
+      val endofmove: Boolean = i == lim.travelSpeed
+      level.foreach(p => {
+        if (!(visited contains p)) {
+          val around: Seq[MapSquareP] = squaresAround(b, p)
+          around.foreach(nextp => {
+            val check: Option[Mess] = figureMovePointCheck(b, civ, FiguresParam(fig, p, i-1), nextp.p, endofmove)
+            if (check.isEmpty) nextlevel = nextlevel :+ nextp.p
+            else if (check.get.m == M.CANNOTSETFIGUREONALIENCIV) foreign = (foreign + nextp.p)
+          })
+          visited = visited + p
+        }
+      }
+      )
+      level = nextlevel
+    }
+    if (foreigncities) foreign toSeq
+    else (visited - startp) toSeq
   }
 
   // ===================================
@@ -1104,6 +1172,6 @@ package object helper {
   }
 
   // ----------------------------
-  def hasWonderFeature(b: GameBoard, civ: Civilization.T, hasfeature : (Wonders.T) => Boolean) : Boolean =
-    outskirtsForCivNotBlocked(b,civ).exists(s => s.s.wonder.isDefined && hasfeature(s.s.wonder.get.w))
+  def hasWonderFeature(b: GameBoard, civ: Civilization.T, hasfeature: (Wonders.T) => Boolean): Boolean =
+    outskirtsForCivNotBlocked(b, civ).exists(s => s.s.wonder.isDefined && hasfeature(s.s.wonder.get.w))
 }

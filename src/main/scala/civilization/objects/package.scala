@@ -15,7 +15,6 @@ package object objects {
   val COINSCAPACITY = 4
   val CULTURECITY = 1
   val CULTURECAPITAL = 1
-  val DEFAULTSTACKLIMT = 2
   val DEFAULTCITYLIMIT = 2
 
   case class GameConfig(val ironincreasedefend: Boolean)

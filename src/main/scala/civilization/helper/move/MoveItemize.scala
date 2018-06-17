@@ -14,7 +14,15 @@ object MoveItemize {
 
   private def allowedActionForMovement(b: GameBoard, civ: Civilization.T): Seq[Command.T] = {
     val itemi: Seq[(Figures, P)] = itemizeforStartOfMove(b: GameBoard, civ: Civilization.T)
-    if (itemi.isEmpty) Nil else Seq(Command.STARTMOVE)
+    if (itemi.isEmpty) Nil
+    else {
+      var res: Seq[Command.T] = Seq(Command.STARTMOVE)
+      if (CivilizationFeatures.canSacrificeFigureForTech(civ))
+        if (itemi.exists(i =>
+          !allMoves(b, civ, i._1, i._2, true).isEmpty
+        )) res = res :+ Command.SACRIFICEFIGUREFORTECH
+      res
+    }
   }
 
   /** not private, used in test */
@@ -45,14 +53,14 @@ object MoveItemize {
     val ll: Seq[PlayerMove] = civLastMoves(b, civ)
     if (ll.isEmpty || ll.last.isFinished) return None
     val lim: PlayerLimits = getLimits(b, civ)
-    // only ENDMOVE possible
+    // only ENDOFMOVE possible
     val last: PlayerMove = ll.last
     val p: P = last.lastp
-    val canstay: Boolean = MoveAction.checkFinalPoint(b, civ, getSquare(b, p), last.f.toFigures).isEmpty
+    val canstay: Boolean = checkFinalPoint(b, civ, getSquare(b, p), last.f.toFigures).isEmpty
     if (last.len == lim.travelSpeed) return Some(PossibleMove(p, canstay, Nil, Nil, None, Nil))
     // only direct point, 4 directions
     val around: Seq[MapSquareP] = squaresAround(b, p)
-    val points: Seq[(MapSquareP, Option[Mess])] = around.map(p => (p, MoveAction.figureMovePointCheck(b, civ, last, p.p, last.len + 1 == lim.travelSpeed)))
+    val points: Seq[(MapSquareP, Option[Mess])] = around.map(p => (p, figureMovePointCheck(b, civ, toFiguresParam(last), p.p, last.len + 1 == lim.travelSpeed)))
     // prepare answer
     var reveal: Seq[(P, Orientation.T)] = Nil
     var move: Seq[P] = Nil

@@ -13,12 +13,14 @@ import play.api.libs.json.JsValue
 
 object SetFigureAction extends CommandPackage with ImplicitMiximFromJson with ImplicitMiximToJson {
 
+  override def getSet: Set[Command.T] = Set(Command.SETARMY, Command.SETSCOUT, Command.BUYARMY, Command.BUYSCOUT)
+
   // public because it is tested externally
   def itemizeForSetBuyFigures(b: GameBoard, civ: Civilization.T, com: Command.T): Seq[(P, P)] = {
     if (firstRound(b,Some(TurnPhase.StartOfTurn))) {
       if (com == Command.BUYSCOUT || com == Command.BUYARMY) return Nil
       val count: (Int, Int) = getNumberOfArmies(b, civ)
-      if (com == Command.SETARMY  && count._1 != 0) return Nil
+      if (com == Command.SETARMY  && count._1 >= CivilizationFeatures.numberofArmiesToStart(civ)) return Nil
       if (com == Command.SETSCOUT  && count._2 != 0) return Nil
     }
     else // !gameStart
@@ -50,15 +52,6 @@ object SetFigureAction extends CommandPackage with ImplicitMiximFromJson with Im
 
     def verify(board: GameBoard): Mess = verifySetFigure(board, civ, p, param._2, param._1, command).getOrElse(null)
   }
-
-  override def getSet: Set[Command.T] = Set(Command.SETARMY, Command.SETSCOUT, Command.BUYARMY, Command.BUYSCOUT)
-
-  //  private def allowedActionForCityManagement(b: GameBoard, civ: Civilization.T): Seq[Command.T] = {
-  //    var cu: Seq[Command.T] = Nil
-  //    if (!itemizeForSetBuyFigures(b, civ, Command.BUYSCOUT).isEmpty) cu = cu :+ Command.BUYSCOUT
-  //   if (!itemizeForSetBuyFigures(b, civ, Command.BUYARMY).isEmpty) cu = cu :+ Command.BUYARMY
-  //  cu
-  //}
 
   override def itemize(b: GameBoard, civ: Civilization.T, com: Command.T): Seq[JsValue] = itemizeForSetBuyFigures(b, civ, com)
 

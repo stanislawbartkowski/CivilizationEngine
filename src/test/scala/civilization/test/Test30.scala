@@ -111,13 +111,14 @@ class Test30 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
     println(ite)
     Helper.executeCommandH(token, "SETCAPITAL", 2, 2)
     gg = I.getBoardForToken(token)
-    var pl = gg.playerDeck(Civilization.Rome)
+    val pl = gg.playerDeck(Civilization.Rome)
     println(pl.cultureprogress)
+    // bonus only for city, not capital
     // culture progress 1
-    assert(pl.cultureprogress == 1)
+    assert(pl.cultureprogress == 0)
     println(pl.cultureresource.cards.length)
     // one culture card
-    assert(pl.cultureresource.cards.length == 1)
+    assert(pl.cultureresource.cards.length == 0)
   }
 
   test("Rome bonus after building a wonder") {
