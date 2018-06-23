@@ -27,20 +27,20 @@ class Test5 extends FunSuite {
     var js: String = "{\"row\":2, \"col\" : 2}"
     var j: JsValue = toJ(js)
     var com: Command = constructCommand(Command.SETARMY, Civilization.Germany, P(2, 2), j)
-    println(com.verify(b))
-    assert(com.verify(b) != null)
+    println(com.verifyCommand(b))
+    assert(com.verifyCommand(b) != null)
 
     js = "{\"row\":2, \"col\" : 3}"
     j = toJ(js)
     com = constructCommand(Command.SETARMY, Civilization.Germany, P(2, 2), j)
-    println(com.verify(b))
-    assert(com.verify(b) != null)
+    println(com.verifyCommand(b))
+    assert(com.verifyCommand(b) != null)
 
     js = "{\"row\":1, \"col\" : 3}"
     j = toJ(js)
     com = constructCommand(Command.SETARMY, Civilization.Germany, P(2, 2), j)
-    assert(com.verify(b) == null)
-    com.execute(b)
+    assert(com.verifyCommand(b) == null)
+    com.executeCommand(b)
     val m: MapSquareP = getSquare(b, P(1, 3))
     println(m)
     println(m.s.figures)
@@ -65,15 +65,15 @@ class Test5 extends FunSuite {
     var js: String = "{\"row\":1, \"col\" : 1}"
     var j: JsValue = toJ(js)
     var com1: Command = constructCommand(Command.BUYARMY, Civilization.Germany, P(2, 2), j)
-    println(com1.verify(b))
-    assert(com1.verify(b) == null)
+    println(com1.verifyCommand(b))
+    assert(com1.verifyCommand(b) == null)
     js = "{\"row\":1, \"col\" : 1}"
     j = toJ(js)
     // cannot afford figure
     var com2: Command = constructCommand(Command.BUYSCOUT, Civilization.Germany, P(2, 2), j)
-    println(com2.verify(b))
-    assert(com2.verify(b) != null)
-    com1.execute(b)
+    println(com2.verifyCommand(b))
+    assert(com2.verifyCommand(b) != null)
+    com1.executeCommand(b)
     val m: MapSquareP = getSquare(b, P(1, 1))
     println(m)
     assert(m.s.figures.numberofArmies == 1)

@@ -14,27 +14,26 @@ object SetCityAction extends CommandPackage with ImplicitMiximFromJson with Impl
 
   override def getSet: Set[Command.T] = Set(Command.SETCAPITAL, Command.SETCITY)
 
-  private def verifySetCity(board: GameBoard, civ: Civilization.T, p: P, command: Command.T): Option[Mess] = {
+  private def verifySetCity(board: GameBoard, deck : PlayerDeck, p: P, command: Command.T): Option[Mess] = {
 
-    val deck: PlayerDeck = board.playerDeck(civ)
     val mapp: MapSquareP = getSquare(board, p)
     command match {
       case Command.SETCAPITAL =>
-        if (isCapitalBuild(board, civ)) return Some(Mess(M.CAPITALALREADYBUILD))
-        if (!mapp.t.tile.civhome || mapp.t.tile.civ.get != civ)
+        if (isCapitalBuild(board, deck.civ)) return Some(Mess(M.CAPITALALREADYBUILD))
+        if (!mapp.t.tile.civhome || mapp.t.tile.civ.get != deck.civ)
           return Some(Mess(M.CAPITALCANBEBUILDONLYONHOMETILE, p))
       case Command.SETCITY => {
-        if (getLimits(board, civ).citieslimit == 0) return Some(Mess(M.CITYLIMITEXCEEDED))
-        if (!mapp.s.figures.civOccupying(civ) || mapp.s.figures.numberofScouts == 0) return Some(Mess(M.CITYSHOULDBEBUILDONSCOUT, p))
+        if (getLimits(board, deck.civ).citieslimit == 0) return Some(Mess(M.CITYLIMITEXCEEDED))
+        if (!mapp.s.figures.civOccupying(deck.civ) || mapp.s.figures.numberofScouts == 0) return Some(Mess(M.CITYSHOULDBEBUILDONSCOUT, p))
       }
     }
-    isSquareForCity(board, p, civ)
+    isSquareForCity(board, p, deck.civ)
   }
 
   protected class SetCityAction extends AbstractCommand {
 
-    private def setcitycommandverify(board: GameBoard, civ: Civilization.T, p: P, command: Command.T): Mess = {
-      verifySetCity(board, civ, p, command).getOrElse(null)
+    private def setcitycommandverify(board: GameBoard, deck : PlayerDeck, p: P, command: Command.T): Mess = {
+      verifySetCity(board, deck, p, command).getOrElse(null)
     }
 
     private def setcitycommandexecute(board: GameBoard, civ: Civilization.T, p: P, command: Command.T) = {
@@ -89,22 +88,22 @@ object SetCityAction extends CommandPackage with ImplicitMiximFromJson with Impl
       if (command == Command.SETCITY) advanceCultureForFree(board,civ,isExecute)
     }
 
-    override def verify(board: GameBoard): Mess = setcitycommandverify(board, civ, p, command)
+    override def verify(board: GameBoard): Mess = setcitycommandverify(board, deck, p, command)
   }
 
   override def produceCommand(command: Command.T, civ: Civilization.T, p: P, param: JsValue) = new SetCityAction
 
   // set city
-  private def itemizeForSetCity(b: GameBoard, civ: Civilization.T): Seq[P] =
-    getFigures(b, civ).filter(_.s.figures.numberofScouts > 0).map(_.p).filter(p => verifySetCity(b, civ, p, Command.SETCITY).isEmpty)
+  private def itemizeForSetCity(b: GameBoard, deck : PlayerDeck): Seq[P] =
+    getFigures(b, deck.civ).filter(_.s.figures.numberofScouts > 0).map(_.p).filter(p => verifySetCity(b, deck, p, Command.SETCITY).isEmpty)
 
   // capital
-  private def itemizeForSetCapital(b: GameBoard, civ: Civilization.T): Seq[P] =
-    allSquares(b).filter(p => verifySetCity(b, civ, p.p, Command.SETCAPITAL).isEmpty).map(_.p)
+  private def itemizeForSetCapital(b: GameBoard, deck : PlayerDeck): Seq[P] =
+    allSquares(b).filter(p => verifySetCity(b, deck, p.p, Command.SETCAPITAL).isEmpty).map(_.p)
 
-  override def itemize(b: GameBoard, civ: Civilization.T, com: Command.T): Seq[JsValue] = {
-    if (com == Command.SETCITY) itemizeForSetCity(b, civ)
-    else itemizeForSetCapital(b, civ)
+  override def itemize(b: GameBoard, deck : PlayerDeck, com: Command.T): Seq[JsValue] = {
+    if (com == Command.SETCITY) itemizeForSetCity(b, deck)
+    else itemizeForSetCapital(b, deck)
   }
 
 }

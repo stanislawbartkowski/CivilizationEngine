@@ -2,7 +2,7 @@ package civilization.helper
 
 import civilization.action
 import civilization.action.{AbstractCommand, CommandPackage}
-import civilization.gameboard.{Figures, GameBoard}
+import civilization.gameboard.{Figures, GameBoard, PlayerDeck}
 import civilization.helper.SetCityAction.SetCityAction
 import civilization.io.fromjson.ImplicitMiximFromJson
 import civilization.io.tojson.ImplicitMiximToJson
@@ -53,7 +53,7 @@ object SetFigureAction extends CommandPackage with ImplicitMiximFromJson with Im
     def verify(board: GameBoard): Mess = verifySetFigure(board, civ, p, param._2, param._1, command).getOrElse(null)
   }
 
-  override def itemize(b: GameBoard, civ: Civilization.T, com: Command.T): Seq[JsValue] = itemizeForSetBuyFigures(b, civ, com)
+  override def itemize(b: GameBoard, deck : PlayerDeck, com: Command.T): Seq[JsValue] = itemizeForSetBuyFigures(b, deck.civ, com)
 
   override def produceCommand(command: Command.T, civ: Civilization.T, p: P, param: JsValue) = new SetFigureAction(if (command == Command.SETARMY || command == Command.BUYARMY) Figure.Army else Figure.Scout, param)
 }

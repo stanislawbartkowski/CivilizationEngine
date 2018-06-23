@@ -2,7 +2,7 @@ package civilization.helper
 
 import civilization.action.{AbstractCommand, _}
 import civilization.gameboard
-import civilization.gameboard.{Figures, GameBoard}
+import civilization.gameboard.{Figures, GameBoard, PlayerDeck}
 import civilization.message.Mess
 import civilization.objects._
 import play.api.libs.json.{JsArray, JsValue}
@@ -30,9 +30,9 @@ object BuyUnit extends CommandPackage with ImplicitMiximFromJson with ImplicitMi
     CitiesCanAfford(b, civ, cost)
   }
 
-  override def itemizePP(b: gameboard.GameBoard, civ: Civilization.T, com: Command.T): Seq[P] = {
-    val limit: PlayerLimits = getLimits(b, civ)
-    itemizeI(b, civ, com, limit)
+  override def itemizePP(b: gameboard.GameBoard, deck : PlayerDeck, com: Command.T): Seq[P] = {
+    val limit: PlayerLimits = getLimits(b, deck.civ)
+    itemizeI(b, deck.civ, com, limit)
   }
 
   protected class BuyUnitAction extends AbstractCommandNone {
@@ -48,7 +48,7 @@ object BuyUnit extends CommandPackage with ImplicitMiximFromJson with ImplicitMi
       }
     }
 
-    def verify(board: GameBoard): Mess = defaultverify(board, civ, command, p, j)
+    def verify(board: GameBoard): Mess = defaultverify(board, deck, command, p, j)
   }
 
   protected class TakeUnitAction(override val param: CombatUnit) extends AbstractCommand(param) {

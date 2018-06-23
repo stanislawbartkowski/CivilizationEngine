@@ -1,6 +1,7 @@
 package civilization.io.tojson
 
 import civilization.gameboard._
+import civilization.helper.TechnologyResourceTrait
 import civilization.objects._
 import play.api.libs.json.{JsArray, JsValue, Json, Writes}
 
@@ -67,5 +68,9 @@ trait ImplicitMiximToJson {
   implicit def writeResource(r : Resource.T) : JsValue = Json.toJson(r)
 
   implicit def writeListOfResources(p : Seq[Resource.T]) : Seq[JsValue] = p.map(writeResource)
+
+  implicit def toTechnologyName(t : TechnologyName.T) : JsValue = Json.toJson(t)
+
+  implicit def writeListOfTechnlogyNames(p : Seq[TechnologyName.T]) : Seq[JsValue] = p.map(toTechnologyName)
 
 }

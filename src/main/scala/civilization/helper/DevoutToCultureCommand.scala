@@ -1,7 +1,7 @@
 package civilization.helper
 
 import civilization.action.{AbstractCommand, CommandPackage}
-import civilization.gameboard.{BuildingPoint, GameBoard}
+import civilization.gameboard.{BuildingPoint, GameBoard, PlayerDeck}
 import civilization.io.fromjson.ImplicitMiximFromJson
 import civilization.io.tojson.ImplicitMiximToJson
 import civilization.message.{M, Mess}
@@ -48,6 +48,6 @@ object DevoutToCultureCommand extends CommandPackage with ImplicitMiximFromJson 
 
   override def produceCommand(command: Command.T, civ: Civilization.T, p: P, param: JsValue) = new DevoutToCultureCommand(param)
 
-  override def itemize(b: GameBoard, civ: Civilization.T, com: Command.T): Seq[JsValue] = itemizeCommandsForCulture(b,civ)
+  override def itemize(b: GameBoard,deck : PlayerDeck, com: Command.T): Seq[JsValue] = itemizeCommandsForCulture(b,deck.civ)
 
 }

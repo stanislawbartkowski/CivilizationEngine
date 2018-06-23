@@ -32,12 +32,12 @@ object TakeResourceCommand extends CommandPackage with ImplicitMiximFromJson wit
 
   override def produceCommand(command: Command.T, civ: Civilization.T, p: P, param: JsValue): Command = new TakeResourceCommand(param)
 
-  override def itemize(b: GameBoard, civ: Civilization.T, com: Command.T): Seq[JsValue] = {
+  override def itemize(b: GameBoard, deck : PlayerDeck, com: Command.T): Seq[JsValue] = {
     val res: Seq[JsValue] =
-      if (b.playerDeck(civ).takefreeResources == 0) Nil
+      if (deck.takefreeResources == 0) Nil
       else Resource.values.toSeq.filter(r => b.resources.resou.nof(r) > 0)
     // reset takeresourcecounter if not available
-    if (res.isEmpty) b.playerDeck(civ).takefreeResources == 0
+    if (res.isEmpty) deck.takefreeResources == 0
     res
   }
 }

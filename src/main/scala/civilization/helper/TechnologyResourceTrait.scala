@@ -1,7 +1,7 @@
 package civilization.helper
 
 import civilization.action.{AbstractCommand, Command, CommandPackage}
-import civilization.gameboard.GameBoard
+import civilization.gameboard.{GameBoard, PlayerDeck}
 import civilization.helper.CurrencyAction.CurrencyAction
 import civilization.helper.PotteryPhilosophyAction.getListOfCities
 import civilization.io.fromjson.ImplicitMiximFromJson
@@ -43,6 +43,6 @@ trait TechnologyResourceTrait extends CommandPackage with ImplicitMiximFromJson 
     CityAvailableForAction(b, civ)
   }
 
-  override def itemize(b: GameBoard, civ: Civilization.T, com: Command.T): Seq[JsValue] = itemizeH(b, civ)
+  override def itemize(b: GameBoard, deck : PlayerDeck, com: Command.T): Seq[JsValue] = itemizeH(b, deck.civ)
 
 }

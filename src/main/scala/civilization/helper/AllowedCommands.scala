@@ -1,7 +1,7 @@
 package civilization.helper
 
 import civilization.action.CommandContainer
-import civilization.gameboard.GameBoard
+import civilization.gameboard.{GameBoard, PlayerDeck}
 import civilization.helper.SetFigureAction.itemizeForSetBuyFigures
 import civilization.helper.move.MoveItemize
 import civilization.io.tojson._
@@ -22,7 +22,7 @@ object AllowedCommands {
     // if player already completed return Nil
     // 2017/01/05
     if (!(cu.notcompleted contains civ)) return Nil
-    co = CommandContainer.commandsAvail(b, civ, cu.turnPhase)
+    co = CommandContainer.commandsAvail(b, b.playerDeck(civ), cu.turnPhase)
     cu.turnPhase match {
       case TurnPhase.StartOfTurn => {
           if (co.find(Command.isBeginningOfGameCommand(_)).isDefined) return co
@@ -40,15 +40,15 @@ object AllowedCommands {
     co
   }
 
-  def itemizeCommandS(b: GameBoard, civ: Civilization.T, command: Command.T): String = {
+  def itemizeCommandS(b: GameBoard, deck : PlayerDeck, command: Command.T): String = {
     if (Command.internalAction(command)) return null
     var pp: P = null
     var name: String = null
     var l: Seq[JsValue] = Nil
     if (CommandContainer.isCommandCovered(command))
-      return Json.prettyPrint(JsArray(CommandContainer.itemize(b, civ, command)))
+      return Json.prettyPrint(JsArray(CommandContainer.itemize(b, deck, command)))
     if (Command.actionPhase(command) == TurnPhase.Movement) {
-      val r = MoveItemize.itemizeCommand(b, civ, command)
+      val r = MoveItemize.itemizeCommand(b, deck, command)
       pp = r._2
       name = r._1
       l = r._3

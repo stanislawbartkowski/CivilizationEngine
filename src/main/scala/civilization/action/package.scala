@@ -1,6 +1,6 @@
 package civilization
 
-import civilization.gameboard.GameBoard
+import civilization.gameboard._
 import civilization.helper._
 import civilization.helper.battle.AttackCommand
 import civilization.helper.move.{ExploreHutCommand, MoveAction, RevealTileAction}
@@ -51,6 +51,8 @@ package object action extends ImplicitMiximToJson with ImplicitMiximFromJson {
 
     case Command.STARTMOVE => new MoveAction.StartMoveAction(toFigures(param))
 
+    case Command.SACRIFICEFIGUREFORTECH => new MoveAction.SacrificeFigureFortech(param)
+
     case Command.MOVE => new MoveAction.MoveAction(toFiguresNull(param))
 
     case Command.ENDOFMOVE => new MoveAction.EndOfMoveAction(toFiguresNull(param))
@@ -87,6 +89,9 @@ package object action extends ImplicitMiximToJson with ImplicitMiximFromJson {
 
     var civ: Civilization.T = _
 
+    protected var deck : PlayerDeck = _
+
+
     private var canceled: Boolean = false
     var p: P = _
     var j: JsValue = _
@@ -107,9 +112,20 @@ package object action extends ImplicitMiximToJson with ImplicitMiximFromJson {
 
     // TODO: should return Option[Mess], not null
     // null : success, Mess : failure and failure info
-    def verify(board: GameBoard): Mess
 
-    def execute(board: GameBoard)
+    def verifyCommand (board: GameBoard): Mess = {
+      deck = board.playerDeck(civ)
+      verify(board)
+    }
+
+    protected def verify(board: GameBoard): Mess
+
+    def executeCommand(board: GameBoard) = {
+      deck = board.playerDeck(civ)
+      execute(board)
+    }
+
+    protected def execute(board: GameBoard)
   }
 
   abstract class AbstractCommandNone(val param: Any = null, var param1: Any = null) extends Command
@@ -121,18 +137,18 @@ package object action extends ImplicitMiximToJson with ImplicitMiximFromJson {
   trait CommandPackage {
     def getSet: Set[Command.T]
 
-    def commandsAvail(b: GameBoard, civ: Civilization.T,phase: TurnPhase.T): Seq[Command.T] =
+    def commandsAvail(b: GameBoard, deck: PlayerDeck,phase: TurnPhase.T): Seq[Command.T] =
       getSet.
         filter(Command.actionPhase(_) == phase).
-        filter(!itemize(b, civ, _).isEmpty) toSeq
+        filter(!itemize(b, deck, _).isEmpty) toSeq
 
-    def itemize(b: GameBoard, civ: Civilization.T, com: Command.T): Seq[JsValue] = itemizeP(b, civ, com)
+    def itemize(b: GameBoard, deck : PlayerDeck, com: Command.T): Seq[JsValue] = itemizeP(b, deck, com)
 
     // can be called only by itemize
-    protected def itemizeP(b: GameBoard, civ: Civilization.T, com: Command.T): Seq[CommandParams] =
-      itemizePP(b, civ, com).map(p => CommandParams(Some(p), None))
+    protected def itemizeP(b: GameBoard, deck : PlayerDeck, com: Command.T): Seq[CommandParams] =
+      itemizePP(b, deck, com).map(p => CommandParams(Some(p), None))
 
-    protected def itemizePP(b: GameBoard, civ: Civilization.T, com: Command.T): Seq[P] = ???
+    protected def itemizePP(b: GameBoard, deck : PlayerDeck, com: Command.T): Seq[P] = ???
 
     protected def emptyCommandPoint(param: JsValue): Command =
       new AbstractCommand(toP(param)) {
@@ -151,10 +167,10 @@ package object action extends ImplicitMiximToJson with ImplicitMiximFromJson {
 
     def produceCommand(command: Command.T, civ: Civilization.T, p: P, param: JsValue): Command
 
-    protected def defaultverify(board: GameBoard, civ: Civilization.T, com: Command.T, p: P, j: JsValue): Mess = {
-      val itemi: Seq[JsValue] = itemize(board, civ, com)
+    protected def defaultverify(board: GameBoard, deck : PlayerDeck, com: Command.T, p: P, j: JsValue): Mess = {
+      val itemi: Seq[JsValue] = itemize(board, deck, com)
       val par: CommandParams = CommandParams(if (p == null || p.empty) None else Some(p), if (j == null || j == JsNull) None else Some(j))
-      if (itemi.find(eqJsParam(_, par)).isDefined) null else Mess(M.COMMANDPARAMETERDOESNOTMATCH, (civ, com, p, j))
+      if (itemi.find(eqJsParam(_, par)).isDefined) null else Mess(M.COMMANDPARAMETERDOESNOTMATCH, (deck.civ, com, p, j))
     }
 
   }

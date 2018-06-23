@@ -3,13 +3,16 @@ package civilization.helper.move
 import civilization.action.{AbstractCommand, Command, constructCommand}
 import civilization.gameboard.{Figures, GameBoard}
 import civilization.helper._
+import civilization.helper.move.MoveItemize.SacrificeForTech
+import civilization.io.fromjson.ImplicitMiximFromJson
+import civilization.io.tojson.ImplicitMiximToJson
 import civilization.message.{J, M, Mess}
 import civilization.objects._
 
-object MoveAction {
+object MoveAction extends ImplicitMiximFromJson with ImplicitMiximToJson {
 
 
-  private def figuresToMove(b: GameBoard, civ: Civilization.T, p: P, fig: Figures) : Figures = {
+  private def figuresToMove(b: GameBoard, civ: Civilization.T, p: P) : Figures = {
     val s: MapSquareP = getSquare(b, p)
     val exiF : Figures = s.s.figures.toFigures
     val lastm: Map[P, Figures] = finishedAtPoint(b,civ)
@@ -37,7 +40,7 @@ object MoveAction {
     }
 */
     val ss: MapSquareP = getSquare(b, p)
-    val exiF : Figures = figuresToMove(b,civ,p,fig)
+    val exiF : Figures = figuresToMove(b,civ,p)
     if (ss.s.figures.civ != null && ss.s.figures.civ != civ) return Mess(M.NOFIGURESBELONGINGTOCIVILIZATION, (p, civ))
     if (exiF.numberofScouts < fig.numberofScouts) return Mess(M.NUMBEROFSCOUTSLESS, (p, exiF.numberofScouts, fig.numberofScouts))
     if (exiF.numberofArmies < fig.numberofArmies) return Mess(M.NUMBEROFARMIESLESS, (p, exiF.numberofArmies, fig.numberofArmies))
@@ -91,7 +94,28 @@ object MoveAction {
     }
 
     def verify(board: GameBoard): Mess = null
+  }
 
+  class SacrificeFigureFortech(override val param: TechnologyName.T) extends AbstractCommand(param) {
+    def execute(board: GameBoard) = {
+      val ss: MapSquareP = getSquare(board, p)
+      // army or scout
+      val tom : Figures = figuresToMove(board,civ,p)
+      val fig = if (tom.numberofArmies > 0) Figures(1,0) else Figures(0,1)
+      // sacrifice figure
+      putFigures(board,civ,p,-fig)
+      // learn tech
+      if (isExecute) {
+        val commandC = constructCommand(Command.RESEARCHFREETECHNOLOGY, civ, null,param)
+        board.addForcedCommand(commandC)
+      }
+    }
+
+    def verify(board: GameBoard): Mess = {
+      val i : Seq[SacrificeForTech] = MoveItemize.itemizeForFigureSacrifice(board,deck)
+      if (!i.exists( s => s.figure == p && (s.tech contains param))) Mess(M.CANNOTSACRIFICEFIGUREFORFREETECH,param)
+      else null
+    }
   }
 
 }

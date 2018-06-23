@@ -32,7 +32,6 @@
   {
     "civ": "Russia",
     "tech": "Communism",
-    "ni": true,
     "gover": "Communism",
     "desc": "The Russians start with 2 armies, and their stacking limit is increased by 1. Once per turn, the Russians maybe move an army or scout into an enemy city and sacrifice that figure to research a tech known by that civilization for free. Armies sacrificed this way cannot be also attack."
   },

@@ -466,7 +466,7 @@ package object helper {
     if (l.isEmpty) None else Some(l.last)
   }
 
-  def isResearchDone(b: GameBoard, civ: Civilization.T): Boolean = !lastPhaseCommandsReverse(b, civ, TurnPhase.Research).isEmpty
+  def isResearchDone(b: GameBoard, deck : PlayerDeck): Boolean = !lastPhaseCommandsReverse(b, deck.civ, TurnPhase.Research).isEmpty
 
   private def commandForPhase(b: GameBoard, command: Command): Mess = {
     // technology resource action only once
@@ -500,7 +500,7 @@ package object helper {
     if (phase == TurnPhase.Research && current.turnPhase == TurnPhase.Research) {
       //      val p: Seq[Command] = lastPhaseCommandsReverse(b, command.civ, TurnPhase.Research)
       // 2018/01/05
-      if (isResearchDone(b, command.civ) && command.command == Command.RESEARCH) return Mess(M.CANNOTRESEARCHMORETHENONCEINSINGLETURN, command)
+      if (isResearchDone(b, b.playerDeck(command.civ)) && command.command == Command.RESEARCH) return Mess(M.CANNOTRESEARCHMORETHENONCEINSINGLETURN, command)
     }
     null
   }
@@ -510,11 +510,11 @@ package object helper {
     if (m != null) return m
     // test if point on board
     if (command.p != null && !Command.commandNotPoint(command.command) && !isPointOnBoard(b, command.p)) return Mess(M.POINTOUTSIDEBOARD, command.p)
-    m = command.verify(b)
+    m = command.verifyCommand(b)
     if (m != null) {
       return m
     }
-    command.execute(b)
+    command.executeCommand(b)
     f(command)
     //    b.play.commands = b.play.commands :+ command
     b.play.addCommand(command)
@@ -567,11 +567,11 @@ package object helper {
     spendTradeCommands(b, civ) map { case (p, seq) => (p, spendProdForCity(seq)) }
 
   case class TradeForCivCalculate(val terrain: Int, val noresearch: Int, val toprod: Int, val loottrade: Int, val tradecoins: Int, val tradespendCulture: Int) {
-    def trade: Int = Math.min(terrain + noresearch - toprod + loottrade + tradecoins - tradespendCulture, TRADEMAX)
+    def trade: Int = math.min(terrain + noresearch - toprod + loottrade + tradecoins - tradespendCulture, TRADEMAX)
   }
 
   case class TradeForCiv(val tradecalculated: Int, val loottrade: Int, val toprod: Int, val spendOnCulture: Int) {
-    def trade: Int = Math.min(tradecalculated - toprod - spendOnCulture + loottrade, TRADEMAX)
+    def trade: Int = math.min(tradecalculated - toprod - spendOnCulture + loottrade, TRADEMAX)
   }
 
 
@@ -956,7 +956,7 @@ package object helper {
           around.foreach(nextp => {
             val check: Option[Mess] = figureMovePointCheck(b, civ, FiguresParam(fig, p, i-1), nextp.p, endofmove)
             if (check.isEmpty) nextlevel = nextlevel :+ nextp.p
-            else if (check.get.m == M.CANNOTSETFIGUREONALIENCIV) foreign = (foreign + nextp.p)
+            else if (check.get.m == M.CANNOTSETFGUREONALIENCITY) foreign = (foreign + nextp.p)
           })
           visited = visited + p
         }
@@ -1088,6 +1088,39 @@ package object helper {
       throw FatalError(Mess(M.CANNOTFINDTECHNOLOGYINPLAYERDECK, (civ, tech)))
     addCoinToTechnology(b, te.get)
   }
+
+//  def listofLevel(b: GameBoard, deck: PlayerDeck, level: Int): Seq[PlayerTechnology] = deck.tech.filter(b.techlevel(_) == level)
+
+  def techologyLevel(b: GameBoard, deck: PlayerDeck): Int = {
+    val trade = numberofTrade(b, deck.civ)
+    var tlevel: Int = tradeToLevel(trade.trade)
+    if (tlevel == 0) return 0
+    // test if there is a room for technology
+    while (tlevel > 1) {
+      val numtlevel: Int = listofLevel(b, deck, tlevel).length
+      val numtlevelp: Int = listofLevel(b, deck, tlevel - 1).length
+      if (numtlevel + 1 < numtlevelp) return tlevel // there is a place
+      // decrease and check again
+      tlevel = tlevel - 1
+    }
+    return 1 // first level
+  }
+
+  private def listOfTechnologiesForCiv(b: GameBoard, deck: PlayerDeck, levelOk : (Int) => Boolean) : Seq[PlayerTechnology] =
+    deck.tech.filter(te => levelOk(b.techlevel(te)))
+
+  def listofLevel(b: GameBoard, deck: PlayerDeck, level: Int): Seq[PlayerTechnology] =
+    listOfTechnologiesForCiv(b,deck,(le : Int) => (le == level))
+
+  def listOfLevelUpTo(b: GameBoard, deck: PlayerDeck, level: Int): Seq[PlayerTechnology] =
+    listOfTechnologiesForCiv(b,deck,(le : Int) => (le <= level))
+
+  private def listOfRemainingTechnologies(b: GameBoard, deck: PlayerDeck, levelOk : (Int) => Boolean) : Seq[TechnologyName.T] =
+    (GameResources.instance().tech.filter(te => levelOk(te.level)).map(_.tech) toSet) --
+      (listOfTechnologiesForCiv(b,deck,levelOk).map(_.tech) toSet) toSeq
+
+  def listOfRemainingTechnologiesUpTo(b: GameBoard, deck: PlayerDeck, level : Int) : Seq[TechnologyName.T] =
+    listOfRemainingTechnologies(b: GameBoard, deck: PlayerDeck, (le : Int) => le <= level)
 
   // --------------------------------------------------
   // random culture or greatperson

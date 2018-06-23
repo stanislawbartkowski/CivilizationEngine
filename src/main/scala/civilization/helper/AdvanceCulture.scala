@@ -118,8 +118,8 @@ object AdvanceCulture extends CommandPackage with ImplicitMiximFromJson with Imp
       }
     }
 
-  override def itemize(b: GameBoard, civ: Civilization.T, com: Command.T): Seq[JsValue] = {
-    val c: Option[CultureTrackCost] = advanceCulture(b, civ)
+  override def itemize(b: GameBoard, deck : PlayerDeck, com: Command.T): Seq[JsValue] = {
+    val c: Option[CultureTrackCost] = advanceCulture(b, deck.civ)
     if (c.isEmpty) Nil
     else writeCultureCost(Seq(c.get))
   }

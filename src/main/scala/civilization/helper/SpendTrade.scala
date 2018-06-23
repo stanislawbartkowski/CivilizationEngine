@@ -1,7 +1,7 @@
 package civilization.helper
 
 import civilization.action.{AbstractCommand, CommandPackage}
-import civilization.gameboard.GameBoard
+import civilization.gameboard.{GameBoard, PlayerDeck}
 import civilization.io.fromjson.ImplicitMiximFromJson
 import civilization.io.tojson.ImplicitMiximToJson
 import civilization.message.{M, Mess}
@@ -43,7 +43,7 @@ object SpendTrade extends CommandPackage with ImplicitMiximFromJson with Implici
   override def produceCommand(command: Command.T, civ: Civilization.T, p: P, param: JsValue) =
     if (command == Command.SPENDTRADE) new SpendTrade (toInt(param)) else emptyCommand()
 
-  override def itemizePP(b: GameBoard, civ: Civilization.T, com: Command.T): Seq[P] = {
-    if (com == Command.SPENDTRADE) itemizeCommandsForSpendTrade(b,civ) else itemizeCommandsForUndoSpendTrade(b,civ)
+  override def itemizePP(b: GameBoard, deck : PlayerDeck, com: Command.T): Seq[P] = {
+    if (com == Command.SPENDTRADE) itemizeCommandsForSpendTrade(b,deck.civ) else itemizeCommandsForUndoSpendTrade(b,deck.civ)
   }
 }

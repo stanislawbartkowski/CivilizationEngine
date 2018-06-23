@@ -21,7 +21,7 @@ class Test6 extends FunSuite {
     val trade: Int = numberofTrade(b, Civilization.Germany).trade
     println(trade)
     var com: Command = constructCommand(Command.RESEARCH, Civilization.Germany, null, toJ("\"Irrigation\""))
-    var m: Mess = com.verify(b)
+    var m: Mess = com.verifyCommand(b)
     println(m)
     assert(m.m == M.CANNOTAFFORDTHISTECHNOLOGY)
     com = constructCommand(Command.RESEARCH, Civilization.Germany, null, toJ("\"HorsebackRiding\""))

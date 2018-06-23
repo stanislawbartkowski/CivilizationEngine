@@ -1,6 +1,6 @@
 package civilization.action
 
-import civilization.gameboard.GameBoard
+import civilization.gameboard.{GameBoard, PlayerDeck}
 import civilization.helper._
 import civilization.objects.{TurnPhase, _}
 import play.api.libs.json.JsValue
@@ -16,17 +16,17 @@ object CommandContainer {
 
   def isCommandCovered(com: Command.T): Boolean = comset.contains(com)
 
-  def commandsAvail(b: GameBoard, civ: Civilization.T, phase: TurnPhase.T): Seq[Command.T] = {
+  def commandsAvail(b: GameBoard, deck : PlayerDeck, phase: TurnPhase.T): Seq[Command.T] = {
     // it is necessary to have additional filter for phase, not all commands are passing through CommandPackage
-    val co: Seq[Command.T] = commands.map(co => co.commandsAvail(b, civ, phase).filter(p => Command.actionPhase(p) == phase)).flatten.filter(!Command.internalAction(_))
+    val co: Seq[Command.T] = commands.map(co => co.commandsAvail(b, deck, phase).filter(p => Command.actionPhase(p) == phase)).flatten.filter(!Command.internalAction(_))
     // technology resource command used already
-    val techResourceUsed = technologyResourceUsed(b, civ)
+    val techResourceUsed = technologyResourceUsed(b, deck.civ)
     // if yes, then weed out all technology commands here
     if (!techResourceUsed) co else co.filter(!Command.isTechnologyResourceAction((_)))
   }
 
-  def itemize(b: GameBoard, civ: Civilization.T, com: Command.T): Seq[JsValue] =
-    comset.get(com).get.itemize(b, civ, com)
+  def itemize(b: GameBoard, deck : PlayerDeck, com: Command.T): Seq[JsValue] =
+    comset.get(com).get.itemize(b, deck, com)
 
   def produceCommand(command: Command.T, civ: Civilization.T, p: P, param: JsValue): Command = comset.get(command).get.produceCommand(command, civ, p, param)
 

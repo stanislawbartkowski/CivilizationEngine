@@ -1,26 +1,58 @@
 package civilization.helper.move
 
-import civilization.gameboard.{Figures, GameBoard}
+import civilization.gameboard.{Figures, GameBoard, PlayerDeck}
 import civilization.helper._
+import civilization.io.fromjson.ImplicitMiximFromJson
 import civilization.io.tojson.{writesFigures, writesP, _}
 import civilization.message.{M, Mess}
 import civilization.objects._
 import play.api.libs.json.{JsValue, Json}
 
 
-object MoveItemize {
+object MoveItemize extends ImplicitMiximFromJson with ImplicitMiximToJson {
 
   // Figure Movement
 
+  case class SacrificeForTech(figure : P, city : P, civ : Civilization.T, tech : Seq[TechnologyName.T])
+
+  private def convertSacrificeForTech(s: SacrificeForTech) : JsValue = Json.obj(
+    S.p -> s.figure,
+    S.city -> s.city,
+    S.civ -> s.civ,
+    S.tech -> s.tech
+  )
+
+  private def technologyToLearn(b: GameBoard, deck : PlayerDeck, foreign : Civilization.T) : Seq[TechnologyName.T] = {
+    val yourlevel = techologyLevel(b, deck)
+    if (yourlevel == 0) return Nil
+    val youtech: Set[TechnologyName.T] = listOfLevelUpTo(b, deck, yourlevel).map(_.tech) toSet
+    val foreigntech: Set[TechnologyName.T] = listOfLevelUpTo(b, b.playerDeck(foreign), yourlevel).map(_.tech).toSet
+    (foreigntech -- youtech) toSeq
+  }
+
+  private def itemizeForFigureSacrifice(b: GameBoard, deck: PlayerDeck,itemi: Seq[(Figures, P)]): Seq[SacrificeForTech] = {
+    if (!CivilizationFeatures.canSacrificeFigureForTech(deck.civ)) return Nil
+    if (commandUsedAlready(b, deck.civ, TurnPhase.Movement, Command.SACRIFICEFIGUREFORTECH)) return Nil
+
+    val itemi: Seq[(Figures, P)] = itemizeforStartOfMove(b, deck.civ)
+    itemi.map(p => (p._2,allMoves(b,deck.civ,p._1,p._2,true))).
+      flatMap(p => p._2.map((p._1,_))).
+      map(pp => SacrificeForTech(pp._1,pp._2,getSquare(b,pp._2).civHere.get, technologyToLearn(b,deck,getSquare(b,pp._2).civHere.get))).
+      filter(!_.tech.isEmpty)
+  }
+
+  def itemizeForFigureSacrifice(b: GameBoard, deck: PlayerDeck) : Seq[SacrificeForTech] = {
+    val itemi: Seq[(Figures, P)] = itemizeforStartOfMove(b, deck.civ)
+    itemizeForFigureSacrifice(b,deck,itemi)
+  }
+
+
   private def allowedActionForMovement(b: GameBoard, civ: Civilization.T): Seq[Command.T] = {
-    val itemi: Seq[(Figures, P)] = itemizeforStartOfMove(b: GameBoard, civ: Civilization.T)
+    val itemi: Seq[(Figures, P)] = itemizeforStartOfMove(b, civ)
     if (itemi.isEmpty) Nil
     else {
       var res: Seq[Command.T] = Seq(Command.STARTMOVE)
-      if (CivilizationFeatures.canSacrificeFigureForTech(civ))
-        if (itemi.exists(i =>
-          !allMoves(b, civ, i._1, i._2, true).isEmpty
-        )) res = res :+ Command.SACRIFICEFIGUREFORTECH
+      if (!itemizeForFigureSacrifice(b,b.playerDeck(civ),itemi).isEmpty) res = res :+ Command.SACRIFICEFIGUREFORTECH
       res
     }
   }
@@ -104,31 +136,35 @@ object MoveItemize {
     (false, allowedActionForMovement(b, civ))
   }
 
-  def itemizeCommand(b: GameBoard, civ: Civilization.T, command: Command.T): (String, P, Seq[JsValue]) = {
+  def itemizeCommand(b: GameBoard, deck : PlayerDeck, command: Command.T): (String, P, Seq[JsValue]) = {
     var pp: P = null
     var name: String = null
     var l: Seq[JsValue] = Nil
     command match {
+      case Command.SACRIFICEFIGUREFORTECH => {
+        var itemi: Seq[(Figures, P)] = itemizeforStartOfMove(b, deck.civ)
+        l = itemizeForFigureSacrifice(b,deck,itemi).map(convertSacrificeForTech)
+      }
       case Command.STARTMOVE => {
-        var a: Seq[(Figures, P)] = itemizeforStartOfMove(b, civ)
+        val a: Seq[(Figures, P)] = itemizeforStartOfMove(b, deck.civ)
         l = a.map(f => Json.obj(S.figures -> writesFigures(f._1), S.p -> writesP(f._2)))
       }
       case Command.MOVE => {
-        val o: Option[PossibleMove] = itemizeForMove(b, civ)
+        val o: Option[PossibleMove] = itemizeForMove(b, deck.civ)
         assert(o.isDefined && o.get != null)
         pp = o.get.p
         name = "moves"
         l = o.get.move.map(writesP(_))
       }
       case Command.REVEALTILE => {
-        val o: Option[PossibleMove] = itemizeForMove(b, civ)
+        val o: Option[PossibleMove] = itemizeForMove(b, deck.civ)
         assert(o.isDefined && o.get != null)
         pp = o.get.p
         name = "tiles"
         l = o.get.reveal.map(r => Json.obj(S.p -> writesP(r._1), S.orientation -> r._2))
       }
       case Command.EXPLOREHUT => {
-        val o: Option[PossibleMove] = itemizeForMove(b, civ)
+        val o: Option[PossibleMove] = itemizeForMove(b, deck.civ)
         assert(o.isDefined && o.get != null)
         assert(o.get.hut.isDefined)
         name = "explore"
@@ -136,7 +172,7 @@ object MoveItemize {
         l = List(writesP(o.get.hut.get))
       }
       case Command.ATTACK => {
-        val o: Option[PossibleMove] = itemizeForMove(b, civ)
+        val o: Option[PossibleMove] = itemizeForMove(b, deck.civ)
         assert(o.isDefined && o.get != null)
         assert(!o.get.enemy.isEmpty)
         name = "attack"

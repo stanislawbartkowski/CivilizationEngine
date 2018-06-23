@@ -75,6 +75,6 @@ object PotteryPhilosophyAction extends CommandPackage with ImplicitMiximFromJson
 
   override def produceCommand(command: Command.T, civ: Civilization.T, p: P, param: JsValue): Command = new PotteryPhilosophyAction(param)
 
-  override def itemize(b: GameBoard, civ: Civilization.T, com: Command.T): Seq[JsValue] = getListOfCities(b, civ, com)
+  override def itemize(b: GameBoard, deck : PlayerDeck, com: Command.T): Seq[JsValue] = getListOfCities(b, deck.civ, com)
 
 }

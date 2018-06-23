@@ -99,12 +99,12 @@ object BuyBuildingCommand extends CommandPackage with ImplicitMiximFromJson with
 
   override def produceCommand(command: Command.T, civ: Civilization.T, p: P, param: JsValue) = new BuyBuilding(param)
 
-  override def itemize(b: GameBoard, civ: Civilization.T, com: Command.T): Seq[JsValue] = {
-    val elligible = elligibleforFree(b, civ)
+  override def itemize(b: GameBoard, deck : PlayerDeck, com: Command.T): Seq[JsValue] = {
+    val elligible = elligibleforFree(b, deck.civ)
     //curry function
     if (com == Command.BUYBUILDING)
-      if (elligible) Nil else itemizeB(b, civ, false, possibleBuildings(false))
-    else if (elligible) itemizeB(b, civ, false, possibleBuildings(true)) else Nil
+      if (elligible) Nil else itemizeB(b, deck.civ, false, possibleBuildings(false))
+    else if (elligible) itemizeB(b, deck.civ, false, possibleBuildings(true)) else Nil
   }
 
 }

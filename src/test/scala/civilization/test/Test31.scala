@@ -65,6 +65,34 @@ class Test31 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
     var l = allowedCommands(gg, Civilization.Russia)
     println(l)
     assert(l contains Command.SACRIFICEFIGUREFORTECH)
+    val s = II.getData(II.GETBOARDGAME, tokenR)
+    val ju: JsValue = Helper.jyou(toJ(s))
+    println(ju)
+    var ite = II.getData(II.ITEMIZECOMMAND, tokenR, "SACRIFICEFIGUREFORTECH")
+    val jite = toJ(ite).as[JsArray]
+    assert(jite.value.length == 1)
+    val jtech: JsArray = (jite.value(0) \ "tech").as[JsArray]
+    assert(jtech.value.length == 3)
+    println(jtech)
+    println(jite)
+    println(gg.playerDeck(Civilization.Russia).tech)
+    println(gg.playerDeck(Civilization.Arabs).tech)
+    Helper.executeCommandH(tokenR, "SACRIFICEFIGUREFORTECH", 12, 0, "\"Logistics\"")
+    // verify
+    gg = I.getBoardForToken(tokenR)
+    val ma: MapSquareP = getSquare(gg, P(12, 0))
+    println(ma.s.figures)
+    // no figures
+    assert(ma.s.figures.numberofArmies == 0 && ma.s.figures.numberofScouts == 0)
+    assert(ma.civHere.isEmpty)
+    // is tech added
+    println(gg.playerDeck(Civilization.Russia).tech)
+    assert(gg.playerDeck(Civilization.Russia).tech.map(_.tech) contains TechnologyName.Logistics)
+    l = allowedCommands(gg, Civilization.Russia)
+    println(l)
+    // cannot sacrifice more figures
+    assert(!(l contains Command.SACRIFICEFIGUREFORTECH))
+
   }
 }
 

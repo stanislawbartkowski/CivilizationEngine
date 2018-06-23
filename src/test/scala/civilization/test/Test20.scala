@@ -215,7 +215,7 @@ class Test20 extends FunSuite with ImplicitMiximFromJson {
     var l: Seq[Command.T] = allowedCommands(g, Civilization.America)
     println(l)
     assert(l.find(_ == Command.RESEARCH).isDefined)
-    val t = ResearchTechnology.techologylevel(g, Civilization.America)
+    val t = techologyLevel(g, g.playerDeck(Civilization.America))
     println(t)
     // level 1 although trade 12, not place for 2 level technology
     assert(t == 1)

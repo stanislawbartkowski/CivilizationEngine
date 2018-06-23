@@ -1,7 +1,7 @@
 package civilization.helper
 
 import civilization.action.{AbstractCommand, CommandPackage}
-import civilization.gameboard.GameBoard
+import civilization.gameboard.{GameBoard, PlayerDeck}
 import civilization.helper.SpendTrade.{SpendTrade, toInt}
 import civilization.io.fromjson.ImplicitMiximFromJson
 import civilization.io.tojson.ImplicitMiximToJson
@@ -45,8 +45,8 @@ object SendProduction extends CommandPackage with ImplicitMiximFromJson with Imp
   override def produceCommand(command: Command.T, civ: Civilization.T, p: P, param: JsValue) =
     if (command == Command.SENDPRODUCTION) new SendProduction (param) else emptyCommandPoint(param)
 
-  override def itemize(b: GameBoard, civ: Civilization.T, com: Command.T): Seq[JsValue] = {
-    val li : Seq[(P, P)] = if (com == Command.SENDPRODUCTION) itemizeCommandsForSendProduction(b,civ) else itemizeCommandsForUndoSendProduction(b,civ)
+  override def itemize(b: GameBoard, deck : PlayerDeck, com: Command.T): Seq[JsValue] = {
+    val li : Seq[(P, P)] = if (com == Command.SENDPRODUCTION) itemizeCommandsForSendProduction(b,deck.civ) else itemizeCommandsForUndoSendProduction(b,deck.civ)
     li.map(writesCityPoint)
   }
 

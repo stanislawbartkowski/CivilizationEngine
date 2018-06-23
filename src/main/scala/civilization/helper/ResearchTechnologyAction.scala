@@ -16,24 +16,7 @@ import play.api.libs.json.JsValue
 
 object ResearchTechnology extends CommandPackage with ImplicitMiximFromJson with ImplicitMiximToJson {
 
-
-  private def listofLevel(b: GameBoard, deck: PlayerDeck, level: Int): Seq[PlayerTechnology] = deck.tech.filter(b.techlevel(_) == level)
-
-  def techologylevel(b: GameBoard, civ: Civilization.T): Int = {
-    val trade = numberofTrade(b, civ)
-    var tlevel: Int = tradeToLevel(trade.trade)
-    if (tlevel == 0) return 0
-    // test if there is a room for technology
-    val deck: PlayerDeck = b.playerDeck(civ)
-    while (tlevel > 1) {
-      val numtlevel: Int = listofLevel(b, deck, tlevel).length
-      val numtlevelp: Int = listofLevel(b, deck, tlevel - 1).length
-      if (numtlevel + 1 < numtlevelp) return tlevel // there is a place
-      // decrease and check again
-      tlevel = tlevel - 1
-    }
-    return 1 // first level
-  }
+  override def getSet: Set[Command.T] = Set(Command.RESEARCH, Command.RESEARCHFREETECHNOLOGY)
 
   private def applyNewStrength(str: CombatUnitStrength, t: CombatUnitType.T, newval: Int) =
     str.setStrength(t, math.max(str.getStrength(t), newval))
@@ -70,6 +53,25 @@ object ResearchTechnology extends CommandPackage with ImplicitMiximFromJson with
     )
   }
 
+  private def researchTechnologyExecute(b: GameBoard, deck: PlayerDeck, tech: TechnologyName.T, isExecute: Boolean) = {
+    deck.tech = deck.tech :+ new PlayerTechnology(tech)
+    // upgrade buildings
+    val t: Technology = GameResources.getTechnology(tech)
+    upgradeB(b, deck.civ, t)
+    // upgrade military strength
+    val listofunlocked: Seq[CombatUnitType.T] = upgradeMilitary(deck.combatlevel, t)
+    deck.takefreeResources = 0
+    if (CivilizationFeatures.takefreeResourceAfterUpgradingMilitary(deck.civ))
+      listofunlocked.foreach(u => {
+        deck.takefreeResources = deck.takefreeResources + 1
+        if (isExecute) {
+          val commandC = constructCommand(Command.TAKEUNIT, deck.civ, null, getRandomUnit(b, u, false))
+          //          playCommand(g, commandC)
+          b.addForcedCommand(commandC)
+        }
+      })
+  }
+
 
   protected class ResearchTechnologyAction(override val param: TechnologyName.T) extends AbstractCommand(param) {
 
@@ -88,40 +90,27 @@ object ResearchTechnology extends CommandPackage with ImplicitMiximFromJson with
       null
     }
 
-    private def researchTechnologyExecute(b: GameBoard, civ: Civilization.T, tech: TechnologyName.T) = {
-      val deck: PlayerDeck = b.playerDeck(civ)
-      deck.tech = deck.tech :+ new PlayerTechnology(tech)
-      // upgrade buildings
-      val t: Technology = GameResources.getTechnology(tech)
-      upgradeB(b, civ, t)
-      // upgrade military strength
-      val listofunlocked: Seq[CombatUnitType.T] = upgradeMilitary(deck.combatlevel, t)
-      deck.takefreeResources = 0
-      if (CivilizationFeatures.takefreeResourceAfterUpgradingMilitary(civ))
-        listofunlocked.foreach(u => {
-          deck.takefreeResources = deck.takefreeResources + 1
-          if (isExecute) {
-            val commandC = constructCommand(Command.TAKEUNIT, civ, null, getRandomUnit(b, u, false))
-            //          playCommand(g, commandC)
-            b.addForcedCommand(commandC)
-          }
-        })
-    }
-
-    override def execute(board: GameBoard) = researchTechnologyExecute(board, civ, param)
+    override def execute(board: GameBoard) = researchTechnologyExecute(board, deck, param, isExecute)
 
     override def verify(board: GameBoard): Mess = researchTechnologyVerify(board, civ, param)
-
   }
 
-  override def commandsAvail(b: GameBoard, civ: Civilization.T, phase: TurnPhase.T): Seq[Command.T] =
-    if (isResearchDone(b, civ) || techologylevel(b, civ) == 0) Nil else List(Command.RESEARCH)
+  protected class ResearchFreeTechnologyAction(override val param: TechnologyName.T) extends AbstractCommand(param) {
+    override def execute(board: GameBoard) = researchTechnologyExecute(board, deck, param, isExecute)
+
+    override def verify(board: GameBoard): Mess = null
+  }
+
+  override def commandsAvail(b: GameBoard, deck: PlayerDeck, phase: TurnPhase.T): Seq[Command.T] =
+    if (isResearchDone(b, deck) || techologyLevel(b, deck) == 0) Nil else List(Command.RESEARCH)
 
 
-  override def getSet: Set[Command.T] = Set(Command.RESEARCH)
+  override def produceCommand(command: Command.T, civ: Civilization.T, p: P, param: JsValue) =
+    if (command == Command.RESEARCH) new ResearchTechnologyAction(param)
+    else new ResearchFreeTechnologyAction(param)
 
-  override def produceCommand(command: Command.T, civ: Civilization.T, p: P, param: JsValue) = new ResearchTechnologyAction(param)
-
-  override def itemize(b: GameBoard, civ: Civilization.T, com: Command.T): Seq[JsValue] = Nil
+  override def itemize(b: GameBoard, deck: PlayerDeck, com: Command.T): Seq[JsValue] =
+    if (com == Command.RESEARCH) listOfRemainingTechnologiesUpTo(b, deck, techologyLevel(b, deck))
+    else Nil
 
 }

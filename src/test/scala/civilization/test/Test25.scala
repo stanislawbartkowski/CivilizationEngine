@@ -53,7 +53,7 @@ class Test25 extends FunSuite with ImplicitMiximToJson {
     println(l)
     assert(l contains Command.HARVESTRESOURCE)
     // itemize HARVESTRESOURCE
-    val item: JsArray = toJ(AllowedCommands.itemizeCommandS(gg, Civilization.China, Command.HARVESTRESOURCE)).as[JsArray]
+    val item: JsArray = toJ(AllowedCommands.itemizeCommandS(gg, gg.playerDeck(Civilization.China), Command.HARVESTRESOURCE)).as[JsArray]
     println(item)
     var wasscout: Boolean = false
     item.value.foreach(e => {
@@ -74,7 +74,7 @@ class Test25 extends FunSuite with ImplicitMiximToJson {
     val l = allowedCommands(gg, Civilization.China)
     println(l)
     assert(l contains Command.DEVOUTTOCULTURE)
-    val item: JsArray = toJ(AllowedCommands.itemizeCommandS(gg, Civilization.China, Command.DEVOUTTOCULTURE)).as[JsArray]
+    val item: JsArray = toJ(AllowedCommands.itemizeCommandS(gg, gg.playerDeck(Civilization.China), Command.DEVOUTTOCULTURE)).as[JsArray]
     println(item)
 
     val cu = gg.playerDeck(Civilization.China).resou.nof(Resource.Culture)
@@ -110,7 +110,7 @@ class Test25 extends FunSuite with ImplicitMiximToJson {
     val l = allowedCommands(gg, Civilization.China)
     println(l)
     assert(l contains Command.DEVOUTTOCULTURE)
-    val j = AllowedCommands.itemizeCommandS(gg, Civilization.China, Command.DEVOUTTOCULTURE)
+    val j = AllowedCommands.itemizeCommandS(gg, gg.playerDeck(Civilization.China), Command.DEVOUTTOCULTURE)
     // list with scout 0,0
     println(j)
     Helper.executeCommandFail(token, "DEVOUTTOCULTURE", 2, 2,"""[{"row" : 0, "col" : 1}]""")

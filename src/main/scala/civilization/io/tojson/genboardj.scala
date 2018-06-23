@@ -96,7 +96,7 @@ object genboardj {
 
   private def genPlayerDeckJ(g: GameBoard, civ: Civilization.T): PlayerDeckJ =
     PlayerDeckJ(civ, numberofTrade(g, civ).trade, allowedCommands(g, civ), getLimits(g, civ),
-      ResearchTechnology.techologylevel(g, civ),
+      techologyLevel(g, g.playerDeck(civ)),
       g.playerDeck(civ).tech.map(t => PlayerTech(t, g.techlevel(t), t.coins)),
       g.playerDeck(civ), wondersForPlayers(g, civ),
       getCoins(g, civ).coins)

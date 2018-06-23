@@ -31,11 +31,10 @@ object DiscardCard extends CommandPackage with ImplicitMiximFromJson with Implic
     }
   }
 
-  override def itemize(b: GameBoard, civ: Civilization.T, com: Command.T): Seq[JsValue] = {
-    val limits: PlayerLimits = getLimits(b, civ)
-    val pl: PlayerDeck = b.playerDeck(civ)
-    if (pl.cultureresource.cards.length <= limits.handsize) return Nil
-    pl.cultureresource.cards
+  override def itemize(b: GameBoard, deck : PlayerDeck, com: Command.T): Seq[JsValue] = {
+    val limits: PlayerLimits = getLimits(b, deck.civ)
+    if (deck.cultureresource.cards.length <= limits.handsize) return Nil
+    deck.cultureresource.cards
   }
 
   override def produceCommand(command: Command.T, civ: Civilization.T, p: P, param: JsValue) = new DiscardCardCommand(param)

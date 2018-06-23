@@ -1,7 +1,7 @@
 package civilization.helper
 
 import civilization.action._
-import civilization.gameboard.{BuildingPoint, GameBoard}
+import civilization.gameboard.{BuildingPoint, GameBoard, PlayerDeck}
 import civilization.helper.DevoutToCultureCommand.DevoutToCultureCommand
 import civilization.io.fromjson.ImplicitMiximFromJson
 import civilization.io.tojson.ImplicitMiximToJson
@@ -33,8 +33,8 @@ object BuildCityWalls extends CommandPackage with ImplicitMiximFromJson with Imp
 
   override def produceCommand(command: Command.T, civ: Civilization.T, p: P, param: JsValue) = new BuildCityWalls
 
-  override def itemizePP(b: GameBoard, civ: Civilization.T, com: Command.T): Seq[P] =
+  override def itemizePP(b: GameBoard, deck : PlayerDeck, com: Command.T): Seq[P] =
     if (com == Command.BUILDCITYWALLFORFREE) Nil
-    else if (!b.playerDeck(civ).hasTechnologyFeature(TechnologyFeatures.buyCityWall)) Nil
-    else CitiesCanAfford(b, civ, com).filter(c => !City.isWalled(getSquare(b,c).s.city.get.citytype))
+    else if (!deck.hasTechnologyFeature(TechnologyFeatures.buyCityWall)) Nil
+    else CitiesCanAfford(b, deck.civ, com).filter(c => !City.isWalled(getSquare(b,c).s.city.get.citytype))
 }

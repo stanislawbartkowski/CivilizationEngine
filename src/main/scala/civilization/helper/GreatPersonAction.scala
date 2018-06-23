@@ -42,18 +42,18 @@ object GreatPersonAction extends CommandPackage with ImplicitMiximFromJson with 
     else new GreatPersonOnBoard(param)
 
 
-  override def itemize(b: GameBoard, civ: Civilization.T, com: Command.T): Seq[JsValue] = {
+  override def itemize(b: GameBoard, deck : PlayerDeck, com: Command.T): Seq[JsValue] = {
     var l : Seq[GreatPersonName.T] = Nil
     if (com != Command.GREATPERSONPUT) {
-      val gp: Option[GreatPersonName.T] = isGreatPersonNow(b, civ)
+      val gp: Option[GreatPersonName.T] = isGreatPersonNow(b, deck.civ)
       if (gp.isEmpty) return Nil
       l = Seq(gp.get)
       if (com == Command.GREATPERSONPUTNOWRESIGN) return l
     }
-    else l = greatPersonReady(b,civ)
+    else l = greatPersonReady(b,deck.civ)
     // curry function
     def f: PossibleP = possibleGreatPersons(l)
-    itemizeB(b, civ, true, f)
+    itemizeB(b, deck.civ, true, f)
   }
 
 }

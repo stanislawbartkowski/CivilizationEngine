@@ -176,7 +176,7 @@ package object I {
   private def itemizeCommand(token: String, action: String): String = {
     val command: Command.T = Command.withName(action)
     val g = getBoard(token)
-    AllowedCommands.itemizeCommandS(g._2, g._1.civ, command)
+    AllowedCommands.itemizeCommandS(g._2, g._2.playerDeck(g._1.civ), command)
   }
 
   private def listOfGames(): String = {
