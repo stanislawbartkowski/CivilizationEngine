@@ -54,7 +54,8 @@ object ResearchTechnology extends CommandPackage with ImplicitMiximFromJson with
   }
 
   private def researchTechnologyExecute(b: GameBoard, deck: PlayerDeck, tech: TechnologyName.T, isExecute: Boolean) = {
-    deck.tech = deck.tech :+ new PlayerTechnology(tech)
+    val c : CivilizationG = GameResources.getCivilizationG(deck.civ)
+    deck.tech = deck.tech :+ new PlayerTechnology(tech,if (c.tech == tech) Some(true) else None)
     // upgrade buildings
     val t: Technology = GameResources.getTechnology(tech)
     upgradeB(b, deck.civ, t)
@@ -79,11 +80,10 @@ object ResearchTechnology extends CommandPackage with ImplicitMiximFromJson with
 
     private def techLevel(b: GameBoard, tech: TechnologyName.T): Int = GameResources.instance().tech.find(_.tech == tech).get.level
 
-    private def researchTechnologyVerify(b: GameBoard, civ: Civilization.T, tech: TechnologyName.T): Mess = {
-      val deck: PlayerDeck = b.playerDeck(civ)
+    private def researchTechnologyVerify(b: GameBoard, deck : PlayerDeck, tech: TechnologyName.T): Mess = {
       if (playerTech(deck) contains tech) return Mess(M.TECHNOLOGYRESEARCHEDALREADY, tech)
       val leveltr: Int = levelTrade(techLevel(b, tech))
-      val civTrade: Int = numberofTrade(b, civ).trade
+      val civTrade: Int = numberofTrade(b, deck).trade
       if (leveltr > civTrade) return Mess(M.CANNOTAFFORDTHISTECHNOLOGY, (tech, leveltr, civTrade))
       val level: Int = techLevel(b, tech)
       if (level > 1 && listofLevel(b, deck, level - 1).length + 1 <= listofLevel(b, deck, level).length) return Mess(M.NOPLACEINTECHNOLOGYTREE, tech)
@@ -92,7 +92,7 @@ object ResearchTechnology extends CommandPackage with ImplicitMiximFromJson with
 
     override def execute(board: GameBoard) = researchTechnologyExecute(board, deck, param, isExecute)
 
-    override def verify(board: GameBoard): Mess = researchTechnologyVerify(board, civ, param)
+    override def verify(board: GameBoard): Mess = researchTechnologyVerify(board, deck, param)
   }
 
   protected class ResearchFreeTechnologyAction(override val param: TechnologyName.T) extends AbstractCommand(param) {

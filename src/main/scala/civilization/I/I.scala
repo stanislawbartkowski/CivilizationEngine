@@ -75,7 +75,7 @@ package object I {
     game.boardtimemili = Some(m.modiftimemili)
     r.updateCurrentGame(token,game)
     val g : GameBoard = getGameBoard(game.gameid)
-    Json.prettyPrint(genboardj.genBoardGameJson(g, game.civ))
+    Json.prettyPrint(genboardj.genBoardGameJson(g, g.playerDeck(game.civ)))
   }
 
   def getData(what: Int, tokenorciv: String, param: String): String = {

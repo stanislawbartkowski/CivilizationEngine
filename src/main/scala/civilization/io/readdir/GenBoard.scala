@@ -80,8 +80,8 @@ object GenBoard extends ImplicitMiximFromJson with ImplicitMiximToJson {
     if (!sciv.isEmpty) throw FatalError(Mess(M.TOOMANYCIVREQUESTED))
     val players: List[PlayerDeck] = l.map(c => {
       val civ: CivilizationG = civs.find(_.civ == c).get
-      val pt: PlayerTechnology = PlayerTechnology(civ.tech, Some(true))
-      PlayerDeck(c, List(pt), Nil, new BoardResources(), civ.gover, 0)
+//      val pt: PlayerTechnology = PlayerTechnology(civ.tech, Some(true))
+      PlayerDeck(c, Nil, Nil, new BoardResources(), civ.gover, 0)
     }
     )
 
@@ -95,6 +95,11 @@ object GenBoard extends ImplicitMiximFromJson with ImplicitMiximToJson {
     // assing resources to hut and villages
     map.foreach(m => assignResources(g, m))
     g.players.foreach(pl => {
+      // add and activate technology
+      val civ: CivilizationG = civs.find(_.civ == pl.civ).get
+      val commandC = constructCommand(Command.RESEARCHFREETECHNOLOGY,pl.civ,null,civ.tech)
+      g.play.addCommand(commandC)
+
       if (CivilizationFeatures.freeGreatPersonAtTheBeginning(pl.civ)) {
         addToJournal(g,pl.civ,J.YOUARERECEIVINGFREEGREATPERSON,null)
         val commandC = constructCommand(Command.GREATPERSON, pl.civ, null, getRandomPerson(g))
@@ -106,9 +111,13 @@ object GenBoard extends ImplicitMiximFromJson with ImplicitMiximToJson {
         // do twice
         for (i <- 0 to 1) {
           val commandC = constructCommand(Command.TAKEUNIT, pl.civ, null, getRandomUnit(g, CombatUnitType.Infantry, false))
-//          playCommand(g, commandC)
           g.play.addCommand(commandC)
         }
+      }
+      if (CivilizationFeatures.freeResourcesAtStart(pl.civ)) {
+        addToJournal(g,pl.civ,J.YOUARERECEIVINGFREERESOURCESFROMMARKET,null)
+        val commandC = constructCommand(Command.TAKEFREEALLRESOURCESFROMMARKET, pl.civ, null)
+        g.play.addCommand(commandC)
       }
     })
     g

@@ -3,14 +3,13 @@ package civilization.test
 import civilization.I
 import civilization.I.II
 import civilization.gameboard.GameBoard
-import civilization.helper.AllowedCommands.allowedCommands
 import civilization.helper._
 import civilization.io.fromjson.toJ
 import civilization.message._
 import civilization.objects._
 import org.scalatest.FunSuite
 import play.api.libs.json.{JsArray, JsValue}
-import Helper.II
+import Helper._
 
 class Test15 extends FunSuite {
 
@@ -20,7 +19,7 @@ class Test15 extends FunSuite {
     val reg = Helper.readBoardAndPlayT("test11/BOARDGAME1.json", "test13/GAME2.json", Civilization.Rome)
     val token: String = reg._1
     var g: GameBoard = I.getBoardForToken(token)
-    var l: Seq[Command.T] = allowedCommands(g, Civilization.Rome)
+    var l: Seq[Command.T] = allowedCommandsH(g, Civilization.Rome)
     println(l)
     assert(l.find(_ == Command.BUYARTILLERY).isDefined)
     assert(l.find(_ == Command.BUYMOUNTED).isDefined)
@@ -128,7 +127,7 @@ class Test15 extends FunSuite {
     // should reuse killed
     Helper.executeCommandH(token, "BUYARTILLERY", 2, 2, null)
     g = I.getBoardForToken(token)
-    var l: Seq[Command.T] = allowedCommands(g, Civilization.Rome)
+    var l: Seq[Command.T] = allowedCommandsH(g, Civilization.Rome)
     println(l)
     assert(l.find(_ == Command.BUYARTILLERY).isEmpty)
     assert(l.find(_ == Command.SPENDTRADE).isEmpty)

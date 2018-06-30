@@ -1,6 +1,6 @@
 package civilization.helper
 
-import civilization.action.{AbstractCommand, CommandPackage}
+import civilization.action.{AbstractCommand, CommandPackage,AbstractCommandNone}
 import civilization.gameboard.{GameBoard, PlayerDeck}
 import civilization.io.fromjson.ImplicitMiximFromJson
 import civilization.io.tojson.ImplicitMiximToJson
@@ -20,7 +20,7 @@ object HarvestResource extends CommandPackage with ImplicitMiximFromJson with Im
 
     override def execute(board: gameboard.GameBoard): Unit = {
       val reso: Resource.T = getSquare(board, param).resource.get
-      takeResourceFromBoard(board, civ, reso)
+      takeResourceFromBoard(board, deck, reso)
     }
   }
 

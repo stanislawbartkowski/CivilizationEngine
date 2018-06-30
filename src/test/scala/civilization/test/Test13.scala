@@ -3,13 +3,12 @@ package civilization.test
 import civilization.I
 import civilization.I.registerGame
 import civilization.gameboard.GameBoard
-import civilization.helper.AllowedCommands.allowedCommands
 import civilization.helper.getProductionForCity
 import civilization.objects.{Civilization, Command, P}
 import org.scalatest.FunSuite
 import civilization.io.fromjson._
 import play.api.libs.json.JsArray
-import Helper.II
+import Helper._
 
 
 class Test13 extends FunSuite {
@@ -20,7 +19,7 @@ class Test13 extends FunSuite {
     val bb: GameBoard = Helper.readBoardAndPlay("test11/BOARDGAME1.json", "test13/GAME1.json", Civilization.Rome)
     val token: String = registerGame(bb, Civilization.Rome)
     var g: GameBoard = I.getBoardForToken(token)
-    var l: Seq[Command.T] = allowedCommands(g, Civilization.Rome)
+    var l: Seq[Command.T] = allowedCommandsH(g, Civilization.Rome)
     println(l)
     assert(l.find(_ == Command.SENDPRODUCTION).isEmpty)
   }
@@ -29,7 +28,7 @@ class Test13 extends FunSuite {
     val bb: GameBoard = Helper.readBoardAndPlay("test11/BOARDGAME1.json", "test13/GAME2.json", Civilization.Rome)
     val token: String = registerGame(bb, Civilization.Rome)
     var g: GameBoard = I.getBoardForToken(token)
-    var l: Seq[Command.T] = allowedCommands(g, Civilization.Rome)
+    var l: Seq[Command.T] = allowedCommandsH(g, Civilization.Rome)
     println(l)
     // no production outskirts
     assert(l.find(_ == Command.SENDPRODUCTION).isEmpty)
@@ -39,7 +38,7 @@ class Test13 extends FunSuite {
     val bb: GameBoard = Helper.readBoardAndPlay("test11/BOARDGAME1.json", "test13/GAME3.json", Civilization.Rome)
     val token: String = registerGame(bb, Civilization.Rome)
     var g: GameBoard = I.getBoardForToken(token)
-    var l: Seq[Command.T] = allowedCommands(g, Civilization.Rome)
+    var l: Seq[Command.T] = allowedCommandsH(g, Civilization.Rome)
     println(l)
     assert(l.find(_ == Command.SENDPRODUCTION).isDefined)
     var prodc = getProductionForCity(g, Civilization.Rome, P(2, 2))
@@ -47,7 +46,7 @@ class Test13 extends FunSuite {
     assert(6 == prodc.prod)
     Helper.executeCommandH(token, "SENDPRODUCTION", 2, 2, "{\"row\" : 3, \"col\": 0}")
     g = I.getBoardForToken(token)
-    l = allowedCommands(g, Civilization.Rome)
+    l = allowedCommandsH(g, Civilization.Rome)
     println(l)
     assert(l.find(_ == Command.SENDPRODUCTION).isEmpty)
     assert(l.find(_ == Command.UNDOSENDPRODUCTION).isDefined)
@@ -58,7 +57,7 @@ class Test13 extends FunSuite {
     // now undo
     Helper.executeCommandH(token, "UNDOSENDPRODUCTION", 2, 2, "{\"row\" : 3, \"col\": 0}")
     g = I.getBoardForToken(token)
-    l = allowedCommands(g, Civilization.Rome)
+    l = allowedCommandsH(g, Civilization.Rome)
     println(l)
     assert(l.find(_ == Command.SENDPRODUCTION).isDefined)
     prodc = getProductionForCity(g, Civilization.Rome, P(2, 2))
@@ -75,7 +74,7 @@ class Test13 extends FunSuite {
     val bb: GameBoard = Helper.readBoardAndPlay("test11/BOARDGAME1.json", "test13/GAME4.json", Civilization.Rome)
     val token: String = registerGame(bb, Civilization.Rome)
     var g: GameBoard = I.getBoardForToken(token)
-    var l: Seq[Command.T] = allowedCommands(g, Civilization.Rome)
+    var l: Seq[Command.T] = allowedCommandsH(g, Civilization.Rome)
     println(l)
     assert(l.find(_ == Command.SENDPRODUCTION).isEmpty)
   }
@@ -84,7 +83,7 @@ class Test13 extends FunSuite {
     val bb: GameBoard = Helper.readBoardAndPlay("test11/BOARDGAME1.json", "test13/GAME5.json", Civilization.Rome)
     val token: String = registerGame(bb, Civilization.Rome)
     var g: GameBoard = I.getBoardForToken(token)
-    var l: Seq[Command.T] = allowedCommands(g, Civilization.Rome)
+    var l: Seq[Command.T] = allowedCommandsH(g, Civilization.Rome)
     println(l)
     var s: String = II.itemizeCommand(token, "SENDPRODUCTION")
     assert(s != null)
@@ -95,7 +94,7 @@ class Test13 extends FunSuite {
     Helper.executeCommandH(token, "SENDPRODUCTION", 2, 2, "{\"row\" : 3, \"col\": 0}")
     Helper.executeCommandH(token, "SENDPRODUCTION", 2, 2, "{\"row\" : 0, \"col\": 2}")
     g = I.getBoardForToken(token)
-    l = allowedCommands(g, Civilization.Rome)
+    l = allowedCommandsH(g, Civilization.Rome)
     println(l)
     assert(l.find(_ == Command.UNDOSENDPRODUCTION).isDefined)
     assert(l.find(_ == Command.SENDPRODUCTION).isEmpty)
@@ -105,7 +104,7 @@ class Test13 extends FunSuite {
     assert(2 == prodc.fromscouts)
     Helper.executeCommandH(token, "UNDOSENDPRODUCTION", 2, 2, "{\"row\" : 3, \"col\": 0}")
     g = I.getBoardForToken(token)
-    l = allowedCommands(g, Civilization.Rome)
+    l = allowedCommandsH(g, Civilization.Rome)
     println(l)
     assert(l.find(_ == Command.UNDOSENDPRODUCTION).isDefined)
     assert(l.find(_ == Command.SENDPRODUCTION).isDefined)

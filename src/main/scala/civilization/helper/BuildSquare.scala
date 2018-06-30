@@ -1,6 +1,6 @@
 package civilization.helper
 
-import civilization.gameboard.{BuildingPoint, GameBoard}
+import civilization.gameboard.{BuildingPoint, GameBoard, PlayerDeck}
 import civilization.helper.BuyBuildingCommand.writesPoint
 import civilization.message
 import civilization.objects.{Civilization, P, S}
@@ -35,17 +35,17 @@ object BuildSquare {
     S.list -> p._2.map(toJB(_))
   )
 
-  type PossibleP = (GameBoard, Civilization.T, P) => Seq[BuildSquare]
+  type PossibleP = (GameBoard, PlayerDeck, P) => Seq[BuildSquare]
 
-  def itemizeB(b: GameBoard, civ: Civilization.T, allcities: Boolean, possibleP: PossibleP): Seq[JsValue] = {
-    val cities: Seq[P] = if (allcities) citiesForCivilization(b, civ).map(_.p) else CityAvailableForAction(b, civ)
-    val i: Seq[(P, Seq[BuildSquare])] = cities.map(city => (city, possibleP(b, civ, city)))
+  def itemizeB(b: GameBoard, deck: PlayerDeck, allcities: Boolean, possibleP: PossibleP): Seq[JsValue] = {
+    val cities: Seq[P] = if (allcities) citiesForCivilization(b, deck.civ).map(_.p) else CityAvailableForAction(b, deck.civ)
+    val i: Seq[(P, Seq[BuildSquare])] = cities.map(city => (city, possibleP(b, deck, city)))
     // remove cities where nothing can be built
     i.filter(!_._2.isEmpty).map(toSJ(_))
   }
 
-  def verifyB(board: GameBoard, civ: Civilization.T, p: P, param: BuildingPoint, m: message.M.Value, possibleP: PossibleP): message.Mess = {
-    val blds: Seq[BuildSquare] = possibleP(board, civ, p)
+  def verifyB(board: GameBoard, deck: PlayerDeck, p: P, param: BuildingPoint, m: message.M.Value, possibleP: PossibleP): message.Mess = {
+    val blds: Seq[BuildSquare] = possibleP(board, deck, p)
     val f: Option[BuildSquare] = blds.find(p => p.p == param)
     if (f.isDefined) return null
     message.Mess(m, param)

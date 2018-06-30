@@ -1,0 +1,32 @@
+{
+  "game": [
+
+    {"command":"SETCAPITAL","civ":"Spain","p":{"row":2,"col":2},"param":null},
+{"command":"SETARMY","civ":"Spain","p":{"row":2,"col":2},"param":{"row":3,"col":2}},
+{"command":"SETSCOUT","civ":"Spain","p":{"row":2,"col":2},"param":{"row":3,"col":3}},
+{"command":"ENDOFPHASE","civ":"Spain","p":null,"param":"StartOfTurn"},
+{"command":"ENDOFPHASE","civ":"Spain","p":null,"param":"Trade"},
+{"command":"ENDOFPHASE","civ":"Spain","p":null,"param":"CityManagement"},
+{"command":"STARTMOVE","civ":"Spain","p":{"row":3,"col":3},"param":{"numberofArmies":0,"numberofScouts":1}},
+{"command":"REVEALTILE","civ":"Spain","p":{"row":0,"col":1},"param":"Left"},
+{"command":"FREENONUPGRADEDBUILDING","civ":"Spain","p":{"row":2,"col":2},"param":{"p":{"row":3,"col":3},"building":"Barracks"}},
+{"command":"REVEALTILE","civ":"Spain","p":{"row":1,"col":0},"param":"Down"},
+{"command":"FREENONUPGRADEDBUILDING","civ":"Spain","p":{"row":2,"col":2},"param":{"p":{"row":2,"col":3},"building":"Harbor"}},
+{"command":"MOVE","civ":"Spain","p":{"row":4,"col":3},"param":null},
+{"command":"ENDOFMOVE","civ":"Spain","p":null,"param":null},
+{"command":"STARTMOVE","civ":"Spain","p":{"row":3,"col":2},"param":{"numberofArmies":1,"numberofScouts":0}},
+{"command":"MOVE","civ":"Spain","p":{"row":4,"col":2},"param":null},
+{"command":"MOVE","civ":"Spain","p":{"row":5,"col":2},"param":null},
+{"command":"MOVE","civ":"Spain","p":{"row":6,"col":2},"param":null},
+{"command":"ENDOFMOVE","civ":"Spain","p":null,"param":null},
+{"command":"ENDOFPHASE","civ":"Spain","p":null,"param":"Movement"},
+{"command":"RESEARCH","civ":"Spain","p":null,"param":"Agriculture"},
+{"command":"ENDOFPHASE","civ":"Spain","p":null,"param":"Research"},
+{"command":"ENDOFPHASE","civ":"Spain","p":null,"param":"StartOfTurn"},
+{"command":"ENDOFPHASE","civ":"Spain","p":null,"param":"Trade"},
+{"command":"BUYMOUNTED","civ":"Spain","p":{"row":2,"col":2},"param":null},
+{"command":"TAKEUNIT","civ":"Spain","p":{"row":2,"col":2},"param":{"name":"Mounted","strength":[3,4,5,6]}},
+{"command":"ENDOFPHASE","civ":"Spain","p":null,"param":"CityManagement"},
+{"command":"STARTMOVE","civ":"Spain","p":{"row":4,"col":3},"param":{"numberofArmies":0,"numberofScouts":1}},
+{"command":"REVEALTILE","civ":"Spain","p":{"row":1,"col":1},"param":"Left"}
+    ]}

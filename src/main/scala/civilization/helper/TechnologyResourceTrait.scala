@@ -16,7 +16,7 @@ trait TechnologyResourceTrait extends CommandPackage with ImplicitMiximFromJson 
   val command: Command.T
   val tech: TechnologyName.T
 
-  protected def resource(b: GameBoard): Resource.T = b.getTech(tech).resource.get
+  protected def resource(b: GameBoard): Resource.T = resourceForTech(b,tech)
 
   override def getSet: Set[Command.T] = Set(command)
 
@@ -24,7 +24,7 @@ trait TechnologyResourceTrait extends CommandPackage with ImplicitMiximFromJson 
 
     override def verify(board: gameboard.GameBoard): message.Mess = {
       if (param.resource != resource(board)) return message.Mess(message.M.INCORRECTRESOURCEUSED, (command, tech, resource(board), param))
-      val cities: Seq[P] = itemizeH(board, civ)
+      val cities: Seq[P] = itemizeH(board, deck)
       if (cities.find(_ == p).isEmpty) return message.Mess(message.M.RESOURCEALREADYUSEDORCITYAGAIN, (command, tech, resource(board), param))
       null
     }
@@ -32,17 +32,17 @@ trait TechnologyResourceTrait extends CommandPackage with ImplicitMiximFromJson 
     def executeI(board: gameboard.GameBoard): Unit = ???
 
     override def execute(board: gameboard.GameBoard): Unit = {
-      decrResourceHVForTech(board, civ, resource(board), tech)
+      decrResourceHVForTech(board, deck, resource(board), tech)
       executeI(board)
     }
   }
 
-  private def itemizeH(b: GameBoard, civ: Civilization.T): Seq[P] = {
-    if (!existResourceAndTech(b, civ, resource(b), tech)) return Nil
+  private def itemizeH(b: GameBoard, deck : PlayerDeck): Seq[P] = {
+    if (!existResourceAndTech(b, deck, resource(b), tech)) return Nil
     // cities available for city action
-    CityAvailableForAction(b, civ)
+    CityAvailableForAction(b, deck.civ)
   }
 
-  override def itemize(b: GameBoard, deck : PlayerDeck, com: Command.T): Seq[JsValue] = itemizeH(b, deck.civ)
+  override def itemize(b: GameBoard, deck : PlayerDeck, com: Command.T): Seq[JsValue] = itemizeH(b, deck)
 
 }

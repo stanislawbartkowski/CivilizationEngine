@@ -2,7 +2,6 @@ package civilization.test
 
 import civilization.I
 import civilization.gameboard.GameBoard
-import civilization.helper.AllowedCommands.allowedCommands
 import civilization.helper._
 import civilization.io.fromjson._
 import civilization.io.tojson.ImplicitMiximToJson
@@ -10,6 +9,7 @@ import civilization.objects.{Civilization, Command, _}
 import civilization.test.Helper.{II, getBoardAndRegister}
 import org.scalatest.FunSuite
 import play.api.libs.json.{JsArray, JsValue}
+import Helper._
 
 
 class Test29 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJson {
@@ -21,13 +21,13 @@ class Test29 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
     println(token)
     var gg = I.getBoardForToken(token)
     val pl = gg.playerDeck(Civilization.Egypt)
-    var l = allowedCommands(gg, Civilization.Egypt)
+    var l = allowedCommandsH(gg, Civilization.Egypt)
     println(l)
     val ss = II.itemizeCommand(token, "SETCAPITAL")
     println(ss)
     Helper.executeCommandH(token, "SETCAPITAL", 2, 2)
     gg = I.getBoardForToken(token)
-    l = allowedCommands(gg, Civilization.Egypt)
+    l = allowedCommandsH(gg, Civilization.Egypt)
     println(l)
     var ite = II.getData(II.ITEMIZECOMMAND, token, "FREEWONDER")
     println(ite)
@@ -43,7 +43,7 @@ class Test29 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
     val wolist = gg.getCurrentWonders()
     wolist.foreach(println)
     assert(!(wolist contains wo))
-    l = allowedCommands(gg, Civilization.Egypt)
+    l = allowedCommandsH(gg, Civilization.Egypt)
     println(l)
     assert(!(l contains Command.FREEWONDER))
   }
@@ -52,7 +52,7 @@ class Test29 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
     val reg = Helper.readBoardAndPlayT("test29/BOARDGAME1.json", "test29/PLAY1.json", Civilization.Egypt)
     val token = reg._1
     var gg = I.getBoardForToken(token)
-    val co: PlayerLimits = getLimits(gg, Civilization.Egypt)
+    val co: PlayerLimits = getLimitsH(gg, Civilization.Egypt)
     println(co.combatBonus)
     assert(co.combatBonus == 6)
   }
@@ -61,7 +61,7 @@ class Test29 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
     val reg = Helper.readBoardAndPlayT("test29/BOARDGAME1.json", "test29/PLAY2.json", Civilization.Egypt)
     val token = reg._1
     var gg = I.getBoardForToken(token)
-    var l = allowedCommands(gg, Civilization.Egypt)
+    var l = allowedCommandsH(gg, Civilization.Egypt)
     println(l)
     assert(l contains Command.FREEBUILDINGCITYACTION)
     assert(!(l contains Command.BUYBUILDING))
@@ -76,7 +76,7 @@ class Test29 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
     println(ma)
     assert(ma.s.building.isDefined)
     assert(ma.s.building.get.name == BuildingName.Market)
-    l = allowedCommands(gg, Civilization.Egypt)
+    l = allowedCommandsH(gg, Civilization.Egypt)
     println(l)
   }
 
@@ -84,7 +84,7 @@ class Test29 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
     val reg = Helper.readBoardAndPlayT("test29/BOARDGAME1.json", "test29/PLAY3.json", Civilization.Egypt)
     val token = reg._1
     var gg = I.getBoardForToken(token)
-    var l = allowedCommands(gg, Civilization.Egypt)
+    var l = allowedCommandsH(gg, Civilization.Egypt)
     println(l)
     assert(!(l contains Command.BUYBUILDING))
   }

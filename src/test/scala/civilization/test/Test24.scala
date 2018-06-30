@@ -1,7 +1,6 @@
 package civilization.test
 
 import civilization.gameboard.GameBoard
-import civilization.helper.AllowedCommands.allowedCommands
 import civilization.helper._
 import civilization.io.fromjson.{ImplicitMiximFromJson, toJ, _}
 import civilization.objects._
@@ -20,7 +19,7 @@ class Test24 extends FunSuite with ImplicitMiximFromJson {
     val reg = Helper.readBoardAndPlayT("test24/BOARDGAME1.json", "test24/PLAY1.json", Civilization.Spain)
     val token = reg._1
     var gg = I.getBoardForToken(token)
-    var l = allowedCommands(gg, Civilization.Spain)
+    var l = allowedCommandsH(gg, Civilization.Spain)
     println(l)
     assert(l.find(_ == Command.POTTERYACTION).isDefined)
     assert(l.find(_ == Command.PHILOSOPHYACTION).isEmpty)
@@ -41,8 +40,8 @@ class Test24 extends FunSuite with ImplicitMiximFromJson {
 
     val param = """[{"resource" : "Incense"},{"resource" : "Wheat"}]"""
     Helper.executeCommandH(token, "POTTERYACTION", 1, 2, param)
-    var gg = I.getBoardForToken(token)
-    println(getCoins(gg, Civilization.Spain))
+    var gg : GameBoard = I.getBoardForToken(token)
+    println(getCoins(gg, gg.playerDeck(Civilization.Spain)))
     // check number of coins
     j = Helper.getB(token)
     y = jyou(j)
@@ -84,7 +83,7 @@ class Test24 extends FunSuite with ImplicitMiximFromJson {
     val reg = Helper.readBoardAndPlayT("test24/BOARDGAME2.json", "test24/PLAY2.json", Civilization.Rome)
     val token = reg._1
     var gg = I.getBoardForToken(token)
-    var l = allowedCommands(gg, Civilization.Rome)
+    var l = allowedCommandsH(gg, Civilization.Rome)
     println(l)
     val param = """[{"hv":"Hut","resource" : "Incense"},{"hv":"Hut","resource" : "Wheat"},{"resource" : "Iron"}]"""
     Helper.executeCommandH(token, "POTTERYACTION", 1, 2, param)
@@ -109,7 +108,7 @@ class Test24 extends FunSuite with ImplicitMiximFromJson {
     assert(num == 2)
     // try again
     gg = I.getBoardForToken(token)
-    l = allowedCommands(gg, Civilization.Rome)
+    l = allowedCommandsH(gg, Civilization.Rome)
     println(l)
     assert(!(l contains Command.POTTERYACTION))
   }
@@ -129,8 +128,8 @@ class Test24 extends FunSuite with ImplicitMiximFromJson {
     val reg = Helper.readBoardAndPlayT("test24/BOARDGAME2.json", "test24/PLAY4.json", Civilization.Rome)
     // Rome has Code of Low initially
     val token: String = reg._1
-    var gg = I.getBoardForToken(token)
-    val coi = getCoins(gg,Civilization.Rome)
+    var gg : GameBoard = I.getBoardForToken(token)
+    val coi = getCoins(gg,gg.playerDeck(Civilization.Rome))
     println(coi)
     val j = Helper.getB(token)
     val y = jyou(j)
@@ -144,7 +143,7 @@ class Test24 extends FunSuite with ImplicitMiximFromJson {
     val reg = Helper.readBoardAndPlayT("test24/BOARDGAME2.json", "test24/PLAY5.json", Civilization.Rome)
     val token: String = reg._1
     var gg = I.getBoardForToken(token)
-    var l = allowedCommands(gg, Civilization.Rome)
+    var l = allowedCommandsH(gg, Civilization.Rome)
     println(l)
     // pottery action only once
     assert(l.find(_ == Command.POTTERYACTION).isEmpty)
@@ -155,7 +154,7 @@ class Test24 extends FunSuite with ImplicitMiximFromJson {
     val reg = Helper.readBoardAndPlayT("test24/BOARDGAME6.json", "test24/PLAY6.json", Civilization.Egypt)
     val token: String = reg._1
     val gg: GameBoard = I.getBoardForToken(token)
-    val trade = numberofTrade(gg, Civilization.Egypt)
+    val trade = numberofTradeH(gg, Civilization.Egypt)
     println(trade)
     println(trade.trade)
     assert(trade.trade == 2)

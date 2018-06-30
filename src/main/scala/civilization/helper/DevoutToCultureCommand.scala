@@ -38,9 +38,8 @@ object DevoutToCultureCommand extends CommandPackage with ImplicitMiximFromJson 
     override def execute(board: gameboard.GameBoard): Unit = {
       // single culture from every scout
       val culture = cultureForCity(board,p).culture + param.length
-      val pl : gameboard.PlayerDeck = board.playerDeck(civ)
       // increase culture
-      pl.resou.incr(objects.Resource.Culture,culture)
+      deck.resou.incr(objects.Resource.Culture,culture)
     }
   }
 

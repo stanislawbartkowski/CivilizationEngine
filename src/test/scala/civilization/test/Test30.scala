@@ -2,7 +2,6 @@ package civilization.test
 
 import civilization.I
 import civilization.gameboard.GameBoard
-import civilization.helper.AllowedCommands.allowedCommands
 import civilization.helper._
 import civilization.io.fromjson._
 import civilization.io.tojson.ImplicitMiximToJson
@@ -10,6 +9,7 @@ import civilization.objects.{Civilization, Command, _}
 import civilization.test.Helper.{II, getBoardAndRegister}
 import org.scalatest.FunSuite
 import play.api.libs.json.{JsArray, JsValue}
+import Helper._
 
 
 class Test30 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJson {
@@ -43,7 +43,7 @@ class Test30 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
     assert(pl.units.length == 6)
     println(pl.takefreeResources)
     assert(pl.takefreeResources > 0)
-    var l = allowedCommands(gg, Civilization.Germany)
+    var l = allowedCommandsH(gg, Civilization.Germany)
     println(l)
     var ite = II.getData(II.ITEMIZECOMMAND, token, "GETFREERESOURCE")
     println(ite)
@@ -70,7 +70,7 @@ class Test30 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
     println(pl.units.length)
     assert(pl.units.length == 8)
     // free resource
-    var l = allowedCommands(gg, Civilization.Germany)
+    var l = allowedCommandsH(gg, Civilization.Germany)
     println(l)
     var ite = II.getData(II.ITEMIZECOMMAND, token, "GETFREERESOURCE")
     println(ite)
@@ -78,15 +78,15 @@ class Test30 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
     // take 3 resources
     Helper.executeCommandH(token, "GETFREERESOURCE", -1, -1,""""Incense"""")
     gg = I.getBoardForToken(token)
-    l = allowedCommands(gg, Civilization.Germany)
+    l = allowedCommandsH(gg, Civilization.Germany)
     assert(l contains Command.GETFREERESOURCE)
     Helper.executeCommandH(token, "GETFREERESOURCE", -1, -1,""""Silk"""")
     gg = I.getBoardForToken(token)
-    l = allowedCommands(gg, Civilization.Germany)
+    l = allowedCommandsH(gg, Civilization.Germany)
     assert(l contains Command.GETFREERESOURCE)
     Helper.executeCommandH(token, "GETFREERESOURCE", -1, -1,""""Iron"""")
     gg = I.getBoardForToken(token)
-    l = allowedCommands(gg, Civilization.Germany)
+    l = allowedCommandsH(gg, Civilization.Germany)
     println(l)
     assert(!(l contains Command.GETFREERESOURCE))
   }
@@ -96,7 +96,7 @@ class Test30 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
     val token = reg._1
     var gg = I.getBoardForToken(token)
     var pl = gg.playerDeck(Civilization.Germany)
-    var l = allowedCommands(gg, Civilization.Germany)
+    var l = allowedCommandsH(gg, Civilization.Germany)
     println(l)
     assert(!(l contains Command.GETFREERESOURCE))
   }
@@ -105,7 +105,7 @@ class Test30 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
     val token: String = II.getData(II.REGISTEROWNER, "Rome")
     println(token)
     var gg = I.getBoardForToken(token)
-    var l = allowedCommands(gg, Civilization.Rome)
+    var l = allowedCommandsH(gg, Civilization.Rome)
     println(l)
     var ite = II.getData(II.ITEMIZECOMMAND, token, "SETCAPITAL")
     println(ite)

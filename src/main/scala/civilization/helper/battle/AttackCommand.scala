@@ -15,8 +15,7 @@ object AttackCommand extends ImplicitMiximToJson {
     p1 == p2
   })
 
-  private def removePlayerUnits(board: GameBoard, civ: Civilization.T, units: Seq[CombatUnit]) = {
-    val pl: PlayerDeck = board.playerDeck(civ)
+  private def removePlayerUnits(board: GameBoard, pl: PlayerDeck, units: Seq[CombatUnit]) = {
     pl.units = removeUnits(pl.units, units)
   }
 
@@ -29,12 +28,10 @@ object AttackCommand extends ImplicitMiximToJson {
     a
   }
 
-  private def createBattleSide(board: GameBoard, civ: Civilization.T, units: Seq[CombatUnit], p: BattleStart): BattleFieldSide = {
-    val li: PlayerLimits = getLimits(board, civ)
-    val pl: PlayerDeck = board.playerDeck(civ)
+  private def createBattleSide(board: GameBoard, pl: PlayerDeck, units: Seq[CombatUnit], p: BattleStart): BattleFieldSide = {
+    val li: PlayerLimits = getLimits(board, pl)
     // can use iron
-    //    BattleFieldSide(createEmptyFighting(p), units, Nil, pl.combatlevel, li.combatBonus, pl.resou.nof(Resource.Iron) > 0, false)
-    BattleFieldSide(createEmptyFighting(p), units, Nil, pl.combatlevel, li.combatBonus, existResourceAndTech(board, civ, Resource.Iron, TechnologyName.Metallurgy), false)
+    BattleFieldSide(createEmptyFighting(p), units, Nil, pl.combatlevel, li.combatBonus, existResourceAndTech(board, pl, Resource.Iron, TechnologyName.Metallurgy), false)
   }
 
   private def createBattleSideForVillages(p: BattleStart): BattleFieldSide =
@@ -107,15 +104,15 @@ object AttackCommand extends ImplicitMiximToJson {
     if (param.noloot()) return
     // there is a loot
     val winnerciv: Civilization.T = if (batt.attackerwinner) attackciv else defeciv
-    val loserciv: Civilization.T = if (batt.attackerwinner) defeciv else attackciv
+    val loserciv: PlayerDeck = g.playerDeck(if (batt.attackerwinner) defeciv else attackciv)
 
     val reso: Option[Resource.T] =
-      if (param.hv.isDefined) Some(takerandomresohv(g.playerDeck(loserciv), param.hv.get)) else if (param.res.isDefined) param.res else None
+      if (param.hv.isDefined) Some(takerandomresohv(loserciv, param.hv.get)) else if (param.res.isDefined) param.res else None
 
     var trade: Int = 0
     if (param.trade) {
       val tradeloser = numberofTrade(g, loserciv).trade
-      trade = Math.min(MAXLOOTTRADE, tradeloser)
+      trade = math.min(MAXLOOTTRADE, tradeloser)
     }
     val tlook: TakeWinnerLoot = TakeWinnerLoot(winnerciv, loserciv, param, reso, trade)
     val command: Command = constructCommand(Command.TAKEWINNERLOOT, attackciv, null, tlook)
@@ -215,8 +212,8 @@ object AttackCommand extends ImplicitMiximToJson {
       }
       // who is the winner
       // implement CodeOfLaws
-      if (batt.attackerwinner) TechnologyAction.BattleWinner(board, attackciv)
-      else if (defeciv.isDefined) TechnologyAction.BattleWinner(board, defeciv.get)
+      if (batt.attackerwinner) TechnologyAction.BattleWinner(board, board.playerDeck(attackciv))
+      else if (defeciv.isDefined) TechnologyAction.BattleWinner(board, board.playerDeck(defeciv.get))
       // import: at the end, not before
       // only if village is taken
       if (batt.attackerwinner && defeciv.isEmpty) {
@@ -287,7 +284,7 @@ object AttackCommand extends ImplicitMiximToJson {
         //        val pl: PlayerDeck = board.playerDeck(if (board.battle.get.attackermove) board.battle.get.attackerciv else board.battle.get.defenderciv)
         //        pl.resou.decr(Resource.Iron)
         val civ: Civilization.T = if (board.battle.get.attackermove) board.battle.get.attackerciv else board.battle.get.defenderciv
-        decrResourceHVForTech(board, civ, Resource.Iron, TechnologyName.Metallurgy)
+        decrResourceHVForTech(board, deck, Resource.Iron, TechnologyName.Metallurgy)
         // mark iron
         ba.canuseiron = false
         ba.ironused = to
@@ -315,9 +312,9 @@ object AttackCommand extends ImplicitMiximToJson {
       val attackerP: P = getCurrentMove(board, civ).get.lastp
       assert(!attackerP.empty && !p.empty)
       assert(board.battle.isEmpty)
-      removePlayerUnits(board, civ, param.attacker)
+      removePlayerUnits(board, deck, param.attacker)
       val ma: MapSquareP = getSquare(board, p)
-      val attacker: BattleFieldSide = createBattleSide(board, civ, param.attacker, param)
+      val attacker: BattleFieldSide = createBattleSide(board, deck, param.attacker, param)
       var defender: BattleFieldSide = null
       var defenderciv: Civilization.T = null
       if (ma.s.hvhere) {
@@ -326,8 +323,9 @@ object AttackCommand extends ImplicitMiximToJson {
         defenderciv = nextCiv(board, civ)
       }
       else {
-        removePlayerUnits(board, ma.civHere.get, param.defender)
-        defender = createBattleSide(board, ma.civHere.get, param.defender, param)
+        val defe : PlayerDeck = board.playerDeck(ma.civHere.get)
+        removePlayerUnits(board, defe, param.defender)
+        defender = createBattleSide(board, defe, param.defender, param)
         defenderciv = ma.civHere.get
       }
 

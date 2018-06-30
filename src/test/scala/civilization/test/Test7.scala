@@ -78,7 +78,7 @@ class Test7 extends FunSuite {
     // test
     val p: Seq[MapSquareP] = allSquares(g)
 
-    val jj = genboardj.genBoardGameJson(g, Civilization.Germany)
+    val jj = genboardj.genBoardGameJson(g, g.playerDeck(Civilization.Germany))
     println(Json.prettyPrint(jj))
   }
 

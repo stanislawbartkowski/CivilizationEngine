@@ -10,7 +10,7 @@ import civilization.I
 import civilization.I.II
 import org.scalatest.FunSuite
 import play.api.libs.json.{JsArray, JsString, JsValue}
-import Helper.II
+import Helper._
 
 
 class Test11 extends FunSuite {
@@ -53,23 +53,23 @@ class Test11 extends FunSuite {
     val tokenr = c._1
     val tokenc = c._2
     var g: GameBoard = I.getBoardForToken(tokenr)
-    var a: Seq[Command.T] = AllowedCommands.allowedCommands(g, Civilization.Rome)
+    var a: Seq[Command.T] = allowedCommandsH(g, Civilization.Rome)
     println(a)
     assert(a contains Command.BUYARMY)
     assert(a contains Command.BUYSCOUT)
     assert(a contains Command.ENDOFPHASE)
-    a = AllowedCommands.allowedCommands(g, Civilization.China)
+    a = allowedCommandsH(g, Civilization.China)
     println(a)
     assert(a.isEmpty)
     var s = executeCommand(tokenr, "ENDOFPHASE", -1, -1, "\"CityManagement\"")
     // now Rome is blocked
     assert(s == null)
     g = I.getBoardForToken(tokenr)
-    a = AllowedCommands.allowedCommands(g, Civilization.Rome)
+    a = allowedCommandsH(g, Civilization.Rome)
     println(a)
     assert(a.isEmpty)
     // china is unlocked
-    a = AllowedCommands.allowedCommands(g, Civilization.China)
+    a = allowedCommandsH(g, Civilization.China)
     println(a)
     assert(a.contains(Command.BUYARMY))
     assert(a.contains(Command.BUYSCOUT))
@@ -79,22 +79,22 @@ class Test11 extends FunSuite {
     assert(s == null)
     // next phase
     g = I.getBoardForToken(tokenr)
-    a = AllowedCommands.allowedCommands(g, Civilization.Rome)
+    a = allowedCommandsH(g, Civilization.Rome)
     println(a)
     assert(a.contains(Command.STARTMOVE))
     assert(a.contains(Command.ENDOFPHASE))
     // China is blocked
-    a = AllowedCommands.allowedCommands(g, Civilization.China)
+    a = allowedCommandsH(g, Civilization.China)
     println(a)
     assert(a.isEmpty)
     s = executeCommand(tokenr, "ENDOFPHASE", -1, -1, "\"Movement\"")
     // Rome is blocked again
     g = I.getBoardForToken(tokenr)
-    a = AllowedCommands.allowedCommands(g, Civilization.Rome)
+    a = allowedCommandsH(g, Civilization.Rome)
     println(a)
     assert(a.isEmpty)
     // china is unlocked
-    a = AllowedCommands.allowedCommands(g, Civilization.China)
+    a = allowedCommandsH(g, Civilization.China)
     println(a)
     assert(a.contains(Command.STARTMOVE))
     assert(a.contains(Command.ENDOFPHASE))
@@ -136,7 +136,7 @@ class Test11 extends FunSuite {
     var b: GameBoard = Helper.readBoardAndPlay("test11/BOARDGAME1.json", "test11/GAME2.json", Civilization.Rome)
     val token: String = registerGame(b, Civilization.Rome)
     var g: GameBoard = I.getBoardForToken(token)
-    var a: Seq[Command.T] = AllowedCommands.allowedCommands(g, Civilization.Rome)
+    var a: Seq[Command.T] = allowedCommandsH(g, Civilization.Rome)
     assert(!a.contains(Command.SETCITY))
     println(a)
     val o: String = II.itemizeCommand(token, "SETCITY")
@@ -147,7 +147,7 @@ class Test11 extends FunSuite {
     var b: GameBoard = Helper.readBoardAndPlay("test11/BOARDGAME1.json", "test11/GAME3.json", Civilization.Rome)
     val token: String = registerGame(b, Civilization.Rome)
     var g: GameBoard = I.getBoardForToken(token)
-    var a: Seq[Command.T] = AllowedCommands.allowedCommands(g, Civilization.Rome)
+    var a: Seq[Command.T] = allowedCommandsH(g, Civilization.Rome)
     println(a)
     val o: String = II.itemizeCommand(token, "MOVE")
     println(o)
@@ -168,14 +168,14 @@ class Test11 extends FunSuite {
     var b: GameBoard = Helper.readBoardAndPlay("test11/BOARDGAME1.json", "test11/GAME4.json", Civilization.Rome)
     val token: String = registerGame(b, Civilization.Rome)
     var g: GameBoard = I.getBoardForToken(token)
-    var prod = numberofTradeCalculate(b,Civilization.Rome)
+    var prod = numberofTradeCalculate(b,g.playerDeck(Civilization.Rome))
     println(prod)
     assert (4 == prod.trade)
     var s = executeCommand(token, "ENDOFPHASE", -1, -1, "\"Research\"")
     assert (s == null)
     // next turn
     g = I.getBoardForToken(token)
-    prod = numberofTradeCalculate(g,Civilization.Rome)
+    prod = numberofTradeCalculate(g,g.playerDeck(Civilization.Rome))
     println(prod)
     assert(2 == prod.terrain)
     assert(4 == prod.noresearch)
@@ -190,7 +190,7 @@ class Test11 extends FunSuite {
     s = executeCommand(token, "ENDOFPHASE", -1, -1, "\"Research\"")
     assert (s == null)
     g = I.getBoardForToken(token)
-    prod = numberofTradeCalculate(g,Civilization.Rome)
+    prod = numberofTradeCalculate(g,g.playerDeck(Civilization.Rome))
     println(prod)
     assert(2 == prod.terrain)
     assert(6 == prod.noresearch)
@@ -209,7 +209,7 @@ class Test11 extends FunSuite {
     s = executeCommand(token, "ENDOFPHASE", -1, -1, "\"Research\"")
     assert (s == null)
     g = I.getBoardForToken(token)
-    prod = numberofTradeCalculate(g,Civilization.Rome)
+    prod = numberofTradeCalculate(g,g.playerDeck(Civilization.Rome))
     println(prod)
     assert (2 == prod.trade)
   }

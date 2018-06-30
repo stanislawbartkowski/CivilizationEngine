@@ -21,7 +21,7 @@ object CurrencyAction extends TechnologyResourceTrait {
 
     override def executeI(board: gameboard.GameBoard): Unit = {
       // increase culture by 3
-      board.playerDeck(civ).resou.incr(Resource.Culture,3)
+      if (isExecute) board.addForcedCommandC(Command.GET3CULTURE,civ)
     }
   }
 

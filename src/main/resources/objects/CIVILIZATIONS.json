@@ -39,14 +39,12 @@
     "civ": "Spain",
     "tech": "Navigation",
     "gover": "Despotism",
-    "ni": true,
     "desc": "The Spanish start with 2 scouts. The travel speed of the Spanish is increased by 1. When the Spanish discover an unexplored map tile, they may immediately build a basic (non-upgraded) building in any of their cities for free, even if they haven't unlocked that building."
   },
   {
     "civ": "Arabs",
     "tech": "Mathematics",
     "gover": "Despotism",
-    "ni": true,
     "desc": "The Arabs start having every piece of resource from the market. When they spend any resource, the receive 1 culture for any resource in return. When they invest a coin, they move forward one step on culture track."
   }
 ]

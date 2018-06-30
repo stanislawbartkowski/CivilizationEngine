@@ -31,7 +31,7 @@ object BuyUnit extends CommandPackage with ImplicitMiximFromJson with ImplicitMi
   }
 
   override def itemizePP(b: gameboard.GameBoard, deck : PlayerDeck, com: Command.T): Seq[P] = {
-    val limit: PlayerLimits = getLimits(b, deck.civ)
+    val limit: PlayerLimits = getLimits(b, deck)
     itemizeI(b, deck.civ, com, limit)
   }
 
@@ -56,7 +56,7 @@ object BuyUnit extends CommandPackage with ImplicitMiximFromJson with ImplicitMi
     override def verify(board: GameBoard): Mess = null
 
     override def execute(board: GameBoard): Unit = {
-      board.playerDeck(civ).units = board.playerDeck(civ).units :+ param
+      deck.units = deck.units :+ param
       val fun = (p1: CombatUnit,p2 : CombatUnit ) => { p1 == p2 }
       board.market.units = removeElem(board.market.units,param,(p1: CombatUnit,p2 : CombatUnit ) => { p1 == p2 })
     }

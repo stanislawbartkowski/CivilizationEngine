@@ -2,7 +2,6 @@ package civilization.test
 
 import civilization.I
 import civilization.gameboard.GameBoard
-import civilization.helper.AllowedCommands.allowedCommands
 import civilization.io.fromjson.ImplicitMiximFromJson
 import civilization.objects.Civilization
 import org.scalatest.FunSuite
@@ -10,7 +9,7 @@ import civilization.objects._
 import play.api.libs.json._
 import civilization.io.fromjson.{toJ, _}
 import civilization.helper._
-import Helper.II
+import Helper._
 
 class Test21 extends FunSuite with ImplicitMiximFromJson {
 
@@ -20,7 +19,7 @@ class Test21 extends FunSuite with ImplicitMiximFromJson {
     val reg = Helper.readBoardAndPlayT("test21/BOARDGAME1.json", "test21/PLAY1.json", Civilization.America)
     val token: String = reg._1
     var gg: GameBoard = I.getBoardForToken(token)
-    var l = allowedCommands(gg, Civilization.America)
+    var l = allowedCommandsH(gg, Civilization.America)
     println(l)
     assert(l.find(_ == Command.BUYBUILDING).isDefined)
     val s = II.itemizeCommand(token, "BUYBUILDING")
@@ -45,7 +44,7 @@ class Test21 extends FunSuite with ImplicitMiximFromJson {
     Helper.executeCommandH(token, "BUYBUILDING", 1, 5, c)
     // commands
     gg = I.getBoardForToken(token)
-    l = allowedCommands(gg, Civilization.America)
+    l = allowedCommandsH(gg, Civilization.America)
     println(l)
     // no more building
     assert(l.find(_ == Command.BUYBUILDING).isEmpty)
@@ -89,7 +88,7 @@ class Test21 extends FunSuite with ImplicitMiximFromJson {
     val mab: MapSquareP = getSquare(gg, P(2, 4))
     println(mab)
     assert(mab.s.building.isDefined)
-    var l = allowedCommands(gg, Civilization.America)
+    var l = allowedCommandsH(gg, Civilization.America)
     println(l)
     assert(l.find(_ == Command.BUYBUILDING).isDefined)
     val s = II.itemizeCommand(token, "BUYBUILDING")
@@ -152,7 +151,7 @@ class Test21 extends FunSuite with ImplicitMiximFromJson {
     val reg = Helper.readBoardAndPlayT("test21/BOARDGAME4.json", "test21/PLAY4.json", Civilization.Russia)
     val token: String = reg._1
     var gg: GameBoard = reg._2
-    val l = allowedCommands(gg, Civilization.Russia)
+    val l = allowedCommandsH(gg, Civilization.Russia)
     println(l)
     val s = II.itemizeCommand(token, "RESEARCH")
     println(s)

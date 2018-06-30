@@ -3,7 +3,6 @@ package civilization.test
 import civilization.I
 import civilization.I.II
 import civilization.gameboard._
-import civilization.helper.AllowedCommands.allowedCommands
 import civilization.helper._
 import civilization.io.fromjson._
 import civilization.io.tojson._
@@ -12,7 +11,7 @@ import civilization.objects.{Civilization, Command}
 import org.scalatest.FunSuite
 import play.api.libs.json._
 import civilization.objects._
-import Helper.II
+import Helper._
 
 class Test17 extends FunSuite with ImplicitMiximToJson {
 
@@ -22,14 +21,14 @@ class Test17 extends FunSuite with ImplicitMiximToJson {
     val reg = Helper.readBoardAndPlayT("test17/BOARD1.json", "test17/GAME1.json", Civilization.America)
     val token: String = reg._1
     var g: GameBoard = I.getBoardForToken(token)
-    var l: Seq[Command.T] = allowedCommands(g, Civilization.America)
+    var l: Seq[Command.T] = allowedCommandsH(g, Civilization.America)
     println(l)
     val i: String = II.itemizeCommand(token, "EXPLOREHUT")
     val j: JsValue = toJ(i)
     println(i)
     Helper.executeCommandH(token, "EXPLOREHUT", 6, 3, null)
     g = I.getBoardForToken(token)
-    l = allowedCommands(g, Civilization.America)
+    l = allowedCommandsH(g, Civilization.America)
     println(l)
     assert(l.find(_ == Command.MOVE).isEmpty)
     assert(l.find(_ == Command.REVEALTILE).isEmpty)
@@ -72,7 +71,7 @@ class Test17 extends FunSuite with ImplicitMiximToJson {
     val reg = Helper.readBoardAndPlayT("test17/BOARD2.json", "test17/GAME2.json", Civilization.Rome)
     val token: String = reg._1
     var g: GameBoard = I.getBoardForToken(token)
-    val l = allowedCommands(g, Civilization.Rome)
+    val l = allowedCommandsH(g, Civilization.Rome)
     println(l)
     assert(l.find(_ == Command.ATTACK).isDefined)
     val i: String = II.itemizeCommand(token, "ATTACK")
@@ -263,7 +262,7 @@ class Test17 extends FunSuite with ImplicitMiximToJson {
     assert(gg.market.killedunits.length == 5)
 
     // check available move
-    val l = allowedCommands(gg, Civilization.Rome)
+    val l = allowedCommandsH(gg, Civilization.Rome)
     println(l)
     assert(l.filter(_ == Command.MOVE).isEmpty)
     assert(l.filter(_ == Command.ENDOFMOVE).isEmpty)

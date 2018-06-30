@@ -8,8 +8,8 @@ import play.api.libs.json.JsValue
 object CommandContainer {
 
   val commands: Seq[CommandPackage] = Seq(BuyUnit, SpendTrade, SendProduction, HarvestResource, ResearchTechnology,
-    BuyBuildingCommand, BuyWorldWonder,BuildCityWalls,
-    PotteryPhilosophyAction, SetCityAction,TakeResourceCommand,
+    BuyBuildingCommand, BuyWorldWonder,BuildCityWalls, IncreaseTradeAction,
+    PotteryPhilosophyAction, SetCityAction,TakeResourceCommand, SpendSilkAction,
     SetFigureAction, DevoutToCultureCommand, AdvanceCulture,CurrencyAction, DiscardCard, GreatPersonAction)
 
   val comset: Map[Command.T, CommandPackage] = commands.map(c => c.getSet.map(co => (co, c))).flatten.map(c => c._1 -> c._2) toMap
@@ -20,7 +20,7 @@ object CommandContainer {
     // it is necessary to have additional filter for phase, not all commands are passing through CommandPackage
     val co: Seq[Command.T] = commands.map(co => co.commandsAvail(b, deck, phase).filter(p => Command.actionPhase(p) == phase)).flatten.filter(!Command.internalAction(_))
     // technology resource command used already
-    val techResourceUsed = technologyResourceUsed(b, deck.civ)
+    val techResourceUsed = technologyResourceUsed(b, deck)
     // if yes, then weed out all technology commands here
     if (!techResourceUsed) co else co.filter(!Command.isTechnologyResourceAction((_)))
   }

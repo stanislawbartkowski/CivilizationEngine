@@ -1,11 +1,12 @@
 package civilization.helper.move
 
 import civilization.action.{AbstractCommand, Command, constructCommand}
-import civilization.gameboard.{Figures, GameBoard}
+import civilization.gameboard.{Figures, GameBoard, PlayerDeck}
 import civilization.helper._
 import civilization.helper.move.MoveItemize.SacrificeForTech
 import civilization.io.fromjson.ImplicitMiximFromJson
 import civilization.io.tojson.ImplicitMiximToJson
+import civilization.io.tojson.genboardj.PlayerDeckJ
 import civilization.message.{J, M, Mess}
 import civilization.objects._
 
@@ -48,12 +49,12 @@ object MoveAction extends ImplicitMiximFromJson with ImplicitMiximToJson {
   }
 
 
-  private def figureMoveVerify(b: GameBoard, civ: Civilization.T, p: P, endofmove: Boolean): Option[Mess] = {
-    val figo: Option[PlayerMove] = getCurrentMove(b, civ)
+  private def figureMoveVerify(b: GameBoard, deck: PlayerDeck, p: P, endofmove: Boolean): Option[Mess] = {
+    val figo: Option[PlayerMove] = getCurrentMove(b, deck)
     if (figo.isEmpty) return Some(Mess(M.CANNOTFINDSTARTOFMOVE, p))
     val fig: PlayerMove = figo.get
     if (fig == null) return Some(Mess(M.CANNOTFINDSTARTOFMOVE, p))
-    figureMovePointCheck(b, civ, toFiguresParam(fig), p, endofmove)
+    figureMovePointCheck(b, deck, toFiguresParam(fig), p, endofmove)
   }
 
   private def figureMoveExecute(b: GameBoard, civ: Civilization.T, p: P, endofmove: Boolean, f: Option[Figures]) =
@@ -69,22 +70,22 @@ object MoveAction extends ImplicitMiximFromJson with ImplicitMiximToJson {
 
   class MoveAction(override val param: Figures) extends AbstractCommand(param) {
 
-    def execute(board: GameBoard) = figureMoveExecute(board, civ, p, false, if (param == null) None else Some(param))
+    def execute(board: GameBoard) = figureMoveExecute(board, deck, p, false, if (param == null) None else Some(param))
 
-    def verify(board: GameBoard): Mess = figureMoveVerify(board, civ, p, false).getOrElse(null)
+    def verify(board: GameBoard): Mess = figureMoveVerify(board, deck, p, false).getOrElse(null)
   }
 
   class EndOfMoveAction(override val param: Figures) extends AbstractCommand(param) {
 
     def execute(board: GameBoard) = figureMoveExecute(board, civ, p, true, if (param == null) None else Some(param))
 
-    def verify(board: GameBoard): Mess = figureMoveVerify(board, civ, p, true).getOrElse(null)
+    def verify(board: GameBoard): Mess = figureMoveVerify(board, deck, p, true).getOrElse(null)
   }
 
   class ForceMoveAction(override val param: Figures) extends AbstractCommand(param) {
     def execute(board: GameBoard) = putFigures(board, civ, p, param)
 
-    def verify(board: GameBoard): Mess = checkFinalPoint(board, civ, getSquare(board, p), param).getOrElse(null)
+    def verify(board: GameBoard): Mess = checkFinalPoint(board, deck, getSquare(board, p), param).getOrElse(null)
   }
 
   class KillFigureAction(override val param: Figures) extends AbstractCommand(param) {

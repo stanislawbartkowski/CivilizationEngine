@@ -3,7 +3,6 @@ package civilization.test
 import civilization.I
 import civilization.I.II
 import civilization.gameboard._
-import civilization.helper.AllowedCommands.allowedCommands
 import civilization.io.fromjson.{toJ, _}
 import civilization.io.readdir.GenBoard.genBoard
 import civilization.io.tojson.ImplicitMiximToJson
@@ -12,7 +11,7 @@ import org.scalatest.FunSuite
 import play.api.libs.json._
 import civilization.helper._
 import civilization.helper.battle.BattleActions
-import Helper.II
+import Helper._
 
 
 class Test19 extends FunSuite with ImplicitMiximToJson {
@@ -21,7 +20,7 @@ class Test19 extends FunSuite with ImplicitMiximToJson {
 
   test("List of civs") {
     val c: String = II.getData(II.LISTOFRES)
-    System.out.println(c)
+    println(c)
     val a: JsArray = Json.arr(c)
     assert(a != null)
   }
@@ -30,9 +29,9 @@ class Test19 extends FunSuite with ImplicitMiximToJson {
     println("Test gen")
     val g: GameBoard = genBoard(List(Civilization.Germany), "TEST1.json")
     assert(g != null)
-    System.out.println(g.market.units)
+    println(g.market.units)
     val num = g.market.units.filter(_.utype == CombatUnitType.Aircraft).length
-    System.out.println(num)
+    println(num)
     assert(8 == num)
   }
 
@@ -41,7 +40,7 @@ class Test19 extends FunSuite with ImplicitMiximToJson {
     val token: String = reg._1
     val tokena: String = reg._2
     val gg: GameBoard = I.getBoardForToken(token)
-    val l = allowedCommands(gg, Civilization.Arabs)
+    val l = allowedCommandsH(gg, Civilization.Arabs)
     println(l)
     assert(!l.filter(_ == Command.ATTACK).isEmpty)
     val ite: String = II.itemizeCommand(tokena, "ATTACK")
@@ -98,14 +97,14 @@ class Test19 extends FunSuite with ImplicitMiximToJson {
     val wi: JsArray = (batt \ "winnerloot").as[JsArray]
     println(wi)
     assert(wi.value.length == 4)
-    val numar = numberofTrade(g, Civilization.Arabs)
-    val numam = numberofTrade(g, Civilization.America)
+    val numar = numberofTradeH(g, Civilization.Arabs)
+    val numam = numberofTradeH(g, Civilization.America)
     println(numar)
     println(numam)
     Helper.executeCommandH(tokena, "ENDBATTLE", -1, -1, "\"trade\"")
     g = I.getBoardForToken(tokena)
-    val xnumar = numberofTradeCalculate(g, Civilization.Arabs)
-    val xnumam = numberofTradeCalculate(g, Civilization.America)
+    val xnumar = numberofTradeCalculateH(g, Civilization.Arabs)
+    val xnumam = numberofTradeCalculateH(g, Civilization.America)
     println(xnumar)
     println(xnumam)
     // cannot exceed 27

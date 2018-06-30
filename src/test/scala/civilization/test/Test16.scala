@@ -3,13 +3,12 @@ package civilization.test
 import civilization.I
 import civilization.I.II
 import civilization.gameboard.GameBoard
-import civilization.helper.AllowedCommands.allowedCommands
 import civilization.helper._
 import civilization.io.fromjson._
 import civilization.objects.{Civilization, Command, _}
 import org.scalatest.FunSuite
 import play.api.libs.json.{JsArray, JsValue, _}
-import Helper.II
+import Helper._
 
 
 class Test16  extends FunSuite {
@@ -24,7 +23,7 @@ class Test16  extends FunSuite {
     assert(2 == g.market.units.length)
     var prod = getProductionForCity(g,Civilization.China,P(5,1))
     println(prod)
-    var l: Seq[Command.T] = allowedCommands(g, Civilization.China)
+    var l: Seq[Command.T] = allowedCommandsH(g, Civilization.China)
     println(l)
     Helper.executeCommandH(tokenc, "BUYARTILLERY", 5, 1, null)
     g = I.getBoardForToken(tokenc)
@@ -32,7 +31,7 @@ class Test16  extends FunSuite {
     prod = getProductionForCity(g,Civilization.China,P(5,1))
     println(prod)
     // check again
-    l = allowedCommands(g, Civilization.China)
+    l = allowedCommandsH(g, Civilization.China)
     println(l)
     assert(l.find(_ == Command.BUYARTILLERY).isEmpty)
     assert(l.find(_ == Command.SPENDTRADE).isEmpty)
@@ -44,7 +43,7 @@ class Test16  extends FunSuite {
     var g: GameBoard = I.getBoardForToken(token)
     println(g.resources.resou.table)
     assert(2 == g.resources.resou.nof(Resource.Iron))
-    var l: Seq[Command.T] = allowedCommands(g, Civilization.Rome)
+    var l: Seq[Command.T] = allowedCommandsH(g, Civilization.Rome)
     println(l)
     assert(l.find(_ == Command.HARVESTRESOURCE).isDefined)
     val s : String = II.itemizeCommand(token,"HARVESTRESOURCE")
@@ -53,7 +52,7 @@ class Test16  extends FunSuite {
     assert(3 == a.value.length)
     Helper.executeCommandH(token, "HARVESTRESOURCE", 2, 2, """{ "row" : 2,"col" : 3}""")
     g = I.getBoardForToken(token)
-    l= allowedCommands(g, Civilization.Rome)
+    l= allowedCommandsH(g, Civilization.Rome)
     println(l)
     assert(l.find(_ == Command.HARVESTRESOURCE).isEmpty)
     val reso = g.playerDeck(Civilization.Rome).resou
@@ -74,7 +73,7 @@ class Test16  extends FunSuite {
     val ma : MapSquareP = getSquare(g,P(6,2))
     println(ma)
     assert(HutVillage.Hut == ma.s.hv.get.hv)
-    var l: Seq[Command.T] = allowedCommands(g, Civilization.Rome)
+    var l: Seq[Command.T] = allowedCommandsH(g, Civilization.Rome)
     println(l)
     // scout, cannot explore
     assert(l.find(_ == Command.EXPLOREHUT).isEmpty)
@@ -87,7 +86,7 @@ class Test16  extends FunSuite {
     val ma : MapSquareP = getSquare(g,P(6,2))
     println(ma)
     assert(HutVillage.Hut == ma.s.hv.get.hv)
-    var l: Seq[Command.T] = allowedCommands(g, Civilization.Rome)
+    var l: Seq[Command.T] = allowedCommandsH(g, Civilization.Rome)
     println(l)
     // army can explore
     assert(l.find(_ == Command.EXPLOREHUT).isDefined)

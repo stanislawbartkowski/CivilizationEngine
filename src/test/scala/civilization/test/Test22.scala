@@ -1,7 +1,6 @@
 package civilization.test
 
 import civilization.gameboard.{GameBoard, _}
-import civilization.helper.AllowedCommands.allowedCommands
 import civilization.helper._
 import civilization.io.fromjson.{ImplicitMiximFromJson, toJ}
 import civilization.io.readdir._
@@ -47,7 +46,7 @@ class Test22 extends FunSuite with ImplicitMiximFromJson {
     val reg = Helper.readBoardAndPlayT("test22/BOARDGAME2.json", "test22/PLAY3.json", Civilization.Germany)
     val token: String = reg._1
     var gg: GameBoard = I.getBoardForToken(token)
-    var l = allowedCommands(gg, Civilization.Germany)
+    var l = allowedCommandsH(gg, Civilization.Germany)
     println(l)
     assert(l.find(_ == Command.BUYWONDER).isDefined)
     val ss = II.itemizeCommand(token, "BUYWONDER")
@@ -96,7 +95,7 @@ class Test22 extends FunSuite with ImplicitMiximFromJson {
     var gg: GameBoard = I.getBoardForToken(token)
     val mab: MapSquareP = getSquare(gg, P(2, 2))
     println(mab)
-    var l = allowedCommands(gg, Civilization.Spain)
+    var l = allowedCommandsH(gg, Civilization.Spain)
     println(l)
     assert(l.find(_ == Command.BUYWONDER).isDefined)
     val ss = II.getData(II.GETBOARDGAME, token)
@@ -175,7 +174,7 @@ class Test22 extends FunSuite with ImplicitMiximFromJson {
       """{"p":{"row":3,"col":3},"wonder":"Stonehenge"}"""
     Helper.executeCommandH(token, "BUYWONDER", 2, 2, c)
     gg = I.getBoardForToken(token)
-    var l = allowedCommands(gg, Civilization.Spain)
+    var l = allowedCommandsH(gg, Civilization.Spain)
     println(l)
     assert(l.find(_ == Command.BUYWONDER).isEmpty)
     assert(l.find(_ == Command.BUYBUILDING).isEmpty)

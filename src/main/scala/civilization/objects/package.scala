@@ -16,6 +16,7 @@ package object objects {
   val CULTURECITY = 1
   val CULTURECAPITAL = 1
   val DEFAULTCITYLIMIT = 2
+  val DEFAULTTRAVELSPPED = 2
 
   case class GameConfig(val ironincreasedefend: Boolean)
 
@@ -28,6 +29,8 @@ package object objects {
   }
 
   case class HVResource(val hv: Option[HutVillage.T], val resource: Resource.T)
+
+  case class HVResourceCiv(resource: HVResource, civ: Option[Civilization.T])
 
   case class Tokens(val numofTrade: Int, val numofProduction: Int, val numofCulture: Int, val numofBattle: Int, val numofCoins: Int)
 
@@ -45,8 +48,6 @@ package object objects {
   }
 
   case class P(val row: Int, val col: Int) {
-    //    >def +(that: P) = row == that.row && col == that.col
-
     def empty: Boolean = row == -1 && col == -1
   }
 
@@ -72,6 +73,8 @@ package object objects {
   object Resource extends Enumeration {
     type T = Value
     val Wheat, Silk, Incense, Iron, Coin, Spy, Uranium, Culture = Value
+    def isMarketResource(t : Value) : Boolean =
+      return (t == Silk || t == Wheat || t == Incense || t == Iron)
   }
 
   object Terrain extends Enumeration {

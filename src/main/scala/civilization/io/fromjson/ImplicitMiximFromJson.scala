@@ -11,7 +11,6 @@ trait ImplicitMiximFromJson {
 
   implicit def toInt(j: JsValue): Int = j.as[Int]
 
-
   implicit val gameBuildingsReads: Reads[BuildingsResources] = new Reads[BuildingsResources] {
     def reads(json: JsValue): JsResult[BuildingsResources] = {
       val r: BuildingsResources = new BuildingsResources()
@@ -60,6 +59,8 @@ trait ImplicitMiximFromJson {
   implicit def toHVResource(j : JsValue) : HVResource = j.as[HVResource]
 
   implicit def toHVResourceSeq(j : JsValue) : Seq[HVResource] = j.as[Seq[HVResource]]
+
+  implicit def toHVResourceDic(j : JsValue) : HVResourceCiv = j.as[HVResourceCiv]
 
   implicit def toSeqP(j : JsValue) : Seq[P] = j.as[Seq[P]]
 

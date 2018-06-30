@@ -2,7 +2,6 @@ package civilization.test
 
 import civilization.I
 import civilization.gameboard.GameBoard
-import civilization.helper.AllowedCommands.allowedCommands
 import civilization.helper._
 import civilization.io.fromjson._
 import civilization.io.tojson.ImplicitMiximToJson
@@ -10,6 +9,7 @@ import civilization.objects.{Civilization, Command, _}
 import civilization.test.Helper.{II, getBoardAndRegister}
 import org.scalatest.FunSuite
 import play.api.libs.json.{JsArray, JsValue}
+import Helper._
 
 
 class Test28 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJson {
@@ -20,7 +20,7 @@ class Test28 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
     val gg = getBoardAndRegister("test28/GAMEBOARD1.json", Civilization.America)
     val g: GameBoard = gg._2
     val token: String = gg._1
-    val pl: PlayerLimits = getLimits(g, Civilization.America)
+    val pl: PlayerLimits = getLimitsH(g, Civilization.America)
     println(pl.tradeforProd)
     assert(pl.tradeforProd == 3)
     assert(pl.prodfortrade == 2)
@@ -57,7 +57,7 @@ class Test28 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
     val reg = Helper.readBoardAndPlayT("test28/GAMEBOARD2.json", "test28/PLAY2.json", Civilization.America)
     val token = reg._1
     var gg = I.getBoardForToken(token)
-    val pl: PlayerLimits = getLimits(gg, Civilization.America)
+    val pl: PlayerLimits = getLimitsH(gg, Civilization.America)
     println(pl.handsize)
     // Masonry defaultHandSize
     assert(pl.handsize == 2)
@@ -65,7 +65,7 @@ class Test28 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
     assert(pl.stackinglimit == 3)
     println(getProductionForCity(gg, Civilization.America, P(2, 2)))
     // allowed commands
-    var l = allowedCommands(gg, Civilization.America)
+    var l = allowedCommandsH(gg, Civilization.America)
     println(l)
     // in a single city
     assert(l contains Command.BUYCITYWALL)
@@ -103,7 +103,7 @@ class Test28 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
     val token: String = II.getData(II.REGISTEROWNER, "China")
     println(token)
     var gg = I.getBoardForToken(token)
-    var l = allowedCommands(gg, Civilization.China)
+    var l = allowedCommandsH(gg, Civilization.China)
     println(l)
     val ss = II.itemizeCommand(token, "SETCAPITAL")
     println(ss)
@@ -154,7 +154,7 @@ class Test28 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
     println(culture1)
     // battle lost, no culture increase
     assert(culture == culture1)
-    var l = allowedCommands(gg, Civilization.China)
+    var l = allowedCommandsH(gg, Civilization.China)
     println(l)
     assert(l contains Command.STARTMOVE)
     assert(l contains Command.ENDOFPHASE)
@@ -191,7 +191,7 @@ class Test28 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
     val culture1 = gg.playerDeck(Civilization.China).resou.nof(Resource.Culture)
     println(culture1)
     assert(culture1 == culture + 3)
-    var l = allowedCommands(gg, Civilization.China)
+    var l = allowedCommandsH(gg, Civilization.China)
     println(l)
     assert(l contains Command.STARTMOVE)
     assert(l contains Command.ENDOFPHASE)

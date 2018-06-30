@@ -23,8 +23,8 @@ object SetCityAction extends CommandPackage with ImplicitMiximFromJson with Impl
         if (!mapp.t.tile.civhome || mapp.t.tile.civ.get != deck.civ)
           return Some(Mess(M.CAPITALCANBEBUILDONLYONHOMETILE, p))
       case Command.SETCITY => {
-        if (getLimits(board, deck.civ).citieslimit == 0) return Some(Mess(M.CITYLIMITEXCEEDED))
-        if (!mapp.s.figures.civOccupying(deck.civ) || mapp.s.figures.numberofScouts == 0) return Some(Mess(M.CITYSHOULDBEBUILDONSCOUT, p))
+        if (getLimits(board, deck).citieslimit == 0) return Some(Mess(M.CITYLIMITEXCEEDED))
+        if (!mapp.s.figures.civOccupying(deck) || mapp.s.figures.numberofScouts == 0) return Some(Mess(M.CITYSHOULDBEBUILDONSCOUT, p))
       }
     }
     isSquareForCity(board, p, deck.civ)
@@ -36,7 +36,7 @@ object SetCityAction extends CommandPackage with ImplicitMiximFromJson with Impl
       verifySetCity(board, deck, p, command).getOrElse(null)
     }
 
-    private def setcitycommandexecute(board: GameBoard, civ: Civilization.T, p: P, command: Command.T) = {
+    private def setcitycommandexecute(board: GameBoard, deck : PlayerDeck, p: P, command: Command.T) = {
       val sq: MapSquareP = getSquare(board, p)
       // build city
       if (command == Command.SETCAPITAL) {
@@ -69,8 +69,8 @@ object SetCityAction extends CommandPackage with ImplicitMiximFromJson with Impl
           // checkFinalPoint
 
           val moveto: Option[P] = squaresAround(board, p).
-            filter(po => isSquareForFigure(board, civ, Figure.Army, po.p).isEmpty &&
-              checkFinalPoint(board, civ, po, f).isEmpty).
+            filter(po => isSquareForFigure(board, deck, Figure.Army, po.p).isEmpty &&
+              checkFinalPoint(board, deck, po, f).isEmpty).
             map(_.p).headOption
 
           if (moveto.isDefined) {
@@ -84,7 +84,7 @@ object SetCityAction extends CommandPackage with ImplicitMiximFromJson with Impl
 
 
     override def execute(board: GameBoard) = {
-      setcitycommandexecute(board, civ, p, command)
+      setcitycommandexecute(board, deck, p, command)
       if (command == Command.SETCITY) advanceCultureForFree(board,civ,isExecute)
     }
 

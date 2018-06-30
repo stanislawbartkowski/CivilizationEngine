@@ -12,4 +12,6 @@ object TechnologyFeatures {
 
   def buyCityWall(tech : TechnologyName.T) : Boolean = tech == TechnologyName.Masonry
 
+  def speedLimit(tech : TechnologyName.T) : Int = if (tech == TechnologyName.HorsebackRiding) 3 else 0
+
 }

@@ -17,6 +17,6 @@ class EndOfTradeAction extends AbstractCommand1(TurnPhase.Trade, 0) {
 
   override def execute(board: gameboard.GameBoard): Unit = {
     // keep the trade at the end of Trade phase
-    param1 = numberofTradeCalculate(board, civ).trade
+    param1 = numberofTradeCalculate(board, deck).trade
   }
 }

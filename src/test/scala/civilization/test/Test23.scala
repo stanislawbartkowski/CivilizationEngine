@@ -16,7 +16,7 @@ class Test23 extends FunSuite with ImplicitMiximFromJson {
     val reg = Helper.readBoardAndPlayT("test23/BOARDGAME1.json", "test23/PLAY1.json", Civilization.Germany)
     val token: String = reg._1
     var gg: GameBoard = I.getBoardForToken(token)
-    val e = getCoins(gg, Civilization.Germany)
+    val e = getCoins(gg, gg.playerDeck(Civilization.Germany))
     println(e)
     assert(e.squares == 1)
     assert(e.coins == 1)
@@ -26,7 +26,7 @@ class Test23 extends FunSuite with ImplicitMiximFromJson {
     val reg = Helper.readBoardAndPlayT("test23/BOARDGAME1.json", "test23/PLAY2.json", Civilization.Germany)
     val token: String = reg._1
     var gg: GameBoard = I.getBoardForToken(token)
-    val e = getCoins(gg, Civilization.Germany)
+    val e = getCoins(gg, gg.playerDeck(Civilization.Germany))
     println(e)
     assert(e.squares == 1)
     assert(e.coins == 1)
@@ -49,7 +49,7 @@ class Test23 extends FunSuite with ImplicitMiximFromJson {
     val p = getProductionForCity(gg, Civilization.Spain, P(2, 2))
     println(p)
     assert(p.prod == 4)
-    val t: TradeForCiv = numberofTrade(gg, Civilization.Spain)
+    val t: TradeForCiv = numberofTradeH(gg, Civilization.Spain)
     println(t)
     // buidling shoud be included
     assert(t.trade == 5)

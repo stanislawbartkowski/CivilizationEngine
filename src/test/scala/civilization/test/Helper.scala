@@ -2,30 +2,31 @@ package civilization.test
 
 import civilization.I.CurrentGame
 import civilization.I.executeCommand
-import civilization.RR
-import civilization.gameboard.GameBoard
+import civilization.gameboard.{GameBoard, PlayerDeck}
 import civilization.io.readdir.{readGameBoard, readPlay, readTestJSON}
 import civilization.message.{FatalError, Mess}
-import civilization.objects.{CommandValues, _}
+import civilization.objects.{Civilization, CommandValues, _}
 import play.api.libs.json._
 import civilization.io.fromjson.toJ
 import civilization.II.factory._
+import civilization.helper.AllowedCommands.allowedCommands
+import civilization.helper._
 
 object Helper {
 
 
-//  RR.setConnection("localhost", 6379, 1)
+  //  RR.setConnection("localhost", 6379, 1)
   //    R.setConnection("redis://localhost:6379")
-//  civilization.I.setR(RR.RA)
+  //  civilization.I.setR(RR.RA)
   val II = Factory.getI
   val RA = Factory.getR
   RA.getConn.setConnection("localhost", 6379, 1)
   II.setR(RA)
 
   def I = {
-//    RR.setConnection("localhost", 6379, 1)
+    //    RR.setConnection("localhost", 6379, 1)
     //    R.setConnection("redis://localhost:6379")
-//    civilization.I.setR(RR.RA)
+    //    civilization.I.setR(RR.RA)
   }
 
   def getBoard(path: String): GameBoard = {
@@ -47,7 +48,7 @@ object Helper {
   }
 
   private def executeC(gb: (CurrentGame, GameBoard), com: CommandValues) = {
-    val m: Mess = executeCommand(gb, com,true)
+    val m: Mess = executeCommand(gb, com, true)
     if (m != null) throw new FatalError(m)
   }
 
@@ -57,7 +58,7 @@ object Helper {
     val token: String = gg._1
     val p: Seq[CommandValues] = getPlay(playPath)
     val game: CurrentGame = RA.getCurrentGame(token)
-    p.foreach(co =>  executeC((game, g), co))
+    p.foreach(co => executeC((game, g), co))
     (token, g)
   }
 
@@ -72,24 +73,34 @@ object Helper {
     return (token, ctoken)
   }
 
-  private def e(token: String, action: String, row: Int, col: Int, jsparam: String) : String = {
-    val s : String = II.executeCommand(token,action,row,col,jsparam)
+  def getLimitsH(gg: GameBoard, civ: Civilization.T): PlayerLimits = getLimits(gg, gg.playerDeck(civ))
+
+  def allowedCommandsH(gg: GameBoard, civ: Civilization.T): Seq[Command.T] = allowedCommands(gg, gg.playerDeck(civ))
+
+  def numberofTradeCalculateH(b: GameBoard, civ: Civilization.T): TradeForCivCalculate =
+    numberofTradeCalculate(b, b.playerDeck(civ))
+
+  def numberofTradeH(b: GameBoard, civ: Civilization.T): TradeForCiv =
+    numberofTrade(b, b.playerDeck(civ))
+
+  private def e(token: String, action: String, row: Int, col: Int, jsparam: String): String = {
+    val s: String = II.executeCommand(token, action, row, col, jsparam)
     if (s != null) println(s)
     s
   }
 
   def executeCommandH(token: String, action: String, row: Int, col: Int, jsparam: String = null): Unit = {
-    assert (e(token,action,row,col,jsparam) == null)
+    assert(e(token, action, row, col, jsparam) == null)
   }
 
   def executeCommandFail(token: String, action: String, row: Int, col: Int, jsparam: String): Unit = {
-    assert (e(token,action,row,col,jsparam) != null)
+    assert(e(token, action, row, col, jsparam) != null)
   }
 
   // TEST, battle
 
   def getBattle(j: JsValue): JsValue =
-    (j \ "board"\ "battle").get
+    (j \ "board" \ "battle").get
 
 
   def checkendofgame(j: JsValue, expected: Boolean): Unit = {
@@ -104,7 +115,7 @@ object Helper {
     assert(expected == t)
   }
 
-  def verifyiron(token : String, canuse : Boolean): Unit = {
+  def verifyiron(token: String, canuse: Boolean): Unit = {
     val s = II.getData(II.GETBOARDGAME, token)
     val js: JsValue = toJ(s)
     val batt: JsValue = (js \ "board" \ "battle").get
@@ -114,11 +125,11 @@ object Helper {
     val canuseiron = (attacker \ "canuseiron").as[Boolean]
     println(canuseiron)
     // can use iron
-    assert (canuseiron == canuse)
+    assert(canuseiron == canuse)
 
   }
 
-  def getB(token : String) = {
+  def getB(token: String) = {
     val s = II.getData(II.GETBOARDGAME, token)
     toJ(s)
   }
@@ -136,13 +147,13 @@ object Helper {
     assert(p == phase)
   }
 
-  def jyou(j : JsValue) : JsValue =
-     (j \ "board" \ "you").as[JsValue]
+  def jyou(j: JsValue): JsValue =
+    (j \ "board" \ "you").as[JsValue]
 
-  def jmap(j : JsValue) : JsArray =
+  def jmap(j: JsValue): JsArray =
     (j \ "board" \ "map").as[JsArray]
 
-  def jresources(j : JsValue) : JsArray =
+  def jresources(j: JsValue): JsArray =
     (j \ "board" \ "resources").as[JsArray]
 
 }

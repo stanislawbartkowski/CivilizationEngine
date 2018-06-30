@@ -2,13 +2,12 @@ package civilization.test
 
 import civilization.I._
 import civilization.gameboard.GameBoard
-import civilization.helper.AllowedCommands.allowedCommands
 import civilization.helper.SetFigureAction.itemizeForSetBuyFigures
 import civilization.io.fromjson.{toJ, _}
 import civilization.objects._
 import org.scalatest.FunSuite
 import play.api.libs.json.{JsValue, _}
-import Helper.II
+import Helper._
 
 
 class Test8 extends FunSuite {
@@ -18,7 +17,7 @@ class Test8 extends FunSuite {
   test("Execute command, check available") {
     val token: String = II.getData(REGISTEROWNER, "Germany")
     var g: GameBoard = getBoardForToken(token);
-    var l: Seq[Command.T] = allowedCommands(g, Civilization.Germany)
+    var l: Seq[Command.T] = allowedCommandsH(g, Civilization.Germany)
     println(l)
     assert(!l.isEmpty)
     assert(Command.SETCAPITAL == l.head)
@@ -29,13 +28,13 @@ class Test8 extends FunSuite {
     Helper.executeCommandH(token, "SETSCOUT", 2, 2, js)
     Helper.executeCommandH(token, "SETARMY", 2, 2, js)
     g = getBoardForToken(token);
-    l = allowedCommands(g, Civilization.Germany)
+    l = allowedCommandsH(g, Civilization.Germany)
     println(l)
     assert(l.find(_ == Command.ENDOFPHASE).isDefined)
     s = executeCommand(token, "ENDOFPHASE", 2, 2, "\"StartOfTurn\"")
     println(s)
     assert(s == null)
-    l = allowedCommands(g, Civilization.Germany)
+    l = allowedCommandsH(g, Civilization.Germany)
     println(l)
     assert(l.find(_ == Command.ENDOFPHASE).isDefined)
   }
@@ -45,7 +44,7 @@ class Test8 extends FunSuite {
     var g: GameBoard = getBoardForToken(token);
     var s: String = executeCommand(token, "SETCAPITAL", 2, 2, null)
     g = getBoardForToken(token);
-    var l: Seq[Command.T] = allowedCommands(g, Civilization.Germany)
+    var l: Seq[Command.T] = allowedCommandsH(g, Civilization.Germany)
     println(l)
     assert(l.find(_ == Command.SETSCOUT).isDefined)
     assert(l.find(_ == Command.SETARMY).isDefined)
@@ -53,14 +52,14 @@ class Test8 extends FunSuite {
     println(s)
     assert(s == null)
     g = getBoardForToken(token);
-    l = allowedCommands(g, Civilization.Germany)
+    l = allowedCommandsH(g, Civilization.Germany)
     println(l)
     assert(l.find(_ == Command.SETSCOUT).isDefined)
     assert(l.find(_ == Command.SETARMY).isEmpty)
     s = executeCommand(token, "SETSCOUT", 2, 2, "{\"col\" : 1, \"row\" : 1}")
     println(s)
     g = getBoardForToken(token);
-    l = allowedCommands(g, Civilization.Germany)
+    l = allowedCommandsH(g, Civilization.Germany)
     println(l)
     assert(l.find(_ == Command.SETSCOUT).isEmpty)
     assert(l.find(_ == Command.SETARMY).isEmpty)
@@ -73,9 +72,9 @@ class Test8 extends FunSuite {
     println(s)
     assert(s == null)
     g = getBoardForToken(token);
-    var l: Seq[Command.T] = allowedCommands(g, Civilization.Rome)
+    var l: Seq[Command.T] = allowedCommandsH(g, Civilization.Rome)
     println(l)
-    var a: Seq[(P, P)] = itemizeForSetBuyFigures(g, Civilization.Rome, Command.SETARMY)
+    var a: Seq[(P, P)] = itemizeForSetBuyFigures(g, g.playerDeck(Civilization.Rome), Command.SETARMY)
     println(a)
     assert(a.length == 6)
     assert(a.find(_._2 == P(0, 3)).isEmpty)

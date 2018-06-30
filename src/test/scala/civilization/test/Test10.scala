@@ -2,7 +2,6 @@ package civilization.test
 
 import civilization.I.{CurrentGame, II, WaitingGames, executeCommand}
 import civilization.gameboard.GameBoard
-import civilization.helper.AllowedCommands.allowedCommands
 import civilization.io.fromjson.toJ
 import civilization.objects._
 import civilization.{I, RR}
@@ -10,6 +9,7 @@ import org.scalatest.FunSuite
 import org.scalatest.Matchers._
 import play.api.libs.json.{JsArray, JsValue}
 import Helper.{II,RA}
+import Helper._
 
 
 class Test10 extends FunSuite {
@@ -85,10 +85,10 @@ class Test10 extends FunSuite {
     println(gameid)
     val ctoken: String = II.joinGame(gameid, "China")
     val b: GameBoard = I.getBoardForToken(token)
-    var a: Seq[Command.T] = allowedCommands(b, Civilization.Rome)
+    var a: Seq[Command.T] = allowedCommandsH(b, Civilization.Rome)
     println(a)
     assert(a.contains(Command.SETCAPITAL))
-    a = allowedCommands(b, Civilization.China)
+    a = allowedCommandsH(b, Civilization.China)
     println(a)
 //    assert(a.contains(Command.SETCAPITAL))
     assert(a.isEmpty)
@@ -133,11 +133,11 @@ class Test10 extends FunSuite {
     val tokeng = c._1
     val tokenc = c._2
     val b: GameBoard = I.getBoardForToken(tokenc)
-    var a: Seq[Command.T] = allowedCommands(b, Civilization.Rome)
+    var a: Seq[Command.T] = allowedCommandsH(b, Civilization.Rome)
     println(a)
     assert(!a.contains(Command.SETCAPITAL))
     assert(a.contains(Command.SETARMY))
-    a = allowedCommands(b, Civilization.China)
+    a = allowedCommandsH(b, Civilization.China)
     assert(!a.contains(Command.SETCAPITAL))
     assert(!a.contains(Command.SETARMY))
   }
@@ -147,9 +147,9 @@ class Test10 extends FunSuite {
     val tokeng = c._1
     val tokenc = c._2
     val b: GameBoard = I.getBoardForToken(tokenc)
-    var a: Seq[Command.T] = allowedCommands(b, Civilization.Rome)
+    var a: Seq[Command.T] = allowedCommandsH(b, Civilization.Rome)
     println(a)
-    a = allowedCommands(b, Civilization.China)
+    a = allowedCommandsH(b, Civilization.China)
     println(a)
   }
 

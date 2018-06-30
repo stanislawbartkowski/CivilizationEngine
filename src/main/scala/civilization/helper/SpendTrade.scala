@@ -13,25 +13,25 @@ object SpendTrade extends CommandPackage with ImplicitMiximFromJson with Implici
 
   override def getSet: Set[Command.T] = Set(Command.SPENDTRADE, Command.UNDOSPENDTRADE)
 
-  private def itemizeCommandsForSpendTrade(b : gameboard.GameBoard, civ:Civilization.T) : Seq[P] = {
-    var trade = numberofTrade(b, civ)
-    val li: PlayerLimits = getLimits(b, civ)
+  private def itemizeCommandsForSpendTrade(b: gameboard.GameBoard, deck: PlayerDeck): Seq[P] = {
+    var trade = numberofTrade(b, deck)
+    val li: PlayerLimits = getLimits(b, deck)
     if (trade.trade < li.tradeforProd) return Nil
-    CityAvailableForAction(b, civ)
+    CityAvailableForAction(b, deck)
   }
 
-  private def itemizeCommandsForUndoSpendTrade(b : gameboard.GameBoard, civ:Civilization.T) : Seq[P] = {
-    val trSet : Set[P] = spendProdForCities(b,civ).filter(p => p._2 > 0).map(_._1) toSet
-    val avSet : Set[P] = CityAvailableForAction(b, civ) toSet
-    val res : Set[P] =  (trSet & avSet)
+  private def itemizeCommandsForUndoSpendTrade(b: gameboard.GameBoard, civ: Civilization.T): Seq[P] = {
+    val trSet: Set[P] = spendProdForCities(b, civ).filter(p => p._2 > 0).map(_._1) toSet
+    val avSet: Set[P] = CityAvailableForAction(b, civ) toSet
+    val res: Set[P] = (trSet & avSet)
     res.toSeq
   }
 
-  protected class SpendTrade(override val param: Integer) extends AbstractCommand(param) {
+  protected class SpendTrade(override val param: Int) extends AbstractCommand(param) {
 
     override def verify(board: gameboard.GameBoard): message.Mess = {
-      val trade: TradeForCiv = numberofTrade(board, civ)
-      val li: PlayerLimits = getLimits(board, civ)
+      val trade: TradeForCiv = numberofTrade(board, deck)
+      val li: PlayerLimits = getLimits(board, deck)
       if (li.prodForTrade(param) > trade.trade) return Mess(M.NOTENOUGHTRADETOSPENDFORPROD, (command, trade.trade))
       null
     }
@@ -41,9 +41,9 @@ object SpendTrade extends CommandPackage with ImplicitMiximFromJson with Implici
   }
 
   override def produceCommand(command: Command.T, civ: Civilization.T, p: P, param: JsValue) =
-    if (command == Command.SPENDTRADE) new SpendTrade (toInt(param)) else emptyCommand()
+    if (command == Command.SPENDTRADE) new SpendTrade(toInt(param)) else emptyCommand()
 
-  override def itemizePP(b: GameBoard, deck : PlayerDeck, com: Command.T): Seq[P] = {
-    if (com == Command.SPENDTRADE) itemizeCommandsForSpendTrade(b,deck.civ) else itemizeCommandsForUndoSpendTrade(b,deck.civ)
+  override def itemizePP(b: GameBoard, deck: PlayerDeck, com: Command.T): Seq[P] = {
+    if (com == Command.SPENDTRADE) itemizeCommandsForSpendTrade(b, deck) else itemizeCommandsForUndoSpendTrade(b, deck.civ)
   }
 }

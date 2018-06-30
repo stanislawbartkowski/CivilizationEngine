@@ -4,7 +4,6 @@ import civilization.I.{CurrentGame, executeCommand}
 import civilization.{I, RR}
 import civilization.gameboard.GameBoard
 import civilization.gameboard._
-import civilization.helper.AllowedCommands.allowedCommands
 import civilization.helper._
 import civilization.io.fromjson.toJ
 import org.scalatest.FunSuite
@@ -14,7 +13,7 @@ import civilization.io.readdir._
 import civilization.io.fromjson.ImplicitMiximFromJson
 import civilization.io.readdir.GenBoard.genBoard
 import civilization.io.readdir.GameResources
-import Helper.{II,RA}
+import Helper._
 
 
 class Test20 extends FunSuite with ImplicitMiximFromJson {
@@ -103,7 +102,7 @@ class Test20 extends FunSuite with ImplicitMiximFromJson {
     println(gameid)
     val ctoken: String = II.joinGame(gameid, Civilization.China.toString)
     val g: GameBoard = I.getBoardForToken(token)
-    var l: Seq[Command.T] = allowedCommands(g, Civilization.Rome)
+    var l: Seq[Command.T] = allowedCommandsH(g, Civilization.Rome)
     println(l)
     val i: String = II.itemizeCommand(token, "SETCAPITAL")
     val j: JsValue = toJ(i)
@@ -128,11 +127,11 @@ class Test20 extends FunSuite with ImplicitMiximFromJson {
     println(gameid)
     val ctoken: String = II.joinGame(gameid, Civilization.China.toString)
     val g: GameBoard = I.getBoardForToken(token)
-    var l: Seq[Command.T] = allowedCommands(g, Civilization.Rome)
+    var l: Seq[Command.T] = allowedCommandsH(g, Civilization.Rome)
     // allowed commands for Rome
     println(l)
     assert(l.find(_ == Command.SETCAPITAL).isDefined)
-    l = allowedCommands(g, Civilization.China)
+    l = allowedCommandsH(g, Civilization.China)
     // allowed commands for Rome
     println(l)
     assert(l.isEmpty)
@@ -201,7 +200,7 @@ class Test20 extends FunSuite with ImplicitMiximFromJson {
     Helper.executeCommandH(token, "ENDOFPHASE", -1, -1, """"CityManagement"""")
     Helper.executeCommandH(token, "ENDOFPHASE", -1, -1, """"Movement"""")
     g = I.getBoardForToken(token)
-    var l = allowedCommands(g, Civilization.Rome)
+    var l = allowedCommandsH(g, Civilization.Rome)
     // allowed commands for Rome
     println(l)
     // research enabled
@@ -212,14 +211,14 @@ class Test20 extends FunSuite with ImplicitMiximFromJson {
     val reg = Helper.readBoardAndPlayT("test20/BOARDGAME2.json", "test20/PLAY2.json", Civilization.America)
     val token: String = reg._1
     var g: GameBoard = I.getBoardForToken(token)
-    var l: Seq[Command.T] = allowedCommands(g, Civilization.America)
+    var l: Seq[Command.T] = allowedCommandsH(g, Civilization.America)
     println(l)
     assert(l.find(_ == Command.RESEARCH).isDefined)
     val t = techologyLevel(g, g.playerDeck(Civilization.America))
     println(t)
     // level 1 although trade 12, not place for 2 level technology
     assert(t == 1)
-    val trade = numberofTrade(g, Civilization.America)
+    val trade = numberofTradeH(g, Civilization.America)
     println(trade.trade)
     assert(trade.trade == 12)
   }
@@ -228,14 +227,14 @@ class Test20 extends FunSuite with ImplicitMiximFromJson {
     val reg = Helper.readBoardAndPlayT("test20/BOARDGAME2.json", "test20/PLAY2.json", Civilization.America)
     val token: String = reg._1
     var g: GameBoard = I.getBoardForToken(token)
-    var l: Seq[Command.T] = allowedCommands(g, Civilization.America)
+    var l: Seq[Command.T] = allowedCommandsH(g, Civilization.America)
     println(l)
     assert(l.find(_ == Command.RESEARCH).isDefined)
     //    com = constructCommand(Command.RESEARCH, Civilization.Germany, null, toJ("\"HorsebackRiding\""))
     Helper.executeCommandH(token, "RESEARCH", -1, -1, "\"HorsebackRiding\"")
     g = I.getBoardForToken(token)
     // again commands
-    l = allowedCommands(g, Civilization.America)
+    l = allowedCommandsH(g, Civilization.America)
     println(l)
     assert(l.find(_ == Command.RESEARCH).isEmpty)
   }
@@ -245,7 +244,7 @@ class Test20 extends FunSuite with ImplicitMiximFromJson {
     val tokena: String = reg._1
     val tokene: String = reg._2
     var g: GameBoard = I.getBoardForToken(tokena)
-    var l: Seq[Command.T] = allowedCommands(g, Civilization.Arabs)
+    var l: Seq[Command.T] = allowedCommandsH(g, Civilization.Arabs)
     println(l)
     assert(l.find(_ == Command.RESEARCH).isEmpty)
   }
@@ -255,11 +254,11 @@ class Test20 extends FunSuite with ImplicitMiximFromJson {
     val tokena: String = reg._1
     val tokenr: String = reg._2
     var g: GameBoard = I.getBoardForToken(tokena)
-    var l: Seq[Command.T] = allowedCommands(g, Civilization.America)
+    var l: Seq[Command.T] = allowedCommandsH(g, Civilization.America)
     // endofresearch issued for America
     println(l)
     assert(l.find(_ == Command.RESEARCH).isEmpty)
-    l = allowedCommands(g, Civilization.Russia)
+    l = allowedCommandsH(g, Civilization.Russia)
     // end of research issued for America
     println(l)
     assert(l.find(_ == Command.RESEARCH).isDefined)

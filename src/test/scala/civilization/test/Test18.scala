@@ -2,13 +2,12 @@ package civilization.test
 
 import civilization.I
 import civilization.gameboard.GameBoard
-import civilization.helper.AllowedCommands.allowedCommands
 import civilization.helper.{MapSquareP, getSquare}
 import civilization.io.fromjson.toJ
 import civilization.io.tojson.ImplicitMiximToJson
 import civilization.objects._
 import org.scalatest.FunSuite
-import Helper.II
+import Helper._
 
 
 class Test18 extends FunSuite with ImplicitMiximToJson {
@@ -42,7 +41,7 @@ class Test18 extends FunSuite with ImplicitMiximToJson {
     assert(gg.playerDeck(Civilization.America).units.isEmpty)
     // no battle
     assert(gg.battle.isEmpty)
-    val l = allowedCommands(gg, Civilization.America)
+    val l = allowedCommandsH(gg, Civilization.America)
     println(l)
     assert(l.filter(_ == Command.MOVE).isEmpty)
     assert(l.filter(_ == Command.ENDOFMOVE).isEmpty)

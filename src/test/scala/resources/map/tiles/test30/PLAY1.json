@@ -90,6 +90,7 @@
 {"command":"ENDOFPHASE","civ":"Germany","p":null,"param":"Trade"},
 {"command":"BUYSCOUT","civ":"Germany","p":{"row":1,"col":1},"param":{"row":2,"col":1}},
 {"command":"CURRENCYACTION","civ":"Germany","p":{"row":4,"col":1},"param":{"resource":"Incense"}},
+{"command":"GET3CULTURE","civ":"Germany","p":null,"param":null},
 {"command":"ADVANCECULTURE","civ":"Germany","p":null,"param":null},
 {"command":"CULTURECARD","civ":"Germany","p":null,"param":"WeLovetheDespotDay"},
 {"command":"ENDOFPHASE","civ":"Germany","p":null,"param":"CityManagement"},

@@ -3,7 +3,6 @@ package civilization.test
 import civilization.I
 import civilization.I.executeCommand
 import civilization.gameboard.GameBoard
-import civilization.helper.AllowedCommands.allowedCommands
 import civilization.helper._
 import civilization.io.fromjson._
 import civilization.io.tojson.ImplicitMiximToJson
@@ -11,6 +10,7 @@ import civilization.objects.{Civilization, Command, _}
 import civilization.test.Helper.{II, getBoardAndRegister}
 import org.scalatest.FunSuite
 import play.api.libs.json.{JsArray, JsValue}
+import Helper._
 
 
 class Test31 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJson {
@@ -21,21 +21,21 @@ class Test31 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
     val token: String = II.getData(II.REGISTEROWNER, "Russia")
     println(token)
     var gg = I.getBoardForToken(token)
-    var l = allowedCommands(gg, Civilization.Russia)
+    var l = allowedCommandsH(gg, Civilization.Russia)
     println(l)
     var ite = II.getData(II.ITEMIZECOMMAND, token, "SETCAPITAL")
     println(ite)
     Helper.executeCommandH(token, "SETCAPITAL", 2, 2)
 
     gg = I.getBoardForToken(token)
-    l = allowedCommands(gg, Civilization.Russia)
+    l = allowedCommandsH(gg, Civilization.Russia)
     println(l)
     ite = II.getData(II.ITEMIZECOMMAND, token, "SETARMY")
     println(ite)
     Helper.executeCommandH(token, "SETARMY", 2, 2, "{\"col\" : 2, \"row\" : 1}")
 
     gg = I.getBoardForToken(token)
-    l = allowedCommands(gg, Civilization.Russia)
+    l = allowedCommandsH(gg, Civilization.Russia)
     println(l)
     // set army twice
     assert(l contains Command.SETARMY)
@@ -43,11 +43,11 @@ class Test31 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
 
     // again check
     gg = I.getBoardForToken(token)
-    l = allowedCommands(gg, Civilization.Russia)
+    l = allowedCommandsH(gg, Civilization.Russia)
     println(l)
     // army limit exceeded
     assert(!(l contains Command.SETARMY))
-    val li = getLimits(gg, Civilization.Russia)
+    val li = getLimitsH(gg, Civilization.Russia)
     println(li.stackinglimit)
     // for Russia is 3
     assert(li.stackinglimit == 3)
@@ -62,7 +62,7 @@ class Test31 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
     val tokenR = reg._1
     val tokenA = reg._2
     var gg = I.getBoardForToken(tokenR)
-    var l = allowedCommands(gg, Civilization.Russia)
+    var l = allowedCommandsH(gg, Civilization.Russia)
     println(l)
     assert(l contains Command.SACRIFICEFIGUREFORTECH)
     val s = II.getData(II.GETBOARDGAME, tokenR)
@@ -88,12 +88,175 @@ class Test31 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
     // is tech added
     println(gg.playerDeck(Civilization.Russia).tech)
     assert(gg.playerDeck(Civilization.Russia).tech.map(_.tech) contains TechnologyName.Logistics)
-    l = allowedCommands(gg, Civilization.Russia)
+    l = allowedCommandsH(gg, Civilization.Russia)
     println(l)
     // cannot sacrifice more figures
     assert(!(l contains Command.SACRIFICEFIGUREFORTECH))
+  }
+
+  test("Spain start bonus") {
+    val token: String = II.getData(II.REGISTEROWNER, "Spain")
+    println(token)
+    var gg = I.getBoardForToken(token)
+    var l = allowedCommandsH(gg, Civilization.Spain)
+    println(l)
+    var ite = II.getData(II.ITEMIZECOMMAND, token, "SETCAPITAL")
+    println(ite)
+    Helper.executeCommandH(token, "SETCAPITAL", 2, 2)
+
+    gg = I.getBoardForToken(token)
+    l = allowedCommandsH(gg, Civilization.Spain)
+    println(l)
+    ite = II.getData(II.ITEMIZECOMMAND, token, "SETARMY")
+    println(ite)
+    Helper.executeCommandH(token, "SETARMY", 2, 2, "{\"col\" : 2, \"row\" : 1}")
+
+    gg = I.getBoardForToken(token)
+    l = allowedCommandsH(gg, Civilization.Spain)
+    println(l)
+    assert(!(l contains Command.SETARMY))
+    assert(l contains Command.SETSCOUT)
+    Helper.executeCommandH(token, "SETSCOUT", 2, 2, "{\"col\" : 2, \"row\" : 1}")
+
+    // scout again
+    gg = I.getBoardForToken(token)
+    l = allowedCommandsH(gg, Civilization.Spain)
+    println(l)
+    assert(!(l contains Command.SETARMY))
+    assert(l contains Command.SETSCOUT)
+    Helper.executeCommandH(token, "SETSCOUT", 2, 2, "{\"col\" : 3, \"row\" : 3}")
+    gg = I.getBoardForToken(token)
+    l = allowedCommandsH(gg, Civilization.Spain)
+    println(l)
+    // no more scouts and armies
+    assert(!(l contains Command.SETARMY))
+    assert(!(l contains Command.SETSCOUT))
+
+    // check travel speed
+    val li = getLimitsH(gg, Civilization.Spain)
+    println(li.travelSpeed)
+    assert(li.travelSpeed == 3)
+  }
+
+  test("Spain, free builiding after revealing the tile") {
+    val reg = Helper.readBoardAndPlayT("test31/BOARDGAME2.json", "test31/PLAY2.json", Civilization.Spain)
+    val token = reg._1
+    var gg = I.getBoardForToken(token)
+    var l = allowedCommandsH(gg, Civilization.Spain)
+    println(l)
+    assert(l contains Command.FREENONUPGRADEDBUILDING)
+    var ite = II.getData(II.ITEMIZECOMMAND, token, "FREENONUPGRADEDBUILDING")
+    val jite = toJ(ite).as[JsArray]
+    println(jite)
+    val ele : JsValue = jite.value.head
+    println(ele)
+    val li : JsArray = (ele \ "list").as[JsArray]
+    println(li)
+    var cathe : Boolean = false
+    // check if not upgraded
+    li.value.foreach(e => {
+      val b = (e \ "building").as[String]
+      println(b)
+      if (b == "Cathedral") cathe = true
+    })
+    assert(!cathe)
+
+    val c =
+      """{"p":{"row":1,"col":1},"building":"Market"}"""
+    Helper.executeCommandH(token, "FREENONUPGRADEDBUILDING", 2, 2, c)
+    gg = I.getBoardForToken(token)
+    l = allowedCommandsH(gg, Civilization.Spain)
+    println(l)
+    assert(!(l contains Command.FREENONUPGRADEDBUILDING))
+
+    val s = getSquare(gg,P(1,1))
+    println(s)
+    assert(s.s.building.get.name == BuildingName.Market)
+
+    ite = II.getData(II.ITEMIZECOMMAND, token, "REVEALTILE")
+    println(ite)
+    // reveal
+    Helper.executeCommandH(token, "REVEALTILE", 1, 0, """ "Down" """)
+
+    gg = I.getBoardForToken(token)
+    l = allowedCommandsH(gg, Civilization.Spain)
+    println(l)
+    assert(l contains Command.FREENONUPGRADEDBUILDING)
+  }
+
+  test("Spain, free builiding after revealing the tile again") {
+    val reg = Helper.readBoardAndPlayT("test31/BOARDGAME2.json", "test31/PLAY3.json", Civilization.Spain)
+    val token = reg._1
+    var gg = I.getBoardForToken(token)
+    var l = allowedCommandsH(gg, Civilization.Spain)
+    println(l)
+    assert(l contains Command.FREENONUPGRADEDBUILDING)
+  }
+
+  test("Arabs start bonus, free resources") {
+    val token: String = II.getData(II.REGISTEROWNER, "Arabs")
+    println(token)
+    var gg = I.getBoardForToken(token)
+    val deck = gg.playerDeck(Civilization.Arabs)
+    println(deck.resou.table)
+    assert(deck.resou.nof(Resource.Iron) == 1)
+    assert(deck.resou.nof(Resource.Silk) == 1)
+    assert(deck.resou.nof(Resource.Incense) == 1)
+    assert(deck.resou.nof(Resource.Wheat) == 1)
+    // removed from market
+    assert(gg.resources.resou.nof(Resource.Iron) == 0)
+  }
+
+  test("Arabs, spend resources") {
+    val reg = Helper.readBoardAndPlayT("test31/BOARDGAME4.json", "test31/PLAY4.json", Civilization.Arabs)
+    val token = reg._1
+    var gg = I.getBoardForToken(token)
+    var l = allowedCommandsH(gg, Civilization.Arabs)
+    println(l)
+    assert(l contains Command.POTTERYACTION)
+    val pa = """ [{"resource":"Incense"},{"resource":"Iron"}] """
+    // {"command":"POTTERYACTION","civ":"Arabs","p":{"row":2,"col":2},"param":[{"resource":"Incense"},{"resource":"Iron"}]}
+    Helper.executeCommandH(token, "POTTERYACTION", 2, 2, pa)
+    gg = I.getBoardForToken(token)
+    val cu = gg.playerDeck(Civilization.Arabs).resou.nof(Resource.Culture)
+    println(cu)
+    assert(cu == 2)
+  }
+
+  test("Arabs start bonus, verify military level") {
+    val token: String = II.getData(II.REGISTEROWNER, "Arabs")
+    println(token)
+    var gg = I.getBoardForToken(token)
+    val pl = gg.playerDeck(Civilization.Arabs)
+    println(pl.tech)
+    assert(pl.tech.length == 1)
+    val t = pl.tech.head
+    println(t)
+    assert(t.initial.isDefined)
+    val s= pl.combatlevel.getStrength(CombatUnitType.Artillery)
+    // artillery strength = 1
+    assert(s == 1)
+  }
+
+  test("Technology HorseBackRiding") {
+    val reg = Helper.readBoardAndPlayT("test31/BOARDGAME5.json", "test31/PLAY5.json", Civilization.Arabs)
+    val token = reg._1
+    var gg = I.getBoardForToken(token)
+    val limi = getLimitsH(gg,Civilization.Arabs)
+    println(limi)
+    println(limi.travelSpeed)
+    // HorseBack Riding, speed 3
+    assert(limi.travelSpeed == 3)
+    var l = allowedCommandsH(gg, Civilization.Arabs)
+    println(l)
+    assert(l contains Command.USESILKFORTRADE9)
+    val cu = currentPhase(gg)
+    println(cu)
+    val tra1 = numberofTradeH(gg, Civilization.Arabs)
+    println(tra1.trade)
+    val ite = II.getData(II.ITEMIZECOMMAND, token, "USESILKFORTRADE9")
+    println(ite)
+
 
   }
 }
-
-

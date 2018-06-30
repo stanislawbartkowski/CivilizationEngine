@@ -12,7 +12,7 @@ object BattleActions {
     var battleforce: Int = UNITSBATTLE
     // barbarians village
     if (m.s.hvhere) return (battleforce, None)
-    val civ : Civilization.T = m.civHere.get
+    val civ : PlayerDeck = b.playerDeck(m.civHere.get)
     val li: PlayerLimits = getLimits(b, civ)
     // increase for city
     if (m.s.cityhere) battleforce = battleforce + 3
@@ -33,7 +33,7 @@ object BattleActions {
     else {
       // civilization, draw units for battle
       val pl: PlayerDeck = b.playerDeck(n._2.get)
-      val nounits = Math.min(pl.units.length, n._1)
+      val nounits = math.min(pl.units.length, n._1)
       u = getRandom(pl.units, nounits)._1
     }
     u
@@ -52,14 +52,14 @@ object BattleActions {
     val att: MapSquareP = getSquare(b, ba._1)
     val defe: MapSquareP = getSquare(b, ba._2)
     if (defe.s.hvhere) return Nil
-    var civloser: Civilization.T = att.civHere.get
-    if (b.battle.get.attackerwinner) civloser = defe.civHere.get
+    var civloser: PlayerDeck = b.playerDeck(att.civHere.get)
+    if (b.battle.get.attackerwinner) civloser = b.playerDeck(defe.civHere.get)
     // construct loot list
     var loot: Seq[WinnerLoot] = Nil
     val t: TradeForCiv = numberofTrade(b, civloser)
     if (t.trade > 0) loot = List(WinnerLoot(None, None, true, false))
     // hut
-    val pl: PlayerDeck = b.playerDeck(civloser)
+    val pl: PlayerDeck = civloser
     if (pl.hvlist.find(_.hv == HutVillage.Hut).isDefined)
       loot = loot :+ WinnerLoot(Some(HutVillage.Hut), None, false, false)
     // village

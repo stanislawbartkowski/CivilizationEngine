@@ -26,6 +26,16 @@ object CivilizationFeatures {
 
   def numberofArmiesToStart(civ : Civilization.T) : Int = if (civ == Civilization.Russia) 2 else 1
 
+  def numberofScoutsToStart(civ : Civilization.T) : Int = if (civ == Civilization.Spain) 2 else 1
+
   def canSacrificeFigureForTech(civ : Civilization.T) : Boolean = civ == Civilization.Russia
+
+  def increaseTravelSpeedByOne(civ : Civilization.T) : Boolean = civ == Civilization.Spain
+
+  def freeBuilidingAfterRevealTile(civ : Civilization.T) : Boolean = civ == Civilization.Spain
+
+  def freeResourcesAtStart(civ : Civilization.T) : Boolean = civ == Civilization.Arabs
+
+  def freeCultureForResourceSpend(civ : Civilization.T) : Boolean = civ == Civilization.Arabs
 
 }

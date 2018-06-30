@@ -8,7 +8,7 @@ import civilization.message._
 import civilization.objects._
 import org.scalatest.FunSuite
 import play.api.libs.json.JsValue
-import Helper.II
+import Helper._
 
 
 class Test5 extends FunSuite {
@@ -20,7 +20,7 @@ class Test5 extends FunSuite {
     assert(isCapitalBuild(b, Civilization.Germany))
     assert(citiesForCivilization(b, Civilization.Germany).length == 1)
     //    squaresAround(b,P(2,2)).foreach(println)
-    val num: Int = numberofTrade(b, Civilization.Germany).trade
+    val num: Int = numberofTradeH(b, Civilization.Germany).trade
     println(num)
     assert(num == 6)
     // try to set figure

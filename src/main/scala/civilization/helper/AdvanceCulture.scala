@@ -25,12 +25,11 @@ object AdvanceCulture extends CommandPackage with ImplicitMiximFromJson with Imp
     throw FatalError(Mess(M.CULTURELEVELEXCCEED, (cult, culturetrack(last).last + 1)))
   }
 
-  private def advanceCulture(b: GameBoard, civ: Civilization.T): Option[CultureTrackCost] = {
-    val pl: PlayerDeck = b.playerDeck(civ)
-    val cost: CultureTrackCost = getCultureCost(pl.cultureprogress + 1)
+  private def advanceCulture(b: GameBoard, deck: PlayerDeck): Option[CultureTrackCost] = {
+    val cost: CultureTrackCost = getCultureCost(deck.cultureprogress + 1)
     // verify if can afford
-    if (cost.culture > pl.resou.nof(Resource.Culture)) return None
-    val trade: TradeForCiv = numberofTrade(b, civ)
+    if (cost.culture > deck.resou.nof(Resource.Culture)) return None
+    val trade: TradeForCiv = numberofTrade(b, deck)
     if (cost.trade > trade.trade) return None
     Some(cost)
   }
@@ -65,18 +64,17 @@ object AdvanceCulture extends CommandPackage with ImplicitMiximFromJson with Imp
   protected class AdvanceCulture extends AbstractCommandNone {
 
     override def verify(board: gameboard.GameBoard): message.Mess = {
-      val c: Option[CultureTrackCost] = advanceCulture(board, civ)
+      val c: Option[CultureTrackCost] = advanceCulture(board, deck)
       if (c.isDefined) return null
       Mess(M.CANNOTAFFORDADVANCECULTURE)
     }
 
     override def execute(board: gameboard.GameBoard): Unit = {
-      val cul: CultureTrackCost = advanceCulture(board, civ).get
-      val pl: PlayerDeck = board.playerDeck(civ)
-      pl.resou.decr(Resource.Culture, cul.culture)
+      val cul: CultureTrackCost = advanceCulture(board, deck).get
+      deck.resou.decr(Resource.Culture, cul.culture)
       // keep culture cost for future deduction of trade
       param1 = cul
-      advanceCulture(board, pl, isExecute)
+      advanceCulture(board, deck, isExecute)
     }
   }
 
@@ -84,14 +82,14 @@ object AdvanceCulture extends CommandPackage with ImplicitMiximFromJson with Imp
     override def verify(board: GameBoard): Mess = null
 
     override def execute(board: GameBoard): Unit =
-      board.playerDeck(civ).cultureresource.cards = board.playerDeck(civ).cultureresource.cards :+ param
+      deck.cultureresource.cards = deck.cultureresource.cards :+ param
   }
 
   protected class TakeGreatPerson(override val param: GreatPersonName.T) extends AbstractCommand(param) {
     override def verify(board: GameBoard): Mess = null
 
     override def execute(board: GameBoard): Unit =
-      board.playerDeck(civ).cultureresource.persons = board.playerDeck(civ).cultureresource.persons :+ param
+      deck.cultureresource.persons = deck.cultureresource.persons :+ param
   }
 
 
@@ -101,10 +99,7 @@ object AdvanceCulture extends CommandPackage with ImplicitMiximFromJson with Imp
       case Command.ADVANCECULTUREFORFREE => new AbstractCommandNone() {
         override def verify(board: GameBoard): Mess = null
 
-        override def execute(board: GameBoard): Unit = {
-          val pl: PlayerDeck = board.playerDeck(civ)
-          advanceCulture(board, pl, isExecute)
-        }
+        override def execute(board: GameBoard): Unit = advanceCulture(board, deck, isExecute)
       }
       case Command.CULTURECARD => new TakeCultureCard(param)
       case Command.GREATPERSON => new TakeGreatPerson(param)
@@ -112,14 +107,13 @@ object AdvanceCulture extends CommandPackage with ImplicitMiximFromJson with Imp
         override def verify(board: GameBoard): Mess = null
 
         override def execute(board: GameBoard): Unit = {
-          val pl: PlayerDeck = board.playerDeck(civ)
-          pl.resou.incr(Resource.Culture, if (command == Command.GET3CULTURE) 3 else 1)
+          deck.resou.incr(Resource.Culture, if (command == Command.GET3CULTURE) 3 else 1)
         }
       }
     }
 
-  override def itemize(b: GameBoard, deck : PlayerDeck, com: Command.T): Seq[JsValue] = {
-    val c: Option[CultureTrackCost] = advanceCulture(b, deck.civ)
+  override def itemize(b: GameBoard, deck: PlayerDeck, com: Command.T): Seq[JsValue] = {
+    val c: Option[CultureTrackCost] = advanceCulture(b, deck)
     if (c.isEmpty) Nil
     else writeCultureCost(Seq(c.get))
   }

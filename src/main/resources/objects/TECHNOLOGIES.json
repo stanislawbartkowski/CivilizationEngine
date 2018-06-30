@@ -277,10 +277,9 @@
   },
   {
     "name": "Logistics",
-    "ni" : true,
     "level": 2,
     "units" : { "level" : 2},
-    "desc" : ""
+    "desc" : "Upgrade you unit to 2 level"
   },
 
   {

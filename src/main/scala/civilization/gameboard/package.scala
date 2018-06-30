@@ -233,7 +233,6 @@ package object gameboard {
     val defaultarmieslimit: Int = 6
     val defaultscoutslimit: Int = 2
     val defaultculturehandsize: Int = 2
-    val defaulttravelspeed: Int = 2
     val combatlevel: CombatUnitStrength = CombatUnitStrength()
     var hvlist: Seq[HutVillage] = Nil
     def hasTechnology(te : TechnologyName.T) : Boolean = tech.find(_.tech == te ).isDefined
@@ -245,6 +244,8 @@ package object gameboard {
     // number of free resources to take, can be 3 for Navigation
     var takefreeResources : Int = 0
   }
+
+  implicit def playerDeckToCiv(deck : PlayerDeck) : Civilization.T = deck.civ
 
   case class Market(var units: Seq[CombatUnit], var killedunits: Seq[CombatUnit], val buildings: BuildingsResources, var wonders: Seq[Wonders.T])
 
@@ -338,6 +339,11 @@ package object gameboard {
     def rotateplorder: Unit = if (!norotate) pllist = rotaterightList(pllist)
 
     def addForcedCommand(com: Command) = forcednext = forcednext :+ com
+
+    def addForcedCommandC(command: Command.T, civ: Civilization.T, p: P = null, param: JsValue = null) = {
+      val commandC = action.constructCommand(command, civ, p,param)
+      addForcedCommand(commandC)
+    }
 
     def playerDeck(civ: Civilization.T): PlayerDeck =
       // assuming exist

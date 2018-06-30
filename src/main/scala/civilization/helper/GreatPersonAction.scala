@@ -16,8 +16,8 @@ object GreatPersonAction extends CommandPackage with ImplicitMiximFromJson with 
 
   override def getSet: Set[Command.T] = Set(Command.GREATPERSONPUTNOW, Command.GREATPERSONPUTNOWRESIGN, Command.GREATPERSONPUT)
 
-  private def possibleGreatPersons(gp: Seq[GreatPersonName.T])(b: GameBoard, civ: Civilization.T, city: P): Seq[BuildSquare] = {
-    getOutskirtsForBuild(b, civ, city).flatMap(pp => gp.map(g =>
+  private def possibleGreatPersons(gp: Seq[GreatPersonName.T])(b: GameBoard, deck: PlayerDeck, city: P): Seq[BuildSquare] = {
+    getOutskirtsForBuild(b, deck.civ, city).flatMap(pp => gp.map(g =>
       BuildSquare.BuildSquare(BuildingPoint(pp.p, None, None, Some(g)), getStructureHere(pp))
     ))
   }
@@ -26,7 +26,7 @@ object GreatPersonAction extends CommandPackage with ImplicitMiximFromJson with 
 
     override def verify(board: gameboard.GameBoard): message.Mess = {
       def f: PossibleP = possibleGreatPersons(Seq(param.g))
-      verifyB(board, civ, p, param, message.M.CANNOTPUTGREATPERSONHERE, f)
+      verifyB(board, deck, p, param, message.M.CANNOTPUTGREATPERSONHERE, f)
     }
 
     override def execute(board: gameboard.GameBoard): Unit = {
@@ -50,10 +50,10 @@ object GreatPersonAction extends CommandPackage with ImplicitMiximFromJson with 
       l = Seq(gp.get)
       if (com == Command.GREATPERSONPUTNOWRESIGN) return l
     }
-    else l = greatPersonReady(b,deck.civ)
+    else l = greatPersonReady(b,deck)
     // curry function
     def f: PossibleP = possibleGreatPersons(l)
-    itemizeB(b, deck.civ, true, f)
+    itemizeB(b, deck, true, f)
   }
 
 }

@@ -1,7 +1,6 @@
 package civilization.test
 
 import civilization.I
-import civilization.helper.AllowedCommands.allowedCommands
 import civilization.helper._
 import civilization.io.fromjson._
 import civilization.io.tojson.ImplicitMiximToJson
@@ -9,6 +8,7 @@ import civilization.objects.{Civilization, _}
 import civilization.test.Helper.II
 import org.scalatest.FunSuite
 import play.api.libs.json.{JsArray, JsValue}
+import Helper._
 
 
 class Test26 extends FunSuite with ImplicitMiximToJson {
@@ -20,7 +20,7 @@ class Test26 extends FunSuite with ImplicitMiximToJson {
     val reg = Helper.readBoardAndPlayT("test26/BOARDGAME1.json", "test26/PLAY1.json", Civilization.Egypt)
     val token = reg._1
     val gg = I.getBoardForToken(token)
-    var l = allowedCommands(gg, Civilization.Egypt)
+    var l = allowedCommandsH(gg, Civilization.Egypt)
     println(l)
     // pottery action already consumed
     assert(!(l contains Command.POTTERYACTION))
@@ -102,7 +102,7 @@ class Test26 extends FunSuite with ImplicitMiximToJson {
     val reg = Helper.readBoardAndPlayT("test26/BOARDGAME8.json", "test26/PLAY8.json", Civilization.Spain)
     val token = reg._1
     val gg = I.getBoardForToken(token)
-    val l = allowedCommands(gg, Civilization.Spain)
+    val l = allowedCommandsH(gg, Civilization.Spain)
     println(l)
     val ss = II.itemizeCommand(token, "MOVE")
     val j: JsArray = (toJ(ss) \  "moves").as[JsArray]
@@ -135,7 +135,7 @@ class Test26 extends FunSuite with ImplicitMiximToJson {
     assert(handsize == 2)
     val travelspeed = (ju \ "travelspeed").as[Int]
     println(travelspeed)
-    assert(travelspeed == 2)
+    assert(travelspeed == 3)
     val stacklimit = (ju \ "stacklimit").as[Int]
     println(stacklimit)
     assert(stacklimit == 2)
@@ -146,7 +146,7 @@ class Test26 extends FunSuite with ImplicitMiximToJson {
     val reg = Helper.readBoardAndPlayT("test26/BOARDGAME10.json", "test26/PLAY10.json", Civilization.Russia)
     val token = reg._1
     val gg = I.getBoardForToken(token)
-    val limits = getLimits(gg,Civilization.Russia)
+    val limits = getLimitsH(gg,Civilization.Russia)
     println(limits)
     // irrigation
     println(limits.citieslimit)

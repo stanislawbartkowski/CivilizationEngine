@@ -2,7 +2,6 @@ package civilization.test
 
 import civilization.I.{II, _}
 import civilization.gameboard.{Figures, GameBoard}
-import civilization.helper.AllowedCommands.allowedCommands
 import civilization.helper._
 import civilization.helper.move.MoveItemize
 import civilization.io.fromjson._
@@ -10,9 +9,7 @@ import civilization.objects._
 import org.scalatest.FunSuite
 import play.api.libs.json._
 import civilization.helper.move.MoveItemize.{PossibleMove, itemizeForMove}
-import Helper.II
-
-
+import Helper._
 
 class Test9 extends FunSuite {
 
@@ -27,12 +24,12 @@ class Test9 extends FunSuite {
     assert(cu.turnPhase == TurnPhase.CityManagement)
     val prod: Int = getProductionForCity(b,  Civilization.Rome, P(1, 2)).prod
     println(prod)
-    var l: Seq[Command.T] = allowedCommands(b, Civilization.Rome)
+    var l: Seq[Command.T] = allowedCommandsH(b, Civilization.Rome)
     println(l)
     var s: String = executeCommand(token, "BUYARMY", 1, 2, "{\"col\" : 2, \"row\" : 2}")
     assert(s == null)
     b = getBoardForToken(token)
-    l = allowedCommands(b, Civilization.Rome)
+    l = allowedCommandsH(b, Civilization.Rome)
     println(l)
     // only end of phase
     assert(l.find(_ == Command.BUYSCOUT).isEmpty)
@@ -58,7 +55,7 @@ class Test9 extends FunSuite {
     }))
     assert(foundArmy)
     assert(foundScout)
-    val a: Seq[Command.T] = allowedCommands(b, Civilization.Rome)
+    val a: Seq[Command.T] = allowedCommandsH(b, Civilization.Rome)
     println(a)
 
   }
@@ -66,7 +63,7 @@ class Test9 extends FunSuite {
   test("Execute command, movement start") {
     var b: GameBoard = Helper.readBoardAndPlay("test9/BOARDGAME1.json", "test9/GAME2.json", Civilization.Rome)
     val token: String = registerGame(b, Civilization.Rome);
-    val a: Seq[Command.T] = allowedCommands(b, Civilization.Rome)
+    val a: Seq[Command.T] = allowedCommandsH(b, Civilization.Rome)
     println(a)
     assert(a.find(_ == Command.STARTMOVE).isDefined)
     var i: Seq[(Figures, P)] = MoveItemize.itemizeforStartOfMove(b, Civilization.Rome)
@@ -79,7 +76,7 @@ class Test9 extends FunSuite {
   test("Execute command, movement started") {
     var b: GameBoard = Helper.readBoardAndPlay("test9/BOARDGAME1.json", "test9/GAME3.json", Civilization.Rome)
     val token: String = registerGame(b, Civilization.Rome);
-    var a: Seq[Command.T] = allowedCommands(b, Civilization.Rome)
+    var a: Seq[Command.T] = allowedCommandsH(b, Civilization.Rome)
     println(a)
     assert(a.find(_ == Command.MOVE).isDefined)
     assert(a.find(_ == Command.ENDOFMOVE).isDefined)
@@ -88,7 +85,7 @@ class Test9 extends FunSuite {
     println(s)
     assert(s == null)
     b = getBoardForToken(token)
-    a = allowedCommands(b, Civilization.Rome)
+    a = allowedCommandsH(b, Civilization.Rome)
     println(a)
     assert(a.find(_ == Command.MOVE).isDefined)
     // does not contains end of move, cannot stop in city
@@ -98,7 +95,7 @@ class Test9 extends FunSuite {
     println(s)
     assert(s == null)
     b = getBoardForToken(token)
-    a = allowedCommands(b, Civilization.Rome)
+    a = allowedCommandsH(b, Civilization.Rome)
     println(a)
     assert(a.find(_ == Command.MOVE).isEmpty)
     assert(a.find(_ == Command.ENDOFMOVE).isDefined)
@@ -108,7 +105,7 @@ class Test9 extends FunSuite {
     assert(s == null)
     // next point
     b = getBoardForToken(token)
-    a = allowedCommands(b, Civilization.Rome)
+    a = allowedCommandsH(b, Civilization.Rome)
     println(a)
     // start armie
     // { "numberofArmies" : 0, "numberofScouts" : 1}
@@ -122,7 +119,7 @@ class Test9 extends FunSuite {
     s = II.itemizeCommand(token, "MOVE")
     println(s)
     b = getBoardForToken(token)
-    val o: Option[PossibleMove] = itemizeForMove(b, Civilization.Rome)
+    val o: Option[PossibleMove] = itemizeForMove(b, b.playerDeck(Civilization.Rome))
     println(o.get.move)
     assert(o.get.move.find(_ == P(0, 1)).isDefined)
     assert(o.get.move.find(_ == P(2, 1)).isDefined)
@@ -137,12 +134,12 @@ class Test9 extends FunSuite {
   test("Execute command, next movements") {
     var b: GameBoard = Helper.readBoardAndPlay("test9/BOARDGAME1.json", "test9/GAME4.json", Civilization.Rome)
     val token: String = registerGame(b, Civilization.Rome)
-    var a: Seq[Command.T] = allowedCommands(b, Civilization.Rome)
+    var a: Seq[Command.T] = allowedCommandsH(b, Civilization.Rome)
     println(a)
     assert(a.find(_ == Command.MOVE).isDefined)
     assert(a.find(_ == Command.ENDOFMOVE).isDefined)
     assert(a.find(_ == Command.REVEALTILE).isDefined)
-    var o: Option[PossibleMove] = itemizeForMove(b, Civilization.Rome)
+    var o: Option[PossibleMove] = itemizeForMove(b, b.playerDeck(Civilization.Rome))
     println(o.get.move)
     println(o.get.reveal)
     assert(o.get.reveal.length == 1)
@@ -162,12 +159,12 @@ class Test9 extends FunSuite {
     val last: Seq[PlayerMove] = civLastMoves(b, Civilization.Rome)
     println(last)
     assert(last.last.lastp == P(3, 1))
-    o = itemizeForMove(b, Civilization.Rome)
+    o = itemizeForMove(b, b.playerDeck(Civilization.Rome))
     // only end of move
     assert(o.get.endofmove)
     //    println(o.get.move)
     //    println(o.get.reveal)
-    a = allowedCommands(b, Civilization.Rome)
+    a = allowedCommandsH(b, b.playerDeck(Civilization.Rome))
     println(a)
     // only end of move
     assert(a.length == 1 && a.head == Command.ENDOFMOVE)
@@ -175,7 +172,7 @@ class Test9 extends FunSuite {
     s = executeCommand(token, "ENDOFMOVE", -1, -1, null)
     assert(s == null)
     b = getBoardForToken(token)
-    a = allowedCommands(b, Civilization.Rome)
+    a = allowedCommandsH(b, Civilization.Rome)
     println(a)
     // start move
     assert(a.find(_ == Command.STARTMOVE).isDefined)
@@ -186,7 +183,7 @@ class Test9 extends FunSuite {
     println(s)
     assert(s == null)
     b = getBoardForToken(token)
-    a = allowedCommands(b, Civilization.Rome)
+    a = allowedCommandsH(b, Civilization.Rome)
     println(a)
     // not REVEALTIME, is revealed already
     assert(a.find(_ == Command.REVEALTILE).isEmpty)
@@ -199,7 +196,7 @@ class Test9 extends FunSuite {
   test("Execute command, set up next city") {
     var b: GameBoard = Helper.readBoardAndPlay("test9/BOARDGAME1.json", "test9/GAME5.json", Civilization.Rome)
     val token: String = registerGame(b, Civilization.Rome)
-    var a: Seq[Command.T] = allowedCommands(b, Civilization.Rome)
+    var a: Seq[Command.T] = allowedCommandsH(b, Civilization.Rome)
     println(a)
     assert(a.find(_ == Command.SETCITY).isDefined)
     var s: String = executeCommand(token, "SETCITY", 4, 2, null)
@@ -208,7 +205,7 @@ class Test9 extends FunSuite {
     val ci: Seq[MapSquareP] = citiesForCivilization(b, Civilization.Rome)
     println(ci)
     assert(ci.length == 2)
-    var trade: Int = numberofTrade(b, Civilization.Rome).trade
+    var trade: Int = numberofTradeH(b, Civilization.Rome).trade
     println(trade)
     assert(14 == trade )
     val figures: Seq[MapSquareP] = getFigures(b, Civilization.Rome)
@@ -224,14 +221,14 @@ class Test9 extends FunSuite {
   test("Execute command, two city actions") {
     var b: GameBoard = Helper.readBoardAndPlay("test9/BOARDGAME1.json", "test9/GAME6.json", Civilization.Rome)
     val token: String = registerGame(b, Civilization.Rome)
-    var a: Seq[Command.T] = allowedCommands(b, Civilization.Rome)
+    var a: Seq[Command.T] = allowedCommandsH(b, Civilization.Rome)
     println(a)
     var s: String = executeCommand(token, "BUYARMY", 1, 2, "{\"col\" : 2, \"row\" : 2}")
     assert(s == null)
     s = executeCommand(token, "BUYSCOUT", 4, 2, "{\"col\" : 2, \"row\" : 5}")
     assert(s == null)
     b = getBoardForToken(token)
-    a = allowedCommands(b, Civilization.Rome)
+    a = allowedCommandsH(b, Civilization.Rome)
     println(a)
     assert(a.length == 1)
   }
@@ -257,7 +254,7 @@ class Test9 extends FunSuite {
   test("Execute command, revealtime itemize") {
     var b: GameBoard = Helper.readBoardAndPlay("test9/BOARDGAME1.json", "test9/GAME4.json", Civilization.Rome)
     val token: String = registerGame(b, Civilization.Rome)
-    var a: Seq[Command.T] = allowedCommands(b, Civilization.Rome)
+    var a: Seq[Command.T] = allowedCommandsH(b, Civilization.Rome)
     println(a)
     // get reveal itemized
     val s: String = II.itemizeCommand(token, "REVEALTILE")
@@ -306,7 +303,7 @@ class Test9 extends FunSuite {
   test("Execute command, check two figures ending on the sampe square and available commands") {
     var b: GameBoard = Helper.readBoardAndPlay("test9/BOARDGAME1.json", "test9/GAME8.json", Civilization.Rome)
     val token: String = registerGame(b, Civilization.Rome)
-    var a: Seq[Command.T] = allowedCommands(b, Civilization.Rome)
+    var a: Seq[Command.T] = allowedCommandsH(b, Civilization.Rome)
     println(a)
     assert(a.find(_ == Command.STARTMOVE).isEmpty)
   }
@@ -316,7 +313,7 @@ class Test9 extends FunSuite {
     val token: String = registerGame(b, Civilization.Rome)
     val js = II.getData(II.LISTOFGAMES)
     println(js)
-    var a: Seq[Command.T] = allowedCommands(b, Civilization.Rome)
+    var a: Seq[Command.T] = allowedCommandsH(b, Civilization.Rome)
     println(a)
   }
 

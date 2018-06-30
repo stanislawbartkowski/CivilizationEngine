@@ -17,22 +17,20 @@ object DiscardCard extends CommandPackage with ImplicitMiximFromJson with Implic
 
   class DiscardCardCommand(override val param: CultureCardName.T) extends AbstractCommand(param) {
     override def verify(board: GameBoard): message.Mess = {
-      val pl: PlayerDeck = board.playerDeck(civ)
-      if (pl.cultureresource.cards.find(_ == param).isDefined) return null
+      if (deck.cultureresource.cards.find(_ == param).isDefined) return null
       return new Mess(M.CULTURECARDNOTINPLAYERHAND,param)
     }
 
     override def execute(board: GameBoard): Unit = {
-      val pl: PlayerDeck = board.playerDeck(civ)
       // remove from player deck
-      pl.cultureresource.cards = pl.cultureresource.cards.filter(_ != param)
+      deck.cultureresource.cards = deck.cultureresource.cards.filter(_ != param)
       // add to board as used
       board.cultureused.cards = board.cultureused.cards :+ param
     }
   }
 
   override def itemize(b: GameBoard, deck : PlayerDeck, com: Command.T): Seq[JsValue] = {
-    val limits: PlayerLimits = getLimits(b, deck.civ)
+    val limits: PlayerLimits = getLimits(b, deck)
     if (deck.cultureresource.cards.length <= limits.handsize) return Nil
     deck.cultureresource.cards
   }

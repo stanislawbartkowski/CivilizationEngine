@@ -8,7 +8,7 @@ import civilization.io.readdir.GenBoard.genBoard
 import civilization.message._
 import civilization.objects._
 import org.scalatest.FunSuite
-import Helper.II
+import Helper._
 
 
 
@@ -18,7 +18,7 @@ class Test6 extends FunSuite {
 
   test("Start game") {
     val b: GameBoard = Helper.readBoardAndPlay("test5/BOARDGAME1.json", "test6/GAME1.json", Civilization.Germany)
-    val trade: Int = numberofTrade(b, Civilization.Germany).trade
+    val trade: Int = numberofTradeH(b, Civilization.Germany).trade
     println(trade)
     var com: Command = constructCommand(Command.RESEARCH, Civilization.Germany, null, toJ("\"Irrigation\""))
     var m: Mess = com.verifyCommand(b)

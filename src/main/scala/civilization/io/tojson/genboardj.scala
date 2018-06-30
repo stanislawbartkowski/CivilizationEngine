@@ -30,7 +30,7 @@ object genboardj {
 
   implicit def plSeqToJ(pl: Seq[PlayerTech]): Seq[JsValue] = pl.map(plToJson)
 
-  case class PlayerDeckJ(civ: Civilization.T, numberofTrade: Int, commands: Seq[Command.T], limits: PlayerLimits, technologylevel: Int, tech: Seq[PlayerTech], pl: PlayerDeck, wonders: Seq[Wonders.T], coins: Int)
+  case class PlayerDeckJ(civ: PlayerDeck, numberofTrade: Int, commands: Seq[Command.T], limits: PlayerLimits, technologylevel: Int, tech: Seq[PlayerTech], pl: PlayerDeck, wonders: Seq[Wonders.T], coins: Int)
 
   case class Game(active: Civilization.T, roundno: Int, phase: TurnPhase.T)
 
@@ -94,11 +94,11 @@ object genboardj {
     citiesForCivilization(g, civ).map(c => pointsAround(g, c.p)).flatten.map(p => getSquare(g, p)).filter(m => m.s.wonder.isDefined).map(m => m.s.wonder.get.w)
 
 
-  private def genPlayerDeckJ(g: GameBoard, civ: Civilization.T): PlayerDeckJ =
+  private def genPlayerDeckJ(g: GameBoard, civ: PlayerDeck): PlayerDeckJ =
     PlayerDeckJ(civ, numberofTrade(g, civ).trade, allowedCommands(g, civ), getLimits(g, civ),
-      techologyLevel(g, g.playerDeck(civ)),
-      g.playerDeck(civ).tech.map(t => PlayerTech(t, g.techlevel(t), t.coins)),
-      g.playerDeck(civ), wondersForPlayers(g, civ),
+      techologyLevel(g, civ),
+      civ.tech.map(t => PlayerTech(t, g.techlevel(t), t.coins)),
+      civ, wondersForPlayers(g, civ),
       getCoins(g, civ).coins)
 
   private def commandToArray(l: Seq[Command.T]): JsArray = {
@@ -131,7 +131,7 @@ object genboardj {
     "cultureresource" -> CultureResourcesToJSon.cultureToJSon(p.pl.cultureresource, you)
   )
 
-  private def genBoardGameJ(g: GameBoard, civ: Civilization.T): BoardGameJ = {
+  private def genBoardGameJ(g: GameBoard, civ: PlayerDeck): BoardGameJ = {
     val p: Seq[MapSquareP] = allSquares(g)
     val maxrow: Int = p.map(_.p.row).max
     val maxcol: Int = p.map(_.p.col).max
@@ -139,7 +139,7 @@ object genboardj {
     // TODO: initialization to null maybe unnecessary, doublecheck
     for (i <- 0 to maxrow; j <- 0 to maxcol) map(i)(j) = null
     p.foreach(ss => map(ss.p.row)(ss.p.col) = contructSquareJ(g, ss))
-    val others: Seq[PlayerDeckJ] = g.players.filter(_.civ != civ).map(c => genPlayerDeckJ(g, c.civ))
+    val others: Seq[PlayerDeckJ] = g.players.filter(_.civ != civ).map(c => genPlayerDeckJ(g, c))
     BoardGameJ(genGame(g, civ), map, genPlayerDeckJ(g, civ), others)
   }
 
@@ -164,7 +164,7 @@ object genboardj {
     Json.toJson(l)
   }
 
-  def genBoardGameJson(g: GameBoard, civ: Civilization.T): JsValue = {
+  def genBoardGameJson(g: GameBoard, civ: PlayerDeck): JsValue = {
     val b: BoardGameJ = genBoardGameJ(g, civ)
     var rows: Seq[JsValue] = Seq()
 
