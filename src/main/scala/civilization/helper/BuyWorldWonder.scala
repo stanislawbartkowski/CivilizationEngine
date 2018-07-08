@@ -99,6 +99,8 @@ object BuyWorldWonder extends CommandPackage with ImplicitMiximFromJson with Imp
     else if (command == Command.RANDOMWONDER) new RandomWonder(param)
     else new BuyWonder(param)
 
-  override def itemize(b: GameBoard, deck : PlayerDeck, com: Command.T): Seq[JsValue] =
+  override def itemize(b: GameBoard, deck : PlayerDeck, com: Command.T): Seq[JsValue] = {
+    if (com == Command.FREEWONDER) if (deck.freeWonder.isEmpty) return Nil
     itemizeB(b, deck, false, possibleWonders)
+  }
 }

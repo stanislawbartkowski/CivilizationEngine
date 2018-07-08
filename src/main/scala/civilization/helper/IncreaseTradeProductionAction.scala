@@ -11,9 +11,9 @@ import civilization.{action, gameboard, message, objects}
 import civilization.objects._
 import play.api.libs.json.JsValue
 
-object IncreaseTradeAction extends CommandPackage with ImplicitMiximFromJson with ImplicitMiximToJson {
+object IncreaseTradeProductionAction extends CommandPackage with ImplicitMiximFromJson with ImplicitMiximToJson {
 
-  override def getSet: Set[Command.T] = Set(Command.INCREASETRADE)
+  override def getSet: Set[Command.T] = Set(Command.INCREASETRADE, Command.INCREASEPRODUCTION, Command.INCREASETRADESTARTOFTURN)
 
   // does nothing, only place holder
   protected class IncreaseTradeAction(override val param: Int) extends AbstractCommand(param) {

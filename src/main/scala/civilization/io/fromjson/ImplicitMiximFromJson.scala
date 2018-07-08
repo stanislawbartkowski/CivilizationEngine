@@ -4,6 +4,7 @@ import civilization.gameboard.{EnumResources, _}
 import civilization.helper._
 import civilization.objects._
 import play.api.libs.json._
+import civilization.io.readdir.Param._
 
 trait ImplicitMiximFromJson {
 

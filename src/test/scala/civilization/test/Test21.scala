@@ -37,7 +37,7 @@ class Test21 extends FunSuite with ImplicitMiximFromJson {
       }
     )
     val beforeb = gg.market.buildings.noB(BuildingName.Temple)
-    val prodbefore: ProdForCity = getProductionForCity(gg, Civilization.America, P(1, 5))
+    val prodbefore: ProdForCity = getProductionForCityH(gg, Civilization.America, P(1, 5))
     // buy building
     val c =
       """{"p":{"row":0,"col":4},"building":"Temple"}"""
@@ -58,7 +58,7 @@ class Test21 extends FunSuite with ImplicitMiximFromJson {
     println(afterb)
     assert(beforeb - 1 == afterb)
     // trade
-    val prodafter: ProdForCity = getProductionForCity(gg, Civilization.America, P(1, 5))
+    val prodafter: ProdForCity = getProductionForCityH(gg, Civilization.America, P(1, 5))
     println(prodbefore)
     println(prodafter)
     // temple: no production

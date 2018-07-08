@@ -83,7 +83,11 @@ object Helper {
   def numberofTradeH(b: GameBoard, civ: Civilization.T): TradeForCiv =
     numberofTrade(b, b.playerDeck(civ))
 
-  private def e(token: String, action: String, row: Int, col: Int, jsparam: String): String = {
+  def getProductionForCityH(b: GameBoard, civ: Civilization.T, p: P): ProdForCity =
+    getProductionForCity(b,b.playerDeck(civ),p)
+
+
+    private def e(token: String, action: String, row: Int, col: Int, jsparam: String): String = {
     val s: String = II.executeCommand(token, action, row, col, jsparam)
     if (s != null) println(s)
     s
@@ -103,7 +107,7 @@ object Helper {
     (j \ "board" \ "battle").get
 
 
-  def checkendofgame(j: JsValue, expected: Boolean): Unit = {
+  def checkendofbattle(j: JsValue, expected: Boolean): Unit = {
     val t: Boolean = (j \ "endofbattle").get.as[Boolean]
     println(t)
     assert(expected == t)
@@ -155,6 +159,6 @@ object Helper {
 
   def jresources(j: JsValue): JsArray =
     (j \ "board" \ "resources").as[JsArray]
-
 }
+
 

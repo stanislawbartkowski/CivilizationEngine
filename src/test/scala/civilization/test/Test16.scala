@@ -21,14 +21,14 @@ class Test16  extends FunSuite {
     val tokenc = c._2
     var g: GameBoard = I.getBoardForToken(tokenc)
     assert(2 == g.market.units.length)
-    var prod = getProductionForCity(g,Civilization.China,P(5,1))
+    var prod = getProductionForCityH(g,Civilization.China,P(5,1))
     println(prod)
     var l: Seq[Command.T] = allowedCommandsH(g, Civilization.China)
     println(l)
     Helper.executeCommandH(tokenc, "BUYARTILLERY", 5, 1, null)
     g = I.getBoardForToken(tokenc)
     assert(1 == g.market.units.length)
-    prod = getProductionForCity(g,Civilization.China,P(5,1))
+    prod = getProductionForCityH(g,Civilization.China,P(5,1))
     println(prod)
     // check again
     l = allowedCommandsH(g, Civilization.China)

@@ -6,7 +6,6 @@
   },
   {
     "name": "Construction",
-    "ni" : true,
     "level": 2,
     "resource" : "Wheat",
     "building" : "Workshop",
@@ -14,9 +13,8 @@
   },
   {
     "name": "MetalCasting",
-    "ni" : true,
     "level": 3,
-    "resource" : "Spy",
+    "resource" : "Incense",
     "units" : {"name" : "Artillery", "level" : 3},
     "desc" : "Incense-CityManagement : Gain 7 culture"
   },
@@ -114,7 +112,6 @@
   },
   {
     "name": "Sailing",
-    "ni" : true,
     "level": 2,
     "desc" : "Movement Speed : 4. You may cross or end your movement in water"
   },
@@ -157,7 +154,6 @@
   },
   {
     "name": "HorsebackRiding",
-    "ni" : true,
     "level": 1,
     "resource" : "Silk",
     "desc" : "Travel Speed : 3, Silk-Trade : Gain 9 trade. Another player of your choice then gains 6 trade."
@@ -179,7 +175,6 @@
   },
   {
     "name": "Philosophy",
-    "ni" : true,
     "level": 1,
     "building" : "Temple",
     "resourceany" : 3,
@@ -193,7 +188,6 @@
   },
   {
     "name": "Navy",
-    "ni" : true,
     "building" : "Shipyard",
     "level": 1,
     "desc" : "Each time you build an army with a city action, you may place that unit in the outskirt of a city with a shipyard"
@@ -240,7 +234,6 @@
   },
   {
     "name": "RailRoad",
-    "ni" : true,
     "level": 3,
     "coin" : 1,
     "building" : "IronMine",
@@ -269,7 +262,6 @@
   },
   {
     "name": "Chivalry",
-    "ni" : true,
     "gover": "Feudalism",
     "level": 2,
     "resource" : "Incense",
@@ -292,7 +284,6 @@
 
   {
     "name": "Banking",
-    "ni": true,
     "level": 3,
     "building" : "Bank",
     "resource" : "Wheat",
@@ -302,7 +293,6 @@
     "name": "Education",
     "ni" : true,
     "level": 3,
-    "resourceany" : 4,
     "desc" : "Once per turn, when you build a wonder, add one coin to this tech (max 4). 4 resources (1 of each)-City Management : Learn a new tech of your choice for free."
   },
   {

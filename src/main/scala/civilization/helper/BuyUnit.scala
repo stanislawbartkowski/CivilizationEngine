@@ -22,7 +22,7 @@ object BuyUnit extends CommandPackage with ImplicitMiximFromJson with ImplicitMi
 
   override def getSet: Set[Command.T] = Set(Command.BUYARTILLERY, Command.BUYAIRCRAFT, Command.BUYMOUNTED, Command.BUYINFANTRY, Command.TAKEUNIT)
 
-  private def itemizeI(b: gameboard.GameBoard, civ: Civilization.T, com: Command.T, limit: PlayerLimits): Seq[P] = {
+  private def itemizeI(b: gameboard.GameBoard, civ: PlayerDeck, com: Command.T, limit: PlayerLimits): Seq[P] = {
     if (com == Command.TAKEUNIT) return Nil
     val u: CombatUnitType.T = toU(com)
     if (u == CombatUnitType.Aircraft && !limit.aircraftUnlocked) return Nil
@@ -32,7 +32,7 @@ object BuyUnit extends CommandPackage with ImplicitMiximFromJson with ImplicitMi
 
   override def itemizePP(b: gameboard.GameBoard, deck : PlayerDeck, com: Command.T): Seq[P] = {
     val limit: PlayerLimits = getLimits(b, deck)
-    itemizeI(b, deck.civ, com, limit)
+    itemizeI(b, deck, com, limit)
   }
 
   protected class BuyUnitAction extends AbstractCommandNone {

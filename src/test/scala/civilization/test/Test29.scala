@@ -29,6 +29,8 @@ class Test29 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
     gg = I.getBoardForToken(token)
     l = allowedCommandsH(gg, Civilization.Egypt)
     println(l)
+    // FREE WONDER not visible
+    assert(l contains Command.FREEWONDER)
     var ite = II.getData(II.ITEMIZECOMMAND, token, "FREEWONDER")
     println(ite)
     val wo = gg.playerDeck(Civilization.Egypt).freeWonder.get

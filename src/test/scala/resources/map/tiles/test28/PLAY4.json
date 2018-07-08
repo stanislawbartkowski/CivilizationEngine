@@ -31,7 +31,7 @@
 {"command":"ENDOFPHASE","civ":"China","p":null,"param":"CityManagement"},
 {"command":"STARTMOVE","civ":"China","p":{"row":2,"col":4},"param":{"numberofArmies":1,"numberofScouts":0}},
 {"command":"EXPLOREHUT","civ":"China","p":{"row":3,"col":4},"param":null},
-{"command":"GET3CULTURE","civ":"China","p":null,"param":null},
+{"command":"GETCULTURE","civ":"China","p":null,"param":3},
 {"command":"STARTMOVE","civ":"China","p":{"row":1,"col":5},"param":{"numberofArmies":0,"numberofScouts":1}},
 {"command":"MOVE","civ":"China","p":{"row":2,"col":5},"param":null},
 {"command":"ENDOFMOVE","civ":"China","p":null,"param":null},

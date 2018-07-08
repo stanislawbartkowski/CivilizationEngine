@@ -46,7 +46,7 @@ class Test28 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
     val reg = Helper.readBoardAndPlayT("test28/GAMEBOARD1.json", "test28/PLAY1.json", Civilization.America)
     val token = reg._1
     var gg = I.getBoardForToken(token)
-    val prod = getProductionForCity(gg, Civilization.America, P(2, 2))
+    val prod = getProductionForCityH(gg, Civilization.America, P(2, 2))
     println(prod)
     assert(prod.prod == 7)
     // increased by 2
@@ -63,7 +63,7 @@ class Test28 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
     assert(pl.handsize == 2)
     // Masonry stackLimit 3
     assert(pl.stackinglimit == 3)
-    println(getProductionForCity(gg, Civilization.America, P(2, 2)))
+    println(getProductionForCityH(gg, Civilization.America, P(2, 2)))
     // allowed commands
     var l = allowedCommandsH(gg, Civilization.America)
     println(l)

@@ -4,12 +4,12 @@ import civilization.I
 import civilization.I.executeCommand
 import civilization.gameboard.GameBoard
 import civilization.helper._
-import civilization.io.fromjson._
+import civilization.io.fromjson.{toJ, _}
 import civilization.io.tojson.ImplicitMiximToJson
 import civilization.objects.{Civilization, Command, _}
 import civilization.test.Helper.{II, getBoardAndRegister}
 import org.scalatest.FunSuite
-import play.api.libs.json.{JsArray, JsValue}
+import play.api.libs.json.{JsArray, JsString, JsValue}
 import Helper._
 
 
@@ -148,11 +148,11 @@ class Test31 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
     var ite = II.getData(II.ITEMIZECOMMAND, token, "FREENONUPGRADEDBUILDING")
     val jite = toJ(ite).as[JsArray]
     println(jite)
-    val ele : JsValue = jite.value.head
+    val ele: JsValue = jite.value.head
     println(ele)
-    val li : JsArray = (ele \ "list").as[JsArray]
+    val li: JsArray = (ele \ "list").as[JsArray]
     println(li)
-    var cathe : Boolean = false
+    var cathe: Boolean = false
     // check if not upgraded
     li.value.foreach(e => {
       val b = (e \ "building").as[String]
@@ -169,7 +169,7 @@ class Test31 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
     println(l)
     assert(!(l contains Command.FREENONUPGRADEDBUILDING))
 
-    val s = getSquare(gg,P(1,1))
+    val s = getSquare(gg, P(1, 1))
     println(s)
     assert(s.s.building.get.name == BuildingName.Market)
 
@@ -215,7 +215,6 @@ class Test31 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
     println(l)
     assert(l contains Command.POTTERYACTION)
     val pa = """ [{"resource":"Incense"},{"resource":"Iron"}] """
-    // {"command":"POTTERYACTION","civ":"Arabs","p":{"row":2,"col":2},"param":[{"resource":"Incense"},{"resource":"Iron"}]}
     Helper.executeCommandH(token, "POTTERYACTION", 2, 2, pa)
     gg = I.getBoardForToken(token)
     val cu = gg.playerDeck(Civilization.Arabs).resou.nof(Resource.Culture)
@@ -233,16 +232,30 @@ class Test31 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
     val t = pl.tech.head
     println(t)
     assert(t.initial.isDefined)
-    val s= pl.combatlevel.getStrength(CombatUnitType.Artillery)
+    val s = pl.combatlevel.getStrength(CombatUnitType.Artillery)
     // artillery strength = 1
     assert(s == 1)
+
+    // check civ in board
+    val b = getB(token)
+    val boa = (b \ "board" \ "you").as[JsValue]
+    println(boa)
+    val civ = (boa \ "civ").as[String]
+    // should be string
+    assert(civ == "Arabs")
+    //    println(b)
+
+    val o = (b \ "board" \ "others").as[JsArray]
+    println(o)
+    println(o.value.length)
+    assert(o.value.isEmpty)
   }
 
   test("Technology HorseBackRiding") {
     val reg = Helper.readBoardAndPlayT("test31/BOARDGAME5.json", "test31/PLAY5.json", Civilization.Arabs)
     val token = reg._1
-    var gg = I.getBoardForToken(token)
-    val limi = getLimitsH(gg,Civilization.Arabs)
+    var gg: GameBoard = I.getBoardForToken(token)
+    val limi = getLimitsH(gg, Civilization.Arabs)
     println(limi)
     println(limi.travelSpeed)
     // HorseBack Riding, speed 3
@@ -256,7 +269,121 @@ class Test31 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
     println(tra1.trade)
     val ite = II.getData(II.ITEMIZECOMMAND, token, "USESILKFORTRADE9")
     println(ite)
+    val pa =
+      """
+        {
+          "resource" : {
+            "hv" : null,
+            "resource" : "Silk"
+          },
+          "civ" : null
+        }
+      """
+    Helper.executeCommandH(token, "USESILKFORTRADE9", -1, -1, pa)
+
+    gg = I.getBoardForToken(token)
+    l = allowedCommandsH(gg, Civilization.Arabs)
+    println(l)
+    assert(!(l contains Command.USESILKFORTRADE9))
+    val tra2 = numberofTradeH(gg, Civilization.Arabs)
+    println(tra2.trade)
+    val numsilka = gg.playerDeck(Civilization.Arabs).resou.nof(Resource.Silk)
+    println(numsilka)
+    assert(numsilka == 0)
+
+    val numcult = gg.playerDeck(Civilization.Arabs).resou.nof(Resource.Culture)
+    println(numcult)
+    assert(numcult == 1)
+
+    // increase culture for Arabs
 
 
+    // resource on the market
+    val numsilk = gg.resources.resou.nof(Resource.Silk)
+    println(numsilk)
+    // no silk
+    assert(numsilk == 1)
+    val nu = numberofTradeCalculateH(gg, Civilization.Arabs)
+    println(nu)
+//    assert(nu.increasebysilk == 9)
+    assert(nu.trade == 5)
+    val cu1 = currentPhase(gg)
+    println(cu1)
+    Helper.executeCommandH(token, "ENDOFPHASE", -1, -1, """ "Trade" """)
+    gg = I.getBoardForToken(token)
+    val tra3 = numberofTradeH(gg, Civilization.Arabs)
+    println(tra3)
+    assert(tra3.trade == 14)
+  }
+
+  test("Silk for twa players") {
+    val reg = Helper.ReadAndPlayForTwo("test31/BOARDGAME6.json", "test31/PLAY6.json", Civilization.America, Civilization.Arabs)
+    val tokenAm = reg._1
+    val tokenAr = reg._2
+    var gg: GameBoard = I.getBoardForToken(tokenAm)
+    val tra1 = numberofTradeH(gg, Civilization.Arabs)
+    println(tra1.trade)
+    val tra2 = numberofTradeH(gg, Civilization.America)
+    println(tra2.trade)
+    var l = allowedCommandsH(gg, Civilization.Arabs)
+    println(l)
+    val ite = II.getData(II.ITEMIZECOMMAND, tokenAr, "USESILKFORTRADE9")
+    println(ite)
+    val j: JsArray = toJ(ite).as[JsArray]
+    println(j.value.length)
+    assert(j.value.length == 1)
+    var la = allowedCommandsH(gg, Civilization.America)
+    println(la)
+    assert(!(la contains Command.USESILKFORTRADE9))
+
+    val pa =
+      """
+        {
+          "resource" : {
+            "hv" : null,
+            "resource" : "Silk"
+          },
+          "civ" : "America"
+        }
+      """
+    Helper.executeCommandH(tokenAr, "USESILKFORTRADE9", -1, -1, pa)
+    Helper.executeCommandH(tokenAr, "ENDOFPHASE", -1, -1, """ "Trade" """)
+    Helper.executeCommandH(tokenAm, "ENDOFPHASE", -1, -1, """ "Trade" """)
+    gg = I.getBoardForToken(tokenAm)
+    val tra3 = numberofTradeH(gg, Civilization.Arabs)
+    println(tra3.trade)
+    assert(tra3.trade == 14)
+    val tra4 = numberofTradeH(gg, Civilization.America)
+    println(tra4.trade)
+    assert(tra4.trade == 10)
+  }
+
+  test("Silk for two players, different order") {
+    val reg = Helper.ReadAndPlayForTwo("test31/BOARDGAME6.json", "test31/PLAY6.json", Civilization.America, Civilization.Arabs)
+    val tokenAm = reg._1
+    val tokenAr = reg._2
+    // America ends Trade
+    Helper.executeCommandH(tokenAm, "ENDOFPHASE", -1, -1, """ "Trade" """)
+    // now Arabs play silk
+    val pa =
+      """
+        {
+          "resource" : {
+            "hv" : null,
+            "resource" : "Silk"
+          },
+          "civ" : "America"
+        }
+      """
+    Helper.executeCommandH(tokenAr, "USESILKFORTRADE9", -1, -1, pa)
+    Helper.executeCommandH(tokenAr, "ENDOFPHASE", -1, -1, """ "Trade" """)
+    // take trade
+    var gg: GameBoard = I.getBoardForToken(tokenAm)
+    val tra1 = numberofTradeH(gg, Civilization.Arabs)
+    println(tra1.trade)
+    assert(tra1.trade == 14)
+    val tra2 = numberofTradeH(gg, Civilization.America)
+    println(tra2.trade)
+    assert(tra2.trade == 10)
   }
 }

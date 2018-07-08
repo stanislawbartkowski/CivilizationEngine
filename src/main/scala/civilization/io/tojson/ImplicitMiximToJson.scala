@@ -1,9 +1,10 @@
 package civilization.io.tojson
 
 import civilization.gameboard._
-import civilization.helper.TechnologyResourceTrait
 import civilization.objects._
 import play.api.libs.json._
+import civilization.io.readdir.Param._
+
 
 trait ImplicitMiximToJson {
 
@@ -51,14 +52,14 @@ trait ImplicitMiximToJson {
     )
   }
 
-  implicit val hvResourceCivWrites: Writes[HVResourceCiv] = new Writes[HVResourceCiv] {
-    override def writes(o: HVResourceCiv): JsValue = Json.obj(
+  implicit val hvResourceCivWrites: Writes[HVResourcesForCiv] = new Writes[HVResourcesForCiv] {
+    override def writes(o: HVResourcesForCiv): JsValue = Json.obj(
       S.resource -> o.resource,
       S.civ -> o.civ
     )
   }
 
-  implicit def writeListOfHVResourceCiv(p : Seq[HVResourceCiv]) : Seq[JsValue] =
+  implicit def writeListOfHVResourceCiv(p : Seq[HVResourcesForCiv]) : Seq[JsValue] =
     p.map(Json.toJson(_))
 
   implicit def writePP(a: Seq[(P, P)]): Seq[JsValue] = a.map(writesCityPoint)

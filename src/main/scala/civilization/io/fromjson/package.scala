@@ -5,9 +5,8 @@ import play.api.libs.json.Reads._
 import play.api.libs.functional.syntax._
 import civilization.objects._
 import civilization.gameboard._
-import civilization.io.readdir.GameResources
 import civilization.gameboard.CultureTrack._
-
+import civilization.io.readdir.Param._
 
 package object fromjson extends ImplicitMiximFromJson {
 
@@ -297,11 +296,16 @@ package object fromjson extends ImplicitMiximFromJson {
     (JsPath \ S.hutvillage).readNullable[HutVillage.T] and (JsPath \ S.resource).read[Resource.T]
     ) (HVResource.apply _)
 
-  implicit val readRC: Reads[HVResourceCiv] = (
+  implicit val readRC: Reads[HVResourcesForCiv] = (
+    (JsPath \ S.resource).read[Seq[HVResource]] and
+      (JsPath \ S.civ).readNullable[Civilization.T]
+    ) (HVResourcesForCiv.apply _)
+
+
+  implicit val readResourceC: Reads[HVResourceCiv] = (
     (JsPath \ S.resource).read[HVResource] and
       (JsPath \ S.civ).readNullable[Civilization.T]
     ) (HVResourceCiv.apply _)
-
 
   implicit val hutvillagekOptionReads: Reads[Option[HutVillage]] = (
     JsPath.readNullable[HutVillage]

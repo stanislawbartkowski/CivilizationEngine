@@ -20,7 +20,7 @@ package object gameboard {
   /** Version: used during storing and retrieving gameboard from datastore.
     * Ignore games which does not fit to avoid runtime errors
     */
-  private final val packageversion: Int = 5;
+  private final val packageversion: Int = 6;
 
   def genEmptySquares: Array[Array[MapSquare]] = {
     val squares: Array[Array[MapSquare]] = Array.ofDim(TILESIZE, TILESIZE)
@@ -284,7 +284,7 @@ package object gameboard {
 
   case class FrontUnit(val unit: CombatUnit, var attackstrength: Int, var defendstrenght: Int, var wounds: Int)
 
-  case class BattleFieldSide(val fighting: BattleArmy, var waiting: Seq[CombatUnit], var killed: Seq[CombatUnit], val strength: CombatUnitStrength, val combatBonus: Int, var canuseiron: Boolean, val isvillage: Boolean, var savedunit : Option[Int] = None) {
+  case class BattleFieldSide(val fighting: BattleArmy, var waiting: Seq[CombatUnit], var killed: Seq[CombatUnit], val strength: CombatUnitStrength, val combatBonus: Int, var canuseiron: Boolean, val isvillage: Boolean, isScouts : Boolean,var savedunit : Option[Int] = None) {
     var ironused: Int = -1
 
     def points: Int = {
@@ -298,7 +298,7 @@ package object gameboard {
 
     def endofbattle: Boolean = attacker.waiting.isEmpty && defender.waiting.isEmpty
 
-    def attackerwinner: Boolean = attacker.points > defender.points
+    def attackerwinner: Boolean = (attacker.points > defender.points) || defender.isScouts
   }
 
   case class BuildingPoint(val p: P, val bui: Option[BuildingName.T], val won: Option[Wonders.T], val gp : Option[GreatPersonName.T]) {
@@ -321,6 +321,8 @@ package object gameboard {
 
     // order of civilizations to play
     var pllist: Seq[Civilization.T] = Nil
+
+    def others(civ : Civilization.T): Seq[Civilization.T] = pllist.filter(civ != _)
 
     // cheating, for old tests only
     // do not rotate

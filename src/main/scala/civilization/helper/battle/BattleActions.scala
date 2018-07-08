@@ -20,7 +20,8 @@ object BattleActions {
     else battleforce = battleforce + (m.s.figures.numberofArmies -1) * 2
     // premium for fundamentalism
     if (GovernmentFeatures.increaseBattleHand(b.playerDeck(civ).gover)) battleforce = battleforce + 1
-    (battleforce, m.civHere)
+    // if scouts only are under attacks, 0 units.
+    (if (m.s.figures.numberofArmies ==0) 0 else battleforce, m.civHere)
   }
 
   private def assemblyForce(b: GameBoard, p: P): Seq[CombatUnit] = {

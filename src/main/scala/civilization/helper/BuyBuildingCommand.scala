@@ -74,7 +74,7 @@ object BuyBuildingCommand extends CommandPackage with ImplicitMiximFromJson with
 
   private def possibleBuildings(com: Command.T)(b: GameBoard, pl: PlayerDeck, city: P): Seq[BuildSquare] = {
     val blist: Seq[Building] = if (com == Command.FREEBUILDINGCITYACTION) listofunblocked(b, pl, 9999)
-    else if (com == Command.BUYBUILDING) listofunblocked(b, pl, getProductionForCity(b, pl.civ, city).prod)
+    else if (com == Command.BUYBUILDING) listofunblocked(b, pl, getProductionForCity(b, pl, city).prod)
     else listofnonupgraded(b, pl)
     val star: Option[MapSquareP] = findStarBuilding(b, city)
 

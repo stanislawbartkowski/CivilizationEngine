@@ -5,6 +5,7 @@ import civilization.gameboard.{BattleFieldSide, _}
 import civilization.io.readdir.GameResources
 import civilization.message.{FatalError, J, M, Mess}
 import civilization.objects._
+import play.api.libs.json.JsNumber
 
 import scala.util.control.Breaks._
 
@@ -15,6 +16,7 @@ package object helper {
   case class MapSquareP(val s: MapSquare, val sm: Square, val p: P, val t: MapTile, val suggestedCapital: Boolean) {
     def revealed: Boolean = t.orientation.isDefined
 
+    //    def terrain: Terrain.T = sm.terrain
     def terrain: Terrain.T = sm.terrain
 
     def numberOfTrade: Int =
@@ -33,15 +35,26 @@ package object helper {
 
     def numofCoins: Int =
       if (s.greatperson.isDefined) s.greatpersonype.tokens.numofCoins
+      else if (s.building.isDefined) s.building.get.tokens.numofCoins
       else if (resource.isDefined)
         if (resource.get == Resource.Coin) 1 else 0
       else 0
 
+    def isempty: Boolean =
+      if (s.building.isDefined) false
+      else if (s.wonder.isDefined) false
+      else if (s.greatperson.isDefined) false
+      else true
+
     def resource: Option[Resource.T] =
     // building covers resource
-      if (s.building.isDefined) None
-      else if (s.wonder.isDefined) None
-      else sm.resource
+      if (isempty) sm.resource
+      else None
+
+    //      if (s.building.isDefined) None
+    //      else if (s.wonder.isDefined) None
+    //      else if (s.greatperson.isDefined) None
+    //      else sm.resource
 
     def culture: Int =
       if (s.building.isDefined)
@@ -276,19 +289,25 @@ package object helper {
 
   private def prevPhase(pha: TurnPhase.T): TurnPhase.T = if (pha == TurnPhase.StartOfTurn) TurnPhase.Research else TurnPhase.apply(pha.id - 1)
 
-  private def currentTurnReverse(b: GameBoard): Seq[Command] = {
+
+  private def currentTurnReverseFromSeq(l: Seq[Command]): Seq[Command] = {
     var list: Seq[Command] = Nil
     breakable(
-      b.play.commands.reverse.foreach(c => {
-        if (getPhase(c).isDefined && getPhase(c).get == TurnPhase.StartOfTurn) break
+      l.reverse.foreach(c => {
+        if (getPhase(c).isDefined && getPhase(c).get == TurnPhase.Research) break
+        //        if (getPhase(c).isDefined && getPhase(c).get == TurnPhase.StartOfTurn) break
         list = list :+ c
       })
     )
     list
   }
 
-  private def currentTurnReverseForCiv(b: GameBoard, civ: Civilization.T): Seq[Command] =
-    currentTurnReverse(b).filter(_.civ == civ)
+  private def currentTurnReverse(b: GameBoard, civ: Civilization.T): Seq[Command] =
+    currentTurnReverseFromSeq(b.play.commands.filter(_.civ == civ))
+
+
+  //  private def currentTurnReverseForCiv(b: GameBoard, civ: Civilization.T): Seq[Command] =
+  //    currentTurnReverse(b).filter(_.civ == civ)
 
 
   def currentPhase(b: GameBoard): CurrentPhase = {
@@ -354,13 +373,13 @@ package object helper {
     lastPhaseCommandsReverse(b, civ, pha).exists(_.command == com)
 
   def lastCommand(b: GameBoard, civ: Civilization.T, com: Command.T): Boolean = {
-    val last: Seq[Command] = currentTurnReverseForCiv(b, civ)
+    val last: Seq[Command] = currentTurnReverse(b, civ)
     !last.isEmpty && last.head.command == com
   }
 
   def technologyResourceUsed(b: GameBoard, civ: Civilization.T): Boolean = {
     // all commands in the current phase
-    val com: Seq[Command] = currentTurnReverseForCiv(b, civ)
+    val com: Seq[Command] = currentTurnReverse(b, civ)
     // only technology commands
     // technology resource command is used
     com.find(co => Command.isTechnologyResourceAction(co.command)).isDefined
@@ -377,10 +396,10 @@ package object helper {
     cities.toSeq
   }
 
-  def CitiesCanAfford(b: GameBoard, civ: Civilization.T, cost: Int): Seq[P] =
+  def CitiesCanAfford(b: GameBoard, civ: PlayerDeck, cost: Int): Seq[P] =
     CityAvailableForAction(b, civ).filter(city => getProductionForCity(b, civ, city).prod >= cost)
 
-  def CitiesCanAfford(b: GameBoard, civ: Civilization.T, com: Command.T): Seq[P] =
+  def CitiesCanAfford(b: GameBoard, civ: PlayerDeck, com: Command.T): Seq[P] =
     CitiesCanAfford(b, civ, CityActionCost.actionCost(com))
 
   case class Move(val command: Command.T, val p: Option[P])
@@ -571,17 +590,17 @@ package object helper {
   def spendProdForCities(b: GameBoard, civ: Civilization.T): Map[P, Int] =
     spendTradeCommands(b, civ) map { case (p, seq) => (p, spendProdForCity(seq)) }
 
-  case class TradeForCivCalculate(val terrain: Int, val noresearch: Int, val toprod: Int, val loottrade: Int, val tradecoins: Int, val tradespendCulture: Int) {
-    def trade: Int = math.min(terrain + noresearch - toprod + loottrade + tradecoins - tradespendCulture, TRADEMAX)
+  case class TradeForCivCalculate(val terrain: Int, val noresearch: Int, val toprod: Int, val loottrade: Int, val tradecoins: Int, val tradespendCulture: Int, val tradefromGreatLight: Int) {
+    def trade: Int = math.min(terrain + noresearch + tradefromGreatLight - toprod + loottrade + tradecoins - tradespendCulture, TRADEMAX)
   }
 
-  case class TradeForCiv(val tradecalculated: Int, val loottrade: Int, val toprod: Int, val spendOnCulture: Int) {
-    def trade: Int = math.min(tradecalculated - toprod - spendOnCulture + loottrade, TRADEMAX)
+  case class TradeForCiv(val tradecalculated: Int, val loottrade: Int, val toprod: Int, val spendOnCulture: Int, val increasebysilk: Int, val begofturn: Int) {
+    def trade: Int = math.min(tradecalculated - toprod - spendOnCulture + loottrade + increasebysilk + begofturn, TRADEMAX)
   }
 
 
   private def numberofloottrade(b: GameBoard, civ: Civilization.T): Int = {
-    val loott: Int = currentTurnReverse(b).foldLeft(0)((sum, c) => {
+    val loott: Int = currentTurnReverseFromSeq(b.play.commands).foldLeft(0)((sum, c) => {
       var modif: Int = 0
       if (c.command == Command.TAKEWINNERLOOT) {
         val take: TakeWinnerLoot = c.param.asInstanceOf[TakeWinnerLoot]
@@ -634,7 +653,7 @@ package object helper {
   }
 
   private def tradeSpendOnCulture(b: GameBoard, civ: Civilization.T): Int = {
-    val com: Seq[Command] = currentTurnReverseForCiv(b, civ)
+    val com: Seq[Command] = currentTurnReverse(b, civ)
     com.foldLeft(0) { (sum, i) => {
       if (i.command == Command.ADVANCECULTURE) {
         val cul: CultureTrack.CultureTrackCost = i.param1.asInstanceOf[CultureTrack.CultureTrackCost]
@@ -652,11 +671,23 @@ package object helper {
   private def numberofTradeTradenoresearch(b: GameBoard, civ: Civilization.T): Int =
     numberofTradePhasenoresearch(b, civ, TurnPhase.Trade)
 
+  private def numberofFromCommand(b: GameBoard, deck: PlayerDeck, com: Command.T): Option[(Command, Int)] = {
+    val coma: Option[Command] = currentTurnReverse(b, deck).find(_.command == com)
+    if (coma.isEmpty) None
+    else Some((coma.get, coma.get.param.asInstanceOf[Int]))
+  }
+
+  private def numberofTradeFromIncrease(b: GameBoard, deck: PlayerDeck, com: Command.T): Int = {
+    val o = numberofFromCommand(b, deck, com)
+    if (o.isEmpty) 0
+    else o.get._2
+  }
+
   def numberofTrade(b: GameBoard, deck: PlayerDeck): TradeForCiv = {
     if (b.tradecurrent) {
       // cheating
       val tra = numberofTradeCalculate(b, deck)
-      return TradeForCiv(tra.trade, 0, 0, 0)
+      return TradeForCiv(tra.trade, 0, 0, 0, 0, 0)
     }
     val li: PlayerLimits = getLimits(b, deck)
     val tradecalculated: Int = numberofTradeTradenoresearch(b, deck.civ)
@@ -664,13 +695,18 @@ package object helper {
     val loottrade: Int = numberofloottrade(b, deck.civ)
     val spendonculture: Int = tradeSpendOnCulture(b, deck.civ)
 
-    TradeForCiv(tradecalculated, loottrade, spendonprod, spendonculture)
+    TradeForCiv(tradecalculated, loottrade, spendonprod, spendonculture, numberofTradeFromIncrease(b, deck, Command.INCREASETRADE), numberofTradeFromIncrease(b, deck, Command.INCREASETRADESTARTOFTURN))
   }
+
+  private def tradefromGreatLight(b: GameBoard, deck: PlayerDeck): Int =
+    if (!hasWonderFeature(b, deck, WonderFeatures.extratradeFromEmptyWater)) 0
+    else
+      outskirtsForCivNotBlocked(b, deck).filter(s => s.isempty && s.terrain == Terrain.Water) length
 
   def numberofTradeCalculate(b: GameBoard, deck: PlayerDeck): TradeForCivCalculate = {
     val li: PlayerLimits = getLimits(b, deck)
     TradeForCivCalculate(numberofTradeTerrain(b, deck), numberofTradenoresearch(b, deck), reduceTradeBySpend(b, deck, li),
-      numberofloottrade(b, deck.civ), getCoins(b, deck).coins, tradeSpendOnCulture(b, deck))
+      numberofloottrade(b, deck.civ), getCoins(b, deck).coins, tradeSpendOnCulture(b, deck), tradefromGreatLight(b, deck))
   }
 
   // ===================================
@@ -750,11 +786,18 @@ package object helper {
     })
   }
 
-  case class ProdForCity(val terrain: Int, val fromtrade: Int, val fromscouts: Int) {
-    def prod: Int = terrain + fromtrade + fromscouts
+
+  case class ProdForCity(val terrain: Int, val fromtrade: Int, val fromscouts: Int, val fromwheat: Int, val fromwonders: Int) {
+    def prod: Int = terrain + fromtrade + fromscouts + fromwheat + fromwonders
   }
 
-  def getProductionForCity(b: GameBoard, civ: Civilization.T, p: P): ProdForCity = {
+  def getProductionForCityWheat(b: GameBoard, deck: PlayerDeck, p: P): Int = {
+    val o = numberofFromCommand(b, deck, Command.INCREASEPRODUCTION)
+    if (o.isEmpty) 0
+    else if (o.get._1.p == p) o.get._2 else 0
+  }
+
+  def getProductionForCity(b: GameBoard, civ: PlayerDeck, p: P): ProdForCity = {
 
     val num: Int = outskirtsForCityNotBlocked(b, civ, p).map(_.numberOfProduction).sum
 
@@ -763,7 +806,8 @@ package object helper {
     val prodFromScouts: Map[P, Int] = sendprodForCities(b, civ)
     val prodfromS: Option[Int] = prodFromScouts.get(p)
     val prodfromscouts: Int = if (prodfromS.isEmpty) 0 else prodfromS.get
-    ProdForCity(num, prodfromtrade, prodfromscouts)
+    var fromwonders: Int = if (hasWonderFeature(b, civ, WonderFeatures.increaseProduction3ForCities)) 3 else 0
+    ProdForCity(num, prodfromtrade, prodfromscouts, getProductionForCityWheat(b, civ, p), fromwonders)
   }
 
   // ======================================
@@ -815,7 +859,8 @@ package object helper {
 
     PlayerLimits(citieslimit, deck.stackLimit,
       deck.hasTechnologyFeature(TechnologyFeatures.watercrossingAllowed),
-      false, armieslimit, scoutslimit, travelspeed, tradeforprod, deck.combatlevel, false, false, calculateCombatBonus(b, deck.civ), handsize, prodfortrade)
+      deck.hasTechnologyFeature(TechnologyFeatures.canStopInWater),
+      armieslimit, scoutslimit, travelspeed, tradeforprod, deck.combatlevel, false, false, calculateCombatBonus(b, deck.civ), handsize, prodfortrade)
   }
 
   // =====================================
@@ -854,7 +899,7 @@ package object helper {
     isSquareForFigures(b, deck.civ, fig, s.s, li)
   }
 
-  def canBuyFigure(b: GameBoard, civ: Civilization.T, p: P, f: Figure.T): Option[Mess] = {
+  def canBuyFigure(b: GameBoard, civ: PlayerDeck, p: P, f: Figure.T): Option[Mess] = {
     val cost: Int = ObjectCost.getCost(f)
     val prod: Int = getProductionForCity(b, civ, p).prod
     if (cost > prod) Some(Mess(M.CANNOTAFFORDOBJECT, (f, cost, prod))) else None
@@ -917,7 +962,7 @@ package object helper {
     s.s.figures + f
   }
 
-  def exploreHutOrVillage(b: GameBoard, pl : PlayerDeck, p: P) = {
+  def exploreHutOrVillage(b: GameBoard, pl: PlayerDeck, p: P) = {
     val m: MapSquareP = getSquare(b, p)
     val h: HutVillage = m.s.hv.get
     m.s.hv = None
@@ -938,7 +983,7 @@ package object helper {
 
   def cultureforhutvillage(b: GameBoard, civ: Civilization.T, isExecute: Boolean) = {
     if (isExecute && CivilizationFeatures.get3CultureForHutOrVillage(civ)) {
-      val command: Command = constructCommand(Command.GET3CULTURE, civ, null)
+      val command: Command = constructCommand(Command.GETCULTURE, civ, null, JsNumber(3))
       b.addForcedCommand(command)
     }
   }
@@ -1050,7 +1095,7 @@ package object helper {
     if (h.hv.isEmpty) decrResource(b, civ, h.resource)
     else decrHVResource(b, civ, h)
     if (isExecute && CivilizationFeatures.freeCultureForResourceSpend(civ))
-      b.addForcedCommandC(Command.GETCULTURE, civ)
+      b.addForcedCommandC(Command.GETCULTURE, civ, null, JsNumber(1))
   }
 
   def takeResourceFromBoard(b: GameBoard, deck: PlayerDeck, reso: Resource.T) = {
@@ -1195,7 +1240,7 @@ package object helper {
     return None
   }
 
-  def greatPersonReady(b: GameBoard, deck : PlayerDeck): Seq[GreatPersonName.T] = {
+  def greatPersonReady(b: GameBoard, deck: PlayerDeck): Seq[GreatPersonName.T] = {
     // great persons available for player
     val gp: Set[GreatPersonName.T] = deck.cultureresource.persons toSet
     // great persons on board

@@ -12,7 +12,7 @@ import play.api.libs.json.JsValue
 
 object PotteryPhilosophyAction extends CommandPackage with ImplicitMiximFromJson with ImplicitMiximToJson {
 
-  override def getSet: Set[Command.T] = Set(Command.POTTERYACTION)
+  override def getSet: Set[Command.T] = Set(Command.POTTERYACTION, Command.PHILOSOPHYACTION)
 
   private def numofAnyResources(b: GameBoard, pl: PlayerDeck): Int = {
     // sum of resource and hut/villages
@@ -59,8 +59,11 @@ object PotteryPhilosophyAction extends CommandPackage with ImplicitMiximFromJson
 
     override def execute(board: gameboard.GameBoard): Unit = {
       def tp: PlayerTechnology = findpltechnology(board, deck, command).get
+
+      if (command == Command.POTTERYACTION)
       // increase number of coins
-      addCoinToTechnology(board, tp)
+        addCoinToTechnology(board, tp)
+      else if (isExecute) board.addForcedCommandC(Command.GREATPERSON, civ,null,getRandomPerson(board))
       // remove hut and villages
       param.foreach(spendResource(board, deck, _, isExecute))
     }

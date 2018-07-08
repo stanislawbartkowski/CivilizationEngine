@@ -51,7 +51,7 @@ class Test5 extends FunSuite {
 
   test("Start game 1") {
     val b: GameBoard = Helper.readBoardAndPlay("test5/BOARDGAME1.json", "test5/GAME2.json", Civilization.Germany)
-    val prod: Int = getProductionForCity(b, Civilization.Germany, P(2, 2)).prod
+    val prod: Int = getProductionForCityH(b, Civilization.Germany, P(2, 2)).prod
     println(prod)
     assert(prod == 5)
     val figures: Seq[MapSquareP] = getFigures(b, Civilization.Germany)

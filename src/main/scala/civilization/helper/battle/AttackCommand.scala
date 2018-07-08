@@ -28,14 +28,14 @@ object AttackCommand extends ImplicitMiximToJson {
     a
   }
 
-  private def createBattleSide(board: GameBoard, pl: PlayerDeck, units: Seq[CombatUnit], p: BattleStart): BattleFieldSide = {
+  private def createBattleSide(board: GameBoard, pl: PlayerDeck, units: Seq[CombatUnit], p: BattleStart, isScouts: Boolean): BattleFieldSide = {
     val li: PlayerLimits = getLimits(board, pl)
     // can use iron
-    BattleFieldSide(createEmptyFighting(p), units, Nil, pl.combatlevel, li.combatBonus, existResourceAndTech(board, pl, Resource.Iron, TechnologyName.Metallurgy), false)
+    BattleFieldSide(createEmptyFighting(p), units, Nil, pl.combatlevel, li.combatBonus, existResourceAndTech(board, pl, Resource.Iron, TechnologyName.Metallurgy), false, isScouts)
   }
 
   private def createBattleSideForVillages(p: BattleStart): BattleFieldSide =
-    BattleFieldSide(createEmptyFighting(p), p.defender, Nil, CombatUnitStrength(), 0, false, true)
+    BattleFieldSide(createEmptyFighting(p), p.defender, Nil, CombatUnitStrength(), 0, false, true, false)
 
 
   /** Get next civilization after civ */
@@ -54,8 +54,8 @@ object AttackCommand extends ImplicitMiximToJson {
 
   def battlesideaftermatch(b: GameBoard, s: BattleFieldSide, p: MapSquareP, plfig: Figures, winner: Boolean): Option[Figures] = {
     var survived: Seq[CombatUnit] = finghtingtocombat(s.fighting)
-    val saved : Seq[CombatUnit] = if (s.savedunit.isDefined) Seq(s.killed(s.savedunit.get)) else Nil
-    b.market.killedunits = removeUnits(b.market.killedunits ++ s.killed,saved)
+    val saved: Seq[CombatUnit] = if (s.savedunit.isDefined) Seq(s.killed(s.savedunit.get)) else Nil
+    b.market.killedunits = removeUnits(b.market.killedunits ++ s.killed, saved)
     // return survived units
     if (winner) {
       val pl: PlayerDeck = b.playerDeck(p.civHere.get)
@@ -69,7 +69,7 @@ object AttackCommand extends ImplicitMiximToJson {
         pl.units = pl.units ++ saved
       }
     }
-    // fugures participating in the battle
+    // figures participating in the battle
     // important: 2017/12/24
     // p.civHere.get not civ !
     // the winner can be different then attacker
@@ -219,8 +219,20 @@ object AttackCommand extends ImplicitMiximToJson {
       if (batt.attackerwinner && defeciv.isEmpty) {
         cultureforhutvillage(board, civ, isExecute)
         // bonus for winning the village
-        advanceCultureForFree(board,civ,isExecute)
+        advanceCultureForFree(board, civ, isExecute)
       }
+    }
+  }
+
+  private def moveAllUnitsToFighting(side: BattleFieldSide): Unit = {
+    var to : Int = 0
+    while(!side.waiting.isEmpty) {
+      // take first
+      val u = getRemove(side.waiting, 0)
+      side.waiting = u._2
+      // strenght not important
+      side.fighting(to) = Some(FrontUnit(u._1, 0, 0, 0))
+      to = to+1
     }
   }
 
@@ -306,15 +318,21 @@ object AttackCommand extends ImplicitMiximToJson {
 
   class StartBattleCommand(override val param: BattleStart) extends AbstractCommand(param) {
 
+    private def isScoutAttacked(b: GameBoard): Boolean = {
+      val ma: MapSquareP = getSquare(b, p)
+      return !ma.s.figures.empty && ma.s.figures.numberofArmies == 0 && ma.s.figures.numberofScouts > 0
+    }
+
     override def verify(board: GameBoard): Mess = null
 
     override def execute(board: GameBoard): Unit = {
       val attackerP: P = getCurrentMove(board, civ).get.lastp
       assert(!attackerP.empty && !p.empty)
       assert(board.battle.isEmpty)
+      val isScouts = isScoutAttacked(board)
       removePlayerUnits(board, deck, param.attacker)
       val ma: MapSquareP = getSquare(board, p)
-      val attacker: BattleFieldSide = createBattleSide(board, deck, param.attacker, param)
+      val attacker: BattleFieldSide = createBattleSide(board, deck, param.attacker, param, false)
       var defender: BattleFieldSide = null
       var defenderciv: Civilization.T = null
       if (ma.s.hvhere) {
@@ -323,13 +341,17 @@ object AttackCommand extends ImplicitMiximToJson {
         defenderciv = nextCiv(board, civ)
       }
       else {
-        val defe : PlayerDeck = board.playerDeck(ma.civHere.get)
+        val defe: PlayerDeck = board.playerDeck(ma.civHere.get)
         removePlayerUnits(board, defe, param.defender)
-        defender = createBattleSide(board, defe, param.defender, param)
+        defender = createBattleSide(board, defe, param.defender, param, isScouts)
         defenderciv = ma.civHere.get
       }
-
-      board.battle = Some(BattleField(attacker, defender, civ, defenderciv))
+      if (isScouts) {
+        // move units immediately to fighting
+        moveAllUnitsToFighting(attacker)
+        moveAllUnitsToFighting(defender)
+      }
+      board.battle = Some(BattleField(attacker, defender, civ,defenderciv))
     }
 
   }
@@ -346,7 +368,7 @@ object AttackCommand extends ImplicitMiximToJson {
       if (!battle.endofbattle)
         return Mess(M.BATTLEISNOTFINISHED)
       if (!CivilizationFeatures.canSaveUnit(civ)) return Mess(M.YOUARENOTENTITLETOSAVEUNIT)
-      val side : BattleFieldSide = getBattleSide(board)
+      val side: BattleFieldSide = getBattleSide(board)
       if (side.isvillage) return Mess(M.VILLAGEISNOTENTITLEDFORUNITTAKING)
       if (side.savedunit.isDefined) return Mess(M.YOUALREADYSAVEUNIT)
       val pos = p.row
@@ -357,7 +379,7 @@ object AttackCommand extends ImplicitMiximToJson {
 
     override def execute(board: GameBoard): Unit = {
       val pos = p.row
-      val side : BattleFieldSide = getBattleSide(board)
+      val side: BattleFieldSide = getBattleSide(board)
       side.savedunit = Some(pos)
     }
   }
@@ -383,23 +405,10 @@ object AttackCommand extends ImplicitMiximToJson {
       return null
     }
 
-    private def killScouts(board: GameBoard): Boolean = {
-      val ma: MapSquareP = getSquare(board, p)
-      if (!ma.s.figures.empty && ma.s.figures.numberofArmies == 0 && ma.s.figures.numberofScouts > 0) {
-        ma.s.figures.kill()
-        moveFigures(board, civ, p, None)
-        return true
-      }
-      false
-    }
-
     override def execute(board: GameBoard): Unit = {
-      if (killScouts(board)) return
       if (isExecute) {
         val param: BattleStart = BattleActions.assemblyCombatForces(board, civ, p)
-        val command: Command = constructCommand(Command.STARTBATTLE, civ, p, param)
-        // execute later
-        board.addForcedCommand(command)
+        board.addForcedCommandC(Command.STARTBATTLE, civ, p, param)
       }
     }
   }

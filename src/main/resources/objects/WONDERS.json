@@ -1,7 +1,6 @@
 [
   {
     "t" : "CI",
-    "ni" : true,
     "name" : "ChichenItza",
     "phase" : "CityManagement",
     "age" : "Ancient",
@@ -26,7 +25,6 @@
   },
   {
     "t" : "CL",
-    "ni" : true,
     "name" : "TheColossus",
     "phase" : "StartOfTurn",
     "age" : "Ancient",
@@ -36,7 +34,6 @@
   },
   {
     "t" : "GL",
-    "ni" : true,
     "name" : "TheGreatLighthouse",
     "age" : "Ancient",
     "cost" : 15,

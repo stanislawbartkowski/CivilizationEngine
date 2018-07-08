@@ -53,7 +53,7 @@ object genboardj {
     val t: Terrain.T = if (ss.revealed) ss.terrain else null;
     val trade: Int = if (ss.revealed) ss.numberOfTrade else -1;
     var civ: Civilization.T = if (ss.s.cityhere) ss.s.city.get.civ else null
-    val production: Int = if (ss.revealed) (if (!ss.s.cityhere) ss.numberOfProduction else getProductionForCity(b, civ, ss.p).prod) else -1;
+    val production: Int = if (ss.revealed) (if (!ss.s.cityhere) ss.numberOfProduction else getProductionForCity(b, b.playerDeck(civ), ss.p).prod) else -1;
     val resource: Option[Resource.T] = if (ss.revealed) ss.resource else None
     val cap: Option[Civilization.T] = ss.suggestedCapitalForCiv
     var defence: Int = 0
@@ -109,7 +109,7 @@ object genboardj {
   private def genPlayerDeckJson(p: PlayerDeckJ, you: Boolean): JsValue = Json.obj(
     S.tech -> plSeqToJ(p.tech),
     S.gover -> p.pl.gover,
-    S.civ -> p.civ,
+    S.civ -> p.civ.civ,
     S.trade -> p.numberofTrade,
     "tradelevel" -> p.technologylevel,
     "commands" -> commandToArray(p.commands),
@@ -139,7 +139,7 @@ object genboardj {
     // TODO: initialization to null maybe unnecessary, doublecheck
     for (i <- 0 to maxrow; j <- 0 to maxcol) map(i)(j) = null
     p.foreach(ss => map(ss.p.row)(ss.p.col) = contructSquareJ(g, ss))
-    val others: Seq[PlayerDeckJ] = g.players.filter(_.civ != civ).map(c => genPlayerDeckJ(g, c))
+    val others: Seq[PlayerDeckJ] = g.others(civ).map(c => genPlayerDeckJ(g, g.playerDeck(c)))
     BoardGameJ(genGame(g, civ), map, genPlayerDeckJ(g, civ), others)
   }
 

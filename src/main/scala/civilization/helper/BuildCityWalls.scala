@@ -36,5 +36,5 @@ object BuildCityWalls extends CommandPackage with ImplicitMiximFromJson with Imp
   override def itemizePP(b: GameBoard, deck : PlayerDeck, com: Command.T): Seq[P] =
     if (com == Command.BUILDCITYWALLFORFREE) Nil
     else if (!deck.hasTechnologyFeature(TechnologyFeatures.buyCityWall)) Nil
-    else CitiesCanAfford(b, deck.civ, com).filter(c => !City.isWalled(getSquare(b,c).s.city.get.citytype))
+    else CitiesCanAfford(b, deck, com).filter(c => !City.isWalled(getSquare(b,c).s.city.get.citytype))
 }

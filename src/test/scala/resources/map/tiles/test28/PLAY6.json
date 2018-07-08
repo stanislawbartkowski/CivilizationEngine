@@ -18,7 +18,7 @@
 {"command":"STARTMOVE","civ":"China","p":{"row":3,"col":3},"param":{"numberofArmies":1,"numberofScouts":0}},
 {"command":"REVEALTILE","civ":"China","p":{"row":1,"col":0},"param":"Down"},
 {"command":"EXPLOREHUT","civ":"China","p":{"row":3,"col":4},"param":null},
-{"command":"GET3CULTURE","civ":"China","p":null,"param":null},
+{"command":"GETCULTURE","civ":"China","p":null,"param":3},
 {"command":"ENDOFPHASE","civ":"China","p":null,"param":"Movement"},
 {"command":"RESEARCH","civ":"China","p":null,"param":"CodeOfLaw"},
 {"command":"ENDOFPHASE","civ":"China","p":null,"param":"Research"},

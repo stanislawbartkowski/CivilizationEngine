@@ -30,8 +30,6 @@ package object objects {
 
   case class HVResource(val hv: Option[HutVillage.T], val resource: Resource.T)
 
-  case class HVResourceCiv(resource: HVResource, civ: Option[Civilization.T])
-
   case class Tokens(val numofTrade: Int, val numofProduction: Int, val numofCulture: Int, val numofBattle: Int, val numofCoins: Int)
 
   case class Square(val terrain: Terrain.T, val hv: HutVillage.T, val resource: Option[Resource.T], val naturalwonder: Boolean, val token: Tokens)

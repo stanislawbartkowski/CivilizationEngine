@@ -102,7 +102,7 @@ class Test22 extends FunSuite with ImplicitMiximFromJson {
     val jb = toJ(ss)
     val jy = jyou(jb)
     println(jy)
-    val b = getProductionForCity(gg, Civilization.Spain, P(2, 2))
+    val b = getProductionForCityH(gg, Civilization.Spain, P(2, 2))
     println(b.prod)
     assert(b.prod == 11)
 
@@ -167,7 +167,7 @@ class Test22 extends FunSuite with ImplicitMiximFromJson {
     val reg = Helper.readBoardAndPlayT("test22/BOARDGAME6.json", "test22/PLAY6.json", Civilization.Spain)
     val token: String = reg._1
     var gg: GameBoard = I.getBoardForToken(token)
-    var b = getProductionForCity(gg, Civilization.Spain, P(2, 2))
+    var b = getProductionForCityH(gg, Civilization.Spain, P(2, 2))
     println(b.prod)
     assert(b.prod == 11)
     val c =
@@ -179,7 +179,7 @@ class Test22 extends FunSuite with ImplicitMiximFromJson {
     assert(l.find(_ == Command.BUYWONDER).isEmpty)
     assert(l.find(_ == Command.BUYBUILDING).isEmpty)
     // check production  for city
-    b = getProductionForCity(gg, Civilization.Spain, P(2, 2))
+    b = getProductionForCityH(gg, Civilization.Spain, P(2, 2))
     // wonder, 0 production from square
     println(b.prod)
     assert(b.prod == 10)

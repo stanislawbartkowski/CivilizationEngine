@@ -149,7 +149,7 @@ class Test17 extends FunSuite with ImplicitMiximToJson {
     checklist(batt, "defender", 2)
     checkturn(batt, "attacker", true)
     checkturn(batt, "defender", false)
-    Helper.checkendofgame(batt, false)
+    Helper.checkendofbattle(batt, false)
 
     //attacker
     // Artillery again Infantry
@@ -234,7 +234,7 @@ class Test17 extends FunSuite with ImplicitMiximToJson {
     checklist(batt, "defender", 0)
     checkturn(batt, "attacker", true)
     checkturn(batt, "defender", false)
-    Helper.checkendofgame(batt, true)
+    Helper.checkendofbattle(batt, true)
     Helper.checkattackerwinner(batt, true)
 
     // end of the battle

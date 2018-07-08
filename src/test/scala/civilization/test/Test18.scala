@@ -22,7 +22,7 @@ class Test18 extends FunSuite with ImplicitMiximToJson {
     val js = toJ(s)
     val batt = (js \ "board" \ "battle").get
     println(batt)
-    Helper.checkendofgame(batt, true)
+    Helper.checkendofbattle(batt, true)
     Helper.checkattackerwinner(batt, false)
     // submit ENDBATTLE
     Helper.executeCommandH(token, "ENDBATTLE", -1, -1, null)

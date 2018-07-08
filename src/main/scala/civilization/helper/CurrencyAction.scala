@@ -9,7 +9,7 @@ import civilization.objects.Command
 import civilization.objects.Command.T
 import civilization.objects.Resource.T
 import civilization.objects.TechnologyName.T
-import play.api.libs.json.JsValue
+import play.api.libs.json.{JsValue, JsNumber}
 import civilization.objects._
 
 object CurrencyAction extends TechnologyResourceTrait {
@@ -21,7 +21,7 @@ object CurrencyAction extends TechnologyResourceTrait {
 
     override def executeI(board: gameboard.GameBoard): Unit = {
       // increase culture by 3
-      if (isExecute) board.addForcedCommandC(Command.GET3CULTURE,civ)
+      if (isExecute) board.addForcedCommandC(Command.GETCULTURE,civ,null,JsNumber(3))
     }
   }
 
