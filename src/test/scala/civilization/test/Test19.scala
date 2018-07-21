@@ -163,7 +163,8 @@ class Test19 extends FunSuite with ImplicitMiximToJson {
     println(g.playerDeck(Civilization.Germany).units.length)
     assert(3 == g.playerDeck(Civilization.Germany).units.length)
     println(g.playerDeck(Civilization.Egypt).units.length)
-    assert(g.playerDeck(Civilization.Egypt).units.isEmpty)
+    // one unit survived
+    assert(g.playerDeck(Civilization.Egypt).units.length == 1)
   }
 
   test("Two players game, battle, battle resolution, empty json for the second time") {

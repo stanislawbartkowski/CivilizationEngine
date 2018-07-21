@@ -187,4 +187,31 @@ class Test33 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
     // not 2
     assert(s.loot == 1)
   }
+
+  test("Two players game, China lost battle with city, verify number of units") {
+    val reg = Helper.ReadAndPlayForTwo("test33/BOARDGAME4.json", "test33/PLAY8.json", Civilization.America, Civilization.China)
+    val tokenA = reg._1
+    val tokenC = reg._2
+    var gg: GameBoard = I.getBoardForToken(tokenA)
+    val cultaa = gg.playerDeck(Civilization.America).resou.nof(Resource.Culture)
+    println(cultaa)
+    val cultcc = gg.playerDeck(Civilization.China).resou.nof(Resource.Culture)
+    println(cultcc)
+
+    //    println(gg.playerDeck(Civilization.China).units)
+    val param = """ [{"name" : "culture","loot" : 1}]  """
+    Helper.executeCommandH(tokenA, "ENDBATTLE", -1, -1, param)
+    gg = I.getBoardForToken(tokenA)
+    val culta = gg.playerDeck(Civilization.America).resou.nof(Resource.Culture)
+    println(culta)
+    assert(culta == cultaa + 3)
+    val cultc = gg.playerDeck(Civilization.China).resou.nof(Resource.Culture)
+    println(cultc)
+    assert(cultc == cultcc -3)
+
+    // China: two survived and 1 saved
+    val unitC =  gg.playerDeck(Civilization.China).units
+    println(unitC)
+    assert(unitC.length == 3)
+  }
 }

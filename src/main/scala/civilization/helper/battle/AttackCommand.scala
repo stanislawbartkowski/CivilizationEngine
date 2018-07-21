@@ -57,19 +57,24 @@ object AttackCommand extends ImplicitMiximToJson {
     var survived: Seq[CombatUnit] = finghtingtocombat(s.fighting)
     val saved: Seq[CombatUnit] = if (s.savedunit.isDefined) Seq(s.killed(s.savedunit.get)) else Nil
     b.market.killedunits = removeUnits(b.market.killedunits ++ s.killed, saved)
+
     // return survived units
-    if (winner) {
+    if (!s.isvillage) {
       val pl: PlayerDeck = b.playerDeck(p.civHere.get)
       pl.units = pl.units ++ survived ++ saved
     }
+//    if (winner) {
+//      val pl: PlayerDeck = b.playerDeck(p.civHere.get)
+//      pl.units = pl.units ++ survived ++ saved
+//    }
     // else kill them all
-    else {
-      b.market.killedunits = b.market.killedunits ++ survived
-      if (!s.isvillage) {
-        val pl: PlayerDeck = b.playerDeck(p.civHere.get)
-        pl.units = pl.units ++ saved
-      }
-    }
+//    else {
+//      b.market.killedunits = b.market.killedunits ++ survived
+//      if (!s.isvillage) {
+//        val pl: PlayerDeck = b.playerDeck(p.civHere.get)
+//        pl.units = pl.units ++ saved
+//      }
+//    }
     // figures participating in the battle
     // important: 2017/12/24
     // p.civHere.get not civ !
@@ -115,43 +120,42 @@ object AttackCommand extends ImplicitMiximToJson {
     None
   }
 
-  private def executehv(g: GameBoard, hv: HutVillage.T, attackciv: Civilization.T, defeciv: Civilization.T) = {
+  private def executehv(g: GameBoard, hv: HutVillage.T, winnerciv: Civilization.T, looserciv: Civilization.T) = {
 
-    val re: Resource.T = takerandomresohv(g.playerDeck(defeciv), hv)
+    val re: Resource.T = takerandomresohv(g.playerDeck(looserciv), hv)
     val hutVillage: HutVillage = HutVillage(hv, re)
-    g.addForcedCommandC(Command.DROPHUTVILLAGE, defeciv, null, hutVillage)
-    g.addForcedCommandC(Command.GETHUTVILLAGE, attackciv, null, hutVillage)
+    g.addForcedCommandC(Command.DROPHUTVILLAGE, looserciv, null, hutVillage)
+    g.addForcedCommandC(Command.GETHUTVILLAGE, winnerciv, null, hutVillage)
   }
 
 
-  private def executeloot(g: GameBoard, batt: BattleField, param: Seq[WinnerLootEffect], attackciv: Civilization.T, defeciv: Civilization.T) {
-    val atta: PlayerDeck = g.playerDeck(attackciv)
-    val defe: PlayerDeck = g.playerDeck(defeciv)
+  private def executeloot(g: GameBoard, batt: BattleField, param: Seq[WinnerLootEffect], winnerciv: Civilization.T, looserciv: Civilization.T) {
+    val looser: PlayerDeck = g.playerDeck(looserciv)
     param.foreach(e => {
       e.name match {
         case LootEffectName.trade => {
-          val trade: Int = math.min(numberofTrade(g, defe).trade, WINNERTRADELOOT)
-          g.increaseTradeCommand(attackciv, trade)
-          g.increaseTradeCommand(defeciv, -trade)
+          val trade: Int = math.min(numberofTrade(g, looser).trade, WINNERTRADELOOT)
+          g.increaseTradeCommand(winnerciv, trade)
+          g.increaseTradeCommand(looserciv, -trade)
         }
         case LootEffectName.resource => {
-          g.addForcedCommandC(Command.DROPRESOURCE, defeciv, null, e.resource.get)
-          g.addForcedCommandC(Command.GETRESOURCE, attackciv, null, e.resource.get)
+          g.addForcedCommandC(Command.DROPRESOURCE, looserciv, null, e.resource.get)
+          g.addForcedCommandC(Command.GETRESOURCE, winnerciv, null, e.resource.get)
         }
-        case LootEffectName.hut => executehv(g, HutVillage.Hut, attackciv, defeciv)
-        case LootEffectName.village => executehv(g, HutVillage.Village, attackciv, defeciv)
+        case LootEffectName.hut => executehv(g, HutVillage.Hut, winnerciv, looserciv)
+        case LootEffectName.village => executehv(g, HutVillage.Village, winnerciv, looserciv)
         case LootEffectName.culture => {
-          val cult = math.min(WINNERCULTURELOOT, defe.resou.nof(Resource.Culture))
-          g.increaseCultureCommand(defeciv, -cult)
-          g.increaseCultureCommand(attackciv, cult)
+          val cult = math.min(WINNERCULTURELOOT, looser.resou.nof(Resource.Culture))
+          g.increaseCultureCommand(winnerciv, cult)
+          g.increaseCultureCommand(looserciv, -cult)
         }
         case LootEffectName.card => {
-          val ca: CultureCardName.T = takerandomcard(defe, e.cardlevel.get)
-          g.addForcedCommandC(Command.DROPCULTURECARD, defeciv, null, ca)
+          val ca: CultureCardName.T = takerandomcard(looser, e.cardlevel.get)
+          g.addForcedCommandC(Command.DROPCULTURECARD, looserciv, null, ca)
         }
         case LootEffectName.coin => {
-          if (e.coinsheet.isDefined && e.coinsheet.get) g.addForcedCommandC(Command.GETCOIN, defeciv, null, JsNumber(-1))
-          else g.addForcedCommandC(Command.DROPCOINFROMTECHNOLOGY, defeciv, null, e.tech.get)
+          if (e.coinsheet.isDefined && e.coinsheet.get) g.addForcedCommandC(Command.GETCOIN, looserciv, null, JsNumber(-1))
+          else g.addForcedCommandC(Command.DROPCOINFROMTECHNOLOGY, looserciv, null, e.tech.get)
         }
       }
     })
@@ -211,7 +215,7 @@ object AttackCommand extends ImplicitMiximToJson {
           board.addForcedCommand(command)
         }
         if (defeciv.isDefined && isExecute)
-          executeloot(board, batt, param, attackciv, defeciv.get)
+          executeloot(board, batt, param, if (batt.attackerwinner) attackciv else defeciv.get, if (batt.attackerwinner) defeciv.get else attackciv)
       }
       // who is the winner
       // implement CodeOfLaws
@@ -335,7 +339,7 @@ object AttackCommand extends ImplicitMiximToJson {
       val isScouts = isScoutAttacked(board)
       removePlayerUnits(board, deck, param.attacker)
       val ma: MapSquareP = getSquare(board, p)
-      val attacker: BattleFieldSide = createBattleSide(board, deck, param.attacker, param, false,None)
+      val attacker: BattleFieldSide = createBattleSide(board, deck, param.attacker, param, false, None)
       var defender: BattleFieldSide = null
       var defenderciv: Civilization.T = null
       if (ma.s.hvhere) {
@@ -346,7 +350,7 @@ object AttackCommand extends ImplicitMiximToJson {
       else {
         val defe: PlayerDeck = board.playerDeck(ma.civHere.get)
         removePlayerUnits(board, defe, param.defender)
-        defender = createBattleSide(board, defe, param.defender, param, isScouts,Some(ma))
+        defender = createBattleSide(board, defe, param.defender, param, isScouts, Some(ma))
         defenderciv = ma.civHere.get
       }
       if (isScouts) {

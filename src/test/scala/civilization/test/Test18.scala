@@ -38,7 +38,9 @@ class Test18 extends FunSuite with ImplicitMiximToJson {
     ma = getSquare(gg, P(2, 7))
     assert(ma.s.hv.get.hv == HutVillage.Village)
     // number of units
-    assert(gg.playerDeck(Civilization.America).units.isEmpty)
+    println(gg.playerDeck(Civilization.America).units)
+    // one unit survived
+    assert(gg.playerDeck(Civilization.America).units.length == 1)
     // no battle
     assert(gg.battle.isEmpty)
     val l = allowedCommandsH(gg, Civilization.America)
