@@ -18,4 +18,6 @@ object TechnologyFeatures {
 
   def buyFigureInAnyCityWithShipyard(tech: TechnologyName.T): Boolean = tech == TechnologyName.Navy
 
+  def isCoinTechnology(tech: TechnologyName.T): Boolean = (tech == TechnologyName.Pottery || tech == TechnologyName.CodeOfLaw)
+
 }

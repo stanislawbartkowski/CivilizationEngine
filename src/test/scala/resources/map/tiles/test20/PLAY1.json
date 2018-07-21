@@ -114,7 +114,7 @@
  {"command":"PLAYUNIT","civ":"Spain","p":{"row":0,"col":1},"param":null},
  {"command":"PLAYUNIT","civ":"Arabs","p":{"row":0,"col":2},"param":null},
  {"command":"PLAYUNIT","civ":"Arabs","p":{"row":0,"col":3},"param":null},
- {"command":"ENDBATTLE","civ":"Arabs","p":null,"param":null},
+ {"command":"ENDBATTLE","civ":"Arabs","p":null,"param":[]},
  {"command":"ENDOFMOVE","civ":"Arabs","p":{"row":9,"col":3},"param":null},
  {"command":"STARTMOVE","civ":"Arabs","p":{"row":12,"col":5},"param":{"numberofArmies":1,"numberofScouts":0}},
  {"command":"MOVE","civ":"Arabs","p":{"row":11,"col":5},"param":null},

@@ -3,10 +3,10 @@ package civilization
 import java.util.Calendar
 
 import civilization.objects._
-import civilization.action.{Command, Play}
+import civilization.action.{Command, Play, constructCommand}
 import civilization.io.readdir.GameResources
 import civilization.message.J.J
-import play.api.libs.json.JsValue
+import play.api.libs.json.{JsNumber, JsValue}
 
 
 /** Placeholder for objects and definitions related to the gameboard. */
@@ -20,7 +20,7 @@ package object gameboard {
   /** Version: used during storing and retrieving gameboard from datastore.
     * Ignore games which does not fit to avoid runtime errors
     */
-  private final val packageversion: Int = 6;
+  private final val packageversion: Int = 7;
 
   def genEmptySquares: Array[Array[MapSquare]] = {
     val squares: Array[Array[MapSquare]] = Array.ofDim(TILESIZE, TILESIZE)
@@ -50,6 +50,8 @@ package object gameboard {
       table(r) = table(r) - num
     }
 
+    def exist(r: T): Boolean = nof(r) > 0
+
     def nof(r: T): Int = table(r)
   }
 
@@ -71,11 +73,13 @@ package object gameboard {
   case class PlayerTechnology(val tech: TechnologyName.T, val initial: Option[Boolean] = None) {
     private val phases: collection.mutable.Set[Int] = collection.mutable.Set()
 
-    def coins = if (TechnologyName.isCoinTechnology(tech)) phases.size else 0
+    def coins = if (TechnologyFeatures.isCoinTechnology(tech)) phases.size else 0
 
     def roundAlready(roundno: Int) = phases contains roundno
 
     def addRound(roundno: Int) = phases += roundno
+
+    def removeCoin() = phases.remove(phases.head)
   }
 
   /** Figures on the square, can be staked
@@ -126,7 +130,7 @@ package object gameboard {
     def toFigures: Figures = Figures(numberofArmies, numberofScouts)
   }
 
-  case class CultureResources(var cards : Seq[CultureCardName.T] = Nil,var persons: Seq[GreatPersonName.T] = Nil,var personsexposed : Seq[GreatPersonName.T] = Nil)
+  case class CultureResources(var cards: Seq[CultureCardName.T] = Nil, var persons: Seq[GreatPersonName.T] = Nil, var personsexposed: Seq[GreatPersonName.T] = Nil)
 
   case class WonderSquare(val w: Wonders.T, var obsolete: Boolean)
 
@@ -138,10 +142,10 @@ package object gameboard {
 
     def cityhere: Boolean = city.isDefined
 
-    var greatperson : Option[GreatPerson] = None
-    var greatpersonype : GreatPersonType = null
+    var greatperson: Option[GreatPerson] = None
+    var greatpersonype: GreatPersonType = null
 
-    def setGreatPerson(g : GreatPersonName.T) = {
+    def setGreatPerson(g: GreatPersonName.T) = {
       greatperson = Some(GameResources.getGreatPerson(g))
       greatpersonype = GameResources.getGreatPersonType(greatperson.get.ptype)
     }
@@ -235,17 +239,23 @@ package object gameboard {
     val defaultculturehandsize: Int = 2
     val combatlevel: CombatUnitStrength = CombatUnitStrength()
     var hvlist: Seq[HutVillage] = Nil
-    def hasTechnology(te : TechnologyName.T) : Boolean = tech.find(_.tech == te ).isDefined
-    val cultureresource : CultureResources = CultureResources()
-    def hasTechnologyFeature(feature : TechnologyName.T => Boolean) : Boolean = tech.find(te => feature(te.tech)).isDefined
-    def numofTechnologyFeatures(feature : TechnologyName.T => Boolean) : Int = tech.filter(te => feature(te.tech)).length
-    def stackLimit : Int = math.max(CivilizationFeatures.startStackingLimit(civ),if (tech.isEmpty) 0 else tech.map(te => TechnologyFeatures.stackSize(te.tech)) max)
-    var freeWonder : Option[Wonders.T] = None
+
+    def hasTechnology(te: TechnologyName.T): Boolean = tech.find(_.tech == te).isDefined
+
+    val cultureresource: CultureResources = CultureResources()
+
+    def hasTechnologyFeature(feature: TechnologyName.T => Boolean): Boolean = tech.find(te => feature(te.tech)).isDefined
+
+    def numofTechnologyFeatures(feature: TechnologyName.T => Boolean): Int = tech.filter(te => feature(te.tech)).length
+
+    def stackLimit: Int = math.max(CivilizationFeatures.startStackingLimit(civ), if (tech.isEmpty) 0 else tech.map(te => TechnologyFeatures.stackSize(te.tech)) max)
+
+    var freeWonder: Option[Wonders.T] = None
     // number of free resources to take, can be 3 for Navigation
-    var takefreeResources : Int = 0
+    var takefreeResources: Int = 0
   }
 
-  implicit def playerDeckToCiv(deck : PlayerDeck) : Civilization.T = deck.civ
+  implicit def playerDeckToCiv(deck: PlayerDeck): Civilization.T = deck.civ
 
   case class Market(var units: Seq[CombatUnit], var killedunits: Seq[CombatUnit], val buildings: BuildingsResources, var wonders: Seq[Wonders.T])
 
@@ -262,17 +272,27 @@ package object gameboard {
     def okV: Boolean = version == packageversion
   }
 
-  case class WinnerLoot(val hv: Option[HutVillage.T], val res: Option[Resource.T], val trade: Boolean, val culture: Boolean) {
-    def ==(v: WinnerLoot): Boolean = {
-      if (trade != v.trade) return false
-      if (culture != v.culture) return false
-      return eqO(hv, v.hv) && eqO(res, v.res)
-    }
-
-    def noloot(): Boolean = {
-      return !trade && !culture && hv.isEmpty && res.isEmpty
+  case class WinnerLootEffect(val name: LootEffectName.T, val loot: Int, val tech: Option[TechnologyName.T], val resource: Option[Resource.T], val cardlevel: Option[Int], val coinsheet: Option[Boolean]) {
+    def ==(v: WinnerLootEffect): Boolean = {
+      if (name != v.name) return false
+      if (loot != v.loot) return false
+      if (tech != v.tech) return false
+      if (tech.isDefined)
+        if (tech.get != v.tech.get) return false
+      if (cardlevel != v.cardlevel) return false
+      if (cardlevel.isDefined)
+        if (cardlevel.get != v.cardlevel.get) return false
+      if (coinsheet != v.coinsheet) return false
+      if (coinsheet.isDefined)
+        if (coinsheet.get != v.coinsheet.get) return false
+      if (resource != v.resource) return false
+      if (resource.isDefined)
+        if (resource.get != v.resource.get) return false
+      true
     }
   }
+
+  case class WinnerLoot(val loot: Int, val list: Seq[WinnerLootEffect])
 
   case class WondersDiscount(val cost: Int, tech: TechnologyName.T)
 
@@ -280,11 +300,13 @@ package object gameboard {
     def ni: Boolean = notimplemented.isDefined && notimplemented.get
   }
 
-  case class TakeWinnerLoot(val winner: Civilization.T, val loser: Civilization.T, val loot: WinnerLoot, val reso: Option[Resource.T], val trade: Int)
+  //  case class TakeWinnerLootEffect()
+
+  //  case class TakeWinnerLoot(val winner: Civilization.T, val loser: Civilization.T, val loot: WinnerLoot, val reso: Option[Resource.T], val trade: Int)
 
   case class FrontUnit(val unit: CombatUnit, var attackstrength: Int, var defendstrenght: Int, var wounds: Int)
 
-  case class BattleFieldSide(val fighting: BattleArmy, var waiting: Seq[CombatUnit], var killed: Seq[CombatUnit], val strength: CombatUnitStrength, val combatBonus: Int, var canuseiron: Boolean, val isvillage: Boolean, isScouts : Boolean,var savedunit : Option[Int] = None) {
+  case class BattleFieldSide(val fighting: BattleArmy, var waiting: Seq[CombatUnit], var killed: Seq[CombatUnit], val strength: CombatUnitStrength, val combatBonus: Int, var canuseiron: Boolean, val isvillage: Boolean, isScouts: Boolean, var savedunit: Option[Int] = None) {
     var ironused: Int = -1
 
     def points: Int = {
@@ -301,11 +323,11 @@ package object gameboard {
     def attackerwinner: Boolean = (attacker.points > defender.points) || defender.isScouts
   }
 
-  case class BuildingPoint(val p: P, val bui: Option[BuildingName.T], val won: Option[Wonders.T], val gp : Option[GreatPersonName.T]) {
-    require(bui.isDefined && won.isEmpty&&gp.isEmpty || bui.isEmpty&& won.isDefined&&gp.isEmpty || bui.isEmpty&&won.isEmpty&&gp.isDefined)
+  case class BuildingPoint(val p: P, val bui: Option[BuildingName.T], val won: Option[Wonders.T], val gp: Option[GreatPersonName.T]) {
+    require(bui.isDefined && won.isEmpty && gp.isEmpty || bui.isEmpty && won.isDefined && gp.isEmpty || bui.isEmpty && won.isEmpty && gp.isDefined)
 
     def ==(that: BuildingPoint): Boolean =
-      p == that.p  &&
+      p == that.p &&
         (bui.isDefined && that.bui.isDefined && b == that.b ||
           (won.isDefined && that.won.isDefined && w == that.w) ||
           (gp.isDefined && that.gp.isDefined && g == that.g))
@@ -322,7 +344,7 @@ package object gameboard {
     // order of civilizations to play
     var pllist: Seq[Civilization.T] = Nil
 
-    def others(civ : Civilization.T): Seq[Civilization.T] = pllist.filter(civ != _)
+    def others(civ: Civilization.T): Seq[Civilization.T] = pllist.filter(civ != _)
 
     // cheating, for old tests only
     // do not rotate
@@ -336,19 +358,25 @@ package object gameboard {
     var play: Play.Play = new Play.Play()
     var battle: Option[BattleField] = None
     val journal: Journal = collection.mutable.ListBuffer() // empty
-    val cultureused : CultureResources = CultureResources()
+    val cultureused: CultureResources = CultureResources()
 
     def rotateplorder: Unit = if (!norotate) pllist = rotaterightList(pllist)
 
     def addForcedCommand(com: Command) = forcednext = forcednext :+ com
 
     def addForcedCommandC(command: Command.T, civ: Civilization.T, p: P = null, param: JsValue = null) = {
-      val commandC = action.constructCommand(command, civ, p,param)
+      val commandC = action.constructCommand(command, civ, p, param)
       addForcedCommand(commandC)
     }
 
+    def increaseTradeCommand(civ: Civilization.T, trade: Int) =
+      addForcedCommandC(Command.INCREASETRADE, civ, null, JsNumber(trade))
+
+    def increaseCultureCommand(civ: Civilization.T, culture: Int) =
+      addForcedCommandC(Command.GETCULTURE, civ, null, JsNumber(culture))
+
     def playerDeck(civ: Civilization.T): PlayerDeck =
-      // assuming exist
+    // assuming exist
       players.find(p => p.civ == civ).get
 
 

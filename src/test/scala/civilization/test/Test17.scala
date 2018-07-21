@@ -238,7 +238,7 @@ class Test17 extends FunSuite with ImplicitMiximToJson {
     Helper.checkattackerwinner(batt, true)
 
     // end of the battle
-    Helper.executeCommandH(token, "ENDBATTLE", 0, 0, null)
+    Helper.executeCommandH(token, "ENDBATTLE", 0, 0, """ [] """)
     s = II.getData(II.GETBOARDGAME, token)
     js = toJ(s)
     println("=============================")

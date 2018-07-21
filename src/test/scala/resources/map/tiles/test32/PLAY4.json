@@ -183,7 +183,7 @@
  {"command":"PLAYUNIT","civ":"Germany","p":{"row":1,"col":0},"param":null},
  {"command":"PLAYUNIT","civ":"Germany","p":{"row":0,"col":1},"param":null},
  {"command":"PLAYUNIT","civ":"Germany","p":{"row":0,"col":2},"param":null},
- {"command":"ENDBATTLE","civ":"Germany","p":null,"param":null},
+ {"command":"ENDBATTLE","civ":"Germany","p":null,"param":[]},
  {"command":"ENDOFMOVE","civ":"Germany","p":{"row":0,"col":7},"param":null},
  {"command":"ENDOFPHASE","civ":"Germany","p":null,"param":"Movement"},
  {"command":"RESEARCH","civ":"Germany","p":null,"param":"Construction"},

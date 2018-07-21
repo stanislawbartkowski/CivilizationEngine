@@ -69,7 +69,7 @@
 {"command":"PLAYUNIT","civ":"Rome","p":{"row":1,"col":0},"param":null},
 {"command":"PLAYUNIT","civ":"Rome","p":{"row":0,"col":1},"param":null},
 {"command":"PLAYUNIT","civ":"Rome","p":{"row":0,"col":2},"param":null},
-{"command":"ENDBATTLE","civ":"Rome","p":null,"param":null},
+{"command":"ENDBATTLE","civ":"Rome","p":null,"param":[]},
 {"command":"ENDOFMOVE","civ":"Rome","p":{"row":7,"col":4},"param":null},
 {"command":"ADVANCECULTUREFORFREE","civ":"Rome","p":null,"param":null},
 {"command":"GREATPERSON","civ":"Rome","p":null,"param":"GustavusAdolphus"}

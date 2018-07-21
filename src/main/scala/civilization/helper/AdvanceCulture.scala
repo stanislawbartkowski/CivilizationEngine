@@ -14,7 +14,7 @@ import civilization.message.{FatalError, M, Mess}
 
 object AdvanceCulture extends CommandPackage with ImplicitMiximFromJson with ImplicitMiximToJson {
 
-  override def getSet: Set[T] = Set(Command.ADVANCECULTURE, Command.CULTURECARD, Command.GREATPERSON, Command.ADVANCECULTUREFORFREE)
+  override def getSet: Set[T] = Set(Command.ADVANCECULTURE, Command.CULTURECARD, Command.GREATPERSON, Command.ADVANCECULTUREFORFREE, Command.DROPCULTURECARD)
 
   private def getCultureCost(cult: Int): CultureTrackCost = {
     val culturetrack: CultureTrack = GameResources.instance().culturetrack
@@ -84,6 +84,17 @@ object AdvanceCulture extends CommandPackage with ImplicitMiximFromJson with Imp
       deck.cultureresource.cards = deck.cultureresource.cards :+ param
   }
 
+  protected class DropCultureCard(override val param: CultureCardName.T) extends AbstractCommand(param) {
+    override def verify(board: GameBoard): Mess = null
+
+    override def execute(board: GameBoard): Unit = {
+      val fun: (CultureCardName.T, CultureCardName.T) => Boolean = (p1: CultureCardName.T, p2: CultureCardName.T) => {
+        p1 == p2
+      }
+      deck.cultureresource.cards = removeElem(deck.cultureresource.cards, param, fun)
+    }
+  }
+
   protected class TakeGreatPerson(override val param: GreatPersonName.T) extends AbstractCommand(param) {
     override def verify(board: GameBoard): Mess = null
 
@@ -102,6 +113,7 @@ object AdvanceCulture extends CommandPackage with ImplicitMiximFromJson with Imp
       }
       case Command.CULTURECARD => new TakeCultureCard(param)
       case Command.GREATPERSON => new TakeGreatPerson(param)
+      case Command.DROPCULTURECARD => new DropCultureCard(param)
 
     }
 

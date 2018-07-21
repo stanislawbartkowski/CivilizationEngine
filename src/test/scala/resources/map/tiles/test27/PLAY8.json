@@ -87,7 +87,7 @@
 {"command":"PLAYUNIT","civ":"China","p":{"row":0,"col":2},"param":null},
 {"command":"PLAYUNIT","civ":"America","p":{"row":1,"col":1},"param":null},
 {"command":"PLAYUNIT","civ":"America","p":{"row":0,"col":3},"param":null},
-{"command":"ENDBATTLE","civ":"America","p":null,"param":null},
+{"command":"ENDBATTLE","civ":"America","p":null,"param":[]},
 {"command":"ENDOFMOVE","civ":"America","p":{"row":5,"col":1},"param":null},
 {"command":"ENDOFPHASE","civ":"America","p":null,"param":"Movement"},
 {"command":"STARTMOVE","civ":"China","p":{"row":12,"col":4},"param":{"numberofArmies":1,"numberofScouts":0}},

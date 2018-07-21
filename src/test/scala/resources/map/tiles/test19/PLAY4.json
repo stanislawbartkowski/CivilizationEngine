@@ -160,8 +160,7 @@
  {"command":"PLAYUNIT","civ":"Egypt","p":{"row":0,"col":2},"param":null},
  {"command":"PLAYUNIT","civ":"Germany","p":{"row":0,"col":2},"param":null},
  {"command":"PLAYUNIT","civ":"Egypt","p":{"row":0,"col":3},"param":null},
- {"command":"ENDBATTLE","civ":"Germany","p":null,"param":"Iron"},
- {"command":"ENDOFMOVE","civ":"Egypt","p":null,"param":null},
- {"command":"TAKEWINNERLOOT","civ":"Egypt","p":null,"param":{"winner":"Germany","loser":"Egypt","winnerloot":"Iron","resource":"Iron","trade":0}}
+ {"command":"ENDBATTLE","civ":"Germany","p":null,"param": []},
+ {"command":"ENDOFMOVE","civ":"Egypt","p":null,"param":null}
    ]
  }

@@ -78,4 +78,6 @@ object S {
   final val cultureprogress = "cultureprogress"
   final val nameshort = "t"
   final val persontype = "type"
+  final val loot = "loot"
+  final val coinsheet = "coinsheet"
 }

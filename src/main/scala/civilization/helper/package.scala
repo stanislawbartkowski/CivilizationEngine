@@ -590,24 +590,24 @@ package object helper {
   def spendProdForCities(b: GameBoard, civ: Civilization.T): Map[P, Int] =
     spendTradeCommands(b, civ) map { case (p, seq) => (p, spendProdForCity(seq)) }
 
-  case class TradeForCivCalculate(val terrain: Int, val noresearch: Int, val toprod: Int, val loottrade: Int, val tradecoins: Int, val tradespendCulture: Int, val tradefromGreatLight: Int) {
-    def trade: Int = math.min(terrain + noresearch + tradefromGreatLight - toprod + loottrade + tradecoins - tradespendCulture, TRADEMAX)
+  case class TradeForCivCalculate(val terrain: Int, val noresearch: Int, val toprod: Int, val tradecoins: Int, val tradespendCulture: Int, val tradefromGreatLight: Int) {
+    def trade: Int = math.min(terrain + noresearch + tradefromGreatLight - toprod + tradecoins - tradespendCulture, TRADEMAX)
   }
 
-  case class TradeForCiv(val tradecalculated: Int, val loottrade: Int, val toprod: Int, val spendOnCulture: Int, val increasebysilk: Int, val begofturn: Int) {
-    def trade: Int = math.min(tradecalculated - toprod - spendOnCulture + loottrade + increasebysilk + begofturn, TRADEMAX)
+  case class TradeForCiv(val tradecalculated: Int, val toprod: Int, val spendOnCulture: Int, val increased: Int) {
+    def trade: Int = math.min(tradecalculated - toprod - spendOnCulture + increased, TRADEMAX)
   }
 
 
   private def numberofloottrade(b: GameBoard, civ: Civilization.T): Int = {
     val loott: Int = currentTurnReverseFromSeq(b.play.commands).foldLeft(0)((sum, c) => {
       var modif: Int = 0
-      if (c.command == Command.TAKEWINNERLOOT) {
-        val take: TakeWinnerLoot = c.param.asInstanceOf[TakeWinnerLoot]
-        if (take.loot.trade)
-          if (take.winner == civ) modif = take.trade
-          else if (take.loser == civ) modif = 0 - take.trade
-      }
+      //      if (c.command == Command.TAKEWINNERLOOT) {
+      //        val take: TakeWinnerLoot = c.param.asInstanceOf[TakeWinnerLoot]
+      //        if (take.loot.trade)
+      //          if (take.winner == civ) modif = take.trade
+      //          else if (take.loser == civ) modif = 0 - take.trade
+      //      }
       sum + modif
     }
     )
@@ -687,15 +687,15 @@ package object helper {
     if (b.tradecurrent) {
       // cheating
       val tra = numberofTradeCalculate(b, deck)
-      return TradeForCiv(tra.trade, 0, 0, 0, 0, 0)
+      return TradeForCiv(tra.trade, 0, 0, 0)
     }
     val li: PlayerLimits = getLimits(b, deck)
     val tradecalculated: Int = numberofTradeTradenoresearch(b, deck.civ)
     val spendonprod: Int = reduceTradeBySpend(b, deck.civ, li)
-    val loottrade: Int = numberofloottrade(b, deck.civ)
+    //    val loottrade: Int = numberofloottrade(b, deck.civ)
     val spendonculture: Int = tradeSpendOnCulture(b, deck.civ)
 
-    TradeForCiv(tradecalculated, loottrade, spendonprod, spendonculture, numberofTradeFromIncrease(b, deck, Command.INCREASETRADE), numberofTradeFromIncrease(b, deck, Command.INCREASETRADESTARTOFTURN))
+    TradeForCiv(tradecalculated, spendonprod, spendonculture, numberofTradeFromIncrease(b, deck, Command.INCREASETRADE))
   }
 
   private def tradefromGreatLight(b: GameBoard, deck: PlayerDeck): Int =
@@ -706,7 +706,7 @@ package object helper {
   def numberofTradeCalculate(b: GameBoard, deck: PlayerDeck): TradeForCivCalculate = {
     val li: PlayerLimits = getLimits(b, deck)
     TradeForCivCalculate(numberofTradeTerrain(b, deck), numberofTradenoresearch(b, deck), reduceTradeBySpend(b, deck, li),
-      numberofloottrade(b, deck.civ), getCoins(b, deck).coins, tradeSpendOnCulture(b, deck), tradefromGreatLight(b, deck))
+      getCoins(b, deck).coins, tradeSpendOnCulture(b, deck), tradefromGreatLight(b, deck))
   }
 
   // ===================================
@@ -981,12 +981,10 @@ package object helper {
     if (!kill) putFigures(b, civ, p, f)
   }
 
-  def cultureforhutvillage(b: GameBoard, civ: Civilization.T, isExecute: Boolean) = {
-    if (isExecute && CivilizationFeatures.get3CultureForHutOrVillage(civ)) {
-      val command: Command = constructCommand(Command.GETCULTURE, civ, null, JsNumber(3))
-      b.addForcedCommand(command)
-    }
-  }
+  def cultureforhutvillage(b: GameBoard, civ: Civilization.T, isExecute: Boolean) =
+    if (isExecute && CivilizationFeatures.get3CultureForHutOrVillage(civ))
+      b.increaseCultureCommand(civ, 3)
+
 
   def allMoves(b: GameBoard, deck: PlayerDeck, fig: Figures, startp: P, foreigncities: Boolean): Seq[P] = {
     // search breadth
@@ -1095,7 +1093,7 @@ package object helper {
     if (h.hv.isEmpty) decrResource(b, civ, h.resource)
     else decrHVResource(b, civ, h)
     if (isExecute && CivilizationFeatures.freeCultureForResourceSpend(civ))
-      b.addForcedCommandC(Command.GETCULTURE, civ, null, JsNumber(1))
+      b.increaseCultureCommand(civ, 1)
   }
 
   def takeResourceFromBoard(b: GameBoard, deck: PlayerDeck, reso: Resource.T) = {
@@ -1171,7 +1169,7 @@ package object helper {
     return 1 // first level
   }
 
-  private def listOfTechnologiesForCiv(b: GameBoard, deck: PlayerDeck, levelOk: (Int) => Boolean): Seq[PlayerTechnology] =
+  private def listOfTechnologiesForCiv(b: GameBoard, deck: PlayerDeck, levelOk: LevelOk): Seq[PlayerTechnology] =
     deck.tech.filter(te => levelOk(b.techlevel(te)))
 
   def listofLevel(b: GameBoard, deck: PlayerDeck, level: Int): Seq[PlayerTechnology] =
@@ -1180,12 +1178,22 @@ package object helper {
   def listOfLevelUpTo(b: GameBoard, deck: PlayerDeck, level: Int): Seq[PlayerTechnology] =
     listOfTechnologiesForCiv(b, deck, (le: Int) => (le <= level))
 
-  private def listOfRemainingTechnologies(b: GameBoard, deck: PlayerDeck, levelOk: (Int) => Boolean): Seq[TechnologyName.T] =
-    (GameResources.instance().tech.filter(te => levelOk(te.level)).map(_.tech) toSet) --
+  private def remainingTechnologies(b: GameBoard, tech: Seq[Technology], deck: PlayerDeck, levelOk: LevelOk): Seq[TechnologyName.T] =
+    (tech.filter(te => levelOk(te.level)).map(_.tech) toSet) --
       (listOfTechnologiesForCiv(b, deck, levelOk).map(_.tech) toSet) toSeq
+
+
+  private def listOfRemainingTechnologies(b: GameBoard, deck: PlayerDeck, levelOk: LevelOk): Seq[TechnologyName.T] =
+  //    (GameResources.instance().tech.filter(te => levelOk(te.level)).map(_.tech) toSet) --
+  //      (listOfTechnologiesForCiv(b, deck, levelOk).map(_.tech) toSet) toSeq
+    remainingTechnologies(b, GameResources.instance().tech, deck, levelOk)
 
   def listOfRemainingTechnologiesUpTo(b: GameBoard, deck: PlayerDeck, level: Int): Seq[TechnologyName.T] =
     listOfRemainingTechnologies(b: GameBoard, deck: PlayerDeck, (le: Int) => le <= level)
+
+  def listOfTechnologiestoLearn(b: GameBoard, deck: PlayerDeck, opposite: PlayerDeck, levelOk: LevelOk): Seq[TechnologyName.T] =
+    remainingTechnologies(b, opposite.tech.map(t => GameResources.getTechnology(t.tech)), deck, levelOk)
+
 
   // --------------------------------------------------
   // random culture or greatperson

@@ -35,7 +35,7 @@
 {"command":"PLAYUNIT","civ":"China","p":{"row":0,"col":1},"param":null},
 {"command":"PLAYUNIT","civ":"China","p":{"row":0,"col":0},"param":null},
 {"command":"SAVEUNIT","civ":"China","p":{"row":2,"col":-1},"param":null},
-{"command":"ENDBATTLE","civ":"China","p":null,"param":null},
+{"command":"ENDBATTLE","civ":"China","p":null,"param":[]},
 {"command":"ENDOFMOVE","civ":"China","p":null,"param":null}
 
     ] }

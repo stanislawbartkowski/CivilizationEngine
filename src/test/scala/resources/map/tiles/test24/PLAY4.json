@@ -133,7 +133,7 @@
  {"command":"PLAYUNIT","civ":"Rome","p":{"row":0,"col":0},"param":null},
  {"command":"PLAYUNIT","civ":"Rome","p":{"row":1,"col":1},"param":null},
  {"command":"PLAYUNIT","civ":"Rome","p":{"row":0,"col":2},"param":null},
- {"command":"ENDBATTLE","civ":"Rome","p":null,"param":null},
+ {"command":"ENDBATTLE","civ":"Rome","p":null,"param":[]},
  {"command":"ENDOFMOVE","civ":"Rome","p":{"row":11,"col":2},"param":null},
  {"command":"STARTMOVE","civ":"Rome","p":{"row":2,"col":7},"param":{"numberofArmies":1,"numberofScouts":0}},
  {"command":"MOVE","civ":"Rome","p":{"row":3,"col":7},"param":null},

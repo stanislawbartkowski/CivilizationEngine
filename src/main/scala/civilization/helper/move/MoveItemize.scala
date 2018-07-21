@@ -110,7 +110,7 @@ object MoveItemize extends ImplicitMiximFromJson with ImplicitMiximToJson {
             if (figo.get.f.numberofArmies > 0 || (figo.get.f.numberofScouts > 0 && lim.scoutscanExplore))
               hut = Some(pp._1.p)
           }
-          if (mess.m == M.CANNOTSETFIGUREONVILLAGE || mess.m == M.CANNOTSETFIGUREONALIENCIV /* || mess.m == M.CANNOTSETFGUREONALIENCITY || mess.m == M.CANNOTSETFIGUREONALIENCIV */ ) {
+          if (mess.m == M.CANNOTSETFIGUREONVILLAGE || mess.m == M.CANNOTSETFIGUREONALIENCIV || mess.m == M.CANNOTSETFGUREONALIENCITY /* || mess.m == M.CANNOTSETFIGUREONALIENCIV */ ) {
             val figo: Option[PlayerMove] = getCurrentMove(b, deck)
             if (figo.get.f.numberofArmies > 0)
               enemy = enemy :+ pp._1.p

@@ -46,16 +46,20 @@ trait ImplicitMiximFromJson {
 
   implicit def toCombatUnit(j: JsValue): CombatUnit = convert[CombatUnitJ](CombatUnitJ(j))
 
-  implicit def toWinnerLootNull(j: JsValue): WinnerLoot =
-    if (j == null || j == JsNull) WinnerLoot(None, None, false, false) else j.as[WinnerLoot]
+//  implicit def toWinnerLootNull(j: JsValue): WinnerLoot =
+//    if (j == null || j == JsNull) WinnerLoot(None, None, false, false) else j.as[WinnerLoot]
 
-  implicit def toTakeWinnerLoot(j: JsValue): TakeWinnerLoot = j.as[TakeWinnerLoot]
+//  implicit def toTakeWinnerLoot(j: JsValue): TakeWinnerLoot = j.as[TakeWinnerLoot]
 
   implicit def toTechnologName(j: JsValue) = j.as[TechnologyName.T]
+
+  implicit def toLootEffects(j : JsValue) : Seq[WinnerLootEffect] = j.as[Seq[WinnerLootEffect]]
 
   implicit def toBuildingPoint(j : JsValue) : BuildingPoint = j.as[BuildingPoint]
 
   implicit def toHutVillageT(j : JsValue) : HutVillage.T = j.as[HutVillage.T]
+
+  implicit def toHutVillage(j : JsValue) : HutVillage = j.as[HutVillage]
 
   implicit def toHVResource(j : JsValue) : HVResource = j.as[HVResource]
 

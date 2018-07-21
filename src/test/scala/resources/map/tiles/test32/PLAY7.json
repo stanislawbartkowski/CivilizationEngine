@@ -76,7 +76,7 @@
 {"command":"ENDOFPHASE","civ":"Arabs","p":null,"param":"Movement"},
 {"command":"RESEARCH","civ":"Arabs","p":null,"param":"HorsebackRiding"},
 {"command":"ENDOFPHASE","civ":"Arabs","p":null,"param":"Research"},
-{"command":"INCREASETRADESTARTOFTURN","civ":"Arabs","p":null,"param":3},
+{"command":"INCREASETRADE","civ":"Arabs","p":null,"param":3},
 {"command":"SETCITY","civ":"Arabs","p":{"row":5,"col":1},"param":null},
 {"command":"ENDOFPHASE","civ":"Arabs","p":null,"param":"StartOfTurn"},
 {"command":"ENDOFPHASE","civ":"Arabs","p":null,"param":"Trade"},
@@ -97,6 +97,6 @@
 {"command":"ENDOFPHASE","civ":"Arabs","p":null,"param":"Movement"},
 {"command":"RESEARCH","civ":"Arabs","p":null,"param":"Sailing"},
 {"command":"ENDOFPHASE","civ":"Arabs","p":null,"param":"Research"},
-{"command":"INCREASETRADESTARTOFTURN","civ":"Arabs","p":null,"param":3},
+{"command":"INCREASETRADE","civ":"Arabs","p":null,"param":3},
 {"command":"ENDOFPHASE","civ":"Arabs","p":null,"param":"StartOfTurn"}
     ]}

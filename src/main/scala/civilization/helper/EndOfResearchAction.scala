@@ -27,7 +27,7 @@ class EndOfResearchAction extends AbstractCommand1(TurnPhase.Research, 0) {
       board.addForcedCommandC(Command.GETCULTURE, civ, null, JsNumber(1))
     if (isExecute && hasWonderFeature(board, civ, WonderFeatures.increseTradeBy3InStartOfTurn))
     // StartOfTurn
-      board.addForcedCommandC(Command.INCREASETRADESTARTOFTURN, civ, null, JsNumber(3))
+      board.addForcedCommandC(Command.INCREASETRADE, civ, null, JsNumber(3))
 //    increseTradeBy3InStartOfTurn
   }
 }

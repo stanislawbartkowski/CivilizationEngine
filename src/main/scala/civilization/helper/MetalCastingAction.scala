@@ -13,8 +13,8 @@ object MetalCastingAction extends TechnologyResourceTrait {
   protected class MetalCastingAction(override val param: HVResource) extends TechnologyResourceAction(param) {
 
     override def executeI(board: gameboard.GameBoard): Unit = {
-      // increase production by 7
-      if (isExecute) board.addForcedCommandC(Command.GETCULTURE,civ,null,JsNumber(7))
+      // increase culture by 7
+      if (isExecute) board.increaseCultureCommand(civ, 7)
     }
   }
 

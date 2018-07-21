@@ -2,7 +2,7 @@ package civilization.test
 
 import civilization.I
 import civilization.I.executeCommand
-import civilization.gameboard.GameBoard
+import civilization.gameboard.{GameBoard, WinnerLoot}
 import civilization.helper._
 import civilization.io.fromjson.{toJ, _}
 import civilization.io.tojson.ImplicitMiximToJson
@@ -11,6 +11,7 @@ import civilization.test.Helper.{II, getBoardAndRegister}
 import org.scalatest.FunSuite
 import play.api.libs.json.{JsArray, JsString, JsValue}
 import Helper._
+import civilization.helper.battle.BattleActions
 
 
 class Test33 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJson {
@@ -33,11 +34,13 @@ class Test33 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
     val batt = getBattle(b)
     println(batt)
     // scouts attacked, end of battle
-    checkendofbattle(batt,true)
-    checkattackerwinner(batt,true)
+    checkendofbattle(batt, true)
+    checkattackerwinner(batt, true)
     // issue end of battle immediately
     // take a loot
-    Helper.executeCommandH(tokenR, "ENDBATTLE", -1, -1,""" "Incense" """)
+    val param =
+    """ [{"name" : "resource","loot" : 1,"resource" : "Incense"}]  """
+    Helper.executeCommandH(tokenR, "ENDBATTLE", -1, -1, param)
     gg = I.getBoardForToken(tokenA)
     // no battle
     assert(gg.battle.isEmpty)
@@ -76,7 +79,7 @@ class Test33 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
     val reg = Helper.readBoardAndPlayT("test33/BOARDGAME2.json", "test33/PLAY3.json", Civilization.Arabs)
     val token = reg._1
     var gg: GameBoard = I.getBoardForToken(token)
-    val cities : Seq[MapSquareP] = citiesForCivilization(gg,Civilization.Arabs)
+    val cities: Seq[MapSquareP] = citiesForCivilization(gg, Civilization.Arabs)
     cities.foreach(println)
     val trade = numberofTradeCalculateH(gg, Civilization.Arabs)
     println(trade.tradefromGreatLight)
@@ -86,5 +89,102 @@ class Test33 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
     // should be 9, one more
     println(tr.trade == 9)
   }
-}
 
+  test("Two players game, win culture") {
+    val reg = Helper.ReadAndPlayForTwo("test33/BOARDGAME4.json", "test33/PLAY4.json", Civilization.America, Civilization.China)
+    val tokenA = reg._1
+    val tokenC = reg._2
+    var gg: GameBoard = I.getBoardForToken(tokenA)
+    val cultA = gg.playerDeck(Civilization.America).resou.nof(Resource.Culture)
+    val cultC = gg.playerDeck(Civilization.China).resou.nof(Resource.Culture)
+    println(cultA)
+    println(cultC)
+    val s: WinnerLoot = BattleActions.winnerLoot(gg)
+    println(s)
+    val param = """ [{"name" : "culture","loot" : 1}]  """
+    Helper.executeCommandH(tokenA, "ENDBATTLE", -1, -1, param)
+    gg = I.getBoardForToken(tokenA)
+    val cultAA = gg.playerDeck(Civilization.America).resou.nof(Resource.Culture)
+    val cultCC = gg.playerDeck(Civilization.China).resou.nof(Resource.Culture)
+    println(cultAA)
+    println(cultCC)
+    assert(cultA + 3 == cultAA)
+    assert(cultC - 3 == cultCC)
+  }
+
+
+  test("Two players game, drop culture card") {
+    val reg = Helper.ReadAndPlayForTwo("test33/BOARDGAME4.json", "test33/PLAY4.json", Civilization.America, Civilization.China)
+    val tokenA = reg._1
+    val tokenC = reg._2
+    var gg: GameBoard = I.getBoardForToken(tokenA)
+    val cardlistp = gg.playerDeck(Civilization.China).cultureresource.cards
+    println(cardlistp)
+    assert(!cardlistp.isEmpty)
+    val s: WinnerLoot = BattleActions.winnerLoot(gg)
+    println(s)
+    val param = """ [{"name" : "card","loot" : 1,"level" : 1}]  """
+    Helper.executeCommandH(tokenA, "ENDBATTLE", -1, -1, param)
+    gg = I.getBoardForToken(tokenA)
+    val cardlist = gg.playerDeck(Civilization.China).cultureresource.cards
+    println(cardlist)
+    assert(cardlist.isEmpty)
+    val cardlista = gg.playerDeck(Civilization.America).cultureresource.cards
+    println(cardlista)
+    assert(cardlista.isEmpty)
+
+  }
+
+  test("Two players game, drop coin") {
+    val reg = Helper.ReadAndPlayForTwo("test33/BOARDGAME4.json", "test33/PLAY5.json", Civilization.America, Civilization.China)
+    val tokenA = reg._1
+    val tokenC = reg._2
+    var gg: GameBoard = I.getBoardForToken(tokenA)
+    val s: WinnerLoot = BattleActions.winnerLoot(gg)
+    val coins = gg.playerDeck(Civilization.America).tech.find(_.tech == TechnologyName.Pottery).get.coins
+    val ee = getCoins(gg, gg.playerDeck(Civilization.America))
+    println(ee.coins)
+    println(s)
+    println(coins)
+    val param = """ [{"name" : "coin","loot" : 1,"tech" : "Pottery"}]  """
+    Helper.executeCommandH(tokenA, "ENDBATTLE", -1, -1, param)
+    gg = I.getBoardForToken(tokenA)
+    val coins1 = gg.playerDeck(Civilization.America).tech.find(_.tech == TechnologyName.Pottery).get.coins
+    assert(coins1 == 0)
+    val e = getCoins(gg, gg.playerDeck(Civilization.America))
+    println(e.coins)
+    assert(ee.coins - 1 == e.coins)
+  }
+
+  test("Two players game, attack the city") {
+    val reg = Helper.ReadAndPlayForTwo("test33/BOARDGAME4.json", "test33/PLAY6.json", Civilization.America, Civilization.China)
+    val tokenA = reg._1
+    val tokenC = reg._2
+    var gg: GameBoard = I.getBoardForToken(tokenA)
+    var l = allowedCommandsH(gg, Civilization.China)
+    println(l)
+    assert(l contains Command.ATTACK)
+    var ite = II.getData(II.ITEMIZECOMMAND, tokenC, "ATTACK")
+    println(ite)
+    Helper.executeCommandH(tokenC, "ATTACK", 6, 2)
+    gg = I.getBoardForToken(tokenA)
+    println(gg.battle.get.defender.combatBonus)
+    // city is defended
+    assert(gg.battle.get.defender.combatBonus == 6)
+    println(gg.battle.get.defender.waiting)
+    assert(gg.battle.get.defender.waiting.length == 3)
+    println(gg.battle.get.attacker.waiting)
+    assert(gg.battle.get.attacker.waiting.length == 3)
+  }
+
+  test("Two players game, attack the city and lose, only single loot") {
+    val reg = Helper.ReadAndPlayForTwo("test33/BOARDGAME4.json", "test33/PLAY7.json", Civilization.America, Civilization.China)
+    val tokenA = reg._1
+    val tokenC = reg._2
+    var gg: GameBoard = I.getBoardForToken(tokenA)
+    val s: WinnerLoot = BattleActions.winnerLoot(gg)
+    println(s)
+    // not 2
+    assert(s.loot == 1)
+  }
+}

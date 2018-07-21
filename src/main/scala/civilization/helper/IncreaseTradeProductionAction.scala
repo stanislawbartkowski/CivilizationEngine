@@ -13,7 +13,7 @@ import play.api.libs.json.JsValue
 
 object IncreaseTradeProductionAction extends CommandPackage with ImplicitMiximFromJson with ImplicitMiximToJson {
 
-  override def getSet: Set[Command.T] = Set(Command.INCREASETRADE, Command.INCREASEPRODUCTION, Command.INCREASETRADESTARTOFTURN)
+  override def getSet: Set[Command.T] = Set(Command.INCREASETRADE, Command.INCREASEPRODUCTION)
 
   // does nothing, only place holder
   protected class IncreaseTradeAction(override val param: Int) extends AbstractCommand(param) {

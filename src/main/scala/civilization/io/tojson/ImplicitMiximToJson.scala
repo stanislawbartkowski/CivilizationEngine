@@ -36,7 +36,7 @@ trait ImplicitMiximToJson {
 
   implicit def writeCombatUnit(m: CombatUnit): JsValue = Json.toJson(m)
 
-  implicit def writeTakeWinnerLoot(m: TakeWinnerLoot): JsValue = Json.toJson(m)
+//  implicit def writeTakeWinnerLoot(m: TakeWinnerLoot): JsValue = Json.toJson(m)
 
   implicit val buildingpointWrites: Writes[BuildingPoint] = new Writes[BuildingPoint] {
     override def writes(o: BuildingPoint): JsValue = Json.obj(
@@ -90,5 +90,8 @@ trait ImplicitMiximToJson {
   implicit def toTechnologyName(t : TechnologyName.T) : JsValue = Json.toJson(t)
 
   implicit def writeListOfTechnlogyNames(p : Seq[TechnologyName.T]) : Seq[JsValue] = p.map(toTechnologyName)
+
+  implicit def toHutVillage(h: HutVillage): JsValue = Json.toJson(h)
+
 
 }

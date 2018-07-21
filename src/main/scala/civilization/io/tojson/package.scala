@@ -200,11 +200,23 @@ package object tojson extends ImplicitMiximToJson {
   }
 
   implicit val winnerlootWrites: Writes[WinnerLoot] = new Writes[WinnerLoot] {
-    def writes(m: WinnerLoot) =
-      if (m.trade) Json.toJson(S.trade)
-      else if (m.hv.isDefined) Json.toJson(m.hv.get)
-      else Json.toJson(m.res.get)
+    def writes(m: WinnerLoot) = Json.obj(
+      S.loot -> m.loot,
+      S.list -> m.list
+    )
   }
+
+  implicit val winnereffectlootWrites: Writes[WinnerLootEffect] = new Writes[WinnerLootEffect] {
+    def writes(m: WinnerLootEffect): JsObject = Json.obj(
+      S.name -> m.name,
+      S.loot -> m.loot,
+      S.tech -> m.tech,
+      S.resource -> m.resource,
+      S.level -> m.cardlevel,
+      S.coinsheet -> m.coinsheet
+    )
+  }
+
 
   implicit val gameresourcesWrites: Writes[BoardResources] = new Writes[BoardResources] {
     def writes(m: BoardResources) = {
@@ -274,15 +286,15 @@ package object tojson extends ImplicitMiximToJson {
     )
   }
 
-  implicit val takewinnerlootWrites: Writes[TakeWinnerLoot] = new Writes[TakeWinnerLoot] {
-    override def writes(o: TakeWinnerLoot) = Json.obj(
-      S.winner -> o.winner,
-      S.loser -> o.loser,
-      S.winnerloot -> o.loot,
-      S.resource -> o.reso,
-      S.trade -> o.trade
-    )
-  }
+  //  implicit val takewinnerlootWrites: Writes[TakeWinnerLoot] = new Writes[TakeWinnerLoot] {
+  //    override def writes(o: TakeWinnerLoot) = Json.obj(
+  //      S.winner -> o.winner,
+  //      S.loser -> o.loser,
+  //      S.winnerloot -> o.loot,
+  //      S.resource -> o.reso,
+  //      S.trade -> o.trade
+  //    )
+  //  }
 
   implicit val tekensWrite: Writes[Tokens] = new Writes[Tokens] {
     override def writes(o: Tokens): JsValue = Json.obj(
@@ -353,6 +365,6 @@ package object tojson extends ImplicitMiximToJson {
 
   implicit def writeGreatPerson(t: Seq[GreatPerson]): JsValue = Json.toJson(t)
 
-  implicit def writeCultureCards(t : Seq[CultureCard]) : JsValue = Json.toJson(t)
+  implicit def writeCultureCards(t: Seq[CultureCard]): JsValue = Json.toJson(t)
 
 }

@@ -10,13 +10,14 @@ package object objects {
   val UNITLEVELSIZE = 4
   val UNITSBATTLE = 3
   val IRONSTRENGTH = 3
-  val MAXLOOTTRADE = 3
   val WONDERWINDOW = 4
   val COINSCAPACITY = 4
   val CULTURECITY = 1
   val CULTURECAPITAL = 1
   val DEFAULTCITYLIMIT = 2
   val DEFAULTTRAVELSPPED = 2
+  def WINNERTRADELOOT = 3
+  def WINNERCULTURELOOT = 3
 
   case class GameConfig(val ironincreasedefend: Boolean)
 
@@ -247,8 +248,6 @@ package object objects {
     Logistics,
     Bureaucracy,
     Banking = Value
-
-    def isCoinTechnology(t: Value): Boolean = (t == Pottery || t == CodeOfLaw)
   }
 
   def levelTrade(level: Int): Int = MINTRADE + (level - 1) * 5
@@ -267,6 +266,8 @@ package object objects {
     * @param level Level of this technology
     */
   case class Technology(val tech: TechnologyName.T, val gover: Option[GovernmentName.T], val level: Int, val notimplemented: Option[Boolean], val building: Option[BuildingName.T], val resource: Option[Resource.T], val desc: String, val resourceany: Option[Int], val unit: Option[TechnologyUnit], val coins: Option[Int])
+
+  type LevelOk =  (Int) => Boolean
 
   object WondersAge extends Enumeration {
     type T = Value
@@ -344,5 +345,12 @@ package object objects {
   }
 
   case class CultureCard(val name: CultureCardName.T, val level: Int, val notimplemented: Option[Boolean], val num: Int, val phase: Option[TurnPhase.T], val desc: String)
+
+  object LootEffectName extends Enumeration {
+    type T = Value
+    val
+      trade, hut, village, resource, culture, card, tech, coin
+    = Value
+  }
 
 }

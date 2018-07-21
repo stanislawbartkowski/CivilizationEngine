@@ -33,7 +33,7 @@ object TakeResourceCommand extends CommandPackage with ImplicitMiximFromJson wit
   protected class TakeResourceCommand (override val param: Resource.T) extends AbstractCommand(param) {
     override def verify(board: GameBoard): Mess = {
       if (deck.takefreeResources == 0) return Mess(M.CANNOTTAKEFREERESOURCE)
-      if (board.resources.resou.nof(param) == 0) return Mess(M.RESOURCENOTAVAILABLE,param)
+      if (!board.resources.resou.exist(param)) return Mess(M.RESOURCENOTAVAILABLE,param)
       null
     }
 

@@ -68,7 +68,7 @@
 {"command":"PLAYUNIT","civ":"Arabs","p":{"row":0,"col":1},"param":null},
 {"command":"PLAYUNIT","civ":"Arabs","p":{"row":1,"col":3},"param":null},
 {"command":"PLAYUNIT","civ":"Arabs","p":{"row":0,"col":4},"param":null},
-{"command":"ENDBATTLE","civ":"Arabs","p":null,"param":null},
+{"command":"ENDBATTLE","civ":"Arabs","p":null,"param":[]},
 {"command":"ENDOFMOVE","civ":"Arabs","p":{"row":7,"col":2},"param":null},
 {"command":"ENDOFPHASE","civ":"Arabs","p":null,"param":"Movement"},
 {"command":"RESEARCH","civ":"Arabs","p":null,"param":"Currency"},

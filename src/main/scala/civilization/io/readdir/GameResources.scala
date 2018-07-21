@@ -44,5 +44,7 @@ object GameResources {
 
   def getGreatPersonType(t: GreatPersonTypeName.T) = instance().greatpersontype.find(_.name == t).get
 
-  def getCivilizationG(civ : Civilization.T) : CivilizationG = instance().civ.find(_.civ == civ).get
+  def getCivilizationG(civ: Civilization.T): CivilizationG = instance().civ.find(_.civ == civ).get
+
+  def getCultureCard(t: CultureCardName.T): CultureCard = instance().culturecards.find(_.name == t).get
 }

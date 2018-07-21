@@ -23,6 +23,4 @@ object GetCultureAction extends CommandPackage with ImplicitMiximFromJson with I
 
   override def produceCommand(command: Command.T, civ: Civilization.T, p: P, param: JsValue): Command = new IncreaseCultureAction(param)
 
-  override def itemize(b: GameBoard, deck: PlayerDeck, com: Command.T): Seq[JsValue] = Nil
-
 }
