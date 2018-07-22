@@ -199,7 +199,8 @@ class Test33 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
     println(cultcc)
 
     //    println(gg.playerDeck(Civilization.China).units)
-    val param = """ [{"name" : "culture","loot" : 1}]  """
+    val param =
+      """ [{"name" : "culture","loot" : 1}]  """
     Helper.executeCommandH(tokenA, "ENDBATTLE", -1, -1, param)
     gg = I.getBoardForToken(tokenA)
     val culta = gg.playerDeck(Civilization.America).resou.nof(Resource.Culture)
@@ -207,11 +208,40 @@ class Test33 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
     assert(culta == cultaa + 3)
     val cultc = gg.playerDeck(Civilization.China).resou.nof(Resource.Culture)
     println(cultc)
-    assert(cultc == cultcc -3)
+    assert(cultc == cultcc - 3)
 
     // China: two survived and 1 saved
-    val unitC =  gg.playerDeck(Civilization.China).units
+    val unitC = gg.playerDeck(Civilization.China).units
     println(unitC)
     assert(unitC.length == 3)
+
+    val ma: MapSquareP = getSquare(gg, P(6, 2))
+    println(ma)
+    assert(ma.s.city.get.civ == Civilization.America)
+  }
+
+  test("Two players game, China takes the city, technology loot") {
+    val reg = Helper.ReadAndPlayForTwo("test33/BOARDGAME4.json", "test33/PLAY9.json", Civilization.America, Civilization.China)
+    val tokenA = reg._1
+    val tokenC = reg._2
+    var gg: GameBoard = I.getBoardForToken(tokenA)
+    val s: WinnerLoot = BattleActions.winnerLoot(gg)
+    println(s)
+    val param = """ [{"name" : "tech","loot" : 2,"tech" : "Pottery"}]  """
+    Helper.executeCommandH(tokenC, "ENDBATTLE", -1, -1, param)
+    // verify no city
+    gg = I.getBoardForToken(tokenA)
+    val ma: MapSquareP = getSquare(gg, P(6, 2))
+    println(ma)
+    assert(ma.s.city.isEmpty)
+    assert(ma.civHere.get == Civilization.China)
+    // nothing around
+    squaresAround(gg,P(6,2)).foreach(
+      s => {
+        assert(s.s.building.isEmpty)
+        assert(s.s.wonder.isEmpty)
+        assert(s.s.greatperson.isEmpty)
+      }
+    )
   }
 }

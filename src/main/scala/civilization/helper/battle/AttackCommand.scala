@@ -63,18 +63,18 @@ object AttackCommand extends ImplicitMiximToJson {
       val pl: PlayerDeck = b.playerDeck(p.civHere.get)
       pl.units = pl.units ++ survived ++ saved
     }
-//    if (winner) {
-//      val pl: PlayerDeck = b.playerDeck(p.civHere.get)
-//      pl.units = pl.units ++ survived ++ saved
-//    }
+    //    if (winner) {
+    //      val pl: PlayerDeck = b.playerDeck(p.civHere.get)
+    //      pl.units = pl.units ++ survived ++ saved
+    //    }
     // else kill them all
-//    else {
-//      b.market.killedunits = b.market.killedunits ++ survived
-//      if (!s.isvillage) {
-//        val pl: PlayerDeck = b.playerDeck(p.civHere.get)
-//        pl.units = pl.units ++ saved
-//      }
-//    }
+    //    else {
+    //      b.market.killedunits = b.market.killedunits ++ survived
+    //      if (!s.isvillage) {
+    //        val pl: PlayerDeck = b.playerDeck(p.civHere.get)
+    //        pl.units = pl.units ++ saved
+    //      }
+    //    }
     // figures participating in the battle
     // important: 2017/12/24
     // p.civHere.get not civ !
@@ -152,10 +152,15 @@ object AttackCommand extends ImplicitMiximToJson {
         case LootEffectName.card => {
           val ca: CultureCardName.T = takerandomcard(looser, e.cardlevel.get)
           g.addForcedCommandC(Command.DROPCULTURECARD, looserciv, null, ca)
+          if (e.level2) g.addForcedCommandC(Command.CULTURECARD, winnerciv, null, ca)
         }
         case LootEffectName.coin => {
           if (e.coinsheet.isDefined && e.coinsheet.get) g.addForcedCommandC(Command.GETCOIN, looserciv, null, JsNumber(-1))
           else g.addForcedCommandC(Command.DROPCOINFROMTECHNOLOGY, looserciv, null, e.tech.get)
+          if (e.level2) g.addForcedCommandC(Command.GETCOIN, winnerciv, null, JsNumber(1))
+        }
+        case LootEffectName.tech => {
+          g.addForcedCommandC(Command.GETTECHNOLOGY, winnerciv, null, e.tech.get)
         }
       }
     })
@@ -203,6 +208,10 @@ object AttackCommand extends ImplicitMiximToJson {
       // loot
       if (isExecute) {
         if (batt.attackerwinner) {
+          if (defe.civHere.isDefined && defe.s.city.isDefined)
+          // city is conquered, destroy city before moving on
+            board.addForcedCommandC(Command.CITYLOST, defe.civHere.get, defe.p)
+
           // move army to this point
           val param: JsValue = if (f.isEmpty) null else f.get
           val command: Command = constructCommand(Command.ENDOFMOVE, attackciv, defe.p, param)

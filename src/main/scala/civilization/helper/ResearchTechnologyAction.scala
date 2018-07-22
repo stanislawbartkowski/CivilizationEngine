@@ -16,7 +16,7 @@ import play.api.libs.json.JsValue
 
 object ResearchTechnology extends CommandPackage with ImplicitMiximFromJson with ImplicitMiximToJson {
 
-  override def getSet: Set[Command.T] = Set(Command.RESEARCH, Command.RESEARCHFREETECHNOLOGY)
+  override def getSet: Set[Command.T] = Set(Command.RESEARCH, Command.RESEARCHFREETECHNOLOGY, Command.GETTECHNOLOGY)
 
   private def applyNewStrength(str: CombatUnitStrength, t: CombatUnitType.T, newval: Int) =
     str.setStrength(t, math.max(str.getStrength(t), newval))

@@ -1257,6 +1257,7 @@ package object helper {
     (gp -- p) toSeq
   }
 
+
   // -----------------------------------
 
   def canSaveUnitForCiv(civ: Civilization.T, side: BattleFieldSide): Boolean =
@@ -1280,4 +1281,12 @@ package object helper {
   // ----------------------------
   def hasWonderFeature(b: GameBoard, civ: Civilization.T, hasfeature: (Wonders.T) => Boolean): Boolean =
     outskirtsForCivNotBlocked(b, civ).exists(s => s.s.wonder.isDefined && hasfeature(s.s.wonder.get.w))
+
+  // ------------------------------------------
+  def destroyCity(b: GameBoard, pl: PlayerDeck, p: P) = {
+    squaresAround(b,p).foreach(s => removeStructure(b,s))
+    // remove city
+    getSquare(b,p).s.city = None
+  }
+
 }

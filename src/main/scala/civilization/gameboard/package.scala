@@ -273,6 +273,7 @@ package object gameboard {
   }
 
   case class WinnerLootEffect(val name: LootEffectName.T, val loot: Int, val tech: Option[TechnologyName.T], val resource: Option[Resource.T], val cardlevel: Option[Int], val coinsheet: Option[Boolean]) {
+    require(loot == 1 || loot == 2)
     def ==(v: WinnerLootEffect): Boolean = {
       if (name != v.name) return false
       if (loot != v.loot) return false
@@ -290,6 +291,7 @@ package object gameboard {
         if (resource.get != v.resource.get) return false
       true
     }
+    def level2 : Boolean = loot == 2
   }
 
   case class WinnerLoot(val loot: Int, val list: Seq[WinnerLootEffect])
