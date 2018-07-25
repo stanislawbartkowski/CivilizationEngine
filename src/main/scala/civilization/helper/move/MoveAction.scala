@@ -65,27 +65,27 @@ object MoveAction extends ImplicitMiximFromJson with ImplicitMiximToJson {
   class StartMoveAction(override val param: Figures) extends AbstractCommand(param) {
     def execute(board: GameBoard) = Unit
 
-    def verify(board: GameBoard): Mess = startOfMoveVerify(board, civ, p, param)
+    override def verify(board: GameBoard): Mess = startOfMoveVerify(board, civ, p, param)
   }
 
   class MoveAction(override val param: Figures) extends AbstractCommand(param) {
 
     def execute(board: GameBoard) = figureMoveExecute(board, deck, p, false, if (param == null) None else Some(param))
 
-    def verify(board: GameBoard): Mess = figureMoveVerify(board, deck, p, false).getOrElse(null)
+    override def verify(board: GameBoard): Mess = figureMoveVerify(board, deck, p, false).getOrElse(null)
   }
 
   class EndOfMoveAction(override val param: Figures) extends AbstractCommand(param) {
 
     def execute(board: GameBoard) = figureMoveExecute(board, civ, p, true, if (param == null) None else Some(param))
 
-    def verify(board: GameBoard): Mess = figureMoveVerify(board, deck, p, true).getOrElse(null)
+    override def verify(board: GameBoard): Mess = figureMoveVerify(board, deck, p, true).getOrElse(null)
   }
 
   class ForceMoveAction(override val param: Figures) extends AbstractCommand(param) {
     def execute(board: GameBoard) = putFigures(board, civ, p, param)
 
-    def verify(board: GameBoard): Mess = checkFinalPoint(board, deck, getSquare(board, p), param).getOrElse(null)
+    override def verify(board: GameBoard): Mess = checkFinalPoint(board, deck, getSquare(board, p), param).getOrElse(null)
   }
 
   class KillFigureAction(override val param: Figures) extends AbstractCommand(param) {
@@ -94,7 +94,6 @@ object MoveAction extends ImplicitMiximFromJson with ImplicitMiximToJson {
       addToJournal(board, civ, J.FIGURESAREKILLED, null)
     }
 
-    def verify(board: GameBoard): Mess = null
   }
 
   class SacrificeFigureFortech(override val param: TechnologyName.T) extends AbstractCommand(param) {
@@ -112,7 +111,7 @@ object MoveAction extends ImplicitMiximFromJson with ImplicitMiximToJson {
       }
     }
 
-    def verify(board: GameBoard): Mess = {
+    override def verify(board: GameBoard): Mess = {
       val i : Seq[SacrificeForTech] = MoveItemize.itemizeForFigureSacrifice(board,deck)
       if (!i.exists( s => s.figure == p && (s.tech contains param))) Mess(M.CANNOTSACRIFICEFIGUREFORFREETECH,param)
       else null

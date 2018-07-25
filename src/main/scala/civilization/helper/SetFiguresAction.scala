@@ -67,7 +67,7 @@ object SetFigureAction extends CommandPackage with ImplicitMiximFromJson with Im
     def execute(board: GameBoard) =
       putFigures(board, civ, param._2, if (param._1 == Figure.Army) Figures(1, 0) else Figures(0, 1))
 
-    def verify(board: GameBoard): Mess = verifySetFigure(board, deck, p, param._2, param._1, command).getOrElse(null)
+    override def verify(board: GameBoard): Mess = verifySetFigure(board, deck, p, param._2, param._1, command).getOrElse(null)
   }
 
   override def itemize(b: GameBoard, deck: PlayerDeck, com: Command.T): Seq[JsValue] = itemizeForSetBuyFigures(b, deck, com)

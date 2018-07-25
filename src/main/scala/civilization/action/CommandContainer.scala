@@ -12,7 +12,7 @@ object CommandContainer {
     PotteryPhilosophyAction, SetCityAction, TakeResourceCommand, SpendSilkAction,
     SetFigureAction, DevoutToCultureCommand, AdvanceCulture, CurrencyAction, DiscardCard, GreatPersonAction,
     ConstructionAction, GetCultureAction, MetalCastingAction, BankingAction, ChivalryAction, GetResourceCommand,
-    GetHutVillageCommand, GetCoinCommand, DestroyCityAction)
+    GetHutVillageCommand, GetCoinCommand, DestroyCityAction, WinTheGame)
 
   val comset: Map[Command.T, CommandPackage] = commands.map(c => c.getSet.map(co => (co, c))).flatten.map(c => c._1 -> c._2) toMap
 

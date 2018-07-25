@@ -253,6 +253,8 @@ package object gameboard {
     var freeWonder: Option[Wonders.T] = None
     // number of free resources to take, can be 3 for Navigation
     var takefreeResources: Int = 0
+    // win the game
+    var winthegame : Option[GameWinType.T] = None
   }
 
   implicit def playerDeckToCiv(deck: PlayerDeck): Civilization.T = deck.civ
@@ -302,10 +304,6 @@ package object gameboard {
     def ni: Boolean = notimplemented.isDefined && notimplemented.get
   }
 
-  //  case class TakeWinnerLootEffect()
-
-  //  case class TakeWinnerLoot(val winner: Civilization.T, val loser: Civilization.T, val loot: WinnerLoot, val reso: Option[Resource.T], val trade: Int)
-
   case class FrontUnit(val unit: CombatUnit, var attackstrength: Int, var defendstrenght: Int, var wounds: Int)
 
   case class BattleFieldSide(val fighting: BattleArmy, var waiting: Seq[CombatUnit], var killed: Seq[CombatUnit], val strength: CombatUnitStrength, val combatBonus: Int, var canuseiron: Boolean, val isvillage: Boolean, isScouts: Boolean, var savedunit: Option[Int] = None) {
@@ -341,6 +339,8 @@ package object gameboard {
     def g = gp.get
   }
 
+  case class EndOfGame(val winner : Civilization.T,val wintype : GameWinType.T)
+
   case class GameBoard(val players: Seq[PlayerDeck], val map: BoardMap, val resources: Resources, val market: Market) {
 
     // order of civilizations to play
@@ -361,6 +361,7 @@ package object gameboard {
     var battle: Option[BattleField] = None
     val journal: Journal = collection.mutable.ListBuffer() // empty
     val cultureused: CultureResources = CultureResources()
+    var endofgame : Option[EndOfGame] = None
 
     def rotateplorder: Unit = if (!norotate) pllist = rotaterightList(pllist)
 

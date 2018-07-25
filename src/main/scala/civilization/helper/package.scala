@@ -678,9 +678,8 @@ package object helper {
   }
 
   private def numberofTradeFromIncrease(b: GameBoard, deck: PlayerDeck, com: Command.T): Int = {
-    val o = numberofFromCommand(b, deck, com)
-    if (o.isEmpty) 0
-    else o.get._2
+    val sum: Int = currentTurnReverse(b, deck).filter(_.command == com).map(co => co.param.asInstanceOf[Int]).sum
+    sum
   }
 
   def numberofTrade(b: GameBoard, deck: PlayerDeck): TradeForCiv = {
@@ -1284,9 +1283,14 @@ package object helper {
 
   // ------------------------------------------
   def destroyCity(b: GameBoard, pl: PlayerDeck, p: P) = {
-    squaresAround(b,p).foreach(s => removeStructure(b,s))
+    squaresAround(b, p).foreach(s => removeStructure(b, s))
     // remove city
-    getSquare(b,p).s.city = None
+    getSquare(b, p).s.city = None
   }
+
+  // ------------------------------------------
+
+  def gameWinner(b: GameBoard): Option[PlayerDeck] =
+    b.pllist.map(b.playerDeck(_)).find(_.winthegame.isDefined)
 
 }

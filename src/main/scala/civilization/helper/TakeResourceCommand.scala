@@ -16,8 +16,6 @@ object TakeResourceCommand extends CommandPackage with ImplicitMiximFromJson wit
 
   protected class TakeFreeResources extends AbstractCommandNone {
 
-    override def verify(board: gameboard.GameBoard): message.Mess = null
-
     override def execute(board: gameboard.GameBoard): Unit = {
       if (!CivilizationFeatures.freeResourcesAtStart(civ))
         throw FatalError(Mess(M.YOUARENOTENTITLETORECEIVEFREERESOURCES, civ))

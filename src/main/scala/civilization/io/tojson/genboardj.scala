@@ -190,7 +190,8 @@ object genboardj {
       S.wonders -> writeListOfWondersNames(g.market.wonders.take(WONDERWINDOW)),
       S.battle -> genBattleJson(g, civ),
       S.buildings -> Json.toJson(g.market.buildings),
-      "cultureused" -> CultureResourcesToJSon.cultureToJSon(g.cultureused, true)
+      "cultureused" -> CultureResourcesToJSon.cultureToJSon(g.cultureused, true),
+      "endofgame" -> Json.toJson(g.endofgame)
     ))))
   }
 

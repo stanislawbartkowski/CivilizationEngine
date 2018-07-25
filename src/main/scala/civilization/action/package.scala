@@ -118,7 +118,7 @@ package object action extends ImplicitMiximToJson with ImplicitMiximFromJson {
       verify(board)
     }
 
-    protected def verify(board: GameBoard): Mess
+    protected def verify(board: GameBoard): Mess = null
 
     def executeCommand(board: GameBoard) = {
       deck = board.playerDeck(civ)

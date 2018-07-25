@@ -16,7 +16,9 @@ package object objects {
   val CULTURECAPITAL = 1
   val DEFAULTCITYLIMIT = 2
   val DEFAULTTRAVELSPPED = 2
+
   def WINNERTRADELOOT = 3
+
   def WINNERCULTURELOOT = 3
 
   case class GameConfig(val ironincreasedefend: Boolean)
@@ -72,7 +74,8 @@ package object objects {
   object Resource extends Enumeration {
     type T = Value
     val Wheat, Silk, Incense, Iron, Coin, Spy, Uranium, Culture = Value
-    def isMarketResource(t : Value) : Boolean =
+
+    def isMarketResource(t: Value): Boolean =
       return (t == Silk || t == Wheat || t == Incense || t == Iron)
   }
 
@@ -267,7 +270,7 @@ package object objects {
     */
   case class Technology(val tech: TechnologyName.T, val gover: Option[GovernmentName.T], val level: Int, val notimplemented: Option[Boolean], val building: Option[BuildingName.T], val resource: Option[Resource.T], val desc: String, val resourceany: Option[Int], val unit: Option[TechnologyUnit], val coins: Option[Int])
 
-  type LevelOk =  (Int) => Boolean
+  type LevelOk = (Int) => Boolean
 
   object WondersAge extends Enumeration {
     type T = Value
@@ -349,8 +352,14 @@ package object objects {
   object LootEffectName extends Enumeration {
     type T = Value
     val
-      trade, hut, village, resource, culture, card, tech, coin
+    trade, hut, village, resource, culture, card, tech, coin
     = Value
   }
+
+  object GameWinType extends Enumeration {
+    type T = Value
+    val Military, Culture, Economic, Technology = Value
+  }
+
 
 }

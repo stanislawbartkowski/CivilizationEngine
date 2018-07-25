@@ -77,4 +77,6 @@ trait ImplicitMiximFromJson {
 
   implicit def toResource(j : JsValue) : Resource.T = j.as[Resource.T]
 
+  implicit def toGameWinType(j : JsValue) : GameWinType.T = j.as[GameWinType.T]
+
 }

@@ -48,7 +48,7 @@ object BuyUnit extends CommandPackage with ImplicitMiximFromJson with ImplicitMi
       }
     }
 
-    def verify(board: GameBoard): Mess = defaultverify(board, deck, command, p, j)
+    override def verify(board: GameBoard): Mess = defaultverify(board, deck, command, p, j)
   }
 
   protected class TakeUnitAction(override val param: CombatUnit) extends AbstractCommand(param) {

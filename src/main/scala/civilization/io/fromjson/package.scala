@@ -52,25 +52,7 @@ package object fromjson extends ImplicitMiximFromJson {
   implicit val enumtypeGreatPersonName: Reads[GreatPersonName.Value] = EnumUtils.enumReads(GreatPersonName)
   implicit val enumtypeCultureCardName: Reads[CultureCardName.Value] = EnumUtils.enumReads(CultureCardName)
   implicit val enumtypeLootName: Reads[LootEffectName.Value] = EnumUtils.enumReads(LootEffectName)
-
-//  implicit val towinnerlootReads: Reads[WinnerLoot] = new Reads[WinnerLoot] {
-//    def reads(json: JsValue): JsResult[WinnerLoot] = {
-//      var hv: Option[HutVillage.T] = None
-//      var res: Option[Resource.T] = None
-//      var trade: Boolean = false
-//      var culture: Boolean = false
-//      val s = json.as[String]
-//      if (s == S.trade) trade = true
-//      else {
-//        hv = json.asOpt[HutVillage.T]
-//        if (hv.isEmpty) res = json.asOpt[Resource.T]
-//        if (res.isEmpty && hv.isEmpty)
-//          return JsError(json.toString() + " improper loot name")
-
-//      }
-//      JsSuccess(WinnerLoot(hv, res, trade, culture))
-//    }
-//  }
+  implicit val enumtypeGameWinType: Reads[GameWinType.Value] = EnumUtils.enumReads(GameWinType)
 
   implicit val winnerlooteffectReads : Reads[WinnerLootEffect] = (
     (JsPath \ S.name).read[LootEffectName.T] and
@@ -80,12 +62,6 @@ package object fromjson extends ImplicitMiximFromJson {
       (JsPath \ S.level).readNullable[Int] and
       (JsPath \ S.coinsheet).readNullable[Boolean]
     ) (WinnerLootEffect.apply _)
-
-//  implicit val hutvillageReads : Reads[HutVillage] = (
-//    (JsPath \ S.hutvillage).read[HutVillage.T] and
-//      (JsPath \S.resource).read[Resource.T]
-//    ) (HutVillage.apply _)
-
 
   implicit val tokensReads: Reads[Tokens] = new Reads[Tokens] {
     def reads(json: JsValue): JsResult[Tokens] = {

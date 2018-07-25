@@ -42,20 +42,24 @@ object AdvanceCulture extends CommandPackage with ImplicitMiximFromJson with Imp
     false
   }
 
-  private def cultureLevel(cult: Int): Int = {
+  private def cultureLevel(cult: Int): Option[Int] = {
     val culturetrack: CultureTrack = GameResources.instance().culturetrack
     for (i <- 0 until culturetrack.length)
       if (cult <= culturetrack(i).last)
-        return i + 1
-    // TODO: throws exception
-    return 0
+        return Some(i + 1)
+    None
   }
 
   private def advanceCulture(board: gameboard.GameBoard, pl: PlayerDeck, isExecute: Boolean) = {
     pl.cultureprogress = pl.cultureprogress + 1
     if (isExecute) {
-      val commandC: Command = if (isGreatPerson(pl.cultureprogress)) constructCommand(Command.GREATPERSON, pl.civ, null, getRandomPerson(board))
-      else constructCommand(Command.CULTURECARD, pl.civ, null, getRandomCard(board, cultureLevel(pl.cultureprogress)))
+      val commandC: Command = if (isGreatPerson(pl.cultureprogress)) constructCommand(Command.GREATPERSON, pl, null, getRandomPerson(board))
+      else {
+        val level: Option[Int] = cultureLevel(pl.cultureprogress)
+        if (level.isEmpty) constructCommand(Command.PLAYERWIN, pl, null, GameWinType.Culture)
+        else
+          constructCommand(Command.CULTURECARD, pl, null, getRandomCard(board, level.get))
+      }
       board.addForcedCommand(commandC)
     }
   }

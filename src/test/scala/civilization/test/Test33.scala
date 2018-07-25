@@ -244,4 +244,27 @@ class Test33 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
       }
     )
   }
+
+  test("Two players game, China takes the city, twice trade lost") {
+    val reg = Helper.ReadAndPlayForTwo("test33/BOARDGAME4.json", "test33/PLAY9.json", Civilization.America, Civilization.China)
+    val tokenA = reg._1
+    val tokenC = reg._2
+    var gg: GameBoard = I.getBoardForToken(tokenA)
+    val s: WinnerLoot = BattleActions.winnerLoot(gg)
+    println(s)
+    val tradeC = numberofTradeH(gg,Civilization.China)
+    val tradeA = numberofTradeH(gg,Civilization.America)
+    println(tradeC.trade)
+    println(tradeA.trade)
+    val param = """ [{"name" : "trade","loot" : 1},{"name" : "trade","loot" : 1}]  """
+    Helper.executeCommandH(tokenC, "ENDBATTLE", -1, -1, param)
+
+    gg  = I.getBoardForToken(tokenA)
+    val tradeCC = numberofTradeH(gg,Civilization.China)
+    val tradeAA = numberofTradeH(gg,Civilization.America)
+    println(tradeCC.trade)
+    println(tradeAA.trade)
+    assert(tradeCC.trade == tradeC.trade + 6)
+    assert(tradeAA.trade == tradeA.trade - 6)
+  }
 }
