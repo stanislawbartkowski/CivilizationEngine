@@ -25,8 +25,8 @@ object MoveItemize extends ImplicitMiximFromJson with ImplicitMiximToJson {
   private def technologyToLearn(b: GameBoard, deck: PlayerDeck, foreign: Civilization.T): Seq[TechnologyName.T] = {
     val yourlevel = techologyLevel(b, deck)
     if (yourlevel == 0) return Nil
-    val youtech: Set[TechnologyName.T] = listOfLevelUpTo(b, deck, yourlevel).map(_.tech) toSet
-    val foreigntech: Set[TechnologyName.T] = listOfLevelUpTo(b, b.playerDeck(foreign), yourlevel).map(_.tech).toSet
+    val youtech: Set[TechnologyName.T] = listOfTechnologiesForCiv(b, deck, yourlevel).map(_.tech) toSet
+    val foreigntech: Set[TechnologyName.T] = listOfTechnologiesForCiv(b, b.playerDeck(foreign), yourlevel).map(_.tech).toSet
     (foreigntech -- youtech) toSeq
   }
 

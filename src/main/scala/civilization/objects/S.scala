@@ -80,4 +80,5 @@ object S {
   final val persontype = "type"
   final val loot = "loot"
   final val coinsheet = "coinsheet"
+  final val endofgame = "endofgame"
 }

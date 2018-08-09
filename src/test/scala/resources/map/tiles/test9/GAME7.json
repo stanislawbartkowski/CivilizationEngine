@@ -30,6 +30,7 @@
     { "command" : "ENDOFPHASE","civ" : "Rome", "param" : "Research" },
     { "command" : "ENDOFPHASE","civ" : "Rome", "param" : "StartOfTurn" },
     { "command" : "ENDOFPHASE","civ" : "Rome", "param" : "Trade" },
+    { "command" : "ENDOFPHASE","civ" : "Rome", "param" : "CityManagement" },
     { "command" : "ENDOFPHASE","civ" : "Rome", "param" : "Movement" },
     { "command" : "ENDOFPHASE","civ" : "Rome", "param" : "Research" },
     { "command" : "ENDOFPHASE","civ" : "Rome", "param" : "StartOfTurn" },

@@ -28,7 +28,6 @@
   },
   {
     "name": "MilitaryScience",
-    "ni" : true,
     "level": 3,
     "building" : "Academy",
     "desc" : "Your cities each produce 1 extra production for every 3 coins you possess."
@@ -58,7 +57,6 @@
   {
     "name": "ReplaceableParts",
     "level": 4,
-    "ni" : true,
     "units" : {"name" : "Infantry", "level" : 4},
     "desc" : "Stacking Limit : 6"
   },
@@ -89,14 +87,12 @@
   },
   {
     "name": "PrintingPress",
-    "ni" : true,
     "level": 2,
     "building" : "University",
     "desc" : "Once per turn, you may spend 5 culture during City Management to add 1 coin token to this tech (max 4)."
   },
   {
     "name": "Democracy",
-    "ni" : true,
     "gover": "Democracy",
     "units" : {"name" : "Infantry", "level" : 2},
     "level": 2,

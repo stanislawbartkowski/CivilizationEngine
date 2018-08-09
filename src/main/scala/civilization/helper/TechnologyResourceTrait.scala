@@ -3,6 +3,7 @@ package civilization.helper
 import civilization.action.{AbstractCommand, Command, CommandPackage}
 import civilization.gameboard.{GameBoard, PlayerDeck}
 import civilization.helper.CurrencyAction.CurrencyAction
+import civilization.helper.DemocracyAction.emptyItemize
 import civilization.helper.PotteryPhilosophyAction.getListOfCities
 import civilization.io.fromjson.ImplicitMiximFromJson
 import civilization.io.tojson.ImplicitMiximToJson
@@ -16,7 +17,7 @@ trait TechnologyResourceTrait extends CommandPackage with ImplicitMiximFromJson 
   val command: Command.T
   val tech: TechnologyName.T
 
-  protected def resource(b: GameBoard): Resource.T = resourceForTech(b,tech)
+  protected def resource(b: GameBoard): Resource.T = resourceForTech(b, tech)
 
   override def getSet: Set[Command.T] = Set(command)
 
@@ -24,12 +25,15 @@ trait TechnologyResourceTrait extends CommandPackage with ImplicitMiximFromJson 
 
     override def verify(board: gameboard.GameBoard): message.Mess = {
       if (param.resource != resource(board)) return message.Mess(message.M.INCORRECTRESOURCEUSED, (command, tech, resource(board), param))
-      val cities: Seq[P] = itemizeH(board, deck)
-      if (cities.find(_ == p).isEmpty) return message.Mess(message.M.RESOURCEALREADYUSEDORCITYAGAIN, (command, tech, resource(board), param))
+      if (Command.isTechnologyInCity(command)) {
+        val cities: Seq[P] = itemizeH(board, deck)
+        if (cities.find(_ == p).isEmpty) return message.Mess(message.M.RESOURCEALREADYUSEDORCITYAGAIN, (command, tech, resource(board), param))
+      }
       null
+
     }
 
-    def executeI(board: gameboard.GameBoard): Unit = ???
+    def executeI(board: gameboard.GameBoard): Unit
 
     override def execute(board: gameboard.GameBoard): Unit = {
       decrResourceHVForTech(board, deck, resource(board), tech)
@@ -37,12 +41,14 @@ trait TechnologyResourceTrait extends CommandPackage with ImplicitMiximFromJson 
     }
   }
 
-  private def itemizeH(b: GameBoard, deck : PlayerDeck): Seq[P] = {
+  private def itemizeH(b: GameBoard, deck: PlayerDeck): Seq[P] = {
     if (!existResourceAndTech(b, deck, resource(b), tech)) return Nil
+    if (Command.isTechnologyInCity(command))
     // cities available for city action
-    CityAvailableForAction(b, deck.civ)
+      CityAvailableForAction(b, deck.civ)
+    else emptyItemizeP()
   }
 
-  override def itemize(b: GameBoard, deck : PlayerDeck, com: Command.T): Seq[JsValue] = itemizeH(b, deck)
+  override def itemize(b: GameBoard, deck: PlayerDeck, com: Command.T): Seq[JsValue] = itemizeH(b, deck)
 
 }

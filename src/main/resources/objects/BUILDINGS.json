@@ -42,7 +42,6 @@
     "name" : "Academy",
     "cost" : 10,
     "tokens" : {"Trade" : 2, "Battle" : 4},
-    "upgrade" : "Academy",
     "star" : true
   },
   {

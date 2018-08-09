@@ -1,6 +1,7 @@
 package civilization.io.tojson
 
 import civilization.gameboard._
+import civilization.io.fromjson.{TurnPhaseJ, convert}
 import civilization.objects._
 import play.api.libs.json._
 import civilization.io.readdir.Param._
@@ -102,6 +103,6 @@ trait ImplicitMiximToJson {
 
   implicit def WriteGameWinType(g : GameWinType.T) : JsValue = Json.toJson(g)
 
-
+  implicit def toTurnPhase(j: JsValue): TurnPhase.T = convert[TurnPhaseJ](TurnPhaseJ(j))
 
 }

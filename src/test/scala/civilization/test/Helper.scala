@@ -146,8 +146,10 @@ object Helper {
     // both should be active at the beginning
     val c = (j \ "board" \ "game" \ "active").as[String]
     //    println(c)
+    println(civ + " ? " + c)
     assert(c == civ)
     val p = (j \ "board" \ "game" \ "phase").as[String]
+    println(phase + " ? " + p)
     assert(p == phase)
   }
 

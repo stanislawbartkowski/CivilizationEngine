@@ -30,11 +30,11 @@ object genboardj {
 
   implicit def plSeqToJ(pl: Seq[PlayerTech]): Seq[JsValue] = pl.map(plToJson)
 
-  case class PlayerDeckJ(civ: PlayerDeck, numberofTrade: Int, commands: Seq[Command.T], limits: PlayerLimits, technologylevel: Int, tech: Seq[PlayerTech], pl: PlayerDeck, wonders: Seq[Wonders.T], coins: Int)
+  protected case class PlayerDeckJ(civ: PlayerDeck, numberofTrade: Int, commands: Seq[Command.T], limits: PlayerLimits, tech: Seq[PlayerTech], pl: PlayerDeck, wonders: Seq[Wonders.T], coins: Int)
 
-  case class Game(active: Civilization.T, roundno: Int, phase: TurnPhase.T)
+  protected case class Game(active: Civilization.T, roundno: Int, phase: TurnPhase.T)
 
-  case class BoardGameJ(g: Game, map: Array[Array[MapSquareJ]], you: PlayerDeckJ, others: Seq[PlayerDeckJ])
+  protected case class BoardGameJ(g: Game, map: Array[Array[MapSquareJ]], you: PlayerDeckJ, others: Seq[PlayerDeckJ])
 
 
   private def producehv(hvcount: Map[HutVillage.T, Seq[HutVillage]], h: HutVillage.T): JsObject =
@@ -96,7 +96,6 @@ object genboardj {
 
   private def genPlayerDeckJ(g: GameBoard, civ: PlayerDeck): PlayerDeckJ =
     PlayerDeckJ(civ, numberofTrade(g, civ).trade, allowedCommands(g, civ), getLimits(g, civ),
-      techologyLevel(g, civ),
       civ.tech.map(t => PlayerTech(t, g.techlevel(t), t.coins)),
       civ, wondersForPlayers(g, civ),
       getCoins(g, civ).coins)
@@ -111,7 +110,6 @@ object genboardj {
     S.gover -> p.pl.gover,
     S.civ -> p.civ.civ,
     S.trade -> p.numberofTrade,
-    "tradelevel" -> p.technologylevel,
     "commands" -> commandToArray(p.commands),
     "citylimit" -> p.limits.citieslimit,
     "armieslimit" -> p.limits.armieslimit,
@@ -191,7 +189,7 @@ object genboardj {
       S.battle -> genBattleJson(g, civ),
       S.buildings -> Json.toJson(g.market.buildings),
       "cultureused" -> CultureResourcesToJSon.cultureToJSon(g.cultureused, true),
-      "endofgame" -> Json.toJson(g.endofgame)
+      S.endofgame -> Json.toJson(g.endofgame)
     ))))
   }
 

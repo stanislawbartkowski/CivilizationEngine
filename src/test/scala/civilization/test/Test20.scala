@@ -31,22 +31,22 @@ class Test20 extends FunSuite with ImplicitMiximFromJson {
     Helper.activeciv(token, "Rome", "StartOfTurn")
     // Rome also active for China
     Helper.activeciv(ctoken, "Rome", "StartOfTurn")
-    executeCommand(token, "ENDOFPHASE", -1, -1, "\"StartOfTurn\"")
+    executeCommandH(token, "ENDOFPHASE", -1, -1, "\"StartOfTurn\"")
     // now China active
     Helper.activeciv(token, "China", "StartOfTurn")
     // Rome also active for China
     Helper.activeciv(ctoken, "China", "StartOfTurn")
     // goto research
-    executeCommand(ctoken, "ENDOFPHASE", -1, -1, "\"StartOfTurn\"")
+    executeCommandH(ctoken, "ENDOFPHASE", -1, -1, "\"StartOfTurn\"")
     // now trade, both are active
-    executeCommand(ctoken, "ENDOFPHASE", -1, -1, "\"Trade\"")
-    executeCommand(token, "ENDOFPHASE", -1, -1, "\"Trade\"")
+    executeCommandH(ctoken, "ENDOFPHASE", -1, -1, "\"Trade\"")
+    executeCommandH(token, "ENDOFPHASE", -1, -1, "\"Trade\"")
     // Rome active
-    executeCommand(token, "ENDOFPHASE", -1, -1, "\"CityManagement\"")
-    executeCommand(ctoken, "ENDOFPHASE", -1, -1, "\"CityManagement\"")
+    executeCommandH(token, "ENDOFPHASE", -1, -1, "\"CityManagement\"")
+    executeCommandH(ctoken, "ENDOFPHASE", -1, -1, "\"CityManagement\"")
     // now movement
-    executeCommand(token, "ENDOFPHASE", -1, -1, "\"Movement\"")
-    executeCommand(ctoken, "ENDOFPHASE", -1, -1, "\"Movement\"")
+    executeCommandH(token, "ENDOFPHASE", -1, -1, "\"Movement\"")
+    executeCommandH(ctoken, "ENDOFPHASE", -1, -1, "\"Movement\"")
     // reserach: both are active
     // now China active
     Helper.activeciv(token, "Rome", "Research")
@@ -54,40 +54,41 @@ class Test20 extends FunSuite with ImplicitMiximFromJson {
     Helper.activeciv(ctoken, "China", "Research")
 
     // next turn, who is first, expected China (not Rome)
-    executeCommand(token, "ENDOFPHASE", -1, -1, "\"Research\"")
-    executeCommand(ctoken, "ENDOFPHASE", -1, -1, "\"Research\"")
+    executeCommandH(token, "ENDOFPHASE", -1, -1, "\"Research\"")
+    executeCommandH(ctoken, "ENDOFPHASE", -1, -1, "\"Research\"")
     Helper.activeciv(token, "China", "StartOfTurn")
     // Rome also active for China
-    executeCommand(ctoken, "ENDOFPHASE", -1, -1, "\"StartOfTurn\"")
+    executeCommandH(ctoken, "ENDOFPHASE", -1, -1, "\"StartOfTurn\"")
     // now Rome
     Helper.activeciv(token, "Rome", "StartOfTurn")
     Helper.activeciv(ctoken, "Rome", "StartOfTurn")
-    executeCommand(token, "ENDOFPHASE", -1, -1, "\"StartOfTurn\"")
+    executeCommandH(token, "ENDOFPHASE", -1, -1, "\"StartOfTurn\"")
     // trade
     // now trade, both are active
-    executeCommand(ctoken, "ENDOFPHASE", -1, -1, "\"Trade\"")
-    executeCommand(token, "ENDOFPHASE", -1, -1, "\"Trade\"")
+    executeCommandH(ctoken, "ENDOFPHASE", -1, -1, "\"Trade\"")
+    executeCommandH(token, "ENDOFPHASE", -1, -1, "\"Trade\"")
     // now city management
     // again, China first
     // now China active
     Helper.activeciv(token, "China", "CityManagement")
     // China
     Helper.activeciv(ctoken, "China", "CityManagement")
-    executeCommand(ctoken, "ENDOFPHASE", -1, -1, "\"CityManagement\"")
+    executeCommandH(ctoken, "ENDOFPHASE", -1, -1, "\"CityManagement\"")
     // now Rome active
     Helper.activeciv(token, "Rome", "CityManagement")
-    executeCommand(ctoken, "ENDOFPHASE", -1, -1, "\"CityManagement\"")
+    executeCommandH(token, "ENDOFPHASE", -1, -1, "\"CityManagement\"")
     // now movement
-    executeCommand(token, "ENDOFPHASE", -1, -1, "\"Movement\"")
-    executeCommand(ctoken, "ENDOFPHASE", -1, -1, "\"Movement\"")
+    Helper.activeciv(token, "China", "Movement")
+    executeCommandH(ctoken, "ENDOFPHASE", -1, -1, "\"Movement\"")
+    executeCommandH(token, "ENDOFPHASE", -1, -1, "\"Movement\"")
     // reserach: both are active
     // now China active
     Helper.activeciv(token, "Rome", "Research")
     // Rome also active for China
     Helper.activeciv(ctoken, "China", "Research")
     // next turn : now Rome first
-    executeCommand(token, "ENDOFPHASE", -1, -1, "\"Research\"")
-    executeCommand(ctoken, "ENDOFPHASE", -1, -1, "\"Research\"")
+    executeCommandH(token, "ENDOFPHASE", -1, -1, "\"Research\"")
+    executeCommandH(ctoken, "ENDOFPHASE", -1, -1, "\"Research\"")
     // Rome again in turn
     Helper.activeciv(token, "Rome", "StartOfTurn")
     // Rome also active for China
@@ -217,7 +218,7 @@ class Test20 extends FunSuite with ImplicitMiximFromJson {
     val t = techologyLevel(g, g.playerDeck(Civilization.America))
     println(t)
     // level 1 although trade 12, not place for 2 level technology
-    assert(t == 1)
+    assert(t == Set(1))
     val trade = numberofTradeH(g, Civilization.America)
     println(trade.trade)
     assert(trade.trade == 12)

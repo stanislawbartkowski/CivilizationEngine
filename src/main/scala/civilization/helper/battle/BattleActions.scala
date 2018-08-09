@@ -60,7 +60,7 @@ object BattleActions {
     pl.cultureresource.cards.map(c => WinnerLootEffect(LootEffectName.card, loot, None, None, Some(GameResources.getCultureCard(c).level), None))
 
   private def technologyloot(b: GameBoard, you: PlayerDeck, pl: PlayerDeck): Seq[WinnerLootEffect] =
-    listOfTechnologiestoLearn(b, you, pl, (Int) => true).map(t => WinnerLootEffect(LootEffectName.tech, 2, Some(t), None, None, None))
+    listOfTechnologiestoLearn(b, you, pl).map(t => WinnerLootEffect(LootEffectName.tech, 2, Some(t), None, None, None))
 
   def winnerLoot(b: GameBoard): WinnerLoot = {
     val ba: (P, P) = battleParticipants(b)

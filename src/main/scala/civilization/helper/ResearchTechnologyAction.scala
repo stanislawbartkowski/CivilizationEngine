@@ -1,16 +1,12 @@
 package civilization.helper
 
-import civilization.action
-import civilization.gameboard.{GameBoard, PlayerDeck, PlayerTechnology}
-import civilization.message.{M, Mess}
-import civilization.objects._
 import civilization.action.{AbstractCommand, CommandPackage, constructCommand}
-import civilization.helper.HarvestResource.HarvestResource
+import civilization.gameboard.{GameBoard, PlayerDeck, PlayerTechnology}
 import civilization.io.fromjson.ImplicitMiximFromJson
 import civilization.io.readdir.GameResources
 import civilization.io.tojson.ImplicitMiximToJson
-import civilization.objects.Civilization.T
-import civilization.objects.Command.T
+import civilization.message.{M, Mess}
+import civilization.objects._
 import play.api.libs.json.JsValue
 
 
@@ -54,8 +50,8 @@ object ResearchTechnology extends CommandPackage with ImplicitMiximFromJson with
   }
 
   private def researchTechnologyExecute(b: GameBoard, deck: PlayerDeck, tech: TechnologyName.T, isExecute: Boolean) = {
-    val c : CivilizationG = GameResources.getCivilizationG(deck.civ)
-    deck.tech = deck.tech :+ new PlayerTechnology(tech,if (c.tech == tech) Some(true) else None)
+    val c: CivilizationG = GameResources.getCivilizationG(deck.civ)
+    deck.tech = deck.tech :+ new PlayerTechnology(tech, if (c.tech == tech) Some(true) else None)
     // upgrade buildings
     val t: Technology = GameResources.getTechnology(tech)
     upgradeB(b, deck.civ, t)
@@ -80,7 +76,7 @@ object ResearchTechnology extends CommandPackage with ImplicitMiximFromJson with
 
     private def techLevel(b: GameBoard, tech: TechnologyName.T): Int = GameResources.instance().tech.find(_.tech == tech).get.level
 
-    private def researchTechnologyVerify(b: GameBoard, deck : PlayerDeck, tech: TechnologyName.T): Mess = {
+    private def researchTechnologyVerify(b: GameBoard, deck: PlayerDeck, tech: TechnologyName.T): Mess = {
       if (playerTech(deck) contains tech) return Mess(M.TECHNOLOGYRESEARCHEDALREADY, tech)
       val leveltr: Int = levelTrade(techLevel(b, tech))
       val civTrade: Int = numberofTrade(b, deck).trade
@@ -102,7 +98,7 @@ object ResearchTechnology extends CommandPackage with ImplicitMiximFromJson with
   }
 
   override def commandsAvail(b: GameBoard, deck: PlayerDeck, phase: TurnPhase.T): Seq[Command.T] =
-    if (isResearchDone(b, deck) || techologyLevel(b, deck) == 0) Nil else List(Command.RESEARCH)
+    if (isResearchDone(b, deck) || techologyLevel(b, deck).isEmpty) Nil else List(Command.RESEARCH)
 
 
   override def produceCommand(command: Command.T, civ: Civilization.T, p: P, param: JsValue) =
@@ -110,7 +106,7 @@ object ResearchTechnology extends CommandPackage with ImplicitMiximFromJson with
     else new ResearchFreeTechnologyAction(param)
 
   override def itemize(b: GameBoard, deck: PlayerDeck, com: Command.T): Seq[JsValue] =
-    if (com == Command.RESEARCH) listOfRemainingTechnologiesUpTo(b, deck, techologyLevel(b, deck))
+    if (com == Command.RESEARCH) listOfRemainingTechnologies(b, deck, techologyLevel(b, deck))
     else Nil
 
 }

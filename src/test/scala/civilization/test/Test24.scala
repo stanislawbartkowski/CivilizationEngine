@@ -39,7 +39,7 @@ class Test24 extends FunSuite with ImplicitMiximFromJson {
     println(c)
 
     val param = """[{"resource" : "Incense"},{"resource" : "Wheat"}]"""
-    Helper.executeCommandH(token, "POTTERYACTION", 1, 2, param)
+    Helper.executeCommandH(token, "POTTERYACTION", -1, -1, param)
     var gg : GameBoard = I.getBoardForToken(token)
     println(getCoins(gg, gg.playerDeck(Civilization.Spain)))
     // check number of coins

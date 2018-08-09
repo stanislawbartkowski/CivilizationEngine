@@ -14,6 +14,8 @@
     { "command" : "ENDOFMOVE", "civ" : "Rome", "p" : { "row":3,"col" : 1} },
     { "command" : "ENDOFPHASE","civ" : "Rome", "param" : "Movement" },
     { "command" : "ENDOFPHASE","civ" : "Rome", "param" : "Research" },
+    { "command" : "ENDOFPHASE","civ" : "Rome", "param" : "StartOfTurn" },
+    { "command" : "ENDOFPHASE","civ" : "Rome", "param" : "Trade" },
     { "command" : "ENDOFPHASE","civ" : "Rome", "param" : "CityManagement" },
     { "command" : "STARTMOVE", "civ" : "Rome", "p" : { "row":3,"col" : 1},"param" : {"numberofArmies" : 1} },
     { "command" : "MOVE", "civ" : "Rome", "p" : { "row":3,"col" : 0}}

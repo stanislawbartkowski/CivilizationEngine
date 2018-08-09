@@ -240,7 +240,9 @@ package object gameboard {
     val combatlevel: CombatUnitStrength = CombatUnitStrength()
     var hvlist: Seq[HutVillage] = Nil
 
-    def hasTechnology(te: TechnologyName.T): Boolean = tech.find(_.tech == te).isDefined
+    def findPlayerTechnology(te: TechnologyName.T): Option[PlayerTechnology] = tech.find(_.tech == te)
+
+    def hasTechnology(te: TechnologyName.T): Boolean = findPlayerTechnology(te).isDefined
 
     val cultureresource: CultureResources = CultureResources()
 
@@ -254,7 +256,7 @@ package object gameboard {
     // number of free resources to take, can be 3 for Navigation
     var takefreeResources: Int = 0
     // win the game
-    var winthegame : Option[GameWinType.T] = None
+    var winthegame: Option[GameWinType.T] = None
   }
 
   implicit def playerDeckToCiv(deck: PlayerDeck): Civilization.T = deck.civ
@@ -276,6 +278,7 @@ package object gameboard {
 
   case class WinnerLootEffect(val name: LootEffectName.T, val loot: Int, val tech: Option[TechnologyName.T], val resource: Option[Resource.T], val cardlevel: Option[Int], val coinsheet: Option[Boolean]) {
     require(loot == 1 || loot == 2)
+
     def ==(v: WinnerLootEffect): Boolean = {
       if (name != v.name) return false
       if (loot != v.loot) return false
@@ -293,7 +296,8 @@ package object gameboard {
         if (resource.get != v.resource.get) return false
       true
     }
-    def level2 : Boolean = loot == 2
+
+    def level2: Boolean = loot == 2
   }
 
   case class WinnerLoot(val loot: Int, val list: Seq[WinnerLootEffect])
@@ -339,7 +343,7 @@ package object gameboard {
     def g = gp.get
   }
 
-  case class EndOfGame(val winner : Civilization.T,val wintype : GameWinType.T)
+  case class EndOfGame(val winner: Civilization.T, val wintype: GameWinType.T)
 
   case class GameBoard(val players: Seq[PlayerDeck], val map: BoardMap, val resources: Resources, val market: Market) {
 
@@ -361,7 +365,7 @@ package object gameboard {
     var battle: Option[BattleField] = None
     val journal: Journal = collection.mutable.ListBuffer() // empty
     val cultureused: CultureResources = CultureResources()
-    var endofgame : Option[EndOfGame] = None
+    var endofgame: Option[EndOfGame] = None
 
     def rotateplorder: Unit = if (!norotate) pllist = rotaterightList(pllist)
 

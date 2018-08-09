@@ -40,10 +40,16 @@ object SpendTrade extends CommandPackage with ImplicitMiximFromJson with Implici
     override def execute(board: gameboard.GameBoard): Unit = Unit
   }
 
-  override def produceCommand(command: Command.T, civ: Civilization.T, p: P, param: JsValue) =
-    if (command == Command.SPENDTRADE) new SpendTrade(toInt(param)) else emptyCommand()
 
-  override def itemizePP(b: GameBoard, deck: PlayerDeck, com: Command.T): Seq[P] = {
-    if (com == Command.SPENDTRADE) itemizeCommandsForSpendTrade(b, deck) else itemizeCommandsForUndoSpendTrade(b, deck.civ)
+  override def produceCommand(command: Command.T, civ: Civilization.T, p: P, param: JsValue) =
+    command match {
+      case Command.SPENDTRADE => new SpendTrade(param)
+      case Command.UNDOSPENDTRADE => emptyCommand()
+    }
+
+  override def itemizePP(b: GameBoard, deck: PlayerDeck, com: Command.T): Seq[P] =
+    com match {
+      case Command.SPENDTRADE => itemizeCommandsForSpendTrade(b, deck)
+      case Command.UNDOSPENDTRADE => itemizeCommandsForUndoSpendTrade(b, deck.civ)
   }
 }

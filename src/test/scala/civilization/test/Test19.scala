@@ -50,8 +50,8 @@ class Test19 extends FunSuite with ImplicitMiximToJson {
     println(a)
     val p: P = a.value.head.as[P]
     assert(P(7, 4) == p)
-  }
 
+  }
   test("Two players game, battle, attack") {
     val reg = Helper.ReadAndPlayForTwo("test19/BOARDGAME1.json", "test19/PLAY1.json", Civilization.Russia, Civilization.Arabs)
     val token: String = reg._1

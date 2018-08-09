@@ -2,6 +2,7 @@ package civilization
 
 import civilization.action.{Command, constructCommand}
 import civilization.gameboard.{BattleFieldSide, _}
+import civilization.helper.PotteryPhilosophyAction.technology
 import civilization.io.readdir.GameResources
 import civilization.message.{FatalError, J, M, Mess}
 import civilization.objects._
@@ -377,13 +378,13 @@ package object helper {
     !last.isEmpty && last.head.command == com
   }
 
-  def technologyResourceUsed(b: GameBoard, civ: Civilization.T): Boolean = {
-    // all commands in the current phase
-    val com: Seq[Command] = currentTurnReverse(b, civ)
-    // only technology commands
-    // technology resource command is used
-    com.find(co => Command.isTechnologyResourceAction(co.command)).isDefined
-  }
+  //  def technologyResourceUsed(b: GameBoard, civ: Civilization.T): Boolean = {
+  // all commands in the current phase
+  //    val com: Seq[Command] = currentTurnReverse(b, civ)
+  // only technology commands
+  // technology resource command is used
+  //    com.find(co => Command.isTechnologyResourceAction(co.command)).isDefined
+  //  }
 
   def CityAvailableForAction(b: GameBoard, civ: Civilization.T): Seq[P] = {
     // selects cities where city action is already executed
@@ -494,12 +495,12 @@ package object helper {
 
   private def commandForPhase(b: GameBoard, command: Command): Mess = {
     // technology resource action only once
-    if (Command.isTechnologyResourceAction(command.command))
-      if (technologyResourceUsed(b, command.civ)) return Mess(M.RESOURCEAVAILIBILITYCANBEUSERONCEPERTURN, command)
+    //    if (Command.isTechnologyResourceAction(command.command))
+    //      if (technologyResourceUsed(b, command.civ)) return Mess(M.RESOURCEAVAILIBILITYCANBEUSERONCEPERTURN, command)
     val current: CurrentPhase = currentPhase(b)
     val phase: TurnPhase.T = Command.actionPhase(command.command)
     if (phase != null && phase != current.turnPhase) return Mess(M.ACTIONCANNOTBEEXECUTEDINTHISPHASE, (command, current.turnPhase, phase))
-    if (phase != null && phase == TurnPhase.CityManagement && Command.actionInCity(command.command)) {
+    if (phase != null && phase == TurnPhase.CityManagement && Command.cityActionUnique(command.command)) {
       // check if city correct
       checkP(b, command.p)
       var res: Option[Mess] = checkCity(b, command.p)
@@ -540,7 +541,6 @@ package object helper {
     }
     command.executeCommand(b)
     f(command)
-    //    b.play.commands = b.play.commands :+ command
     b.play.addCommand(command)
     null
   }
@@ -602,12 +602,6 @@ package object helper {
   private def numberofloottrade(b: GameBoard, civ: Civilization.T): Int = {
     val loott: Int = currentTurnReverseFromSeq(b.play.commands).foldLeft(0)((sum, c) => {
       var modif: Int = 0
-      //      if (c.command == Command.TAKEWINNERLOOT) {
-      //        val take: TakeWinnerLoot = c.param.asInstanceOf[TakeWinnerLoot]
-      //        if (take.loot.trade)
-      //          if (take.winner == civ) modif = take.trade
-      //          else if (take.loser == civ) modif = 0 - take.trade
-      //      }
       sum + modif
     }
     )
@@ -691,7 +685,6 @@ package object helper {
     val li: PlayerLimits = getLimits(b, deck)
     val tradecalculated: Int = numberofTradeTradenoresearch(b, deck.civ)
     val spendonprod: Int = reduceTradeBySpend(b, deck.civ, li)
-    //    val loottrade: Int = numberofloottrade(b, deck.civ)
     val spendonculture: Int = tradeSpendOnCulture(b, deck.civ)
 
     TradeForCiv(tradecalculated, spendonprod, spendonculture, numberofTradeFromIncrease(b, deck, Command.INCREASETRADE))
@@ -786,15 +779,21 @@ package object helper {
   }
 
 
-  case class ProdForCity(val terrain: Int, val fromtrade: Int, val fromscouts: Int, val fromwheat: Int, val fromwonders: Int) {
-    def prod: Int = terrain + fromtrade + fromscouts + fromwheat + fromwonders
+  case class ProdForCity(val terrain: Int, val fromtrade: Int, val fromscouts: Int, val fromwheat: Int, val fromwonders: Int, val prodFromCoins: Int) {
+    def prod: Int = terrain + fromtrade + fromscouts + fromwheat + fromwonders + prodFromCoins
   }
 
-  def getProductionForCityWheat(b: GameBoard, deck: PlayerDeck, p: P): Int = {
+  private def getProductionForCityWheat(b: GameBoard, deck: PlayerDeck, p: P): Int = {
     val o = numberofFromCommand(b, deck, Command.INCREASEPRODUCTION)
     if (o.isEmpty) 0
     else if (o.get._1.p == p) o.get._2 else 0
   }
+
+  private def incrProdForCoins(b: GameBoard, civ: PlayerDeck): Int =
+    if (civ.hasTechnologyFeature(TechnologyFeatures.increaseProdForCoins))
+      getCoins(b, civ).coins / 3 // production for every 3 coins
+    else 0
+
 
   def getProductionForCity(b: GameBoard, civ: PlayerDeck, p: P): ProdForCity = {
 
@@ -806,13 +805,13 @@ package object helper {
     val prodfromS: Option[Int] = prodFromScouts.get(p)
     val prodfromscouts: Int = if (prodfromS.isEmpty) 0 else prodfromS.get
     var fromwonders: Int = if (hasWonderFeature(b, civ, WonderFeatures.increaseProduction3ForCities)) 3 else 0
-    ProdForCity(num, prodfromtrade, prodfromscouts, getProductionForCityWheat(b, civ, p), fromwonders)
+    ProdForCity(num, prodfromtrade, prodfromscouts, getProductionForCityWheat(b, civ, p), fromwonders, incrProdForCoins(b, civ))
   }
 
   // ======================================
 
-  case class EconomyForCiv(val tech: Int, val squares: Int, val scout: Int, val techabilities: Int) {
-    def coins = tech + squares + scout + techabilities
+  case class EconomyForCiv(val tech: Int, val squares: Int, val scout: Int, val techabilities: Int, val coinsdeck: Int) {
+    def coins = tech + squares + scout + techabilities + coinsdeck
   }
 
   def getCoins(b: GameBoard, pl: PlayerDeck): EconomyForCiv = {
@@ -824,7 +823,7 @@ package object helper {
     // number of squares with coins
     val squares: Int = outskirtsForCivNotBlocked(b, pl).map(m => m.numofCoins).sum
     val scouts: Int = allScoutsOutside(b, pl).filter(s => s.resource.isDefined && s.resource.get == Resource.Coin).length
-    EconomyForCiv(tech, squares, scouts, techabilities)
+    EconomyForCiv(tech, squares, scouts, techabilities, pl.resou.nof(Resource.Coin))
   }
 
   // ==============================================
@@ -1081,6 +1080,17 @@ package object helper {
     te.roundAlready(curr.roundno)
   }
 
+  def canUseTechnology(b: GameBoard, deck: PlayerDeck, tech: TechnologyName.T, command: Command.T): Option[Mess] = {
+    val te: Option[PlayerTechnology] = deck.findPlayerTechnology(tech)
+    if (te.isEmpty) Some(Mess(message.M.CANNOTFINDTECHNOLOGYINPLAYERDECK, (command, tech)))
+    else if (TechnologyUsedAlready(b, te.get))
+      Some(Mess(message.M.TECHNOLOGYUSEDALREADYINTHISTURN, (command, te.get)))
+    else if (TechnologyFeatures.isCoinTechnology(tech) && te.get.coins >= COINSCAPACITY)
+      Some(Mess(message.M.TECHNOLOGYUSEDALREADYINTHISTURN, (command, te.get)))
+    else None
+  }
+
+
   // ================================
   // resources or hut/village
   // ================================
@@ -1109,11 +1119,18 @@ package object helper {
 
   def decrHVResource(b: GameBoard, civ: PlayerDeck, hvres: HVResource) = {
     // hut/village
+    // if (hvres.hv.isEmpy find first hut or village with resource
     val hvfound: Option[HutVillage] = civ.hvlist.find(hh => hh.resource == hvres.resource && (hvres.hv.isEmpty || hvres.hv.get == hh.hv))
     if (hvfound.isEmpty)
       throw FatalError(Mess(M.CANNOTFINDHUTVILLAGEINPLAYERDECK, (hvres)))
     // remove from player's resource
-    civ.hvlist = civ.hvlist.filter(_ != hvfound.get)
+    var first: Boolean = true
+    // No filterfirst method
+    // very ugly, filter out first matching element
+    civ.hvlist = civ.hvlist.filter(h => if (first && h == hvfound.get) {
+      first = false;
+      false
+    } else true)
     // return hut/village to board hv used
     b.resources.hvused = b.resources.hvused :+ hvfound.get
   }
@@ -1153,45 +1170,39 @@ package object helper {
     addCoinToTechnology(b, te.get)
   }
 
-  def techologyLevel(b: GameBoard, deck: PlayerDeck): Int = {
+
+  def techologyLevel(b: GameBoard, deck: PlayerDeck): Set[Int] = {
     val trade = numberofTrade(b, deck)
     var tlevel: Int = tradeToLevel(trade.trade)
-    if (tlevel == 0) return 0
+    if (tlevel == 0) return Set()
+    var res: Set[Int] = Set(1);
     // test if there is a room for technology
     while (tlevel > 1) {
       val numtlevel: Int = listofLevel(b, deck, tlevel).length
       val numtlevelp: Int = listofLevel(b, deck, tlevel - 1).length
-      if (numtlevel + 1 < numtlevelp) return tlevel // there is a place
+      if (numtlevel + 1 < numtlevelp) res = res + tlevel // there is a place
       // decrease and check again
       tlevel = tlevel - 1
     }
-    return 1 // first level
+    res
   }
 
-  private def listOfTechnologiesForCiv(b: GameBoard, deck: PlayerDeck, levelOk: LevelOk): Seq[PlayerTechnology] =
-    deck.tech.filter(te => levelOk(b.techlevel(te)))
+  def listOfTechnologiesForCiv(b: GameBoard, deck: PlayerDeck, level: Set[Int]): Seq[PlayerTechnology] =
+    deck.tech.filter(te => level contains b.techlevel(te))
 
   def listofLevel(b: GameBoard, deck: PlayerDeck, level: Int): Seq[PlayerTechnology] =
-    listOfTechnologiesForCiv(b, deck, (le: Int) => (le == level))
+    listOfTechnologiesForCiv(b, deck, Set(level))
 
-  def listOfLevelUpTo(b: GameBoard, deck: PlayerDeck, level: Int): Seq[PlayerTechnology] =
-    listOfTechnologiesForCiv(b, deck, (le: Int) => (le <= level))
-
-  private def remainingTechnologies(b: GameBoard, tech: Seq[Technology], deck: PlayerDeck, levelOk: LevelOk): Seq[TechnologyName.T] =
-    (tech.filter(te => levelOk(te.level)).map(_.tech) toSet) --
-      (listOfTechnologiesForCiv(b, deck, levelOk).map(_.tech) toSet) toSeq
+  private def remainingTechnologies(b: GameBoard, tech: Seq[Technology], deck: PlayerDeck, level: Set[Int]): Seq[TechnologyName.T] =
+    (tech.filter(te => level contains te.level).map(_.tech) toSet) --
+      (listOfTechnologiesForCiv(b, deck, level).map(_.tech) toSet) toSeq
 
 
-  private def listOfRemainingTechnologies(b: GameBoard, deck: PlayerDeck, levelOk: LevelOk): Seq[TechnologyName.T] =
-  //    (GameResources.instance().tech.filter(te => levelOk(te.level)).map(_.tech) toSet) --
-  //      (listOfTechnologiesForCiv(b, deck, levelOk).map(_.tech) toSet) toSeq
-    remainingTechnologies(b, GameResources.instance().tech, deck, levelOk)
+  def listOfRemainingTechnologies(b: GameBoard, deck: PlayerDeck, level: Set[Int]): Seq[TechnologyName.T] =
+    remainingTechnologies(b, GameResources.instance().tech, deck, level)
 
-  def listOfRemainingTechnologiesUpTo(b: GameBoard, deck: PlayerDeck, level: Int): Seq[TechnologyName.T] =
-    listOfRemainingTechnologies(b: GameBoard, deck: PlayerDeck, (le: Int) => le <= level)
-
-  def listOfTechnologiestoLearn(b: GameBoard, deck: PlayerDeck, opposite: PlayerDeck, levelOk: LevelOk): Seq[TechnologyName.T] =
-    remainingTechnologies(b, opposite.tech.map(t => GameResources.getTechnology(t.tech)), deck, levelOk)
+  def listOfTechnologiestoLearn(b: GameBoard, deck: PlayerDeck, opposite: PlayerDeck): Seq[TechnologyName.T] =
+    remainingTechnologies(b, opposite.tech.map(t => GameResources.getTechnology(t.tech)), deck, techologyLevel(b, opposite))
 
 
   // --------------------------------------------------

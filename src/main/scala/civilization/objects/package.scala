@@ -21,6 +21,8 @@ package object objects {
 
   def WINNERCULTURELOOT = 3
 
+  def TECHNOLOGYVICTORYLEVEL = 5
+
   case class GameConfig(val ironincreasedefend: Boolean)
 
 
@@ -270,7 +272,7 @@ package object objects {
     */
   case class Technology(val tech: TechnologyName.T, val gover: Option[GovernmentName.T], val level: Int, val notimplemented: Option[Boolean], val building: Option[BuildingName.T], val resource: Option[Resource.T], val desc: String, val resourceany: Option[Int], val unit: Option[TechnologyUnit], val coins: Option[Int])
 
-  type LevelOk = (Int) => Boolean
+//  type LevelOk = (Int) => Boolean
 
   object WondersAge extends Enumeration {
     type T = Value

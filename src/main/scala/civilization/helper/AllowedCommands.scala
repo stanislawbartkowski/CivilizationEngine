@@ -38,7 +38,7 @@ object AllowedCommands {
     }
     val restricted : Seq[Command.T] = co.filter(Command.isBlockingCommand(_))
     if (!restricted.isEmpty) return restricted
-    if (cu.notcompleted.find(_ == deck.civ).isDefined) co = co ++ List(Command.ENDOFPHASE)
+    if (cu.notcompleted contains deck.civ) co = co ++ List(Command.ENDOFPHASE)
     co
   }
 

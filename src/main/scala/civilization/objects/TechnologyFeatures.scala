@@ -10,7 +10,7 @@ object TechnologyFeatures {
 
   def canStopInWater(tech: TechnologyName.T): Boolean = tech == TechnologyName.Sailing
 
-  def stackSize(tech: TechnologyName.T): Int = if (tech == TechnologyName.Masonry) 3 else 0 /* stackSize here is taken from CivilizationFeatures */
+  def stackSize(tech: TechnologyName.T): Int = if (tech == TechnologyName.Masonry) 3 else if (tech == TechnologyName.ReplaceableParts) 6 else 0 /* stackSize here is taken from CivilizationFeatures */
 
   def buyCityWall(tech: TechnologyName.T): Boolean = tech == TechnologyName.Masonry
 
@@ -18,6 +18,8 @@ object TechnologyFeatures {
 
   def buyFigureInAnyCityWithShipyard(tech: TechnologyName.T): Boolean = tech == TechnologyName.Navy
 
-  def isCoinTechnology(tech: TechnologyName.T): Boolean = (tech == TechnologyName.Pottery || tech == TechnologyName.CodeOfLaw)
+  def isCoinTechnology(tech: TechnologyName.T): Boolean = (tech == TechnologyName.Pottery || tech == TechnologyName.CodeOfLaw || tech == TechnologyName.Democracy || tech == TechnologyName.PrintingPress)
+
+  def increaseProdForCoins(tech: TechnologyName.T): Boolean = tech == TechnologyName.MilitaryScience
 
 }

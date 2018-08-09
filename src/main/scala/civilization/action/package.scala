@@ -39,14 +39,23 @@ package object action extends ImplicitMiximToJson with ImplicitMiximFromJson {
 
       val phase: TurnPhase.T = toTurnPhase(param)
 
+      phase match {
+        case TurnPhase.Research => new EndOfResearchAction
+        case TurnPhase.Trade => new EndOfTradeAction
+        case _ => new EndOfPhaseAbstract(param) {
+          override protected def executeC(board: GameBoard): Unit = {}
+        }
+      }
+
+      /*
       if (phase == TurnPhase.Research) new EndOfResearchAction
       else if (phase == TurnPhase.Trade) new EndOfTradeAction
+      else if (phase == TurnPhase.Movement) new EndOfMovementAction
       else
         new AbstractCommand(phase) {
           override def execute(board: GameBoard) = Unit
-
-          override def verify(board: GameBoard): Mess = null
         }
+        */
     }
 
     case Command.STARTMOVE => new MoveAction.StartMoveAction(toFigures(param))
@@ -73,8 +82,6 @@ package object action extends ImplicitMiximToJson with ImplicitMiximFromJson {
 
     case Command.ENDBATTLE => new AttackCommand.EndOfBattleCommand(param)
 
-//    case Command.TAKEWINNERLOOT => new AttackCommand.TakeWinnerLootCommand(param)
-
     case Command.SAVEUNIT => new AttackCommand.SaveUnitCommand
 
     case _ => throw FatalError(Mess(M.NOTIMPLEMENTEDYET, command))
@@ -89,7 +96,7 @@ package object action extends ImplicitMiximToJson with ImplicitMiximFromJson {
 
     var civ: Civilization.T = _
 
-    protected var deck : PlayerDeck = _
+    protected var deck: PlayerDeck = _
 
 
     private var canceled: Boolean = false
@@ -113,7 +120,7 @@ package object action extends ImplicitMiximToJson with ImplicitMiximFromJson {
     // TODO: should return Option[Mess], not null
     // null : success, Mess : failure and failure info
 
-    def verifyCommand (board: GameBoard): Mess = {
+    def verifyCommand(board: GameBoard): Mess = {
       deck = board.playerDeck(civ)
       verify(board)
     }
@@ -137,37 +144,36 @@ package object action extends ImplicitMiximToJson with ImplicitMiximFromJson {
   trait CommandPackage {
     def getSet: Set[Command.T]
 
-    def commandsAvail(b: GameBoard, deck: PlayerDeck,phase: TurnPhase.T): Seq[Command.T] =
+    def commandsAvail(b: GameBoard, deck: PlayerDeck, phase: TurnPhase.T): Seq[Command.T] =
       getSet.
         filter(Command.actionPhase(_) == phase).
         filter(!itemize(b, deck, _).isEmpty) toSeq
 
-    def itemize(b: GameBoard, deck : PlayerDeck, com: Command.T): Seq[JsValue] = itemizeP(b, deck, com)
+    def itemize(b: GameBoard, deck: PlayerDeck, com: Command.T): Seq[JsValue] = itemizeP(b, deck, com)
 
     // can be called only by itemize
-    protected def itemizeP(b: GameBoard, deck : PlayerDeck, com: Command.T): Seq[CommandParams] =
+    protected def itemizeP(b: GameBoard, deck: PlayerDeck, com: Command.T): Seq[CommandParams] =
       itemizePP(b, deck, com).map(p => CommandParams(Some(p), None))
 
-    protected def itemizePP(b: GameBoard, deck : PlayerDeck, com: Command.T): Seq[P] = ???
+    protected def itemizePP(b: GameBoard, deck: PlayerDeck, com: Command.T): Seq[P] = ???
 
     protected def emptyCommandPoint(param: JsValue): Command =
       new AbstractCommand(toP(param)) {
         override def execute(board: GameBoard) = Unit
-
-        override def verify(board: GameBoard): Mess = null
       }
 
     protected def emptyCommand(): Command =
       new AbstractCommandNone() {
         override def execute(board: GameBoard) = Unit
-
-        override def verify(board: GameBoard): Mess = null
       }
 
+    protected def emptyItemizeP() : Seq[P] = Seq(P(0,0))
+
+    protected def emptyItemize() : Seq[JsValue] = emptyItemizeP()
 
     def produceCommand(command: Command.T, civ: Civilization.T, p: P, param: JsValue): Command
 
-    protected def defaultverify(board: GameBoard, deck : PlayerDeck, com: Command.T, p: P, j: JsValue): Mess = {
+    protected def defaultverify(board: GameBoard, deck: PlayerDeck, com: Command.T, p: P, j: JsValue): Mess = {
       val itemi: Seq[JsValue] = itemize(board, deck, com)
       val par: CommandParams = CommandParams(if (p == null || p.empty) None else Some(p), if (j == null || j == JsNull) None else Some(j))
       if (itemi.find(eqJsParam(_, par)).isDefined) null else Mess(M.COMMANDPARAMETERDOESNOTMATCH, (deck.civ, com, p, j))

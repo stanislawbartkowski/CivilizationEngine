@@ -17,6 +17,8 @@
     { "command" : "ENDOFMOVE", "civ" : "Germany", "p" : { "row":3,"col" : 1} },
     { "command" : "ENDOFPHASE","civ" : "Germany", "param" : "Movement" },
     { "command" : "ENDOFPHASE","civ" : "Germany", "param" : "Research" },
+    { "command" : "ENDOFPHASE","civ" : "Germany", "param" : "StartOfTurn" },
+    { "command" : "ENDOFPHASE","civ" : "Germany", "param" : "Trade" },
     { "command" : "ENDOFPHASE","civ" : "Germany", "param" : "CityManagement" },
     { "command" : "STARTMOVE", "civ" : "Germany", "p" : { "row":3,"col" : 1},"param" : {"numberofScouts" : 1} },
     { "command" : "MOVE", "civ" : "Germany", "p" : { "row":4,"col" : 1}},

@@ -524,8 +524,6 @@ package object fromjson extends ImplicitMiximFromJson {
 
   def toSeqParams(j: JsValue): Seq[CommandValues] = convert[SeqCommandValuesJ](SeqCommandValuesJ(j))
 
-  def toTurnPhase(j: JsValue): TurnPhase.T = convert[TurnPhaseJ](TurnPhaseJ(j))
-
   //  def toOrientation(j: JsValue): Orientation.T = convert[OrientationJ](OrientationJ(j))
 
   def toFigure(j: JsValue): Figure.T = {

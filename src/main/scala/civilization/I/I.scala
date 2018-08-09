@@ -187,7 +187,7 @@ package object I {
       val g: GameBoard = p._2
       val civ: Seq[Civilization.T] = g.players.map(_.civ)
       val cu: CurrentPhase = currentPhase(g)
-      GameData(p._1, civ, g.metadata.createtime, g.metadata.accesstime, cu.turnPhase, cu.roundno).as[JsValue]
+      GameData(p._1, civ, g.metadata.createtime, g.metadata.accesstime, cu.turnPhase, cu.roundno,g.endofgame).as[JsValue]
     })
     Json.toJson(ld).toString()
   }
