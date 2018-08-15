@@ -1,9 +1,0 @@
-{
-  "game": [
-    {"command" : "SETCAPITAL","civ" : "Rome", "p" : {"row":1, "col" : 2}},
-    { "command" : "SETSCOUT", "civ" : "Rome", "p" : {"row":1, "col" : 2}, "param" : {"row" : 0, "col":2}},
-    { "command" : "SETARMY", "civ" : "Rome", "p" : {"row":1, "col" : 2}, "param" : {"row" : 0, "col":1}},
-    { "command" : "ENDOFPHASE","civ" : "Rome", "param" : "StartOfTurn" },
-    { "command" : "ENDOFPHASE","civ" : "Rome", "param" : "Trade" }
-  ]
-}

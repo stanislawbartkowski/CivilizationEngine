@@ -1,6 +1,0 @@
-{
-  "game": [
-    {"command":"SETCAPITAL","civ":"Germany","p":{"row":1,"col":1},"param":null},
-    {"command":"SETSCOUT","civ":"Germany","p":{"row":1,"col":1},"param":{"row":0,"col":0}}
-  ]
-}
