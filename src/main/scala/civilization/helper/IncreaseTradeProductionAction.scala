@@ -2,7 +2,6 @@ package civilization.helper
 
 import civilization.action.{AbstractCommand, Command, CommandPackage}
 import civilization.gameboard.{BuildingPoint, GameBoard, PlayerDeck, PlayerTechnology}
-import civilization.helper.PotteryPhilosophyAction.{PotteryPhilosophyAction, findpltechnology, getListOfCities}
 import civilization.io.fromjson.ImplicitMiximFromJson
 import civilization.io.readdir.GameResources
 import civilization.io.tojson.ImplicitMiximToJson

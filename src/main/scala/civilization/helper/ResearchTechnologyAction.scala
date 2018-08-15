@@ -58,6 +58,7 @@ object ResearchTechnology extends CommandPackage with ImplicitMiximFromJson with
     // upgrade military strength
     val listofunlocked: Seq[CombatUnitType.T] = upgradeMilitary(deck.combatlevel, t)
     deck.takefreeResources = 0
+    if (TechnologyFeatures.isCoinTechnology(tech)) checkEconomyVictory(b, deck, isExecute)
     if (CivilizationFeatures.takefreeResourceAfterUpgradingMilitary(deck.civ))
       listofunlocked.foreach(u => {
         deck.takefreeResources = deck.takefreeResources + 1

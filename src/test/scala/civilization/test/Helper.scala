@@ -31,13 +31,13 @@ object Helper {
 
   def getBoard(path: String): GameBoard = {
 
-    val l: JsValue = readTestJSON("resources/map/tiles/" + path)
+    val l: JsValue = readTestJSON("testmap/tiles/" + path)
     //    println(l)
     readGameBoard(l)
   }
 
   private def getPlay(path: String): Seq[CommandValues] = {
-    val l: JsValue = readTestJSON("resources/map/tiles/" + path)
+    val l: JsValue = readTestJSON("testmap/tiles/" + path)
     readPlay(l)
   }
 

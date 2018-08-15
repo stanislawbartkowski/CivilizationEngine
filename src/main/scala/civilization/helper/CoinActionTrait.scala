@@ -36,7 +36,7 @@ trait CoinActionTrait extends CommandPackage with ImplicitMiximFromJson with Imp
 
     override protected def execute(board: GameBoard): Unit = {
       val te: PlayerTechnology = deck.findPlayerTechnology(tech).get
-      addCoinToTechnology(board, te)
+      addCoinToTechnology(board, deck, te, isExecute)
       if (isExecute) executeI(board, deck)
     }
   }

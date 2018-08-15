@@ -12,6 +12,7 @@
         </option>
         <option name="sbtVersion" value="0.13.16" />
         <option name="useAutoImport" value="true" />
+        <option name="useSbtShell" value="true" />
       </SbtProjectSettings>
     </option>
   </component>

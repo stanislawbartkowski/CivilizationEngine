@@ -2,11 +2,10 @@ package civilization
 
 import civilization.action.{Command, constructCommand}
 import civilization.gameboard.{BattleFieldSide, _}
-import civilization.helper.PotteryPhilosophyAction.technology
 import civilization.io.readdir.GameResources
 import civilization.message.{FatalError, J, M, Mess}
 import civilization.objects._
-import play.api.libs.json.JsNumber
+import play.api.libs.json.{JsNumber, Json}
 
 import scala.util.control.Breaks._
 
@@ -1070,9 +1069,10 @@ package object helper {
   // ==================================
   // PlayerTechnology
   // ==================================
-  def addCoinToTechnology(b: GameBoard, te: PlayerTechnology) = {
+  def addCoinToTechnology(b: GameBoard, deck: PlayerDeck, te: PlayerTechnology, isExecute: Boolean) = {
     val curr = currentPhase(b)
     te.addRound(curr.roundno)
+    checkEconomyVictory(b, deck, isExecute)
   }
 
   def TechnologyUsedAlready(b: GameBoard, te: PlayerTechnology): Boolean = {
@@ -1161,13 +1161,13 @@ package object helper {
     !TechnologyUsedAlready(b, te.get)
   }
 
-  def decrResourceHVForTech(b: GameBoard, pl: PlayerDeck, res: Resource.T, tech: TechnologyName.T) = {
+  def decrResourceHVForTech(b: GameBoard, pl: PlayerDeck, res: Resource.T, tech: TechnologyName.T, isExecute: Boolean) = {
     if (pl.resou.nof(res) > 0) decrResource(b, pl, res)
     else decrHVResource(b, pl, HVResource(None, res))
     val te: Option[PlayerTechnology] = pl.tech.find(_.tech == tech)
     if (te.isEmpty)
       throw FatalError(Mess(M.CANNOTFINDTECHNOLOGYINPLAYERDECK, (pl.civ, tech)))
-    addCoinToTechnology(b, te.get)
+    addCoinToTechnology(b, pl, te.get, isExecute)
   }
 
 
@@ -1303,5 +1303,10 @@ package object helper {
 
   def gameWinner(b: GameBoard): Option[PlayerDeck] =
     b.pllist.map(b.playerDeck(_)).find(_.winthegame.isDefined)
+
+  def checkEconomyVictory(b: GameBoard, deck: PlayerDeck, isExecute: Boolean) =
+    if (isExecute && getCoins(b, deck).coins >= ECONOMICVICTORY)
+      b.addForcedCommandC(Command.PLAYERWIN, deck, null, Json.toJson(GameWinType.Economic))
+
 
 }

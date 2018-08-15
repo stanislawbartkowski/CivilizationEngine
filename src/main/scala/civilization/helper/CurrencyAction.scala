@@ -1,7 +1,6 @@
 package civilization.helper
 
 import civilization.action._
-import civilization.helper.PotteryPhilosophyAction.PotteryPhilosophyAction
 import civilization.io.fromjson.ImplicitMiximFromJson
 import civilization.io.tojson.ImplicitMiximToJson
 import civilization.{action, gameboard, message, objects}

@@ -4,7 +4,6 @@ import civilization.action.{AbstractCommand, Command, CommandPackage}
 import civilization.gameboard.{GameBoard, PlayerDeck}
 import civilization.helper.CurrencyAction.CurrencyAction
 import civilization.helper.DemocracyAction.emptyItemize
-import civilization.helper.PotteryPhilosophyAction.getListOfCities
 import civilization.io.fromjson.ImplicitMiximFromJson
 import civilization.io.tojson.ImplicitMiximToJson
 import civilization.{gameboard, message}
@@ -36,7 +35,7 @@ trait TechnologyResourceTrait extends CommandPackage with ImplicitMiximFromJson 
     def executeI(board: gameboard.GameBoard): Unit
 
     override def execute(board: gameboard.GameBoard): Unit = {
-      decrResourceHVForTech(board, deck, resource(board), tech)
+      decrResourceHVForTech(board, deck, resource(board), tech, isExecute)
       executeI(board)
     }
   }

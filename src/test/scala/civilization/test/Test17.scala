@@ -131,7 +131,7 @@ class Test17 extends FunSuite with ImplicitMiximToJson {
     // defender
     Helper.executeCommandH(token, "PLAYUNIT", 0, 0, null)
     var g: GameBoard = I.getBoardForToken(token)
-    println(g.battle)
+//    println(g.battle)
     val b: BattleField = g.battle.get
     // attacker move
     assert(b.attackermove)

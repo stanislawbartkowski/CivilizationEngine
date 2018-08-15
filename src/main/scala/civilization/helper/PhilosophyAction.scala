@@ -1,6 +1,7 @@
 package civilization.helper
 
 import civilization.gameboard.PlayerTechnology
+import civilization.helper.PotteryAction.tech
 import civilization.objects._
 import civilization.{gameboard, message}
 
@@ -10,6 +11,10 @@ object PhilosophyAction extends TechnologyAnyResourceAction {
 
   override def validateH(b: gameboard.GameBoard, deck: gameboard.PlayerDeck, command: Command.T): Option[message.Mess] = None
 
-  override def executeI(board: gameboard.GameBoard, deck: gameboard.PlayerDeck, isExecute: Boolean): Unit =
+  override def executeI(board: gameboard.GameBoard, deck: gameboard.PlayerDeck, isExecute: Boolean): Unit = {
     if (isExecute) board.addForcedCommandC(Command.GREATPERSON, deck, null, getRandomPerson(board))
+    val te: PlayerTechnology = deck.findPlayerTechnology(tech).get
+    val curr = currentPhase(board)
+    te.addRound(curr.roundno)
+  }
 }

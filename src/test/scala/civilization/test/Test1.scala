@@ -20,7 +20,7 @@ class Test1 extends FunSuite {
   }
 
   test("Read tokens json") {
-    val l: JsValue = readTestJSON("resources/map/tiles/TOKEN1.json")
+    val l: JsValue = readTestJSON("testmap/tiles/TOKEN1.json")
     println(l)
     val t: Tokens = convert[TokensJ](TokensJ(l))
     println(t)
@@ -30,7 +30,7 @@ class Test1 extends FunSuite {
   }
 
   test("Read square json") {
-    val l: JsValue = readTestJSON("resources/map/tiles/SQUARE1.json")
+    val l: JsValue = readTestJSON("testmap/tiles/SQUARE1.json")
     println(l)
     val t: Square = convert[SquareJ](SquareJ(l))
     println(t)
@@ -43,7 +43,7 @@ class Test1 extends FunSuite {
   }
 
   test("Read square json without resource") {
-    val l: JsValue = readTestJSON("resources/map/tiles/SQUARE2.json")
+    val l: JsValue = readTestJSON("testmap/tiles/SQUARE2.json")
     println(l)
     val t: Square = convert[SquareJ](SquareJ(l))
     println(t)
@@ -52,7 +52,7 @@ class Test1 extends FunSuite {
   }
 
   test("Read square json with natural wonder and hut") {
-    val l: JsValue = readTestJSON("resources/map/tiles/SQUARE3.json")
+    val l: JsValue = readTestJSON("testmap/tiles/SQUARE3.json")
     println(l)
     val t: Square = convert[SquareJ](SquareJ(l))
     println(t)
@@ -63,7 +63,7 @@ class Test1 extends FunSuite {
   }
 
   test("Read seq square") {
-    val l: JsValue = readTestJSON("resources/map/tiles/SEQ1.json")
+    val l: JsValue = readTestJSON("testmap/tiles/SEQ1.json")
     println(l)
     val s: Array[Square] = (JsPath).read[Array[Square]].reads(l).get
     println(s)
@@ -77,7 +77,7 @@ class Test1 extends FunSuite {
   private def eqr(r : Resource.T,sq1: Square) = sq1.resource.isDefined && sq1.resource.get == r
 
   test("Read seq[seq] square") {
-    val l: JsValue = readTestJSON("resources/map/tiles/SEQ2.json")
+    val l: JsValue = readTestJSON("testmap/tiles/SEQ2.json")
     println(l)
     val s: Array[Array[Square]] = (JsPath).read[Array[Array[Square]]].reads(l).get
     assert(4 == s.length)
@@ -97,7 +97,7 @@ class Test1 extends FunSuite {
   }
 
   test("Read tile from JSON ") {
-    val l: JsValue = readTestJSON("resources/map/tiles/TILE1.json")
+    val l: JsValue = readTestJSON("testmap/tiles/TILE1.json")
     println(l)
     val t: Tile = convert[TileJ](TileJ(l))
     assert(Civilization.Rome == t.civ.get)
@@ -106,7 +106,7 @@ class Test1 extends FunSuite {
   }
 
   test("Read tile not civilized from JSON ") {
-    val l: JsValue = readTestJSON("resources/map/tiles/TILE2.json")
+    val l: JsValue = readTestJSON("testmap/tiles/TILE2.json")
     println(l)
     val t: Tile = convert[TileJ](TileJ(l))
     assert(t.civ.isEmpty)
@@ -120,7 +120,7 @@ class Test1 extends FunSuite {
   }
 
   test("Read single map tile ") {
-    val l: JsValue = readTestJSON("resources/map/tiles/MAP1.json")
+    val l: JsValue = readTestJSON("testmap/tiles/MAP1.json")
     println(l)
     val t: MapTile = convert[MapTileJ](MapTileJ(l))
     println(t)
@@ -145,7 +145,7 @@ class Test1 extends FunSuite {
   }
 
   test("Read single playerdeck ") {
-    val l: JsValue = readTestJSON("resources/map/tiles/PLAYERDECK1.json")
+    val l: JsValue = readTestJSON("testmap/tiles/PLAYERDECK1.json")
     println(l)
     val t: PlayerDeck = convert[PlayerDeckJ](PlayerDeckJ(l))
     println(t)
@@ -153,7 +153,7 @@ class Test1 extends FunSuite {
   }
 
   test("Read single boardgame ") {
-    val l: JsValue = readTestJSON("resources/map/tiles/BOARDGAME1.json")
+    val l: JsValue = readTestJSON("testmap/tiles/BOARDGAME1.json")
     println(l)
     val t: GameBoard = convert[GameBoardJ](GameBoardJ(l))
     println(t)
@@ -162,7 +162,7 @@ class Test1 extends FunSuite {
   }
 
   test("Read single boardgame and read tiles") {
-    val l: JsValue = readTestJSON("resources/map/tiles/BOARDGAME1.json")
+    val l: JsValue = readTestJSON("testmap/tiles/BOARDGAME1.json")
     println(l)
     val g: GameBoard = readGameBoard(l)
     assert(2 == g.map.map.length)
@@ -172,7 +172,7 @@ class Test1 extends FunSuite {
   }
 
   test("Read single hutvillage") {
-    val l: JsValue = readTestJSON("resources/map/tiles/HUTVILLAGE.json")
+    val l: JsValue = readTestJSON("testmap/tiles/HUTVILLAGE.json")
     println(l)
     val t: HutVillage = toHutVillage(l)
     println(t)
@@ -181,7 +181,7 @@ class Test1 extends FunSuite {
   }
 
   test("Read command line") {
-    val l: JsValue = readTestJSON("resources/map/tiles/COMMAND1.json")
+    val l: JsValue = readTestJSON("testmap/tiles/COMMAND1.json")
     println(l)
     val p = toParams(l)
     println(p)

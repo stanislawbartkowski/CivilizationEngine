@@ -8,7 +8,7 @@ import civilization.io.tojson.ImplicitMiximToJson
 import civilization.message
 import civilization.message.{J, M, Mess}
 import civilization.objects._
-import play.api.libs.json.{JsNumber, JsValue}
+import play.api.libs.json.{JsArray, JsNumber, JsValue, Json}
 
 object AttackCommand extends ImplicitMiximToJson {
 
@@ -63,24 +63,6 @@ object AttackCommand extends ImplicitMiximToJson {
       val pl: PlayerDeck = b.playerDeck(p.civHere.get)
       pl.units = pl.units ++ survived ++ saved
     }
-    //    if (winner) {
-    //      val pl: PlayerDeck = b.playerDeck(p.civHere.get)
-    //      pl.units = pl.units ++ survived ++ saved
-    //    }
-    // else kill them all
-    //    else {
-    //      b.market.killedunits = b.market.killedunits ++ survived
-    //      if (!s.isvillage) {
-    //        val pl: PlayerDeck = b.playerDeck(p.civHere.get)
-    //        pl.units = pl.units ++ saved
-    //      }
-    //    }
-    // figures participating in the battle
-    // important: 2017/12/24
-    // p.civHere.get not civ !
-    // the winner can be different then attacker
-    //    val pla: PlayerMove = getCurrentMove(b, p.civHere.get).get
-    //    var plfig = pla.f
     var fig: Option[Figures] = None
     var f: Figures = null
     if (winner) {
@@ -166,6 +148,16 @@ object AttackCommand extends ImplicitMiximToJson {
     })
   }
 
+  private def getBattleInfo(board: GameBoard): (MapSquareP, MapSquareP, Boolean, Boolean) = {
+    val (ba1: P, ba2: P) = battleParticipants(board)
+    val att: MapSquareP = getSquare(board, ba1)
+    val defe: MapSquareP = getSquare(board, ba2)
+    val defeCity: Boolean = defe.civHere.isDefined && defe.s.city.isDefined
+    val defeCapital: Boolean = defeCity && defe.s.city.get.citytype == City.Capital
+    (att, defe, defeCity, defeCapital)
+  }
+
+
   class EndOfBattleCommand(override val param: Seq[WinnerLootEffect]) extends AbstractCommand(param) {
 
     override def verify(board: GameBoard): Mess = {
@@ -177,11 +169,12 @@ object AttackCommand extends ImplicitMiximToJson {
     }
 
     override def execute(board: GameBoard): Unit = {
-      val ba: (P, P) = battleParticipants(board)
-      val att: MapSquareP = getSquare(board, ba._1)
+      //      val ba: (P, P) = battleParticipants(board)
+      val (att: MapSquareP, defe: MapSquareP, iscity: Boolean, defeCapital: Boolean) = getBattleInfo(board)
+      //      val att: MapSquareP = getSquare(board, ba._1)
       // import, take attackign civilization before battle conclusion
       val attackciv: Civilization.T = att.civHere.get
-      val defe: MapSquareP = getSquare(board, ba._2)
+      //      val defe: MapSquareP = getSquare(board, ba._2)
       val defeciv: Option[Civilization.T] = defe.civHere
       val batt: BattleField = board.battle.get
       // close battle
@@ -208,15 +201,22 @@ object AttackCommand extends ImplicitMiximToJson {
       // loot
       if (isExecute) {
         if (batt.attackerwinner) {
-          if (defe.civHere.isDefined && defe.s.city.isDefined)
+          //          var iscity: Boolean = defe.civHere.isDefined && defe.s.city.isDefined
+          if (iscity)
           // city is conquered, destroy city before moving on
             board.addForcedCommandC(Command.CITYLOST, defe.civHere.get, defe.p)
+          // check military victory
 
           // move army to this point
           val param: JsValue = if (f.isEmpty) null else f.get
           val command: Command = constructCommand(Command.ENDOFMOVE, attackciv, defe.p, param)
           // execute later
           board.addForcedCommand(command)
+          // check military victory
+          if (defeCapital) {
+            if (isExecute) board.addForcedCommandC(Command.PLAYERWIN, deck, null, GameWinType.Military)
+            return
+          }
         }
         else {
           // battle lost, nothing
@@ -228,8 +228,8 @@ object AttackCommand extends ImplicitMiximToJson {
       }
       // who is the winner
       // implement CodeOfLaws
-      if (batt.attackerwinner) TechnologyAction.BattleWinner(board, board.playerDeck(attackciv))
-      else if (defeciv.isDefined) TechnologyAction.BattleWinner(board, board.playerDeck(defeciv.get))
+      if (batt.attackerwinner) TechnologyAction.BattleWinner(board, board.playerDeck(attackciv), isExecute)
+      else if (defeciv.isDefined) TechnologyAction.BattleWinner(board, board.playerDeck(defeciv.get), isExecute)
       // import: at the end, not before
       // only if village is taken
       if (batt.attackerwinner && defeciv.isEmpty) {
@@ -312,7 +312,7 @@ object AttackCommand extends ImplicitMiximToJson {
         //        val pl: PlayerDeck = board.playerDeck(if (board.battle.get.attackermove) board.battle.get.attackerciv else board.battle.get.defenderciv)
         //        pl.resou.decr(Resource.Iron)
         val civ: Civilization.T = if (board.battle.get.attackermove) board.battle.get.attackerciv else board.battle.get.defenderciv
-        decrResourceHVForTech(board, deck, Resource.Iron, TechnologyName.Metallurgy)
+        decrResourceHVForTech(board, deck, Resource.Iron, TechnologyName.Metallurgy, isExecute)
         // mark iron
         ba.canuseiron = false
         ba.ironused = to
@@ -329,6 +329,11 @@ object AttackCommand extends ImplicitMiximToJson {
       }
       // movevent of player having units to play
       board.battle.get.attackermove = board.battle.get.defender.waiting.isEmpty
+      if (board.battle.get.endofbattle && board.battle.get.attackerwinner && isExecute) {
+        // check if capital destroyed
+        val (_, _, _, defeCapital: Boolean) = getBattleInfo(board)
+        if (defeCapital) board.addForcedCommandC(Command.ENDBATTLE,board.battle.get.attackerciv,null,JsArray())
+      }
     }
   }
 

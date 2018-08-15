@@ -14,10 +14,6 @@ object GetCoinCommand extends CommandPackage with ImplicitMiximFromJson with Imp
 
   protected class DropCoinTechnology(override val param: TechnologyName.T) extends AbstractCommand(param) {
 
-    override protected def verify(board: GameBoard): Mess = {
-      null
-    }
-
     override protected def execute(board: GameBoard): Unit = {
       deck.tech.find(_.tech == param).get.removeCoin()
     }
@@ -25,12 +21,9 @@ object GetCoinCommand extends CommandPackage with ImplicitMiximFromJson with Imp
 
   protected class GetCoin(override val param: Int) extends AbstractCommand(param) {
 
-    override protected def verify(board: GameBoard): Mess = {
-      null
-    }
-
     override protected def execute(board: GameBoard): Unit = {
-      deck.resou.incr(Resource.Culture,param)
+      deck.resou.incr(Resource.Coin, param)
+      checkEconomyVictory(board, deck, isExecute)
     }
   }
 
@@ -39,7 +32,7 @@ object GetCoinCommand extends CommandPackage with ImplicitMiximFromJson with Imp
     command match {
       case Command.DROPCOINFROMTECHNOLOGY => new DropCoinTechnology(param)
       case Command.GETCOIN => new GetCoin(param)
-  }
+    }
 
 }
 

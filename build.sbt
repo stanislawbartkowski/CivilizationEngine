@@ -4,12 +4,16 @@ version := "1.0"
 
 scalaVersion := "2.12.3"
 
-libraryDependencies += "com.typesafe.play" % "play-json_2.12" % "2.6.2"
-libraryDependencies += "net.debasishg" % "redisclient_2.12" % "3.4"
+// https://mvnrepository.com/artifact/com.typesafe.play/play-json
+libraryDependencies += "com.typesafe.play" %% "play-json" % "2.6.9"
 
-// https://mvnrepository.com/artifact/org.scalatest/scalatest_2.12
-libraryDependencies += "org.scalatest" % "scalatest_2.12" % "3.0.3" % "test"
+// https://mvnrepository.com/artifact/net.debasishg/redisclient
+libraryDependencies += "net.debasishg" %% "redisclient" % "3.7"
 
-libraryDependencies += "net.codingwell" % "scala-guice" % "4.1.1"
+// https://mvnrepository.com/artifact/org.scalatest/scalatest
+libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.5" % Test
+
+// https://mvnrepository.com/artifact/net.codingwell/scala-guice
+libraryDependencies += "net.codingwell" %% "scala-guice" % "4.2.1"
 
 

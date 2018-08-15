@@ -16,6 +16,7 @@ package object objects {
   val CULTURECAPITAL = 1
   val DEFAULTCITYLIMIT = 2
   val DEFAULTTRAVELSPPED = 2
+  def ECONOMICVICTORY = 15
 
   def WINNERTRADELOOT = 3
 

@@ -1,4 +1,5 @@
 package civilization.helper
+
 import civilization.gameboard.PlayerTechnology
 import civilization.{gameboard, message}
 import civilization.objects._
@@ -9,9 +10,9 @@ object PotteryAction extends TechnologyAnyResourceAction {
 
   override def validateH(b: gameboard.GameBoard, deck: gameboard.PlayerDeck, command: Command.T): Option[message.Mess] = None
 
-  override def executeI(board: gameboard.GameBoard, deck: gameboard.PlayerDeck, isExecute : Boolean): Unit = {
+  override def executeI(board: gameboard.GameBoard, deck: gameboard.PlayerDeck, isExecute: Boolean): Unit = {
     val te: PlayerTechnology = deck.findPlayerTechnology(tech).get
-    addCoinToTechnology(board, te)
+    addCoinToTechnology(board, deck, te, isExecute)
   }
 
 }
