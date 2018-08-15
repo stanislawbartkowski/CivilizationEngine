@@ -593,10 +593,11 @@ package object helper {
     def trade: Int = math.min(terrain + noresearch + tradefromGreatLight - toprod + tradecoins - tradespendCulture, TRADEMAX)
   }
 
-  case class TradeForCiv(val tradecalculated: Int, val toprod: Int, val spendOnCulture: Int, val increased: Int, val decreased : Int) {
+  case class TradeForCiv(val tradecalculated: Int, val toprod: Int, val spendOnCulture: Int, val increased: Int, val decreased: Int) {
     require(increased >= 0 && decreased >= 0)
-//    def trade: Int = math.min(tradecalculated - toprod - spendOnCulture + increased, TRADEMAX)
-    def trade : Int = math.min(tradecalculated + increased, TRADEMAX) - toprod - spendOnCulture - decreased
+
+    //    def trade: Int = math.min(tradecalculated - toprod - spendOnCulture + increased, TRADEMAX)
+    def trade: Int = math.min(tradecalculated + increased, TRADEMAX) - toprod - spendOnCulture - decreased
   }
 
 
@@ -672,26 +673,26 @@ package object helper {
     else Some((coma.get, coma.get.param.asInstanceOf[Int]))
   }
 
-  private def numberofTradeFromIncrease(b: GameBoard, deck: PlayerDeck, com: Command.T): (Int,Int) = {
-    val listofi : Seq[Int] = currentTurnReverse(b, deck).filter(_.command == com).map(co => co.param.asInstanceOf[Int])
+  private def numberofTradeFromIncrease(b: GameBoard, deck: PlayerDeck, com: Command.T): (Int, Int) = {
+    val listofi: Seq[Int] = currentTurnReverse(b, deck).filter(_.command == com).map(co => co.param.asInstanceOf[Int])
     val sumplus: Int = listofi.filter(_ > 0).sum
-    val summinus : Int = ( 0 - listofi.filter(_ < 0).sum)
-    (sumplus,summinus)
+    val summinus: Int = (0 - listofi.filter(_ < 0).sum)
+    (sumplus, summinus)
   }
 
   def numberofTrade(b: GameBoard, deck: PlayerDeck): TradeForCiv = {
     if (b.tradecurrent) {
       // cheating
       val tra = numberofTradeCalculate(b, deck)
-      return TradeForCiv(tra.trade, 0, 0, 0,0)
+      return TradeForCiv(tra.trade, 0, 0, 0, 0)
     }
     val li: PlayerLimits = getLimits(b, deck)
     val tradecalculated: Int = numberofTradeTradenoresearch(b, deck.civ)
     val spendonprod: Int = reduceTradeBySpend(b, deck.civ, li)
     val spendonculture: Int = tradeSpendOnCulture(b, deck.civ)
-    val (sumplus: Int, summinus : Int) = numberofTradeFromIncrease(b, deck, Command.INCREASETRADE)
+    val (sumplus: Int, summinus: Int) = numberofTradeFromIncrease(b, deck, Command.INCREASETRADE)
 
-    TradeForCiv(tradecalculated, spendonprod, spendonculture, sumplus,summinus)
+    TradeForCiv(tradecalculated, spendonprod, spendonculture, sumplus, summinus)
   }
 
   private def tradefromGreatLight(b: GameBoard, deck: PlayerDeck): Int =
@@ -857,7 +858,8 @@ package object helper {
     val prodfortrade: Int = CivilizationFeatures.prodfortrade(deck.civ)
     val technologytravelspeed: Int =
       math.max(DEFAULTTRAVELSPPED, if (deck.tech.isEmpty) 0 else deck.tech.map(t => TechnologyFeatures.speedLimit(t.tech)).max)
-    val travelspeed: Int = technologytravelspeed + (if (CivilizationFeatures.increaseTravelSpeedByOne(deck.civ)) 1 else 0)
+    val travelspeed: Int = technologytravelspeed + (if (CivilizationFeatures.increaseTravelSpeedByOne(deck.civ)) 1 else 0) +
+      deck.numofGreatPersonFeature(GreatPersonFeatures.increaseTravelSpeedByOne)
 
     PlayerLimits(citieslimit, deck.stackLimit,
       deck.hasTechnologyFeature(TechnologyFeatures.watercrossingAllowed),

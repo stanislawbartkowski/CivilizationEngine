@@ -76,7 +76,6 @@
   },
   {
     "name": "HenryFord",
-    "ni": true,
     "t": "HF",
     "type": "Builder",
     "desc": "Your travel speed is increased by 1."

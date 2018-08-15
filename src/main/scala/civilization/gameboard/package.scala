@@ -246,9 +246,13 @@ package object gameboard {
 
     val cultureresource: CultureResources = CultureResources()
 
-    def hasTechnologyFeature(feature: TechnologyName.T => Boolean): Boolean = tech.find(te => feature(te.tech)).isDefined
+    def hasTechnologyFeature(feature: TechnologyName.T => Boolean): Boolean = tech.exists(te => feature(te.tech))
 
     def numofTechnologyFeatures(feature: TechnologyName.T => Boolean): Int = tech.filter(te => feature(te.tech)).length
+
+    def hasGreatPersonFeature(feature : GreatPersonName.T => Boolean) : Boolean = cultureresource.persons.exists(pe => feature(pe))
+
+    def numofGreatPersonFeature(feature : GreatPersonName.T => Boolean) : Int = cultureresource.persons.filter(pe => feature(pe)).length
 
     def stackLimit: Int = math.max(CivilizationFeatures.startStackingLimit(civ), if (tech.isEmpty) 0 else tech.map(te => TechnologyFeatures.stackSize(te.tech)) max)
 
