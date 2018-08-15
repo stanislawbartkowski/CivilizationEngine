@@ -113,7 +113,7 @@ class Test19 extends FunSuite with ImplicitMiximToJson {
 //    assert(numar.trade == (xnumar.trade - 3))
 //    assert(numam.trade == xnumam.trade + 3)
     assert(xnumar.increased == 3)
-    assert(xnumam.increased == -3)
+    assert(xnumam.decreased == 3)
   }
 
   test("Two players game, battle, battle resolution, take Hut") {

@@ -171,7 +171,16 @@ class Test35 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
     println(gg.battle)
     assert(gg.battle.isEmpty)
 
-
   }
 
-}
+  test("SPend trade for coin incorrect") {
+    val reg = Helper.readBoardAndPlayT("test35/BOARDGAME9.json", "test35/PLAY9.json", Civilization.America)
+    val token = reg._1
+    var gg: GameBoard = I.getBoardForToken(token)
+    val trade = numberofTradeH(gg,Civilization.America)
+    println(trade.trade)
+    // should be 21
+    assert(trade.trade == 21)
+  }
+
+  }
