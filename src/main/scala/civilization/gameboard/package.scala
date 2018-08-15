@@ -250,10 +250,6 @@ package object gameboard {
 
     def numofTechnologyFeatures(feature: TechnologyName.T => Boolean): Int = tech.filter(te => feature(te.tech)).length
 
-    def hasGreatPersonFeature(feature : GreatPersonName.T => Boolean) : Boolean = cultureresource.persons.exists(pe => feature(pe))
-
-    def numofGreatPersonFeature(feature : GreatPersonName.T => Boolean) : Int = cultureresource.persons.filter(pe => feature(pe)).length
-
     def stackLimit: Int = math.max(CivilizationFeatures.startStackingLimit(civ), if (tech.isEmpty) 0 else tech.map(te => TechnologyFeatures.stackSize(te.tech)) max)
 
     var freeWonder: Option[Wonders.T] = None

@@ -218,7 +218,6 @@
   },
   {
     "name": "AdamSmith",
-    "ni": true,
     "t": "AS",
     "type": "Merchant",
     "desc": "+1 coin."

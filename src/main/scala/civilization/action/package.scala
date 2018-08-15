@@ -146,7 +146,7 @@ package object action extends ImplicitMiximToJson with ImplicitMiximFromJson {
 
     def commandsAvail(b: GameBoard, deck: PlayerDeck, phase: TurnPhase.T): Seq[Command.T] =
       getSet.
-        filter(Command.actionPhase(_) == phase).
+        filter(c => Command.actionPhase(c) == phase || Command.anyPhase(c)).
         filter(!itemize(b, deck, _).isEmpty) toSeq
 
     def itemize(b: GameBoard, deck: PlayerDeck, com: Command.T): Seq[JsValue] = itemizeP(b, deck, com)

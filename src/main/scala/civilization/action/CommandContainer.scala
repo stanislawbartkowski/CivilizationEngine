@@ -20,11 +20,7 @@ object CommandContainer {
 
   def commandsAvail(b: GameBoard, deck: PlayerDeck, phase: TurnPhase.T): Seq[Command.T] = {
     // it is necessary to have additional filter for phase, not all commands are passing through CommandPackage
-    val co: Seq[Command.T] = commands.map(co => co.commandsAvail(b, deck, phase).filter(p => Command.actionPhase(p) == phase)).flatten.filter(!Command.internalAction(_))
-    // technology resource command used already
-//    val techResourceUsed = technologyResourceUsed(b, deck)
-    // if yes, then weed out all technology commands here
- //   if (!techResourceUsed) co else co.filter(!Command.isTechnologyResourceAction((_)))
+    val co: Seq[Command.T] = commands.map(co => co.commandsAvail(b, deck, phase).filter(p => Command.anyPhase(p) || Command.actionPhase(p) == phase)).flatten.filter(!Command.internalAction(_))
     co
   }
 

@@ -14,7 +14,7 @@ object SetCityAction extends CommandPackage with ImplicitMiximFromJson with Impl
 
   override def getSet: Set[Command.T] = Set(Command.SETCAPITAL, Command.SETCITY)
 
-  private def verifySetCity(board: GameBoard, deck : PlayerDeck, p: P, command: Command.T): Option[Mess] = {
+  private def verifySetCity(board: GameBoard, deck: PlayerDeck, p: P, command: Command.T): Option[Mess] = {
 
     val mapp: MapSquareP = getSquare(board, p)
     command match {
@@ -32,11 +32,11 @@ object SetCityAction extends CommandPackage with ImplicitMiximFromJson with Impl
 
   protected class SetCityAction extends AbstractCommand {
 
-    private def setcitycommandverify(board: GameBoard, deck : PlayerDeck, p: P, command: Command.T): Mess = {
+    private def setcitycommandverify(board: GameBoard, deck: PlayerDeck, p: P, command: Command.T): Mess = {
       verifySetCity(board, deck, p, command).getOrElse(null)
     }
 
-    private def setcitycommandexecute(board: GameBoard, deck : PlayerDeck, p: P, command: Command.T) = {
+    private def setcitycommandexecute(board: GameBoard, deck: PlayerDeck, p: P, command: Command.T) = {
       val sq: MapSquareP = getSquare(board, p)
       // build city
       if (command == Command.SETCAPITAL) {
@@ -46,7 +46,7 @@ object SetCityAction extends CommandPackage with ImplicitMiximFromJson with Impl
           board.addForcedCommand(command)
         }
         if (isExecute && CivilizationFeatures.freeWonderOfTheWorldAtTheBeginning(civ)) {
-          val wonder : Wonders.T = getRandomAncientWonder(board)
+          val wonder: Wonders.T = getRandomAncientWonder(board)
           val command: Command = constructCommand(Command.RANDOMWONDER, civ, p, wonder)
           board.addForcedCommand(command)
         }
@@ -85,7 +85,7 @@ object SetCityAction extends CommandPackage with ImplicitMiximFromJson with Impl
 
     override def execute(board: GameBoard) = {
       setcitycommandexecute(board, deck, p, command)
-      if (command == Command.SETCITY) advanceCultureForFree(board,civ,isExecute)
+      if (command == Command.SETCITY) advanceCultureForFree(board, civ, isExecute)
     }
 
     override def verify(board: GameBoard): Mess = setcitycommandverify(board, deck, p, command)
@@ -94,14 +94,14 @@ object SetCityAction extends CommandPackage with ImplicitMiximFromJson with Impl
   override def produceCommand(command: Command.T, civ: Civilization.T, p: P, param: JsValue) = new SetCityAction
 
   // set city
-  private def itemizeForSetCity(b: GameBoard, deck : PlayerDeck): Seq[P] =
+  private def itemizeForSetCity(b: GameBoard, deck: PlayerDeck): Seq[P] =
     getFigures(b, deck.civ).filter(_.s.figures.numberofScouts > 0).map(_.p).filter(p => verifySetCity(b, deck, p, Command.SETCITY).isEmpty)
 
   // capital
-  private def itemizeForSetCapital(b: GameBoard, deck : PlayerDeck): Seq[P] =
+  private def itemizeForSetCapital(b: GameBoard, deck: PlayerDeck): Seq[P] =
     allSquares(b).filter(p => verifySetCity(b, deck, p.p, Command.SETCAPITAL).isEmpty).map(_.p)
 
-  override def itemize(b: GameBoard, deck : PlayerDeck, com: Command.T): Seq[JsValue] = {
+  override def itemize(b: GameBoard, deck: PlayerDeck, com: Command.T): Seq[JsValue] = {
     if (com == Command.SETCITY) itemizeForSetCity(b, deck)
     else itemizeForSetCapital(b, deck)
   }

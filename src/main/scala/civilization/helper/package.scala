@@ -847,6 +847,9 @@ package object helper {
     def prodForTrade(prod: Int): Int = (prod / prodfortrade).toInt * tradeforProd
   }
 
+  private def numofGreatPersonFeature(b: GameBoard, civ: Civilization.T, feature: GreatPersonName.T => Boolean): Int =
+    outskirtsForCivNotBlocked(b, civ).filter(s => s.s.greatperson.isDefined && feature(s.s.greatperson.get.name)).length
+
   def getLimits(b: GameBoard, deck: PlayerDeck): PlayerLimits = {
     val citieslimit: Int = (if (deck.hasTechnologyFeature(TechnologyFeatures.citiesLimitIs3)) 3 else DEFAULTCITYLIMIT) - citiesForCivilization(b, deck.civ).length
     val count: (Int, Int) = getNumberOfArmies(b, deck.civ)
@@ -859,7 +862,7 @@ package object helper {
     val technologytravelspeed: Int =
       math.max(DEFAULTTRAVELSPPED, if (deck.tech.isEmpty) 0 else deck.tech.map(t => TechnologyFeatures.speedLimit(t.tech)).max)
     val travelspeed: Int = technologytravelspeed + (if (CivilizationFeatures.increaseTravelSpeedByOne(deck.civ)) 1 else 0) +
-      deck.numofGreatPersonFeature(GreatPersonFeatures.increaseTravelSpeedByOne)
+      numofGreatPersonFeature(b, deck, GreatPersonFeatures.increaseTravelSpeedByOne)
 
     PlayerLimits(citieslimit, deck.stackLimit,
       deck.hasTechnologyFeature(TechnologyFeatures.watercrossingAllowed),
