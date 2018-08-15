@@ -9,10 +9,10 @@ object CommandContainer {
 
   val commands: Seq[CommandPackage] = Seq(BuyUnit, SpendTrade, SendProduction, HarvestResource, ResearchTechnology,
     BuyBuildingCommand, BuyWorldWonder, BuildCityWalls, IncreaseTradeProductionAction,
-    PhilosophyAction,  PotteryAction, SetCityAction, TakeResourceCommand, SpendSilkAction,
+    PhilosophyAction, PotteryAction, SetCityAction, TakeResourceCommand, SpendSilkAction,
     SetFigureAction, DevoutToCultureCommand, AdvanceCulture, CurrencyAction, DiscardCard, GreatPersonAction,
     ConstructionAction, GetCultureAction, MetalCastingAction, BankingAction, ChivalryAction, GetResourceCommand,
-    GetHutVillageCommand, GetCoinCommand, DestroyCityAction, WinTheGame,DemocracyAction,PrintingPressAction)
+    GetHutVillageCommand, GetCoinCommand, DestroyCityAction, WinTheGame, DemocracyAction, PrintingPressAction)
 
   val comset: Map[Command.T, CommandPackage] = commands.map(c => c.getSet.map(co => (co, c))).flatten.map(c => c._1 -> c._2) toMap
 
@@ -20,7 +20,7 @@ object CommandContainer {
 
   def commandsAvail(b: GameBoard, deck: PlayerDeck, phase: TurnPhase.T): Seq[Command.T] = {
     // it is necessary to have additional filter for phase, not all commands are passing through CommandPackage
-    val co: Seq[Command.T] = commands.map(co => co.commandsAvail(b, deck, phase).filter(p => Command.anyPhase(p) || Command.actionPhase(p) == phase)).flatten.filter(!Command.internalAction(_))
+    val co: Seq[Command.T] = commands.map(co => co.commandsAvail(b, deck, phase).filter(Command.inPhase(_, phase))).flatten.filter(!Command.internalAction(_))
     co
   }
 

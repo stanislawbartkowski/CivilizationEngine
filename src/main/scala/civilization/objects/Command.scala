@@ -34,6 +34,8 @@ object Command extends Enumeration {
 
   def anyPhase(t: Value) : Boolean = t == Command.DISCARDCARD
 
+  def inPhase(t : Value, phase : TurnPhase.T) : Boolean = anyPhase(t) || actionPhase(t) == phase
+
   def internalAction(t: Value): Boolean = t == Command.ADVANCECULTUREFORFREE || t == FORCEDMOVEFIGURES || t == TAKEUNIT ||
     t == BUILDCITYWALLFORFREE || t == ADVANCECULTUREFORFREE || t == RANDOMWONDER || t == GETCULTURE || t == RESEARCHFREETECHNOLOGY || t == TAKEFREEALLRESOURCESFROMMARKET ||
     t == INCREASETRADE || t == INCREASEPRODUCTION || t == GETRESOURCE || t == DROPRESOURCE || t == GETHUTVILLAGE || t == DROPHUTVILLAGE || t == DROPCULTURECARD ||
