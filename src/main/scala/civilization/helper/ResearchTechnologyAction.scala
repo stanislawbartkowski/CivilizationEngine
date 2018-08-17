@@ -24,8 +24,10 @@ object ResearchTechnologyAction extends CommandPackage with ImplicitMiximFromJso
     // single unit or list of 3 units
     // filter out only with increased strength
     val listofunlocked: Seq[CombatUnitType.T] =
-    (if (s.unit.isDefined) Seq(s.unit.get)
-    else CombatUnitType.values.filter(_ != CombatUnitType.Artillery) toSeq).filter(newlevel > str.getStrength(_))
+    (
+     if (s.unit.isDefined) Seq(s.unit.get)
+     else CombatUnitType.values.filter(_ != CombatUnitType.Aircraft) toSeq).filter(newlevel > str.getStrength(_)
+    )
 
     // increase strength
     listofunlocked.foreach(str.setStrength(_, newlevel))
@@ -97,9 +99,6 @@ object ResearchTechnologyAction extends CommandPackage with ImplicitMiximFromJso
 
     override def verify(board: GameBoard): Mess = null
   }
-
-//  override def commandsAvail(b: GameBoard, deck: PlayerDeck, phase: TurnPhase.T): Seq[Command.T] =
-//    if (isResearchDone(b, deck) || techologyLevel(b, deck).isEmpty) Nil else List(Command.RESEARCH)
 
   override def produceCommand(command: Command.T, civ: Civilization.T, p: P, param: JsValue) =
     if (command == Command.RESEARCH) new ResearchTechnologyAction(param)

@@ -87,9 +87,9 @@ class Test36 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
     var l = allowedCommandsH(gg, Civilization.Spain)
     println(l)
     // research lost for Spain ??
-    val trade = numberofTradeH(gg,Civilization.Spain)
+    val trade = numberofTradeH(gg, Civilization.Spain)
     println(trade.trade)
-    val le = techologyLevel(gg,gg.playerDeck(Civilization.Spain))
+    val le = techologyLevel(gg, gg.playerDeck(Civilization.Spain))
     println(le)
     assert(l contains Command.RESEARCH)
   }
@@ -111,7 +111,7 @@ class Test36 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
       """ []  """
     // end battle, village, Russia, empty list of loot
     Helper.executeCommandH(token, "ENDBATTLE", -1, -1, param)
-    gg= I.getBoardForToken(token)
+    gg = I.getBoardForToken(token)
     assert(gg.battle.isEmpty)
   }
 
@@ -127,4 +127,16 @@ class Test36 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
     println(l1)
     assert(!(l1 contains Command.RESEARCH))
   }
+
+  test("Logistic, unit level") {
+    val reg = Helper.ReadAndPlayForTwo("test36/BOARDGAME6.json", "test36/PLAY6.json", Civilization.Russia, Civilization.Spain)
+    val tokenR = reg._1
+    val tokenS = reg._2
+    var gg: GameBoard = I.getBoardForToken(tokenS)
+    val cl = gg.playerDeck(Civilization.Spain).combatlevel
+    println(cl.getStrength(CombatUnitType.Aircraft))
+    assert(cl.getStrength(CombatUnitType.Mounted) == 1)
+    assert(cl.getStrength(CombatUnitType.Artillery) == 1)
+    assert(cl.getStrength(CombatUnitType.Infantry) == 1)
   }
+}
