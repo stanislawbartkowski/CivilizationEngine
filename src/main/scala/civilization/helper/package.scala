@@ -363,7 +363,12 @@ package object helper {
           if (p.get == prevP) break
           clist = Nil
         }
-        else if (c.civ == civ) clist = clist :+ c
+        else {
+          val commandpha : TurnPhase.T = Command.actionPhase(c.command)
+          // 2018/08/17 : tricky, research command. It is possible that after end of Movement, Movement is played because of battle
+          // so Research was recognized as done
+          if (commandpha == null || commandpha == pha) clist = clist :+ c
+        }
       })
     }
     clist
@@ -490,7 +495,7 @@ package object helper {
     if (l.isEmpty) None else Some(l.last)
   }
 
-  def isResearchDone(b: GameBoard, deck: PlayerDeck): Boolean = !lastPhaseCommandsReverse(b, deck.civ, TurnPhase.Research).isEmpty
+  def isResearchDone(b: GameBoard, deck: PlayerDeck): Boolean = !lastPhaseCommandsReverse(b, deck, TurnPhase.Research).isEmpty
 
   private def commandForPhase(b: GameBoard, command: Command): Mess = {
     // technology resource action only once

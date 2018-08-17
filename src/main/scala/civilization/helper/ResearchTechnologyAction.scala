@@ -98,12 +98,15 @@ object ResearchTechnologyAction extends CommandPackage with ImplicitMiximFromJso
     override def verify(board: GameBoard): Mess = null
   }
 
+//  override def commandsAvail(b: GameBoard, deck: PlayerDeck, phase: TurnPhase.T): Seq[Command.T] =
+//    if (isResearchDone(b, deck) || techologyLevel(b, deck).isEmpty) Nil else List(Command.RESEARCH)
+
   override def produceCommand(command: Command.T, civ: Civilization.T, p: P, param: JsValue) =
     if (command == Command.RESEARCH) new ResearchTechnologyAction(param)
     else new ResearchFreeTechnologyAction(param)
 
   override def itemize(b: GameBoard, deck: PlayerDeck, com: Command.T): Seq[JsValue] =
-    if (com == Command.RESEARCH) listOfRemainingTechnologies(b, deck, techologyLevel(b, deck))
+    if (com == Command.RESEARCH && !isResearchDone(b, deck)) listOfRemainingTechnologies(b, deck, techologyLevel(b, deck))
     else Nil
 
 }

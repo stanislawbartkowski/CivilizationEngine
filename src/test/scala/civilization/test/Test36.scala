@@ -91,5 +91,40 @@ class Test36 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
     println(trade.trade)
     val le = techologyLevel(gg,gg.playerDeck(Civilization.Spain))
     println(le)
+    assert(l contains Command.RESEARCH)
   }
-}
+
+  test("Two players game, one lost battle with village, loot ? ") {
+    val reg = Helper.ReadAndPlayForTwo("test36/BOARDGAME5.json", "test36/PLAY5.json", Civilization.Russia, Civilization.Spain)
+    val token = reg._1
+    var gg: GameBoard = I.getBoardForToken(token)
+    val ba = gg.battle.get
+    println(ba)
+    assert(ba.endofbattle)
+    assert(!ba.attackerwinner)
+    val wi = BattleActions.winnerLoot(gg)
+    println(wi)
+    // no loot
+    assert(wi.loot == 0)
+    assert(wi.list.isEmpty)
+    val param =
+      """ []  """
+    // end battle, village, Russia, empty list of loot
+    Helper.executeCommandH(token, "ENDBATTLE", -1, -1, param)
+    gg= I.getBoardForToken(token)
+    assert(gg.battle.isEmpty)
+  }
+
+  test("Research twice ?") {
+    val reg = Helper.ReadAndPlayForTwo("test36/BOARDGAME6.json", "test36/PLAY6.json", Civilization.Russia, Civilization.Spain)
+    val tokenR = reg._1
+    val tokenS = reg._2
+    var gg: GameBoard = I.getBoardForToken(tokenR)
+    var l = allowedCommandsH(gg, Civilization.Spain)
+    println(l)
+    assert(!(l contains Command.RESEARCH))
+    var l1 = allowedCommandsH(gg, Civilization.Russia)
+    println(l1)
+    assert(!(l1 contains Command.RESEARCH))
+  }
+  }
