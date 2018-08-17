@@ -1535,5 +1535,7 @@
     ]
   },
   "norotate": false,
-  "tradecurrent": false
+  "tradecurrent": false,
+  "logisticdoesnotupgradeartilery" : true
+
 }

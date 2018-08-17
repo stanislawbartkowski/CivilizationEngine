@@ -17,16 +17,17 @@ object ResearchTechnologyAction extends CommandPackage with ImplicitMiximFromJso
   private def applyNewStrength(str: CombatUnitStrength, t: CombatUnitType.T, newval: Int) =
     str.setStrength(t, math.max(str.getStrength(t), newval))
 
-  private def upgradeMilitary(str: CombatUnitStrength, tech: Technology): Seq[CombatUnitType.T] = {
+  private def upgradeMilitary(b: GameBoard, str: CombatUnitStrength, tech: Technology): Seq[CombatUnitType.T] = {
     if (tech.unit.isEmpty) return Nil
     val s: TechnologyUnit = tech.unit.get
     val newlevel: Int = s.level - 1
     // single unit or list of 3 units
     // filter out only with increased strength
+    // logistricdoesnotupgradeArtillery
     val listofunlocked: Seq[CombatUnitType.T] =
     (
-     if (s.unit.isDefined) Seq(s.unit.get)
-     else CombatUnitType.values.filter(_ != CombatUnitType.Aircraft) toSeq).filter(newlevel > str.getStrength(_)
+      if (s.unit.isDefined) Seq(s.unit.get)
+      else CombatUnitType.values.filter(u => u != CombatUnitType.Aircraft && (!b.logistricdoesnotupgradeartillery || u != CombatUnitType.Artillery)) toSeq).filter(newlevel > str.getStrength(_)
     )
 
     // increase strength
@@ -58,7 +59,7 @@ object ResearchTechnologyAction extends CommandPackage with ImplicitMiximFromJso
     val t: Technology = GameResources.getTechnology(tech)
     upgradeB(b, deck.civ, t)
     // upgrade military strength
-    val listofunlocked: Seq[CombatUnitType.T] = upgradeMilitary(deck.combatlevel, t)
+    val listofunlocked: Seq[CombatUnitType.T] = upgradeMilitary(b, deck.combatlevel, t)
     deck.takefreeResources = 0
     if (TechnologyFeatures.isCoinTechnology(tech)) checkEconomyVictory(b, deck, isExecute)
     if (CivilizationFeatures.takefreeResourceAfterUpgradingMilitary(deck.civ))

@@ -45,12 +45,6 @@ trait TechnologyAnyResourceAction extends CommandPackage with ImplicitMiximFromJ
   protected class TechnologyAnyResourceAction(override val param: Seq[HVResource]) extends AbstractCommand(param) {
 
     override def execute(board: gameboard.GameBoard): Unit = {
-      //      def tp: PlayerTechnology = findpltechnology(board, deck, command).get
-
-      //      if (command == Command.POTTERYACTION)
-      // increase number of coins
-      //        addCoinToTechnology(board, tp)
-      //      else if (isExecute) board.addForcedCommandC(Command.GREATPERSON, civ, null, getRandomPerson(board))
       executeI(board, deck,isExecute)
       // remove hut and villages
       param.foreach(spendResource(board, deck, _, isExecute))

@@ -357,6 +357,9 @@ package object gameboard {
     var norotate: Boolean = false
     // cheating, calculate trade from current data
     var tradecurrent: Boolean = false
+    // cheating, test ony
+    var logistricdoesnotupgradeartillery : Boolean = false
+
     var metadata: GameMetaData = new GameMetaData("")
     // force command to execute next
     // TODO: I'm not happy with that

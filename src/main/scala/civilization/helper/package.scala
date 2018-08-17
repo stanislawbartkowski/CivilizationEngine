@@ -495,7 +495,8 @@ package object helper {
     if (l.isEmpty) None else Some(l.last)
   }
 
-  def isResearchDone(b: GameBoard, deck: PlayerDeck): Boolean = !lastPhaseCommandsReverse(b, deck, TurnPhase.Research).isEmpty
+  def isResearchDone(b: GameBoard, deck: PlayerDeck): Boolean =
+    lastPhaseCommandsReverse(b, deck, TurnPhase.Research).map(_.command) contains Command.RESEARCH
 
   private def commandForPhase(b: GameBoard, command: Command): Mess = {
     // technology resource action only once

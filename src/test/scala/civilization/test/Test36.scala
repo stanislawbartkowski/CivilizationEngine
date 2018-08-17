@@ -139,4 +139,16 @@ class Test36 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
     assert(cl.getStrength(CombatUnitType.Artillery) == 1)
     assert(cl.getStrength(CombatUnitType.Infantry) == 1)
   }
+
+  test("Russia  lost research") {
+    val reg = Helper.ReadAndPlayForTwo("test36/BOARDGAME6.json", "test36/PLAY7.json", Civilization.Russia, Civilization.Spain)
+    val tokenR = reg._1
+    val tokenS = reg._2
+    var gg: GameBoard = I.getBoardForToken(tokenS)
+    var l = allowedCommandsH(gg, Civilization.Russia)
+    println(l)
+    assert(l contains Command.RESEARCH)
+
+  }
+
 }

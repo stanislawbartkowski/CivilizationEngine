@@ -167,7 +167,8 @@ package object tojson extends ImplicitMiximToJson {
       S.resources -> m.resources,
       S.market -> m.market,
       "norotate" -> m.norotate,
-      "tradecurrent" -> m.tradecurrent
+      "tradecurrent" -> m.tradecurrent,
+      "logisticdoesnotupgradeartilery" -> m.logistricdoesnotupgradeartillery
     )
   }
 

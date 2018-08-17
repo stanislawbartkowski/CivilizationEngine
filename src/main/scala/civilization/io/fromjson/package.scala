@@ -336,6 +336,8 @@ package object fromjson extends ImplicitMiximFromJson {
       // cheating
       val tradecurrent: Option[Boolean] = (json \ "tradecurrent").asOpt[Boolean]
       if (tradecurrent.isDefined && tradecurrent.get) g.tradecurrent = true
+      val logisticdoesnotupgradeartilery = (json \ "logisticdoesnotupgradeartilery").asOpt[Boolean]
+      if (logisticdoesnotupgradeartilery.isDefined && logisticdoesnotupgradeartilery.get) g.logistricdoesnotupgradeartillery = true
 
       JsSuccess(g)
     }
