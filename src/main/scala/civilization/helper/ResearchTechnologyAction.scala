@@ -10,7 +10,7 @@ import civilization.objects._
 import play.api.libs.json.JsValue
 
 
-object ResearchTechnology extends CommandPackage with ImplicitMiximFromJson with ImplicitMiximToJson {
+object ResearchTechnologyAction extends CommandPackage with ImplicitMiximFromJson with ImplicitMiximToJson {
 
   override def getSet: Set[Command.T] = Set(Command.RESEARCH, Command.RESEARCHFREETECHNOLOGY, Command.GETTECHNOLOGY)
 
@@ -97,10 +97,6 @@ object ResearchTechnology extends CommandPackage with ImplicitMiximFromJson with
 
     override def verify(board: GameBoard): Mess = null
   }
-
-  override def commandsAvail(b: GameBoard, deck: PlayerDeck, phase: TurnPhase.T): Seq[Command.T] =
-    if (isResearchDone(b, deck) || techologyLevel(b, deck).isEmpty) Nil else List(Command.RESEARCH)
-
 
   override def produceCommand(command: Command.T, civ: Civilization.T, p: P, param: JsValue) =
     if (command == Command.RESEARCH) new ResearchTechnologyAction(param)

@@ -7,7 +7,8 @@ import play.api.libs.json.JsValue
 
 object CommandContainer {
 
-  val commands: Seq[CommandPackage] = Seq(BuyUnit, SpendTrade, SendProduction, HarvestResource, ResearchTechnology,
+  val commands: Seq[CommandPackage] = Seq(BuyUnit, SpendTrade, SendProduction, HarvestResource,
+    ResearchTechnologyAction,
     BuyBuildingCommand, BuyWorldWonder, BuildCityWalls, IncreaseTradeProductionAction,
     PhilosophyAction, PotteryAction, SetCityAction, TakeResourceCommand, SpendSilkAction,
     SetFigureAction, DevoutToCultureCommand, AdvanceCulture, CurrencyAction, DiscardCard, GreatPersonAction,
@@ -20,7 +21,9 @@ object CommandContainer {
 
   def commandsAvail(b: GameBoard, deck: PlayerDeck, phase: TurnPhase.T): Seq[Command.T] = {
     // it is necessary to have additional filter for phase, not all commands are passing through CommandPackage
-    val co: Seq[Command.T] = commands.map(co => co.commandsAvail(b, deck, phase).filter(Command.inPhase(_, phase))).flatten.filter(!Command.internalAction(_))
+    val co: Seq[Command.T] = commands.map(co =>
+      co.commandsAvail(b, deck, phase).filter(Command.inPhase(_, phase))
+    ).flatten.filter(!Command.internalAction(_))
     co
   }
 
