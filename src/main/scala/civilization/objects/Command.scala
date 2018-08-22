@@ -51,9 +51,6 @@ object Command extends Enumeration {
   def actionMove(t: Value): Boolean =
     t == MOVE || t == REVEALTILE || t == ENDOFMOVE || t == EXPLOREHUT || t == ATTACK || t == STARTBATTLE || t == PLAYUNIT || t == PLAYUNITIRON || t == ENDBATTLE || t == KILLFIGURE || t == SAVEUNIT || t == FREENONUPGRADEDBUILDING
 
-  def isTechnologyResourceAction(t: Value): Boolean =
-    t == POTTERYACTION || t == PHILOSOPHYACTION || t == CURRENCYACTION || t == CONSTRUCTIONACTION || t == METALCASTINGACTION || t == BANKINGACTION || t == CHIVALRYACTION || t == DEMOCRACYACTION || t == PRINTINGPRESSACTION
-
   def isTechnologyInCity(t: Value): Boolean = t == CONSTRUCTIONACTION || t == BANKINGACTION
 
   def isBeginningOfGameCommand(t: Value): Boolean =
@@ -66,5 +63,7 @@ object Command extends Enumeration {
 case class CommandParams(val p: Option[P], val param: Option[JsValue])
 
 case class CommandValues(val command: Command.T, val civ: Civilization.T, val p: P, val param: JsValue)
+
+
 
 

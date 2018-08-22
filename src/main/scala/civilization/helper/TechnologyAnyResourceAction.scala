@@ -11,12 +11,7 @@ import civilization.objects._
 import play.api.libs.json.JsValue
 
 
-trait TechnologyAnyResourceAction extends CommandPackage with ImplicitMiximFromJson with ImplicitMiximToJson {
-
-  val command: Command.T
-  val tech: TechnologyName.T
-
-  override def getSet: Set[Command.T] = Set(command)
+trait TechnologyAnyResourceAction extends CommandPackage with ResourceActionTrait with ImplicitMiximFromJson with ImplicitMiximToJson {
 
   def validateH(b: GameBoard, deck: PlayerDeck, command: Command.T): Option[Mess]
 
@@ -26,8 +21,8 @@ trait TechnologyAnyResourceAction extends CommandPackage with ImplicitMiximFromJ
     def resany: Int = resnum(command)
     // not enough resources
     if (numofAnyResources(b, deck) < resany)
-      return Some(Mess(message.M.NOTENOUGHRESOURCETOUSETECHNOLOGY, (command, tech)))
-    val m: Option[Mess] = canUseTechnology(b, deck, tech, command)
+      return Some(Mess(message.M.NOTENOUGHRESOURCETOUSETECHNOLOGY, (command, techn)))
+    val m: Option[Mess] = canUseTechnology(b, deck, techn, command)
     if (m.isDefined) m
     else
       validateH(b, deck, command)
@@ -40,7 +35,7 @@ trait TechnologyAnyResourceAction extends CommandPackage with ImplicitMiximFromJ
   }
 
   private def resnum(command: Command.T): Int =
-    GameResources.getTechnology(tech).resourceany.get
+    GameResources.getTechnology(techn).resourceany.get
 
   protected class TechnologyAnyResourceAction(override val param: Seq[HVResource]) extends AbstractCommand(param) {
 

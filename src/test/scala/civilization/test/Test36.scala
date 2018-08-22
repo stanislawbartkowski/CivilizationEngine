@@ -1,13 +1,11 @@
 package civilization.test
 
 import civilization.I
-import civilization.I.executeCommand
 import civilization.gameboard._
 import civilization.helper._
 import civilization.io.fromjson.{toJ, _}
 import civilization.io.tojson.ImplicitMiximToJson
 import civilization.objects.{Civilization, Command, _}
-import civilization.test.Helper.{II, getBoardAndRegister}
 import org.scalatest.FunSuite
 import play.api.libs.json.{JsArray, JsString, JsValue}
 import Helper._

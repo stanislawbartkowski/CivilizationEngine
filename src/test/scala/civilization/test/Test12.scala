@@ -2,7 +2,7 @@ package civilization.test
 
 import civilization.I.II
 import civilization.I
-import civilization.I.{executeCommand, registerGame}
+import civilization.I.{registerGame}
 import civilization.gameboard.GameBoard
 import civilization.helper._
 import civilization.objects.{Civilization, Command, P}
@@ -16,9 +16,10 @@ class Test12 extends FunSuite {
   Helper.I
 
   test("Spend trade for production") {
-    var b: GameBoard = Helper.readBoardAndPlay("test11/BOARDGAME1.json", "test12/GAME1.json", Civilization.Rome)
-    val token: String = registerGame(b, Civilization.Rome)
+    var (token,b) = Helper.readBoardAndPlayT("test11/BOARDGAME1.json", "test12/GAME1.json", Civilization.Rome)
     var g: GameBoard = I.getBoardForToken(token)
+    val prodx1 = numberofTradeH(b, Civilization.Rome)
+    println(prodx1)
     var prod = numberofTradeCalculateH(b, g.playerDeck(Civilization.Rome))
     println(prod)
     assert(4 == prod.trade)
@@ -32,7 +33,10 @@ class Test12 extends FunSuite {
     assert(4 == prod.terrain)
     assert(3 == prod.toprod)
     assert(1 == prod.trade)
-    var s = executeCommand(token, "SPENDTRADE", 2, 2, "1")
+    val prodx = numberofTradeH(b, Civilization.Rome)
+    println(prodx)
+    // command fails here
+    var s = executeCommandFail(token, "SPENDTRADE", 2, 2, "1")
     println(s)
     assert(s != null)
     prodc = getProductionForCityH(b, Civilization.Rome, P(2, 2))
@@ -59,8 +63,7 @@ class Test12 extends FunSuite {
   }
 
   test("Spend allowed commands") {
-    var b: GameBoard = Helper.readBoardAndPlay("test11/BOARDGAME1.json", "test12/GAME1.json", Civilization.Rome)
-    val token: String = registerGame(b, Civilization.Rome)
+    var (token,b) = Helper.readBoardAndPlayT("test11/BOARDGAME1.json", "test12/GAME1.json", Civilization.Rome)
     var g: GameBoard = I.getBoardForToken(token)
     var l: Seq[Command.T] = allowedCommandsH(b, Civilization.Rome)
     println(l)
@@ -80,8 +83,7 @@ class Test12 extends FunSuite {
   }
 
   test("Spend and allow to buy") {
-    var b: GameBoard = Helper.readBoardAndPlay("test5/BOARDGAME1.json", "test12/GAME2.json", Civilization.Germany)
-    val token: String = registerGame(b, Civilization.Germany)
+    var (token,b) = Helper.readBoardAndPlayT("test5/BOARDGAME1.json", "test12/GAME2.json", Civilization.Germany)
     var g: GameBoard = I.getBoardForToken(token)
     var l: Seq[Command.T] = allowedCommandsH(b, Civilization.Germany)
     assert(l.find(_ == Command.BUYSCOUT).isEmpty)
@@ -103,8 +105,7 @@ class Test12 extends FunSuite {
   }
 
   test("Check trade in RESEARCH") {
-    val b: GameBoard = Helper.readBoardAndPlay("test5/BOARDGAME1.json", "test12/GAME3.json", Civilization.Germany)
-    val token: String = registerGame(b, Civilization.Germany)
+    var (token,b) = Helper.readBoardAndPlayT("test5/BOARDGAME1.json", "test12/GAME3.json", Civilization.Germany)
     var g: GameBoard = I.getBoardForToken(token)
     var tra : TradeForCivCalculate = numberofTradeCalculateH(g, g.playerDeck(Civilization.Germany))
     println(tra)

@@ -14,7 +14,7 @@ import civilization.objects._
 object CurrencyAction extends TechnologyResourceTrait {
 
   override val command: Command.T = Command.CURRENCYACTION
-  override val tech: TechnologyName.T = TechnologyName.Currency
+//  override val tech: TechnologyName.T = TechnologyName.Currency
 
   protected class CurrencyAction(override val param: HVResource) extends TechnologyResourceAction(param)  {
 

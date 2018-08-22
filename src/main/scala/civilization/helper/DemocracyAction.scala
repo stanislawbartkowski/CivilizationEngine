@@ -15,7 +15,7 @@ import play.api.libs.json.{JsNumber, JsValue}
 object DemocracyAction extends CoinActionTrait {
 
   override val command: Command.T = Command.DEMOCRACYACTION
-  override val tech: TechnologyName.T = TechnologyName.Democracy
+//  override val tech: TechnologyName.T = TechnologyName.Democracy
 
   override def validateH(b: GameBoard, deck: PlayerDeck, command: Command.T): Option[Mess] = {
     val trade: TradeForCiv = numberofTrade(b, deck)

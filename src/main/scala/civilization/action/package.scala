@@ -113,8 +113,6 @@ package object action extends ImplicitMiximToJson with ImplicitMiximFromJson {
 
     def setReplay = replay = true
 
-    def isReplay: Boolean = replay
-
     def isExecute: Boolean = !replay
 
     // TODO: should return Option[Mess], not null

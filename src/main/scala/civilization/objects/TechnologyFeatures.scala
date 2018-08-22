@@ -22,4 +22,18 @@ object TechnologyFeatures {
 
   def increaseProdForCoins(tech: TechnologyName.T): Boolean = tech == TechnologyName.MilitaryScience
 
+  private val rescommT : Map[Command.T,TechnologyName.T] = Map(Command.POTTERYACTION -> TechnologyName.Pottery,
+    Command.PHILOSOPHYACTION -> TechnologyName.Philosophy, Command.CURRENCYACTION -> TechnologyName.Currency,
+    Command.CONSTRUCTIONACTION -> TechnologyName.Construction, Command.METALCASTINGACTION -> TechnologyName.MetalCasting,
+    Command.BANKINGACTION -> TechnologyName.Banking, Command.CHIVALRYACTION ->TechnologyName.Chivalry,
+    Command.DEMOCRACYACTION ->  TechnologyName.Democracy, Command.PRINTINGPRESSACTION -> TechnologyName.PrintingPress)
+
+
+  //def isTechnologyResourceAction(t: Value): Boolean =
+  //  t == POTTERYACTION || t == PHILOSOPHYACTION || t == CURRENCYACTION || t == CONSTRUCTIONACTION || t == METALCASTINGACTION || t == BANKINGACTION || t == CHIVALRYACTION || t == DEMOCRACYACTION || t == PRINTINGPRESSACTION
+
+
+  def commandResourceTechnology(comm : Command.T) : Option[TechnologyName.T] = rescommT.get(comm)
+
+  def isNotResourceAbilityAction(comm: Command.T) : Boolean = commandResourceTechnology(comm).isEmpty
 }

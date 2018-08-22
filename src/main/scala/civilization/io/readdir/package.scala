@@ -69,10 +69,8 @@ package object readdir {
   def readCultureCards : Seq[CultureCard] = readJSON("objects","CULTURECARDS.json")
 
   def readGameBoard(j: JsValue): GameBoard = {
-    //    val l: Seq[TilesRead] = readListOfTiles
     val g: GameBoard = toGameBoard(j)
     g.map.map.foreach(p => {
-      //      p.tile = l.find(t => p.tname == t.name).get.tile
       p.tile = readTileFromFile(p.tname)
     })
     g

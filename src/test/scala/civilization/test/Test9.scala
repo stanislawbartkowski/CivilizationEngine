@@ -38,8 +38,7 @@ class Test9 extends FunSuite {
   }
 
   test("Execute command, buy scout") {
-    var b: GameBoard = Helper.readBoardAndPlay("test9/BOARDGAME1.json", "test9/GAME1.json", Civilization.Rome)
-    val token: String = registerGame(b, Civilization.Rome);
+    var (token,b) = Helper.readBoardAndPlayT("test9/BOARDGAME1.json", "test9/GAME1.json", Civilization.Rome)
     val s: String = II.getData(GETBOARDGAME, token)
     println(s)
     val board: JsValue = toJ(s)
@@ -61,8 +60,8 @@ class Test9 extends FunSuite {
   }
 
   test("Execute command, movement start") {
-    var b: GameBoard = Helper.readBoardAndPlay("test9/BOARDGAME1.json", "test9/GAME2.json", Civilization.Rome)
-    val token: String = registerGame(b, Civilization.Rome);
+    var (token,b) = Helper.readBoardAndPlayT("test9/BOARDGAME1.json", "test9/GAME2.json", Civilization.Rome)
+//    val token: String = registerGame(b, Civilization.Rome);
     val a: Seq[Command.T] = allowedCommandsH(b, Civilization.Rome)
     println(a)
     assert(a.find(_ == Command.STARTMOVE).isDefined)
@@ -74,8 +73,8 @@ class Test9 extends FunSuite {
   }
 
   test("Execute command, movement started") {
-    var b: GameBoard = Helper.readBoardAndPlay("test9/BOARDGAME1.json", "test9/GAME3.json", Civilization.Rome)
-    val token: String = registerGame(b, Civilization.Rome);
+    var (token,b) = Helper.readBoardAndPlayT("test9/BOARDGAME1.json", "test9/GAME3.json", Civilization.Rome)
+    //val token: String = registerGame(b, Civilization.Rome);
     var a: Seq[Command.T] = allowedCommandsH(b, Civilization.Rome)
     println(a)
     assert(a.find(_ == Command.MOVE).isDefined)
@@ -132,8 +131,7 @@ class Test9 extends FunSuite {
   }
 
   test("Execute command, next movements") {
-    var b: GameBoard = Helper.readBoardAndPlay("test9/BOARDGAME1.json", "test9/GAME4.json", Civilization.Rome)
-    val token: String = registerGame(b, Civilization.Rome)
+    var (token,b) = Helper.readBoardAndPlayT("test9/BOARDGAME1.json", "test9/GAME4.json", Civilization.Rome)
     var a: Seq[Command.T] = allowedCommandsH(b, Civilization.Rome)
     println(a)
     assert(a.find(_ == Command.MOVE).isDefined)
@@ -194,8 +192,7 @@ class Test9 extends FunSuite {
   }
 
   test("Execute command, set up next city") {
-    var b: GameBoard = Helper.readBoardAndPlay("test9/BOARDGAME1.json", "test9/GAME5.json", Civilization.Rome)
-    val token: String = registerGame(b, Civilization.Rome)
+    var (token,b) = Helper.readBoardAndPlayT("test9/BOARDGAME1.json", "test9/GAME5.json", Civilization.Rome)
     var a: Seq[Command.T] = allowedCommandsH(b, Civilization.Rome)
     println(a)
     assert(a.find(_ == Command.SETCITY).isDefined)
@@ -219,8 +216,7 @@ class Test9 extends FunSuite {
   }
 
   test("Execute command, two city actions") {
-    var b: GameBoard = Helper.readBoardAndPlay("test9/BOARDGAME1.json", "test9/GAME6.json", Civilization.Rome)
-    val token: String = registerGame(b, Civilization.Rome)
+    var (token,b) = Helper.readBoardAndPlayT("test9/BOARDGAME1.json", "test9/GAME6.json", Civilization.Rome)
     var a: Seq[Command.T] = allowedCommandsH(b, Civilization.Rome)
     println(a)
     var s: String = executeCommand(token, "BUYARMY", 1, 2, "{\"col\" : 2, \"row\" : 2}")
@@ -234,8 +230,7 @@ class Test9 extends FunSuite {
   }
 
   test("Execute command, check movement to starting point") {
-    var b: GameBoard = Helper.readBoardAndPlay("test9/BOARDGAME1.json", "test9/GAME3.json", Civilization.Rome)
-    val token: String = registerGame(b, Civilization.Rome);
+    var (token,b) = Helper.readBoardAndPlayT("test9/BOARDGAME1.json", "test9/GAME3.json", Civilization.Rome)
     val curr: Option[PlayerMove] = getCurrentMove(b, Civilization.Rome)
     println(curr)
     assert(curr.get.lastp == P(0, 2))
@@ -252,8 +247,7 @@ class Test9 extends FunSuite {
   }
 
   test("Execute command, revealtime itemize") {
-    var b: GameBoard = Helper.readBoardAndPlay("test9/BOARDGAME1.json", "test9/GAME4.json", Civilization.Rome)
-    val token: String = registerGame(b, Civilization.Rome)
+    var (token,b) = Helper.readBoardAndPlayT("test9/BOARDGAME1.json", "test9/GAME4.json", Civilization.Rome)
     var a: Seq[Command.T] = allowedCommandsH(b, Civilization.Rome)
     println(a)
     // get reveal itemized
@@ -273,8 +267,7 @@ class Test9 extends FunSuite {
   }
 
   test("Execute command, check itemized for SetCity") {
-    var b: GameBoard = Helper.readBoardAndPlay("test9/BOARDGAME1.json", "test9/GAME5.json", Civilization.Rome)
-    val token: String = registerGame(b, Civilization.Rome)
+    var (token,b) = Helper.readBoardAndPlayT("test9/BOARDGAME1.json", "test9/GAME5.json", Civilization.Rome)
     val s: String = II.itemizeCommand(token, "SETCITY")
     println(s)
     assert(s != null)
@@ -284,8 +277,7 @@ class Test9 extends FunSuite {
   }
 
   test("Execute command, check two figures ending on the sampe square") {
-    var b: GameBoard = Helper.readBoardAndPlay("test9/BOARDGAME1.json", "test9/GAME7.json", Civilization.Rome)
-    val token: String = registerGame(b, Civilization.Rome)
+    var (token,b) = Helper.readBoardAndPlayT("test9/BOARDGAME1.json", "test9/GAME7.json", Civilization.Rome)
     var s: String = executeCommand(token, "STARTMOVE", 3, 1, "{ \"numberofArmies\" : 1, \"numberofScouts\" : 0}")
     println(s)
     assert(s == null)
@@ -301,16 +293,14 @@ class Test9 extends FunSuite {
   }
 
   test("Execute command, check two figures ending on the sampe square and available commands") {
-    var b: GameBoard = Helper.readBoardAndPlay("test9/BOARDGAME1.json", "test9/GAME8.json", Civilization.Rome)
-    val token: String = registerGame(b, Civilization.Rome)
+    var (token,b) = Helper.readBoardAndPlayT("test9/BOARDGAME1.json", "test9/GAME8.json", Civilization.Rome)
     var a: Seq[Command.T] = allowedCommandsH(b, Civilization.Rome)
     println(a)
     assert(a.find(_ == Command.STARTMOVE).isEmpty)
   }
 
   test("Check list of games available") {
-    var b: GameBoard = Helper.readBoardAndPlay("test9/BOARDGAME1.json", "test9/GAME8.json", Civilization.Rome)
-    val token: String = registerGame(b, Civilization.Rome)
+    var (token,b) = Helper.readBoardAndPlayT("test9/BOARDGAME1.json", "test9/GAME8.json", Civilization.Rome)
     val js = II.getData(II.LISTOFGAMES)
     println(js)
     var a: Seq[Command.T] = allowedCommandsH(b, Civilization.Rome)

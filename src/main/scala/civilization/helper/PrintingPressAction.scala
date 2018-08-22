@@ -8,7 +8,7 @@ import civilization.objects._
 object PrintingPressAction extends CoinActionTrait {
 
   override val command: Command.T = Command.PRINTINGPRESSACTION
-  override val tech: TechnologyName.T = TechnologyName.PrintingPress
+//  override val tech: TechnologyName.T = TechnologyName.PrintingPress
 
   override def validateH(b: GameBoard, deck: PlayerDeck, command: Command.T): Option[Mess] = {
     val cult = deck.resou.nof(Resource.Culture)

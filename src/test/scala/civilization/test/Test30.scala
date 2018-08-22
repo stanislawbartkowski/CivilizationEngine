@@ -6,7 +6,7 @@ import civilization.helper._
 import civilization.io.fromjson._
 import civilization.io.tojson.ImplicitMiximToJson
 import civilization.objects.{Civilization, Command, _}
-import civilization.test.Helper.{II, getBoardAndRegister}
+import civilization.test.Helper.{II}
 import org.scalatest.FunSuite
 import play.api.libs.json.{JsArray, JsValue}
 import Helper._

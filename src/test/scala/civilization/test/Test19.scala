@@ -121,6 +121,8 @@ class Test19 extends FunSuite with ImplicitMiximToJson {
     val tokenc: String = reg._1
     val tokena: String = reg._2
     val g: GameBoard = I.getBoardForToken(tokena)
+    val numofhvAr = g.playerDeck(Civilization.Arabs).hvlist.length
+    val numofhvAm = g.playerDeck(Civilization.America).hvlist.length
     println(g.playerDeck(Civilization.Arabs).hvlist)
     println(g.playerDeck(Civilization.America).hvlist)
     val param = """ [{"name" : "hut","loot" : 1}]  """
@@ -129,8 +131,8 @@ class Test19 extends FunSuite with ImplicitMiximToJson {
     println(gg.playerDeck(Civilization.Arabs).hvlist)
     println(gg.playerDeck(Civilization.America).hvlist)
     // Arabs take one hut from America
-    assert(g.playerDeck(Civilization.Arabs).hvlist.length + 1 == gg.playerDeck(Civilization.Arabs).hvlist.length)
-    assert(g.playerDeck(Civilization.America).hvlist.length - 1 == gg.playerDeck(Civilization.America).hvlist.length)
+    assert( numofhvAr+ 1 == gg.playerDeck(Civilization.Arabs).hvlist.length)
+    assert( numofhvAm - 1 == gg.playerDeck(Civilization.America).hvlist.length)
   }
 
   test("Two players game, battle, battle resolution, take Silk") {
@@ -141,14 +143,16 @@ class Test19 extends FunSuite with ImplicitMiximToJson {
     println(g.playerDeck(Civilization.Arabs).resou.table)
     println(g.playerDeck(Civilization.Arabs).units.length)
     g.playerDeck(Civilization.Arabs).units.foreach(println)
+    val numofsilkAr = g.playerDeck(Civilization.Arabs).resou.nof(Resource.Silk)
+    val numofsilkAm = g.playerDeck(Civilization.America).resou.nof(Resource.Silk)
     val numofA = g.playerDeck(Civilization.Arabs).units.length
     val numofAM = g.playerDeck(Civilization.America).units.length
     val param = """ [{"name" : "resource","loot" : 1, "resource" : "Silk"}]  """
     Helper.executeCommandH(tokena, "ENDBATTLE", -1, -1, param)
     val gg: GameBoard = I.getBoardForToken(tokena)
     println(gg.playerDeck(Civilization.Arabs).resou.table)
-    assert(g.playerDeck(Civilization.Arabs).resou.nof(Resource.Silk) + 1 == gg.playerDeck(Civilization.Arabs).resou.nof(Resource.Silk))
-    assert(g.playerDeck(Civilization.America).resou.nof(Resource.Silk) - 1 == gg.playerDeck(Civilization.America).resou.nof(Resource.Silk))
+    assert(numofsilkAr + 1 == gg.playerDeck(Civilization.Arabs).resou.nof(Resource.Silk))
+    assert(numofsilkAm - 1 == gg.playerDeck(Civilization.America).resou.nof(Resource.Silk))
     println(gg.playerDeck(Civilization.Arabs).units.length)
     gg.playerDeck(Civilization.Arabs).units.foreach(println)
     assert(gg.playerDeck(Civilization.Arabs).units.length == 5)

@@ -17,7 +17,7 @@ class Test6 extends FunSuite {
   Helper.I
 
   test("Start game") {
-    val b: GameBoard = Helper.readBoardAndPlay("test5/BOARDGAME1.json", "test6/GAME1.json", Civilization.Germany)
+    var (token,b) = Helper.readBoardAndPlayT("test5/BOARDGAME1.json", "test6/GAME1.json", Civilization.Germany)
     val trade: Int = numberofTradeH(b, Civilization.Germany).trade
     println(trade)
     var com: Command = constructCommand(Command.RESEARCH, Civilization.Germany, null, toJ("\"Irrigation\""))
@@ -35,7 +35,7 @@ class Test6 extends FunSuite {
 
   test("Start game next research") {
     println("======== next test")
-    val b: GameBoard = Helper.readBoardAndPlay("test5/BOARDGAME1.json", "test6/GAME2.json", Civilization.Germany)
+    var (token,b) = Helper.readBoardAndPlayT("test5/BOARDGAME1.json", "test6/GAME2.json", Civilization.Germany)
     var com: Command = constructCommand(Command.RESEARCH, Civilization.Germany, null, toJ("\"HorsebackRiding\""))
     var m: Mess = playCommand(b, com)
     println(m)

@@ -1,6 +1,6 @@
 package civilization.test
 
-import civilization.I.{CurrentGame, executeCommand}
+import civilization.I.{CurrentGame}
 import civilization.{I, RR}
 import civilization.gameboard.GameBoard
 import civilization.gameboard._

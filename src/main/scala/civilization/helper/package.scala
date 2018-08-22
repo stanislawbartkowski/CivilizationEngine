@@ -540,9 +540,11 @@ package object helper {
     if (m != null) return m
     // test if point on board
     if (command.p != null && !Command.commandNotPoint(command.command) && !isPointOnBoard(b, command.p)) return Mess(M.POINTOUTSIDEBOARD, command.p)
-    m = command.verifyCommand(b)
-    if (m != null) {
-      return m
+    if (command.isExecute) {
+      m = command.verifyCommand(b)
+      if (m != null) {
+        return m
+      }
     }
     command.executeCommand(b)
     f(command)

@@ -108,8 +108,7 @@ class Test11 extends FunSuite {
   }
 
   test("hut villages exported") {
-    var b: GameBoard = Helper.readBoardAndPlay("test9/BOARDGAME1.json", "test9/GAME8.json", Civilization.Rome)
-    val token: String = registerGame(b, Civilization.Rome)
+    var (token,b) = Helper.readBoardAndPlayT("test9/BOARDGAME1.json", "test9/GAME8.json", Civilization.Rome)
     val j: JsValue = Helper.getB(token)
     println(j)
     val a = (j \ "board" \ "map").get.as[JsArray]
@@ -133,8 +132,7 @@ class Test11 extends FunSuite {
   }
 
   test("cannot set city close to huts") {
-    var b: GameBoard = Helper.readBoardAndPlay("test11/BOARDGAME1.json", "test11/GAME2.json", Civilization.Rome)
-    val token: String = registerGame(b, Civilization.Rome)
+    var (token,b) = Helper.readBoardAndPlayT("test11/BOARDGAME1.json", "test11/GAME2.json", Civilization.Rome)
     var g: GameBoard = I.getBoardForToken(token)
     var a: Seq[Command.T] = allowedCommandsH(g, Civilization.Rome)
     assert(!a.contains(Command.SETCITY))
@@ -144,8 +142,7 @@ class Test11 extends FunSuite {
   }
 
   test("cannot exceed the hand size") {
-    var b: GameBoard = Helper.readBoardAndPlay("test11/BOARDGAME1.json", "test11/GAME3.json", Civilization.Rome)
-    val token: String = registerGame(b, Civilization.Rome)
+    var (token,b) = Helper.readBoardAndPlayT("test11/BOARDGAME1.json", "test11/GAME3.json", Civilization.Rome)
     var g: GameBoard = I.getBoardForToken(token)
     var a: Seq[Command.T] = allowedCommandsH(g, Civilization.Rome)
     println(a)
@@ -165,8 +162,7 @@ class Test11 extends FunSuite {
   }
 
   test("test production not consumed") {
-    var b: GameBoard = Helper.readBoardAndPlay("test11/BOARDGAME1.json", "test11/GAME4.json", Civilization.Rome)
-    val token: String = registerGame(b, Civilization.Rome)
+    var (token,b) = Helper.readBoardAndPlayT("test11/BOARDGAME1.json", "test11/GAME4.json", Civilization.Rome)
     var g: GameBoard = I.getBoardForToken(token)
     var prod = numberofTradeCalculate(b,g.playerDeck(Civilization.Rome))
     println(prod)

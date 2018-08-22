@@ -1,7 +1,6 @@
 package civilization.test
 
-import civilization.I.CurrentGame
-import civilization.I.executeCommand
+import civilization.I.{CurrentGame, getBoardForToken}
 import civilization.gameboard.{GameBoard, PlayerDeck}
 import civilization.io.readdir.{readGameBoard, readPlay, readTestJSON}
 import civilization.message.{FatalError, Mess}
@@ -9,24 +8,20 @@ import civilization.objects.{Civilization, CommandValues, _}
 import play.api.libs.json._
 import civilization.io.fromjson.toJ
 import civilization.II.factory._
+import civilization.action.{Command, constructCommand}
 import civilization.helper.AllowedCommands.allowedCommands
 import civilization.helper._
+import civilization.io.tojson.writeCommandValues
 
 object Helper {
 
 
-  //  RR.setConnection("localhost", 6379, 1)
-  //    R.setConnection("redis://localhost:6379")
-  //  civilization.I.setR(RR.RA)
   val II = Factory.getI
   val RA = Factory.getR
-  RA.getConn.setConnection("localhost", 6379, 1)
+  RA.getConn.setConnection("think", 6379, 1)
   II.setR(RA)
 
   def I = {
-    //    RR.setConnection("localhost", 6379, 1)
-    //    R.setConnection("redis://localhost:6379")
-    //    civilization.I.setR(RR.RA)
   }
 
   def getBoard(path: String): GameBoard = {
@@ -47,22 +42,16 @@ object Helper {
     (token, g)
   }
 
-  private def executeC(gb: (CurrentGame, GameBoard), com: CommandValues) = {
-    val m: Mess = executeCommand(gb, com, true)
-    if (m != null) throw new FatalError(m)
-  }
-
   def readBoardAndPlayT(boardpath: String, playPath: String, civ: Civilization.T): (String, GameBoard) = {
-    val gg = getBoardAndRegister(boardpath, civ)
-    val g: GameBoard = gg._2
-    val token: String = gg._1
+    val g: GameBoard = getBoard(boardpath)
     val p: Seq[CommandValues] = getPlay(playPath)
-    val game: CurrentGame = RA.getCurrentGame(token)
-    p.foreach(co => executeC((game, g), co))
-    (token, g)
+    p.foreach(c => {
+      val co : Command = constructCommand(c)
+      g.play.addCommand(co)
+    })
+    val token: String = civilization.I.registerGame(g, civ)
+    (token, getBoardForToken(token))
   }
-
-  def readBoardAndPlay(boardpath: String, playPath: String, civ: Civilization.T): GameBoard = readBoardAndPlayT(boardpath, playPath, civ)._2
 
   def ReadAndPlayForTwo(boardpath: String, playPath: String, civ1: Civilization.T, civ2: Civilization.T): (String, String) = {
     val cu = readBoardAndPlayT(boardpath, playPath, civ1)

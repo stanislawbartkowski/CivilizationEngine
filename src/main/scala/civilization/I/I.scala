@@ -4,7 +4,7 @@ import java.math.BigInteger
 import java.security.SecureRandom
 import java.util.Calendar
 
-import civilization.II.interfaces.RAccess
+import civilization.II.interfaces.{RAccess,ICache}
 import civilization.action._
 import civilization.gameboard.{GameBoard, GameMetaData}
 import civilization.helper._
@@ -16,6 +16,7 @@ import civilization.message._
 import civilization.objects._
 import play.api.libs.json._
 import civilization.io.readdir.GameResources
+import civilization.II.factory.{Factory}
 
 package object I {
 
@@ -60,7 +61,8 @@ package object I {
     val game: CurrentGame = r.getCurrentGame(token)
 
     r.touchCurrentGame(token)
-    (game, getGameBoard(game.gameid))
+//    (game, getGameBoard(game.gameid))
+    (game, Factory.getIC.getT(game.gameid,getGameBoard))
   }
 
   private def toC(com: Command): CommandValues = CommandValues(com.command, com.civ, com.p, com.j)
@@ -74,7 +76,8 @@ package object I {
     // update board current time in CurrentGame
     game.boardtimemili = Some(m.modiftimemili)
     r.updateCurrentGame(token,game)
-    val g : GameBoard = getGameBoard(game.gameid)
+  //  val g : GameBoard = getGameBoard(game.gameid)
+    val g : GameBoard = Factory.getIC.getT(game.gameid,getGameBoard)
     Json.prettyPrint(genboardj.genBoardGameJson(g, g.playerDeck(game.civ)))
   }
 
@@ -144,10 +147,8 @@ package object I {
     r.updateMetaData(gameid, writeMetaData(g.metadata).toString())
   }
 
-  // for testing only
-  def executeCommand(gb: (CurrentGame, GameBoard), com: CommandValues, replay: Boolean): Mess = {
+  private def executeCommand(gb: (CurrentGame, GameBoard), com: CommandValues): Mess = {
     val co: Command = constructCommand(com)
-    if (replay) co.setReplay
     var mess: Mess = playCommand(gb._2, co, c => {
       val cv: CommandValues = toC(c)
       r.addMoveToPlay(gb._1.gameid, writeCommandValues(cv).toString())
@@ -159,9 +160,6 @@ package object I {
     return mess
   }
 
-  // for testing only
-  def executeCommand(token: String, com: CommandValues): Mess = executeCommand(getBoard(token), com, false)
-
   def executeCommand(token: String, action: String, row: Int, col: Int, jsparam: String): String = {
     val gb = getBoard(token)
     val g: GameBoard = gb._2
@@ -169,7 +167,7 @@ package object I {
     val command: Command.T = Command.withName(action)
     val coma: CommandValues = CommandValues(command, civ, if (row == -1) null else P(row, col), if (jsparam == null) null else toJ(jsparam))
     touchGame(gb._1.gameid, g)
-    val m: Mess = executeCommand(gb, coma, false)
+    val m: Mess = executeCommand(gb, coma)
     if (m == null) null else m.toString
   }
 

@@ -9,19 +9,14 @@ import civilization.message.{M, Mess}
 import civilization.objects._
 import play.api.libs.json.JsValue
 
-trait CoinActionTrait extends CommandPackage with ImplicitMiximFromJson with ImplicitMiximToJson {
-
-  val command: Command.T
-  val tech: TechnologyName.T
-
-  override def getSet: Set[Command.T] = Set(command)
+trait CoinActionTrait extends CommandPackage with ResourceActionTrait with ImplicitMiximFromJson with ImplicitMiximToJson {
 
   def validateH(b: GameBoard, deck: PlayerDeck, command: Command.T): Option[Mess]
 
   def executeI(board: gameboard.GameBoard, deck: PlayerDeck): Unit
 
   private def canuse(b: GameBoard, deck: PlayerDeck, command: Command.T): Option[Mess] = {
-    val m: Option[Mess] = canUseTechnology(b, deck, tech, command)
+    val m: Option[Mess] = canUseTechnology(b, deck, techn, command)
     if (m.isDefined) m
     else
       validateH(b, deck, command)
@@ -35,7 +30,7 @@ trait CoinActionTrait extends CommandPackage with ImplicitMiximFromJson with Imp
     }
 
     override protected def execute(board: GameBoard): Unit = {
-      val te: PlayerTechnology = deck.findPlayerTechnology(tech).get
+      val te: PlayerTechnology = deck.findPlayerTechnology(techn).get
       addCoinToTechnology(board, deck, te, isExecute)
       if (isExecute) executeI(board, deck)
     }

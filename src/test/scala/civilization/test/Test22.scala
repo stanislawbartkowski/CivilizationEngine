@@ -65,17 +65,17 @@ class Test22 extends FunSuite with ImplicitMiximFromJson {
     assert(gg.getCurrentWonders().find(_ == Wonders.Stonehenge).isEmpty)
   }
 
-  test("Buy several times") {
-    assertThrows[Exception] {
-      Helper.readBoardAndPlayT("test22/BOARDGAME4.json", "test22/PLAY4.json", Civilization.Germany)
-    }
-  }
+//  test("Buy several times") {
+//    assertThrows[Exception] {
+//      Helper.readBoardAndPlayT("test22/BOARDGAME4.json", "test22/PLAY4.json", Civilization.Germany)
+//    }
+//  }
 
-  test("Buy several times two players") {
-    assertThrows[Exception] {
-      val reg = Helper.ReadAndPlayForTwo("test22/BOARDGAME5.json", "test22/PLAY5.json", Civilization.Rome, Civilization.Russia)
-    }
-  }
+//  test("Buy several times two players") {
+//    assertThrows[Exception] {
+//      val reg = Helper.ReadAndPlayForTwo("test22/BOARDGAME5.json", "test22/PLAY5.json", Civilization.Rome, Civilization.Russia)
+//    }
+//  }
 
   test("Check visible wonders") {
     val reg = Helper.readBoardAndPlayT("test22/BOARDGAME1.json", "test22/PLAY1.json", Civilization.Arabs)

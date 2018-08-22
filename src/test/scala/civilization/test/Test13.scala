@@ -16,8 +16,7 @@ class Test13 extends FunSuite {
   Helper.I
 
   test("Test no scouts") {
-    val bb: GameBoard = Helper.readBoardAndPlay("test11/BOARDGAME1.json", "test13/GAME1.json", Civilization.Rome)
-    val token: String = registerGame(bb, Civilization.Rome)
+    var (token,bb) = Helper.readBoardAndPlayT("test11/BOARDGAME1.json", "test13/GAME1.json", Civilization.Rome)
     var g: GameBoard = I.getBoardForToken(token)
     var l: Seq[Command.T] = allowedCommandsH(g, Civilization.Rome)
     println(l)
@@ -25,8 +24,7 @@ class Test13 extends FunSuite {
   }
 
   test("Test, scout but no production, outskirts") {
-    val bb: GameBoard = Helper.readBoardAndPlay("test11/BOARDGAME1.json", "test13/GAME2.json", Civilization.Rome)
-    val token: String = registerGame(bb, Civilization.Rome)
+    var (token,b) = Helper.readBoardAndPlayT("test11/BOARDGAME1.json", "test13/GAME2.json", Civilization.Rome)
     var g: GameBoard = I.getBoardForToken(token)
     var l: Seq[Command.T] = allowedCommandsH(g, Civilization.Rome)
     println(l)
@@ -35,8 +33,7 @@ class Test13 extends FunSuite {
   }
 
   test("Test, scout production") {
-    val bb: GameBoard = Helper.readBoardAndPlay("test11/BOARDGAME1.json", "test13/GAME3.json", Civilization.Rome)
-    val token: String = registerGame(bb, Civilization.Rome)
+    var (token,b) = Helper.readBoardAndPlayT("test11/BOARDGAME1.json", "test13/GAME3.json", Civilization.Rome)
     var g: GameBoard = I.getBoardForToken(token)
     var l: Seq[Command.T] = allowedCommandsH(g, Civilization.Rome)
     println(l)
@@ -71,8 +68,7 @@ class Test13 extends FunSuite {
   }
 
   test("Test, scout on not productive square") {
-    val bb: GameBoard = Helper.readBoardAndPlay("test11/BOARDGAME1.json", "test13/GAME4.json", Civilization.Rome)
-    val token: String = registerGame(bb, Civilization.Rome)
+    var (token,b) = Helper.readBoardAndPlayT("test11/BOARDGAME1.json", "test13/GAME4.json", Civilization.Rome)
     var g: GameBoard = I.getBoardForToken(token)
     var l: Seq[Command.T] = allowedCommandsH(g, Civilization.Rome)
     println(l)
@@ -80,8 +76,7 @@ class Test13 extends FunSuite {
   }
 
   test("Test, two scouts") {
-    val bb: GameBoard = Helper.readBoardAndPlay("test11/BOARDGAME1.json", "test13/GAME5.json", Civilization.Rome)
-    val token: String = registerGame(bb, Civilization.Rome)
+    var (token,b) = Helper.readBoardAndPlayT("test11/BOARDGAME1.json", "test13/GAME5.json", Civilization.Rome)
     var g: GameBoard = I.getBoardForToken(token)
     var l: Seq[Command.T] = allowedCommandsH(g, Civilization.Rome)
     println(l)
