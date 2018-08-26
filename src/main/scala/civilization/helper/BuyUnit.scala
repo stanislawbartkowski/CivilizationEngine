@@ -41,7 +41,6 @@ object BuyUnit extends CommandPackage with ImplicitMiximFromJson with ImplicitMi
       checkKilledUnits(board,u)
       if (isExecute) {
         val co: CombatUnit = getRandomUnit(board, u,false)
-        //        board.playerDeck(civ).units = board.playerDeck(civ).units :+ co
         val commandC: Command = constructCommand(Command.TAKEUNIT, civ, p, co)
         // execute later
         board.addForcedCommand(commandC)

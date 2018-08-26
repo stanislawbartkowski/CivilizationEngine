@@ -7,6 +7,7 @@ import play.api.libs.json._
 import civilization.helper.AllowedCommands.allowedCommands
 import civilization.io.tojson.BattleJSon.genBattleJson
 import civilization.io.tojson.CombatUnitJSon.unitstoJSON
+import civilization.action.toC
 
 /** Generates game board in JSON to be picked up by UI. */
 
@@ -17,7 +18,7 @@ object genboardj {
   // if city: number of city production
   case class MapSquareJ(revealed: Boolean, t: Terrain.T, trade: Int, production: Int, resource: Option[Resource.T], capForCiv: Option[Civilization.T],
                         civ: Civilization.T, city: City.T, defence: Int, numberofArmies: Int, numberofScouts: Int, tile: String, hv: Option[HutVillage.T], building: Option[BuildingName.T], wonder: Option[Wonders.T], culture: Int,
-                        greatperson : Option[GreatPersonName.T], greatpersontype : Option[GreatPersonTypeName.T])
+                        greatperson: Option[GreatPersonName.T], greatpersontype: Option[GreatPersonTypeName.T])
 
   case class PlayerTech(val pl: PlayerTechnology, val level: Int, val coins: Int)
 
@@ -104,8 +105,18 @@ object genboardj {
     JsArray(l.map(c => Json.obj(S.command -> c)).foldLeft(List[JsObject]())(_ :+ _))
   }
 
+  private def genSuspendedAction(g: GameBoard, civ: PlayerDeck, you: Boolean): JsValue = {
+    val s: Seq[ActionTypeSuspension] = g.suspendedForCiv(civ.civ)
+    if (s.isEmpty || !you) JsNull
+    else {
+      Json.obj(
+        S.command -> toC(g.play.getLastSuspended._2.get),
+        S.list -> s.map(c => c)
+      )
+    }
+  }
 
-  private def genPlayerDeckJson(p: PlayerDeckJ, you: Boolean): JsValue = Json.obj(
+  private def genPlayerDeckJson(b: GameBoard, p: PlayerDeckJ, you: Boolean): JsValue = Json.obj(
     S.tech -> plSeqToJ(p.tech),
     S.gover -> p.pl.gover,
     S.civ -> p.civ.civ,
@@ -126,7 +137,8 @@ object genboardj {
     "handsize" -> p.limits.handsize,
     "travelspeed" -> p.limits.travelSpeed,
     "stacklimit" -> p.limits.stackinglimit,
-    "cultureresource" -> CultureResourcesToJSon.cultureToJSon(p.pl.cultureresource, you)
+    "cultureresource" -> CultureResourcesToJSon.cultureToJSon(p.pl.cultureresource, you),
+    "suspended" -> genSuspendedAction(b, p.civ, you)
   )
 
   private def genBoardGameJ(g: GameBoard, civ: PlayerDeck): BoardGameJ = {
@@ -173,7 +185,7 @@ object genboardj {
       }
       rows = rows :+ JsArray(cols)
     }
-    val o: Seq[JsValue] = b.others.map(genPlayerDeckJson(_, false))
+    val o: Seq[JsValue] = b.others.map(genPlayerDeckJson(g, _, false))
 
     JsObject(Seq("board" -> JsObject(Seq(
       S.map -> JsArray(rows),
@@ -182,7 +194,7 @@ object genboardj {
       S.killedunits -> unitstoJSON(g.market.killedunits, true, null),
       S.resources -> Json.toJson(g.resources.resou),
       S.hutvillagesused -> hvtojson(g.resources.hvused, true),
-      S.you -> genPlayerDeckJson(b.you, true),
+      S.you -> genPlayerDeckJson(g, b.you, true),
       "others" -> JsArray(o),
       // only first 4 wonders
       S.wonders -> writeListOfWondersNames(g.market.wonders.take(WONDERWINDOW)),

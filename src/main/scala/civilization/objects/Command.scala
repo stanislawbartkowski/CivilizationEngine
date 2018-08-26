@@ -16,7 +16,8 @@ object Command extends Enumeration {
   GETCULTURE, SAVEUNIT, RANDOMWONDER, FREEWONDER, FREEBUILDINGCITYACTION, GETFREERESOURCE, DROPRESOURCE, GETRESOURCE,
   SACRIFICEFIGUREFORTECH, RESEARCHFREETECHNOLOGY, FREENONUPGRADEDBUILDING, TAKEFREEALLRESOURCESFROMMARKET, USESILKFORTRADE9, INCREASETRADE,
   INCREASEPRODUCTION, CONSTRUCTIONACTION, METALCASTINGACTION, BANKINGACTION, CHIVALRYACTION, DROPHUTVILLAGE, GETHUTVILLAGE,
-  DROPCULTURECARD, DROPCOINFROMTECHNOLOGY, GETCOIN, GETTECHNOLOGY, CITYLOST, PLAYERWIN, ENDOFGAME, DEMOCRACYACTION, PRINTINGPRESSACTION = Value
+  DROPCULTURECARD, DROPCOINFROMTECHNOLOGY, GETCOIN, GETTECHNOLOGY, CITYLOST, PLAYERWIN, ENDOFGAME, DEMOCRACYACTION,
+  PRINTINGPRESSACTION, WRITINGACTION, LETSUSPENDEDGO = Value
 
   /** Assign action to game phases */
   def actionPhase(t: Value): TurnPhase.T = {
@@ -32,9 +33,9 @@ object Command extends Enumeration {
     }
   }
 
-  def anyPhase(t: Value) : Boolean = t == Command.DISCARDCARD
+  def anyPhase(t: Value): Boolean = t == Command.DISCARDCARD || t == Command.LETSUSPENDEDGO
 
-  def inPhase(t : Value, phase : TurnPhase.T) : Boolean = anyPhase(t) || actionPhase(t) == phase
+  def inPhase(t: Value, phase: TurnPhase.T): Boolean = anyPhase(t) || actionPhase(t) == phase
 
   def internalAction(t: Value): Boolean = t == Command.ADVANCECULTUREFORFREE || t == FORCEDMOVEFIGURES || t == TAKEUNIT ||
     t == BUILDCITYWALLFORFREE || t == ADVANCECULTUREFORFREE || t == RANDOMWONDER || t == GETCULTURE || t == RESEARCHFREETECHNOLOGY || t == TAKEFREEALLRESOURCESFROMMARKET ||
@@ -62,7 +63,13 @@ object Command extends Enumeration {
 
 case class CommandParams(val p: Option[P], val param: Option[JsValue])
 
-case class CommandValues(val command: Command.T, val civ: Civilization.T, val p: P, val param: JsValue)
+object CommandStatus extends Enumeration {
+  type T = Value
+  val No, Ca, Su = Value
+}
+
+case class CommandValues(val command: Command.T, val civ: Civilization.T, val p: P, val status: CommandStatus.T, val param: JsValue)
+
 
 
 

@@ -26,14 +26,10 @@ object TechnologyFeatures {
     Command.PHILOSOPHYACTION -> TechnologyName.Philosophy, Command.CURRENCYACTION -> TechnologyName.Currency,
     Command.CONSTRUCTIONACTION -> TechnologyName.Construction, Command.METALCASTINGACTION -> TechnologyName.MetalCasting,
     Command.BANKINGACTION -> TechnologyName.Banking, Command.CHIVALRYACTION ->TechnologyName.Chivalry,
-    Command.DEMOCRACYACTION ->  TechnologyName.Democracy, Command.PRINTINGPRESSACTION -> TechnologyName.PrintingPress)
-
-
-  //def isTechnologyResourceAction(t: Value): Boolean =
-  //  t == POTTERYACTION || t == PHILOSOPHYACTION || t == CURRENCYACTION || t == CONSTRUCTIONACTION || t == METALCASTINGACTION || t == BANKINGACTION || t == CHIVALRYACTION || t == DEMOCRACYACTION || t == PRINTINGPRESSACTION
-
+    Command.DEMOCRACYACTION ->  TechnologyName.Democracy, Command.PRINTINGPRESSACTION -> TechnologyName.PrintingPress,
+    Command.WRITINGACTION -> TechnologyName.Writing)
 
   def commandResourceTechnology(comm : Command.T) : Option[TechnologyName.T] = rescommT.get(comm)
 
-  def isNotResourceAbilityAction(comm: Command.T) : Boolean = commandResourceTechnology(comm).isEmpty
+  def isResourceAbilityAction(comm: Command.T) : Boolean = commandResourceTechnology(comm).isDefined
 }

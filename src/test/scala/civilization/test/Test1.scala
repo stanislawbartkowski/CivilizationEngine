@@ -2,7 +2,7 @@ package civilization.test
 
 import civilization.gameboard._
 import civilization.io.fromjson._
-import civilization.io.readdir._
+import civilization.io.readdir.{readTestJSON,readdirJSON, readListOfTiles,readGameBoard, readTechnologies, readJSON}
 import civilization.objects._
 import org.scalatest.FunSuite
 import play.api.libs.json.{JsPath, JsValue}

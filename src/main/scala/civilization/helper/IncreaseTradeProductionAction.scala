@@ -17,8 +17,6 @@ object IncreaseTradeProductionAction extends CommandPackage with ImplicitMiximFr
   // does nothing, only place holder
   protected class IncreaseTradeAction(override val param: Int) extends AbstractCommand(param) {
 
-    override def verify(board: gameboard.GameBoard): message.Mess = null
-
     override def execute(board: gameboard.GameBoard): Unit = {}
   }
 

@@ -13,8 +13,6 @@ import play.api.libs.json.JsValue
 
 trait TechnologyResourceTrait extends CommandPackage with ResourceActionTrait with ImplicitMiximFromJson with ImplicitMiximToJson {
 
-  protected def resource(b: GameBoard): Resource.T = resourceForTech(b, techn)
-
   abstract protected class TechnologyResourceAction(override val param: HVResource) extends AbstractCommand(param) {
 
     override def verify(board: gameboard.GameBoard): message.Mess = {

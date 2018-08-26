@@ -1,5 +1,6 @@
 package civilization
 
+import civilization.action.Command
 import civilization.gameboard._
 import civilization.helper._
 import civilization.helper.battle.AttackCommand
@@ -7,27 +8,32 @@ import civilization.helper.move.{ExploreHutCommand, MoveAction, RevealTileAction
 import civilization.io.fromjson._
 import civilization.io.tojson._
 import civilization.message.{FatalError, M, Mess}
+import civilization.objects.Resource.Value
 import civilization.objects._
 import play.api.libs.json.{JsNull, JsValue}
 
 package object action extends ImplicitMiximToJson with ImplicitMiximFromJson {
 
-  def constructCommand(c: CommandValues): Command =
-    constructCommand(c.command, c.civ, c.p, c.param)
 
-  def enrich(c: Command, command: Command.T, civ: Civilization.T, p: P, param: JsValue): Command = {
+  private def enrich(c: Command, command: Command.T, civ: Civilization.T, p: P, status: CommandStatus.T, param: JsValue): Command = {
     c.command = command
     c.p = p
     c.civ = civ
     c.j = param
+    c.setStatus(status)
     c
   }
 
+  def constructCommand(c: CommandValues): Command =
+    constructCommand(c.command, c.civ, c.p, c.status, c.param)
 
-  def constructCommand(command: Command.T, civ: Civilization.T, p: P, param: JsValue = null): Command = {
+  def constructCommand(command: Command.T, civ: Civilization.T, p: P, param: JsValue = null): Command =
+    constructCommand(command, civ, p, CommandStatus.No, param)
+
+  def constructCommand(command: Command.T, civ: Civilization.T, p: P, status: CommandStatus.T, param: JsValue): Command = {
     assert(civ != null && command != null)
     val c: Command = if (CommandContainer.isCommandCovered(command)) CommandContainer.produceCommand(command, civ, p, param) else produceCommand(command, civ, p, param)
-    enrich(c, command, civ, p, param)
+    enrich(c, command, civ, p, status, param)
   }
 
   private def produceCommand(command: Command.T, civ: Civilization.T, p: P, param: JsValue): Command = command match {
@@ -98,22 +104,53 @@ package object action extends ImplicitMiximToJson with ImplicitMiximFromJson {
 
     protected var deck: PlayerDeck = _
 
-
-    private var canceled: Boolean = false
     var p: P = _
     var j: JsValue = _
-
-    def setCanceled = canceled = true
 
     def param: Any
 
     def param1: Any
 
-    private var replay: Boolean = false
+    private var _replay: Boolean = false
 
-    def setReplay = replay = true
+    def setReplay = _replay = true
 
-    def isExecute: Boolean = !replay
+    def setNoReplay : Unit = _replay = false
+
+    def isExecute: Boolean = !_replay
+
+    private var _status: CommandStatus.T = CommandStatus.No
+
+    def status: CommandStatus.T = _status
+
+    def setStatus(sta: CommandStatus.T) = _status = sta
+
+    def setSuspended = _status = CommandStatus.Su
+
+    def isSuspended: Boolean = _status == CommandStatus.Su
+
+    def setCanceled = _status = CommandStatus.Ca
+
+    def isCanceled: Boolean = _status == CommandStatus.Ca
+
+    def setNormal: Unit = _status = CommandStatus.No
+
+    def isNormal: Boolean = _status == CommandStatus.No
+
+    private var _executesuspendedcommand : Boolean = false
+
+    def setExecuteSuspendedCommand = _executesuspendedcommand = true
+    def isExecuteSuspendedCommand : Boolean = _executesuspendedcommand
+
+    private var _cancelsuspendedcommand : Boolean = false
+
+    protected def setCancelSuspendedCommand = _cancelsuspendedcommand = true
+    def isCancelSuspendedCommand : Boolean = _cancelsuspendedcommand
+
+    private var _forgetCurrentCommand : Boolean = false
+    protected def setForgetCurrentCommand = _forgetCurrentCommand = true
+    def isForgetCurrentCommand : Boolean = _forgetCurrentCommand
+
 
     // TODO: should return Option[Mess], not null
     // null : success, Mess : failure and failure info
@@ -144,7 +181,7 @@ package object action extends ImplicitMiximToJson with ImplicitMiximFromJson {
 
     def commandsAvail(b: GameBoard, deck: PlayerDeck, phase: TurnPhase.T): Seq[Command.T] =
       getSet.
-        filter(Command.inPhase(_,phase)).
+        filter(Command.inPhase(_, phase)).
         filter(!itemize(b, deck, _).isEmpty) toSeq
 
     def itemize(b: GameBoard, deck: PlayerDeck, com: Command.T): Seq[JsValue] = itemizeP(b, deck, com)
@@ -165,9 +202,9 @@ package object action extends ImplicitMiximToJson with ImplicitMiximFromJson {
         override def execute(board: GameBoard) = Unit
       }
 
-    protected def emptyItemizeP() : Seq[P] = Seq(P(0,0))
+    protected def emptyItemizeP(): Seq[P] = Seq(P(0, 0))
 
-    protected def emptyItemize() : Seq[JsValue] = emptyItemizeP()
+    protected def emptyItemize(): Seq[JsValue] = emptyItemizeP()
 
     def produceCommand(command: Command.T, civ: Civilization.T, p: P, param: JsValue): Command
 
@@ -176,7 +213,12 @@ package object action extends ImplicitMiximToJson with ImplicitMiximFromJson {
       val par: CommandParams = CommandParams(if (p == null || p.empty) None else Some(p), if (j == null || j == JsNull) None else Some(j))
       if (itemi.find(eqJsParam(_, par)).isDefined) null else Mess(M.COMMANDPARAMETERDOESNOTMATCH, (deck.civ, com, p, j))
     }
-
   }
+
+  trait SuspendCommandTrait extends CommandPackage {
+    def canSuspend(board: GameBoard, deck: PlayerDeck, comm: Command)
+  }
+
+  def toC(com: Command): CommandValues = CommandValues(com.command, com.civ, com.p, com.status, com.j)
 
 }

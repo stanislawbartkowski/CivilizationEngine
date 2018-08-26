@@ -4,7 +4,7 @@ import java.math.BigInteger
 import java.security.SecureRandom
 import java.util.Calendar
 
-import civilization.II.interfaces.{RAccess,ICache}
+import civilization.II.interfaces.{RAccess, ICache}
 import civilization.action._
 import civilization.gameboard.{GameBoard, GameMetaData}
 import civilization.helper._
@@ -18,7 +18,7 @@ import play.api.libs.json._
 import civilization.io.readdir.GameResources
 import civilization.II.factory.{Factory}
 
-package object I {
+package object I extends ImplicitMiximFromJson {
 
   private var r: RAccess = _
 
@@ -46,38 +46,42 @@ package object I {
     g.metadata = m
     // replay game
     val p: Seq[String] = r.getPlayForGame(gameid)
+    // only last command may have suspended status
+    var counter : Int = 0 // to identify the last command
     p.foreach(s => {
-      val co: CommandValues = toParams(toJ(s));
+      val co: CommandValues = toJ(s)
       val comm: Command = action.constructCommand(co)
+      if (comm.isSuspended && counter != p.length-1)
+        // break stuff
+        throw FatalError(Mess(M.ONLYLASTCOMMANDCANHAVESUPENDEDSTATUS, (counter,p.length-1,comm)))
       comm.setReplay
       playsingleCommand(g, comm)
+      counter = counter + 1
     }
     )
     g
   }
 
 
-  private def getBoard(token: String) : (CurrentGame, GameBoard) = {
+  private def getBoard(token: String): (CurrentGame, GameBoard) = {
     val game: CurrentGame = r.getCurrentGame(token)
 
     r.touchCurrentGame(token)
-//    (game, getGameBoard(game.gameid))
-    (game, Factory.getIC.getT(game.gameid,getGameBoard))
+    //    (game, getGameBoard(game.gameid))
+    (game, Factory.getIC.getT(game.gameid, getGameBoard))
   }
-
-  private def toC(com: Command): CommandValues = CommandValues(com.command, com.civ, com.p, com.j)
 
   private def getBoardForCiv(token: String): String = {
     val game: CurrentGame = r.getCurrentGame(token)
-     // game metadata
+    // game metadata
     val m: GameMetaData = toMetaData(toJ(r.getMetaData(game.gameid)))
     // nothing has changed
     if (game.boardtimemili.isDefined && game.boardtimemili.get == m.modiftimemili) return ""
     // update board current time in CurrentGame
     game.boardtimemili = Some(m.modiftimemili)
-    r.updateCurrentGame(token,game)
-  //  val g : GameBoard = getGameBoard(game.gameid)
-    val g : GameBoard = Factory.getIC.getT(game.gameid,getGameBoard)
+    r.updateCurrentGame(token, game)
+    //  val g : GameBoard = getGameBoard(game.gameid)
+    val g: GameBoard = Factory.getIC.getT(game.gameid, getGameBoard)
     Json.prettyPrint(genboardj.genBoardGameJson(g, g.playerDeck(game.civ)))
   }
 
@@ -95,7 +99,7 @@ package object I {
         case LISTOFWAITINGGAMES => listOfWaitingGames
         case ITEMIZECOMMAND => itemizeCommand(tokenorciv, param)
         case LISTOFRES => {
-          val j:JsValue = GameResources.instance()
+          val j: JsValue = GameResources.instance()
           Json.prettyPrint(j)
         }
       }
@@ -152,11 +156,15 @@ package object I {
     var mess: Mess = playCommand(gb._2, co, c => {
       val cv: CommandValues = toC(c)
       r.addMoveToPlay(gb._1.gameid, writeCommandValues(cv).toString())
+    },
+    counter => {
+      val cv: CommandValues = toC(gb._2.play.commands(counter))
+      r.replaceMoveToPlay(gb._1.gameid,counter,writeCommandValues(cv).toString())
     }
     )
     // modif metadata with current timestamp
     gb._2.metadata.modiftimestamp()
-    touchGame(gb._1.gameid,gb._2)
+    touchGame(gb._1.gameid, gb._2)
     return mess
   }
 
@@ -165,7 +173,7 @@ package object I {
     val g: GameBoard = gb._2
     val civ: Civilization.T = gb._1.civ
     val command: Command.T = Command.withName(action)
-    val coma: CommandValues = CommandValues(command, civ, if (row == -1) null else P(row, col), if (jsparam == null) null else toJ(jsparam))
+    val coma: CommandValues = CommandValues(command, civ, if (row == -1) null else P(row, col), CommandStatus.No, if (jsparam == null) null else toJ(jsparam))
     touchGame(gb._1.gameid, g)
     val m: Mess = executeCommand(gb, coma)
     if (m == null) null else m.toString
@@ -185,7 +193,7 @@ package object I {
       val g: GameBoard = p._2
       val civ: Seq[Civilization.T] = g.players.map(_.civ)
       val cu: CurrentPhase = currentPhase(g)
-      GameData(p._1, civ, g.metadata.createtime, g.metadata.accesstime, cu.turnPhase, cu.roundno,g.endofgame).as[JsValue]
+      GameData(p._1, civ, g.metadata.createtime, g.metadata.accesstime, cu.turnPhase, cu.roundno, g.endofgame).as[JsValue]
     })
     Json.toJson(ld).toString()
   }

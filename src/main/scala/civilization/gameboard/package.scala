@@ -345,10 +345,24 @@ package object gameboard {
 
   case class EndOfGame(val winner: Civilization.T, val wintype: GameWinType.T)
 
+  case class ActionTypeSuspension(val civ : Civilization.T,val comm : Command.T,val par : JsValue)
+
   case class GameBoard(val players: Seq[PlayerDeck], val map: BoardMap, val resources: Resources, val market: Market) {
 
     // order of civilizations to play
     var pllist: Seq[Civilization.T] = Nil
+
+    // action suspended
+    var susplist : Seq[ActionTypeSuspension] = Nil
+
+    def addActionSuspend(civ : Civilization.T,comm : Command.T,par : JsValue) =
+      susplist = susplist :+ ActionTypeSuspension(civ,comm,par)
+
+    def clearActionSuspend = susplist = Nil
+
+    def suspendedForCiv(civ:Civilization.T) : Seq[ActionTypeSuspension] = susplist.filter(_.civ == civ)
+
+    def isSuspended : Boolean = !susplist.isEmpty
 
     def others(civ: Civilization.T): Seq[Civilization.T] = pllist.filter(civ != _)
 

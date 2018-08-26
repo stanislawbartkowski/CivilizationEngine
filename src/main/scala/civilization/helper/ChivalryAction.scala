@@ -8,9 +8,8 @@ import play.api.libs.json.{JsNumber, JsValue}
 object ChivalryAction extends TechnologyResourceTrait {
 
   override val command: Command.T = Command.CHIVALRYACTION
-//  override val tech: TechnologyName.T = TechnologyName.Chivalry
 
-  protected class BankingAction(override val param: HVResource) extends TechnologyResourceAction(param) {
+  protected class ChivalryAction(override val param: HVResource) extends TechnologyResourceAction(param) {
 
     override def executeI(board: gameboard.GameBoard): Unit = {
       // increase production by 5
@@ -18,6 +17,6 @@ object ChivalryAction extends TechnologyResourceTrait {
     }
   }
 
-  override def produceCommand(command: Command.T, civ: Civilization.T, p: P, param: JsValue): Command = new BankingAction(param)
+  override def produceCommand(command: Command.T, civ: Civilization.T, p: P, param: JsValue): Command = new ChivalryAction(param)
 
 }

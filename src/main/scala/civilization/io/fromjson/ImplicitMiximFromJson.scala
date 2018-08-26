@@ -46,11 +46,6 @@ trait ImplicitMiximFromJson {
 
   implicit def toCombatUnit(j: JsValue): CombatUnit = convert[CombatUnitJ](CombatUnitJ(j))
 
-//  implicit def toWinnerLootNull(j: JsValue): WinnerLoot =
-//    if (j == null || j == JsNull) WinnerLoot(None, None, false, false) else j.as[WinnerLoot]
-
-//  implicit def toTakeWinnerLoot(j: JsValue): TakeWinnerLoot = j.as[TakeWinnerLoot]
-
   implicit def toTechnologName(j: JsValue) = j.as[TechnologyName.T]
 
   implicit def toLootEffects(j : JsValue) : Seq[WinnerLootEffect] = j.as[Seq[WinnerLootEffect]]
@@ -69,6 +64,8 @@ trait ImplicitMiximFromJson {
 
   implicit def toSeqP(j : JsValue) : Seq[P] = j.as[Seq[P]]
 
+  implicit def toSeqParams(j: JsValue): Seq[CommandValues] = j.as[Seq[CommandValues]]
+
   implicit def toCultureCard(j : JsValue) : CultureCardName.T = j.as[CultureCardName.T]
 
   implicit def toGreatPerson(j : JsValue) : GreatPersonName.T = j.as[GreatPersonName.T]
@@ -78,5 +75,8 @@ trait ImplicitMiximFromJson {
   implicit def toResource(j : JsValue) : Resource.T = j.as[Resource.T]
 
   implicit def toGameWinType(j : JsValue) : GameWinType.T = j.as[GameWinType.T]
+
+  implicit def toParams(j: JsValue): CommandValues = j.as[CommandValues]
+
 
 }

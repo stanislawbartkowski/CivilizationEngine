@@ -53,6 +53,7 @@ package object fromjson extends ImplicitMiximFromJson {
   implicit val enumtypeCultureCardName: Reads[CultureCardName.Value] = EnumUtils.enumReads(CultureCardName)
   implicit val enumtypeLootName: Reads[LootEffectName.Value] = EnumUtils.enumReads(LootEffectName)
   implicit val enumtypeGameWinType: Reads[GameWinType.Value] = EnumUtils.enumReads(GameWinType)
+  implicit val enumtypeCommandStatus: Reads[CommandStatus.Value] = EnumUtils.enumReads(CommandStatus)
 
   implicit val winnerlooteffectReads : Reads[WinnerLootEffect] = (
     (JsPath \ S.name).read[LootEffectName.T] and
@@ -154,15 +155,15 @@ package object fromjson extends ImplicitMiximFromJson {
     }
   }
 
-  implicit val commandparamReads: Reads[CommandValues] = new Reads[CommandValues] {
-    def reads(json: JsValue): JsResult[CommandValues] = {
-      val command: Command.T = (json \ S.command).as[Command.T]
-      val civ: Civilization.T = (json \ S.civ).as[Civilization.T]
-      val p: P = (json \ S.p).asOpt[P].getOrElse(null)
-      val param: JsValue = (json \ S.param).asOpt[JsValue].getOrElse(null)
-      JsSuccess(CommandValues(command, civ, p, param))
-    }
-  }
+  //implicit val commandparamReads: Reads[CommandValues] = new Reads[CommandValues] {
+  //  def reads(json: JsValue): JsResult[CommandValues] = {
+    //  val command: Command.T = (json \ S.command).as[Command.T]
+      //val civ: Civilization.T = (json \ S.civ).as[Civilization.T]
+      //val p: P = (json \ S.p).asOpt[P].getOrElse(null)
+      //val param: JsValue = (json \ S.param).asOpt[JsValue].getOrElse(null)
+      //JsSuccess(CommandValues(command, civ, p, param))
+    //}
+  //}
 
 
   implicit val cityReads: Reads[City] = (
@@ -268,6 +269,7 @@ package object fromjson extends ImplicitMiximFromJson {
       (JsPath \ S.notimplemented).readNullable[Boolean]
     ) (CivilizationG.apply _)
 
+
   implicit val playerdeckReads: Reads[PlayerDeck] = new Reads[PlayerDeck] {
     def reads(json: JsValue): JsResult[PlayerDeck] = {
       val civ: Civilization.T = (json \ S.civ).as[Civilization.T]
@@ -277,6 +279,18 @@ package object fromjson extends ImplicitMiximFromJson {
       val resou: BoardResources = (json \ S.resources).as[BoardResources]
       val cultureprogress: Option[Int] = (json \ S.cultureprogress).asOpt[Int]
       JsSuccess(PlayerDeck(civ, tech, units, resou, gover, if (cultureprogress.isEmpty) 0 else cultureprogress.get))
+    }
+  }
+
+  implicit val commandparamReads: Reads[CommandValues] = new Reads[CommandValues] {
+    def reads(json: JsValue): JsResult[CommandValues] = {
+      val command: Command.T = (json \ S.command).as[Command.T]
+      val civ: Civilization.T = (json \ S.civ).as[Civilization.T]
+      val p: P = (json \ S.p).asOpt[P].getOrElse(null)
+      val param: JsValue = (json \ S.param).asOpt[JsValue].getOrElse(null)
+      val status : CommandStatus.T = (json \ S.status).asOpt[CommandStatus.T].getOrElse(CommandStatus.No)
+
+      JsSuccess(CommandValues(command, civ, p, status, param))
     }
   }
 
@@ -350,14 +364,6 @@ package object fromjson extends ImplicitMiximFromJson {
       (JsPath \ S.boardmili).read[Long] and
       (JsPath \ S.desc).read[String]
     ) (GameMetaData.apply _)
-
-//  implicit val takeWinnerLootReads: Reads[TakeWinnerLoot] = (
-//    (JsPath \ S.winner).read[Civilization.T] and
-//      (JsPath \ S.loser).read[Civilization.T] and
-//      (JsPath \ S.winnerloot).read[WinnerLoot] and
-//      (JsPath \ S.resource).readNullable[Resource.T] and
-//      (JsPath \ S.trade).read[Int]
-//    ) (TakeWinnerLoot.apply _)
 
   implicit val WondersDiscountReads: Reads[WondersDiscount] = (
     (JsPath \ S.cost).read[Int] and
@@ -442,12 +448,6 @@ package object fromjson extends ImplicitMiximFromJson {
     def to: JsResult[Orientation.T] = (JsPath).read[Orientation.T].reads(j)
   }
 
-  case class CommandValuesJ(val j: JsValue) extends FromJson {
-    type Value = CommandValues
-
-    def to: JsResult[CommandValues] = (JsPath).read[CommandValues].reads(j)
-  }
-
   case class CombatUnitJ(val j: JsValue) extends FromJson {
     type Value = CombatUnit
 
@@ -455,11 +455,11 @@ package object fromjson extends ImplicitMiximFromJson {
   }
 
 
-  case class SeqCommandValuesJ(val j: JsValue) extends FromJson {
-    type Value = Seq[CommandValues]
+//  case class SeqCommandValuesJ(val j: JsValue) extends FromJson {
+//    type Value = Seq[CommandValues]
 
-    def to: JsResult[Seq[CommandValues]] = (JsPath).read[Seq[CommandValues]].reads(j)
-  }
+//    def to: JsResult[Seq[CommandValues]] = (JsPath).read[Seq[CommandValues]].reads(j)
+//   }
 
 
   case class PatterMapSeqJ(val j: JsValue) extends FromJson {
@@ -518,15 +518,12 @@ package object fromjson extends ImplicitMiximFromJson {
 
   def toTile(j: JsValue): Tile = convert[TileJ](TileJ(j))
 
-//  def toHutVillage(j: JsValue): HutVillage = convert[HutVillageJ](HutVillageJ(j))
-
   def toJ(json: String): JsValue = Json.parse(json)
 
-  def toParams(j: JsValue): CommandValues = convert[CommandValuesJ](CommandValuesJ(j))
+//  implicit def toParams(j: JsValue): CommandValues = j.as[CommandValues]
 
-  def toSeqParams(j: JsValue): Seq[CommandValues] = convert[SeqCommandValuesJ](SeqCommandValuesJ(j))
+//  implicit def toSeqParams(j: JsValue): Seq[CommandValues] = j.as[Seq[CommandValues]]
 
-  //  def toOrientation(j: JsValue): Orientation.T = convert[OrientationJ](OrientationJ(j))
 
   def toFigure(j: JsValue): Figure.T = {
     j.as[Figure.T]

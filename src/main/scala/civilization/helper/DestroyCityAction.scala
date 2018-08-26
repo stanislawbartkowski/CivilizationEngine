@@ -15,8 +15,6 @@ object DestroyCityAction extends CommandPackage with ImplicitMiximFromJson with 
 
   class DestroyCityCommand extends AbstractCommandNone {
 
-    override def verify(board: GameBoard): message.Mess = null
-
     override def execute(board: GameBoard): Unit = destroyCity(board,deck,p)
   }
 

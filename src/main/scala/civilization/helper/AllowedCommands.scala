@@ -17,6 +17,7 @@ object AllowedCommands {
   def allowedCommands(b: GameBoard, deck: PlayerDeck): Seq[Command.T] = {
     // end of game
     if (b.endofgame.isDefined) return Nil
+    if (b.isSuspended) return Nil
     var cu: CurrentPhase = currentPhase(b)
     var co: Seq[Command.T] = Nil
     // if "turned" phase of the game, only current player has moves until completes

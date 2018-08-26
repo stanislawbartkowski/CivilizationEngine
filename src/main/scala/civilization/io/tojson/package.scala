@@ -249,7 +249,8 @@ package object tojson extends ImplicitMiximToJson {
       },
       S.param -> {
         if (m.param == null) json.JsNull else m.param
-      }
+      },
+      S.status -> m.status
     )
   }
 
@@ -286,16 +287,6 @@ package object tojson extends ImplicitMiximToJson {
       S.notimplemented -> o.ni
     )
   }
-
-  //  implicit val takewinnerlootWrites: Writes[TakeWinnerLoot] = new Writes[TakeWinnerLoot] {
-  //    override def writes(o: TakeWinnerLoot) = Json.obj(
-  //      S.winner -> o.winner,
-  //      S.loser -> o.loser,
-  //      S.winnerloot -> o.loot,
-  //      S.resource -> o.reso,
-  //      S.trade -> o.trade
-  //    )
-  //  }
 
   implicit val tekensWrite: Writes[Tokens] = new Writes[Tokens] {
     override def writes(o: Tokens): JsValue = Json.obj(

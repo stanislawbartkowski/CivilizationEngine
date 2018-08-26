@@ -22,6 +22,7 @@ object S {
   final val resources = "resources"
   final val p = "p"
   final val param = "param"
+  final val status = "status"
   final val trade = "trade"
   final val command = "command"
   final val figures = "f"

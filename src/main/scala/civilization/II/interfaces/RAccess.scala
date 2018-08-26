@@ -32,6 +32,8 @@ trait RAccess {
 
   def addMoveToPlay(id: Int, move: String)
 
+  def replaceMoveToPlay(id : Int, i : Int, move : String)
+
   // game metadata
   def updateMetaData(id: Int, value: String)
 

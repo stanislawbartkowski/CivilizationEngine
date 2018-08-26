@@ -8,7 +8,6 @@ import play.api.libs.json.{JsValue, JsNumber}
 object BankingAction extends TechnologyResourceTrait {
 
   override val command: Command.T = Command.BANKINGACTION
-//  override val tech: TechnologyName.T = TechnologyName.Banking
 
   protected class BankingAction(override val param: HVResource) extends TechnologyResourceAction(param) {
 

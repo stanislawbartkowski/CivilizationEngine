@@ -80,6 +80,14 @@ trait ImplicitMiximToJson {
   }
   )
 
+  implicit val suspendedActionWrite: Writes[ActionTypeSuspension] = new Writes[ActionTypeSuspension] {
+    override def writes(o: ActionTypeSuspension): JsValue = Json.obj(
+      S.civ -> o.civ,
+      S.command -> o.comm,
+      S.param -> o.par
+    )
+  }
+
   implicit def writeCultureCost(l: Seq[CultureTrack.CultureTrackCost]): Seq[JsValue] = l.map(writeCultureTrackCost)
 
   implicit def writeGreatPerson(p : GreatPersonName.T) : JsValue = Json.toJson(p)

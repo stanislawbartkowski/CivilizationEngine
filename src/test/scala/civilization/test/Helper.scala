@@ -46,7 +46,7 @@ object Helper {
     val g: GameBoard = getBoard(boardpath)
     val p: Seq[CommandValues] = getPlay(playPath)
     p.foreach(c => {
-      val co : Command = constructCommand(c)
+      val co: Command = constructCommand(c)
       g.play.addCommand(co)
     })
     val token: String = civilization.I.registerGame(g, civ)
@@ -73,16 +73,16 @@ object Helper {
     numberofTrade(b, b.playerDeck(civ))
 
   def getProductionForCityH(b: GameBoard, civ: Civilization.T, p: P): ProdForCity =
-    getProductionForCity(b,b.playerDeck(civ),p)
+    getProductionForCity(b, b.playerDeck(civ), p)
 
 
-    private def e(token: String, action: String, row: Int, col: Int, jsparam: String): String = {
+  private def e(token: String, action: String, row: Int, col: Int, jsparam: String): String = {
     val s: String = II.executeCommand(token, action, row, col, jsparam)
     if (s != null) println(s)
     s
   }
 
-  def executeCommandH(token: String, action: String, row: Int, col: Int, jsparam: String = null): Unit = {
+  def executeCommandH(token: String, action: String, row: Int = -1, col: Int = -1, jsparam: String = null): Unit = {
     assert(e(token, action, row, col, jsparam) == null)
   }
 
@@ -126,6 +126,12 @@ object Helper {
     val s = II.getData(II.GETBOARDGAME, token)
     toJ(s)
   }
+
+  def numof(g: GameBoard, u: CombatUnitType.T): Int = g.market.units.filter(_.utype == u).length
+
+  def numof(g: GameBoard, civ: Civilization.T, u: CombatUnitType.T): Int =
+    g.playerDeck(civ).units.filter(_.utype == u).length
+
 
   def activeciv(token: String, civ: String, phase: String): Unit = {
     val s = II.getData(II.GETBOARDGAME, token)

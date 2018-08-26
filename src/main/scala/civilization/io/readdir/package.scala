@@ -4,21 +4,17 @@ import java.io.File
 
 import play.api.libs.json.Reads._
 import play.api.libs.json._
-import play.api.libs.functional.syntax._
 
 import civilization.io.fromjson._
 import civilization.objects._
 import civilization.gameboard._
 import civilization.gameboard.CultureTrack._
-import civilization.action._
-import civilization.helper._
-import civilization.message._
+import play.api.libs.functional.syntax._
 
-import scala.collection.mutable.Buffer
 import scala.io.Source
 
 /** Helper for reading resource data as JSON */
-package object readdir {
+package object readdir extends ImplicitMiximFromJson {
 
   def readTestJSON(resourcefile: String): JsValue =
     Json.parse(getClass().getClassLoader.getResource(resourcefile).openStream())
@@ -78,7 +74,7 @@ package object readdir {
 
   def readPlay(j: JsValue): Seq[CommandValues] = {
     val js: JsValue = (j \ "game").get
-    toSeqParams(js)
+    js
   }
 
   def readTechnologies: Seq[Technology] = readJSON("objects", "TECHNOLOGIES.json")

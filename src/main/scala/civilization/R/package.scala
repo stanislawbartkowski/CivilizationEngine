@@ -89,6 +89,11 @@ package object R {
       for (i <- 0 until len) yield r.withClient(r => r.lindex(keyPlay(id), i.toInt).get)
     }
 
+    override def replaceMoveToPlay(id : Int, i : Int, move : String) = {
+      // index from one
+      r.withClient(r => r.lset(keyPlay(id), i.toInt,move))
+    }
+
     override def addMoveToPlay(id: Int, move: String): Unit = r.withClient(r => r.rpush(keyPlay(id), move))
 
     override def getGame(id: Int): String = r.withClient(r => r.get(gameKey(id)).get)

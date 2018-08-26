@@ -9,9 +9,9 @@ import civilization.io.readdir.GenBoard.genBoard
 import civilization.io.tojson._
 import civilization.io.readdir._
 import play.api.libs.json.{JsArray, JsValue}
-import Helper.II
+import Helper.{numof}
 
-class Test14   extends FunSuite {
+class Test14 extends FunSuite with ImplicitMiximFromJson {
 
     Helper.I
 
@@ -37,8 +37,6 @@ class Test14   extends FunSuite {
        println(l)
        assert (l.length > 0)
      }
-
-  private def numof(g: GameBoard,u : CombatUnitType.T) : Int = g.market.units.filter(_.utype == u).length
 
   test("Test gen board") {
     println("Test gen")

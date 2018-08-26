@@ -1,6 +1,6 @@
 package civilization
 
-import civilization.action.{Command, constructCommand}
+import civilization.action.{Command, CommandContainer, constructCommand}
 import civilization.gameboard.{BattleFieldSide, _}
 import civilization.io.readdir.GameResources
 import civilization.message.{FatalError, J, M, Mess}
@@ -499,9 +499,6 @@ package object helper {
     lastPhaseCommandsReverse(b, deck, TurnPhase.Research).map(_.command) contains Command.RESEARCH
 
   private def commandForPhase(b: GameBoard, command: Command): Mess = {
-    // technology resource action only once
-    //    if (Command.isTechnologyResourceAction(command.command))
-    //      if (technologyResourceUsed(b, command.civ)) return Mess(M.RESOURCEAVAILIBILITYCANBEUSERONCEPERTURN, command)
     val current: CurrentPhase = currentPhase(b)
     val phase: TurnPhase.T = Command.actionPhase(command.command)
     if (phase != null && phase != current.turnPhase) return Mess(M.ACTIONCANNOTBEEXECUTEDINTHISPHASE, (command, current.turnPhase, phase))
@@ -535,31 +532,60 @@ package object helper {
     null
   }
 
-  def playsingleCommand(b: GameBoard, command: Command, f: Command => Unit = p => Unit): Mess = {
+  private def checkSuspend(b: GameBoard, command: Command): Unit = {
+    b.clearActionSuspend
+    CommandContainer.suspcommands.foreach(
+      co =>
+        b.players.filter(_.civ != command.civ).foreach(
+          civ => co.canSuspend(b,civ,command)
+        )
+    )
+  }
+
+  def playsingleCommand(b: GameBoard, command: Command, f: Command => Unit = p => Unit,fsuspended : Int => Unit = p => Unit): Mess = {
     var m: Mess = commandForPhase(b, command)
     if (m != null) return m
     // test if point on board
     if (command.p != null && !Command.commandNotPoint(command.command) && !isPointOnBoard(b, command.p)) return Mess(M.POINTOUTSIDEBOARD, command.p)
     if (command.isExecute) {
       m = command.verifyCommand(b)
-      if (m != null) {
-        return m
+      if (m != null) return m
+      if (!b.isSuspended) {
+        checkSuspend(b, command)
+        if (b.isSuspended) command.setSuspended
       }
     }
-    command.executeCommand(b)
-    f(command)
-    b.play.addCommand(command)
+    else {
+       if (command.isSuspended) checkSuspend(b,command)
+    }
+    if (!command.isSuspended && !command.isCanceled) command.executeCommand(b)
+    if (!command.isForgetCurrentCommand) {
+      f(command)
+      b.play.addCommand(command)
+    }
+    if (command.isCancelSuspendedCommand || command.isExecuteSuspendedCommand) {
+      val (counter,susp) : (Int, Option[Command]) = b.play.getLastSuspended
+      if (command.isExecuteSuspendedCommand) susp.get.setNormal
+      else susp.get.setCanceled
+      fsuspended(counter)
+      if (command.isExecuteSuspendedCommand) {
+        susp.get.setNoReplay
+        susp.get.executeCommand(b)
+      }
+      // if cached
+      b.clearActionSuspend
+    }
     null
   }
 
-  def playCommand(b: GameBoard, command: Command, f: Command => Unit = p => Unit): Mess = {
-    var m: Mess = playsingleCommand(b, command, f)
+  def playCommand(b: GameBoard, command: Command, f: Command => Unit = p => Unit,fsuspended : Int => Unit = p => Unit): Mess = {
+    var m: Mess = playsingleCommand(b, command, f,fsuspended)
     if (m != null) return m
     // play forced commands
     while (!b.forcednext.isEmpty) {
       val com: Command = b.forcednext.head
       b.forcednext = b.forcednext.tail
-      m = playsingleCommand(b, com, f)
+      m = playsingleCommand(b, com, f, fsuspended)
       if (m != null) return m
     }
     null
@@ -571,6 +597,9 @@ package object helper {
     if (phase.isEmpty) return true
     return phase.get == c.turnPhase
   }
+
+  def expectedSuspended(b : GameBoard) : Option[Mess] =
+    if (b.isSuspended) None else Some(Mess(M.EXPECTEDSUSPENEDCOMMAND))
 
   // ====================================
   // TRADE
