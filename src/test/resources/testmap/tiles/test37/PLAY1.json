@@ -1,7 +1,6 @@
 {
   "game": [
 
-
     {"command":"RESEARCHFREETECHNOLOGY","civ":"America","p":null,"param":"Currency"},
 {"command":"GREATPERSON","civ":"America","p":null,"param":"NikolaTesla"},
 {"command":"RESEARCHFREETECHNOLOGY","civ":"China","p":null,"param":"Writing"},

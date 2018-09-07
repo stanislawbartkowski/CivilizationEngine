@@ -9,6 +9,7 @@ import civilization.objects.{Civilization, Command, _}
 import civilization.test.Helper._
 import org.scalatest.FunSuite
 import civilization.I
+import civilization.action.Command
 import play.api.libs.json.{JsArray, JsNull, JsValue}
 
 
@@ -76,4 +77,42 @@ class Test37 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
     assert(!gg.isSuspended)
   }
 
+  test("Writing technology, run Writing, cancel city action") {
+    val reg = Helper.ReadAndPlayForTwo("test37/BOARDGAME1.json", "test37/PLAY1.json", Civilization.America, Civilization.China)
+    val tokenA = reg._1
+    val tokenC = reg._2
+    var gg: GameBoard = I.getBoardForToken(tokenA)
+    val mounted = numof(gg, Civilization.America, CombatUnitType.Mounted)
+    println(mounted)
+    Helper.executeCommandH(tokenA, "BUYMOUNTED", 2, 2)
+    Helper.executeCommandH(tokenC, "WRITINGACTION", -1, -1,""" "Spy" """)
+    gg = I.getBoardForToken(tokenA)
+    val mounted2 = numof(gg, Civilization.America, CombatUnitType.Mounted)
+    println(mounted2)
+    assert(mounted == mounted2)
+
+    // find mounted
+    val command: Command = gg.play.commands.reverse.find(c => c.command == Command.BUYMOUNTED).get
+    println(command.isCanceled)
+    assert(command.isCanceled)
+  }
+
+  test("Writing technology, send production, do not suspend") {
+    val reg = Helper.ReadAndPlayForTwo("test37/BOARDGAME2.json", "test37/PLAY2.json", Civilization.America, Civilization.China)
+    val tokenA = reg._1
+    val tokenC = reg._2
+    var gg: GameBoard = I.getBoardForToken(tokenC)
+    println(gg.isSuspended)
+    assert(!gg.isSuspended)
+    val susp = gg.suspendedForCiv(Civilization.China)
+    println(susp)
+//    {"command":"SENDPRODUCTION","civ":"America","p":{"row":2,"col":2},"param":{"row":0,"col":3}}
+
+    Helper.executeCommandH(tokenA, "SENDPRODUCTION", 2, 2, "{\"row\" : 0, \"col\": 3}")
+    var gg1: GameBoard = I.getBoardForToken(tokenC)
+    println(gg1.isSuspended)
+    val susp1 = gg1.suspendedForCiv(Civilization.China)
+    println(susp1)
+    assert(!gg.isSuspended)
+  }
 }

@@ -48,6 +48,9 @@ object Command extends Enumeration {
   def cityActionUnique(t: Value): Boolean = (t == BUYARMY || t == BUYSCOUT || t == BUYARTILLERY ||
     t == BUYAIRCRAFT || t == BUYINFANTRY || t == BUYMOUNTED || t == HARVESTRESOURCE || t == BUYBUILDING || t == BUYWONDER || t == DEVOUTTOCULTURE || t == BUYCITYWALL || t == FREEBUILDINGCITYACTION)
 
+  def cityAction(t : Value) : Boolean =
+    actionPhase(t) == TurnPhase.CityManagement && cityActionUnique(t) && !internalAction(t)
+
   /** Movement action after starting the move */
   def actionMove(t: Value): Boolean =
     t == MOVE || t == REVEALTILE || t == ENDOFMOVE || t == EXPLOREHUT || t == ATTACK || t == STARTBATTLE || t == PLAYUNIT || t == PLAYUNITIRON || t == ENDBATTLE || t == KILLFIGURE || t == SAVEUNIT || t == FREENONUPGRADEDBUILDING
