@@ -106,7 +106,7 @@ class Test37 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
     assert(!gg.isSuspended)
     val susp = gg.suspendedForCiv(Civilization.China)
     println(susp)
-//    {"command":"SENDPRODUCTION","civ":"America","p":{"row":2,"col":2},"param":{"row":0,"col":3}}
+    //    {"command":"SENDPRODUCTION","civ":"America","p":{"row":2,"col":2},"param":{"row":0,"col":3}}
 
     Helper.executeCommandH(tokenA, "SENDPRODUCTION", 2, 2, "{\"row\" : 0, \"col\": 3}")
     var gg1: GameBoard = I.getBoardForToken(tokenC)
@@ -115,4 +115,43 @@ class Test37 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
     println(susp1)
     assert(!gg.isSuspended)
   }
+
+  test("Hanging gardens wonder") {
+    val reg = Helper.readBoardAndPlayT("test37/BOARDGAME3.json", "test37/PLAY3.json", Civilization.Egypt)
+    val token = reg._1
+    var gg: GameBoard = I.getBoardForToken(token)
+    var l = allowedCommandsH(gg, Civilization.Egypt)
+    assert(! (l contains Command.FREESCOUT))
+    assert(! (l contains Command.FREEARMY))
+  }
+
+  test("Hanging gardens wonder, next turn") {
+    val reg = Helper.readBoardAndPlayT("test37/BOARDGAME3.json", "test37/PLAY4.json", Civilization.Egypt)
+    val token = reg._1
+    var gg: GameBoard = I.getBoardForToken(token)
+    val f1 : Seq[MapSquareP] = getFigures(gg, Civilization.Egypt)
+    f1.foreach(m => println(m.p))
+
+    var l = allowedCommandsH(gg, Civilization.Egypt)
+    println(l)
+    assert(l contains Command.FREESCOUT)
+    assert(l contains Command.FREEARMY)
+
+    // try to get FREESCOUT
+    Helper.executeCommandH(token, "FREESCOUT")
+    gg = I.getBoardForToken(token)
+    val f2 : Seq[MapSquareP] = getFigures(gg, Civilization.Egypt)
+    f2.foreach(m => println(m.p))
+    assert(f2.length == 3)
+    val (a : Int, s : Int) = getNumberOfArmies(gg, Civilization.Egypt)
+    println(a + " " + s)
+    // two scouts and army
+    assert(a == 1 && s == 2)
+    // only once
+    l = allowedCommandsH(gg, Civilization.Egypt)
+    println(l)
+    assert(! (l contains Command.FREESCOUT))
+    assert(! (l contains Command.FREEARMY))
+  }
+
 }

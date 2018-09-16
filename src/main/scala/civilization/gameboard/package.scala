@@ -88,6 +88,11 @@ package object gameboard {
     * @param numberofScouts number of scouts
     */
   case class Figures(var numberofArmies: Int, var numberofScouts: Int) {
+
+    def this(f : Figure.T) =
+      this(if (f == Figure.Army) 1 else 0,if (f == Figure.Scout) 1 else 0)
+
+
     /** Not occupied by any army */
     def empty: Boolean = (numberofArmies == 0 && numberofScouts == 0)
 

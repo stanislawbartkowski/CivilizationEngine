@@ -65,7 +65,8 @@ object SetFigureAction extends CommandPackage with ImplicitMiximFromJson with Im
   class SetFigureAction(override val param: (Figure.T, P)) extends AbstractCommand(param) {
 
     def execute(board: GameBoard) =
-      putFigures(board, civ, param._2, if (param._1 == Figure.Army) Figures(1, 0) else Figures(0, 1))
+      putFigure(board, civ, param._2, param._1)
+    //      putFigures(board, civ, param._2, if (param._1 == Figure.Army) Figures(1, 0) else Figures(0, 1))
 
     override def verify(board: GameBoard): Mess = verifySetFigure(board, deck, p, param._2, param._1, command).getOrElse(null)
   }

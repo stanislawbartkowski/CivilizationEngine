@@ -8,7 +8,6 @@ import play.api.libs.json.{JsNumber, JsValue}
 object MetalCastingAction extends TechnologyResourceTrait {
 
   override val command: Command.T = Command.METALCASTINGACTION
-//  override val tech: TechnologyName.T = TechnologyName.MetalCasting
 
   protected class MetalCastingAction(override val param: HVResource) extends TechnologyResourceAction(param) {
 

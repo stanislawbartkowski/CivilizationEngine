@@ -1,0 +1,8 @@
+{
+  "game": [
+
+    {"command":"RESEARCHFREETECHNOLOGY","civ":"Egypt","p":null,"param":"Construction","status":"No"},
+{"command":"SETCAPITAL","civ":"Egypt","p":{"row":2,"col":2},"param":null,"status":"No"},
+{"command":"RANDOMWONDER","civ":"Egypt","p":{"row":2,"col":2},"param":"TheHangingGardens","status":"No"},
+{"command":"FREEWONDER","civ":"Egypt","p":{"row":2,"col":2},"param":{"p":{"row":1,"col":3},"wonder":"TheHangingGardens"},"status":"No"}
+ ]}

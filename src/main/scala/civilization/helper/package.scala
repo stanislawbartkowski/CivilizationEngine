@@ -382,14 +382,6 @@ package object helper {
     !last.isEmpty && last.head.command == com
   }
 
-  //  def technologyResourceUsed(b: GameBoard, civ: Civilization.T): Boolean = {
-  // all commands in the current phase
-  //    val com: Seq[Command] = currentTurnReverse(b, civ)
-  // only technology commands
-  // technology resource command is used
-  //    com.find(co => Command.isTechnologyResourceAction(co.command)).isDefined
-  //  }
-
   def CityAvailableForAction(b: GameBoard, civ: Civilization.T): Seq[P] = {
     // selects cities where city action is already executed
     val p: Seq[Command] = lastPhaseCommandsReverse(b, civ, TurnPhase.CityManagement).filter(co => Command.cityActionUnique(co.command))
@@ -929,13 +921,24 @@ package object helper {
     None
   }
 
-  def isSquareForFigure(b: GameBoard, deck: PlayerDeck, f: Figure.T, p: P): Option[Mess] = {
-    val li: PlayerLimits = getLimits(b, deck)
+  def figureAvailable(b: GameBoard, deck: PlayerDeck, f: Figure.T, li: PlayerLimits) : Option[Mess] = {
     val count: (Int, Int) = getNumberOfArmies(b, deck.civ)
     f match {
       case Figure.Army => if (li.armieslimit < 1) return Some(Mess(M.LIMITFORARMIESEXCEEDED, (count._1, li.armieslimit)))
       case Figure.Scout => if (li.scoutslimit < 1) return Some(Mess(M.LIMITFORSCOUTSEXCEEDED, (count._2, li.scoutslimit)))
     }
+    None
+  }
+
+  def isSquareForFigure(b: GameBoard, deck: PlayerDeck, f: Figure.T, p: P): Option[Mess] = {
+    val li: PlayerLimits = getLimits(b, deck)
+    val m : Option[Mess] = figureAvailable(b,deck,f,li)
+    if (m.isDefined) return m
+//    val count: (Int, Int) = getNumberOfArmies(b, deck.civ)
+//    f match {
+//      case Figure.Army => if (li.armieslimit < 1) return Some(Mess(M.LIMITFORARMIESEXCEEDED, (count._1, li.armieslimit)))
+//      case Figure.Scout => if (li.scoutslimit < 1) return Some(Mess(M.LIMITFORSCOUTSEXCEEDED, (count._2, li.scoutslimit)))
+//    }
     val s: MapSquareP = getSquare(b, p)
     if (s.s.cityhere) return Some(Mess(M.CANNOTSETFIGUREONCITY, p))
     if (s.sm.terrain == Terrain.Water && !li.waterstopallowed) return Some(Mess(M.CANNOTPUTFIGUREONWATER, p))
@@ -1005,6 +1008,10 @@ package object helper {
     s.s.figures.civ = civ
     s.s.figures + f
   }
+
+  def putFigure(b: GameBoard, civ: Civilization.T, p: P, f: Figure.T) =
+    putFigures(b, civ, p, new Figures(f))
+
 
   def exploreHutOrVillage(b: GameBoard, pl: PlayerDeck, p: P) = {
     val m: MapSquareP = getSquare(b, p)
@@ -1336,8 +1343,14 @@ package object helper {
   }
 
   // ----------------------------
+
+  def findWonder(b: GameBoard, civ: Civilization.T,hasfeature: (Wonders.T) => Boolean) : Option[MapSquareP] =
+    outskirtsForCivNotBlocked(b, civ).find(s => s.s.wonder.isDefined && hasfeature(s.s.wonder.get.w))
+
+
   def hasWonderFeature(b: GameBoard, civ: Civilization.T, hasfeature: (Wonders.T) => Boolean): Boolean =
-    outskirtsForCivNotBlocked(b, civ).exists(s => s.s.wonder.isDefined && hasfeature(s.s.wonder.get.w))
+//    outskirtsForCivNotBlocked(b, civ).exists(s => s.s.wonder.isDefined && hasfeature(s.s.wonder.get.w))
+    findWonder(b,civ,hasfeature).isDefined
 
   // ------------------------------------------
   def destroyCity(b: GameBoard, pl: PlayerDeck, p: P) = {

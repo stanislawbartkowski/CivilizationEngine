@@ -12,4 +12,6 @@ object WonderFeatures {
 
   def extratradeFromEmptyWater(won: Wonders.T): Boolean = won == Wonders.TheGreatLighthouse
 
+  def freeFiguresAtTheStartOfTurn(won : Wonders.T) : Boolean = won == Wonders.TheHangingGardens
+
 }

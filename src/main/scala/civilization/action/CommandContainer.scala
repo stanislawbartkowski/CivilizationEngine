@@ -13,7 +13,8 @@ object CommandContainer {
     PhilosophyAction, PotteryAction, SetCityAction, TakeResourceCommand, SpendSilkAction, LetSuspendedGoAction,
     SetFigureAction, DevoutToCultureCommand, AdvanceCulture, CurrencyAction, DiscardCard, GreatPersonAction,
     ConstructionAction, GetCultureAction, MetalCastingAction, BankingAction, ChivalryAction, GetResourceCommand,
-    GetHutVillageCommand, GetCoinCommand, DestroyCityAction, WinTheGame, DemocracyAction, PrintingPressAction, WritingAction)
+    GetHutVillageCommand, GetCoinCommand, DestroyCityAction, WinTheGame, DemocracyAction, PrintingPressAction, WritingAction,
+    HangingGardensAction)
 
   val suspcommands: Seq[SuspendCommandTrait] = Seq(WritingAction)
 
