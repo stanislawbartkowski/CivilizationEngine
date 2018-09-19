@@ -52,7 +52,6 @@
   },
   {
     "t" : "HG",
-    "ni" : true,
     "name" : "TheHangingGardens",
     "phase" : "StartOfTurn",
     "age" : "Ancient",
