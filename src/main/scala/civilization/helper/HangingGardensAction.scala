@@ -25,7 +25,7 @@ object HangingGardensAction extends CommandPackage with ImplicitMiximFromJson wi
     else {
       val li: PlayerLimits = getLimits(b, deck)
       val m: Option[Mess] = figureAvailable(b, deck, toF(comm), li)
-      if (!m.isDefined) m
+      if (m.isDefined) m
       else {
         val ma: MapSquareP = findWonder(b, deck, WonderFeatures.freeFiguresAtTheStartOfTurn).get
         val m: Option[Mess] = isSquareForFigures(b, deck, new Figures(toF(comm)), ma.s, li)

@@ -154,4 +154,18 @@ class Test37 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
     assert(! (l contains Command.FREEARMY))
   }
 
-}
+  test("Hanging Gardens no scouts") {
+    val reg = Helper.readBoardAndPlayT("test37/BOARDGAME5.json", "test37/PLAY5.json", Civilization.America)
+    val token = reg._1
+    var gg: GameBoard = I.getBoardForToken(token)
+    val f1: Seq[MapSquareP] = getFigures(gg, Civilization.America)
+    f1.foreach(m => println(m.p))
+
+    var l = allowedCommandsH(gg, Civilization.America)
+    println(l)
+    // no scouts
+    assert(!(l contains Command.FREESCOUT))
+    assert(l contains Command.FREEARMY)
+  }
+
+  }
