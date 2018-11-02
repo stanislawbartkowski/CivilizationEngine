@@ -364,7 +364,7 @@ package object helper {
           clist = Nil
         }
         else {
-          val commandpha : TurnPhase.T = Command.actionPhase(c.command)
+          val commandpha: TurnPhase.T = Command.actionPhase(c.command)
           // 2018/08/17 : tricky, research command. It is possible that after end of Movement, Movement is played because of battle
           // so Research was recognized as done
           if (commandpha == null || commandpha == pha) clist = clist :+ c
@@ -529,12 +529,12 @@ package object helper {
     CommandContainer.suspcommands.foreach(
       co =>
         b.players.filter(_.civ != command.civ).foreach(
-          civ => co.canSuspend(b,civ,command)
+          civ => co.canSuspend(b, civ, command)
         )
     )
   }
 
-  def playsingleCommand(b: GameBoard, command: Command, f: Command => Unit = p => Unit,fsuspended : Int => Unit = p => Unit): Mess = {
+  def playsingleCommand(b: GameBoard, command: Command, f: Command => Unit = p => Unit, fsuspended: Int => Unit = p => Unit): Mess = {
     var m: Mess = commandForPhase(b, command)
     if (m != null) return m
     // test if point on board
@@ -548,7 +548,7 @@ package object helper {
       }
     }
     else {
-       if (command.isSuspended) checkSuspend(b,command)
+      if (command.isSuspended) checkSuspend(b, command)
     }
     if (!command.isSuspended && !command.isCanceled) command.executeCommand(b)
     if (!command.isForgetCurrentCommand) {
@@ -556,7 +556,7 @@ package object helper {
       b.play.addCommand(command)
     }
     if (command.isCancelSuspendedCommand || command.isExecuteSuspendedCommand) {
-      val (counter,susp) : (Int, Option[Command]) = b.play.getLastSuspended
+      val (counter, susp): (Int, Option[Command]) = b.play.getLastSuspended
       if (command.isExecuteSuspendedCommand) susp.get.setNormal
       else susp.get.setCanceled
       fsuspended(counter)
@@ -570,8 +570,8 @@ package object helper {
     null
   }
 
-  def playCommand(b: GameBoard, command: Command, f: Command => Unit = p => Unit,fsuspended : Int => Unit = p => Unit): Mess = {
-    var m: Mess = playsingleCommand(b, command, f,fsuspended)
+  def playCommand(b: GameBoard, command: Command, f: Command => Unit = p => Unit, fsuspended: Int => Unit = p => Unit): Mess = {
+    var m: Mess = playsingleCommand(b, command, f, fsuspended)
     if (m != null) return m
     // play forced commands
     while (!b.forcednext.isEmpty) {
@@ -590,7 +590,7 @@ package object helper {
     return phase.get == c.turnPhase
   }
 
-  def expectedSuspended(b : GameBoard) : Option[Mess] =
+  def expectedSuspended(b: GameBoard): Option[Mess] =
     if (b.isSuspended) None else Some(Mess(M.EXPECTEDSUSPENEDCOMMAND))
 
   // ====================================
@@ -921,7 +921,7 @@ package object helper {
     None
   }
 
-  def figureAvailable(b: GameBoard, deck: PlayerDeck, f: Figure.T, li: PlayerLimits) : Option[Mess] = {
+  def figureAvailable(b: GameBoard, deck: PlayerDeck, f: Figure.T, li: PlayerLimits): Option[Mess] = {
     val count: (Int, Int) = getNumberOfArmies(b, deck.civ)
     f match {
       case Figure.Army => if (li.armieslimit < 1) return Some(Mess(M.LIMITFORARMIESEXCEEDED, (count._1, li.armieslimit)))
@@ -932,13 +932,13 @@ package object helper {
 
   def isSquareForFigure(b: GameBoard, deck: PlayerDeck, f: Figure.T, p: P): Option[Mess] = {
     val li: PlayerLimits = getLimits(b, deck)
-    val m : Option[Mess] = figureAvailable(b,deck,f,li)
+    val m: Option[Mess] = figureAvailable(b, deck, f, li)
     if (m.isDefined) return m
-//    val count: (Int, Int) = getNumberOfArmies(b, deck.civ)
-//    f match {
-//      case Figure.Army => if (li.armieslimit < 1) return Some(Mess(M.LIMITFORARMIESEXCEEDED, (count._1, li.armieslimit)))
-//      case Figure.Scout => if (li.scoutslimit < 1) return Some(Mess(M.LIMITFORSCOUTSEXCEEDED, (count._2, li.scoutslimit)))
-//    }
+    //    val count: (Int, Int) = getNumberOfArmies(b, deck.civ)
+    //    f match {
+    //      case Figure.Army => if (li.armieslimit < 1) return Some(Mess(M.LIMITFORARMIESEXCEEDED, (count._1, li.armieslimit)))
+    //      case Figure.Scout => if (li.scoutslimit < 1) return Some(Mess(M.LIMITFORSCOUTSEXCEEDED, (count._2, li.scoutslimit)))
+    //    }
     val s: MapSquareP = getSquare(b, p)
     if (s.s.cityhere) return Some(Mess(M.CANNOTSETFIGUREONCITY, p))
     if (s.sm.terrain == Terrain.Water && !li.waterstopallowed) return Some(Mess(M.CANNOTPUTFIGUREONWATER, p))
@@ -1115,9 +1115,12 @@ package object helper {
   // journal
   // ==================================
 
-  def addToJournal(b: GameBoard, civ: Civilization.T, j: J.J, content: AnyRef, tech: Option[TechnologyName.T] = None) = {
-    val curr = currentPhase(b)
-    b.addJ(JournalElem(j, curr.turnPhase, curr.roundno, civ, content, tech))
+  def addToJournal(b: GameBoard, civ: Civilization.T, isExecute: Boolean, j: J.J, params: Seq[String] = Nil, tech: Option[TechnologyName.T] = None) = {
+    assert(params != null)
+    if (isExecute) {
+      val curr = currentPhase(b)
+      b.addJ(JournalElem(j, curr.turnPhase, curr.roundno, civ, params, tech))
+    }
   }
 
   // ==================================
@@ -1344,13 +1347,13 @@ package object helper {
 
   // ----------------------------
 
-  def findWonder(b: GameBoard, civ: Civilization.T,hasfeature: (Wonders.T) => Boolean) : Option[MapSquareP] =
+  def findWonder(b: GameBoard, civ: Civilization.T, hasfeature: (Wonders.T) => Boolean): Option[MapSquareP] =
     outskirtsForCivNotBlocked(b, civ).find(s => s.s.wonder.isDefined && hasfeature(s.s.wonder.get.w))
 
 
   def hasWonderFeature(b: GameBoard, civ: Civilization.T, hasfeature: (Wonders.T) => Boolean): Boolean =
-//    outskirtsForCivNotBlocked(b, civ).exists(s => s.s.wonder.isDefined && hasfeature(s.s.wonder.get.w))
-    findWonder(b,civ,hasfeature).isDefined
+  //    outskirtsForCivNotBlocked(b, civ).exists(s => s.s.wonder.isDefined && hasfeature(s.s.wonder.get.w))
+    findWonder(b, civ, hasfeature).isDefined
 
   // ------------------------------------------
   def destroyCity(b: GameBoard, pl: PlayerDeck, p: P) = {

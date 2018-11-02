@@ -93,7 +93,7 @@ object MoveAction extends ImplicitMiximFromJson with ImplicitMiximToJson {
   class KillFigureAction(override val param: Figures) extends AbstractCommand(param) {
     def execute(board: GameBoard) = {
       moveFigures(board, civ, p, if (param == null) None else Some(param), true)
-      addToJournal(board, civ, J.FIGURESAREKILLED, null)
+      addToJournal(board, civ, isExecute, J.FIGURESAREKILLED)
     }
 
   }

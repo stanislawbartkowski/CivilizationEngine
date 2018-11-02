@@ -12,6 +12,7 @@ trait IC {
   final val LISTOFWAITINGGAMES = I.LISTOFWAITINGGAMES
   final val REGISTEROWNERTWOGAME = I.REGISTEROWNERTWOGAME
   final val ITEMIZECOMMAND = I.ITEMIZECOMMAND
+  final val GETJOURNAL = I.GETJOURNAL
 
   def getData(what: Int, tokenorciv: String = null, param : String = null): String
 

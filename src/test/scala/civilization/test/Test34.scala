@@ -10,7 +10,6 @@ import civilization.test.Helper.{II}
 import org.scalatest.FunSuite
 import play.api.libs.json.{JsArray, JsString, JsValue}
 import Helper._
-import civilization.helper.battle.BattleActions
 import civilization.io.readdir.GameResources
 
 

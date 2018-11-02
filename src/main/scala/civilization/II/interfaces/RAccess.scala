@@ -2,7 +2,7 @@ package civilization.II.interfaces
 
 trait RAccess {
 
-  def getConn : RConnection
+  def getConn: RConnection
 
   // current game cache
   def getCurrentGame(token: String): String
@@ -11,13 +11,13 @@ trait RAccess {
 
   def updateCurrentGame(token: String, content: String)
 
-  def getCurrentGames() : Seq[String]
+  def getCurrentGames(): Seq[String]
 
-  def unregisterCurrentGame(token : String)
+  def unregisterCurrentGame(token: String)
 
-  def touchCurrentGame(token : String)
+  def touchCurrentGame(token: String)
 
-  def removeCurrentGames(remove : String => Boolean)
+  def removeCurrentGames(remove: String => Boolean)
 
   // game
   def registerGame(value: String): Int
@@ -32,7 +32,14 @@ trait RAccess {
 
   def addMoveToPlay(id: Int, move: String)
 
-  def replaceMoveToPlay(id : Int, i : Int, move : String)
+  def replaceMoveToPlay(id: Int, i: Int, move: String)
+
+  // journal
+  def getJournalForGame(id: Int): Seq[String]
+
+  def addJournalEntry(id: Int, jou: String)
+
+  def numberOfJournalE(id : Int) : Int
 
   // game metadata
   def updateMetaData(id: Int, value: String)

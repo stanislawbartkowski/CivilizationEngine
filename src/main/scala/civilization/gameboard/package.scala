@@ -12,7 +12,7 @@ import play.api.libs.json.{JsNumber, JsValue}
 /** Placeholder for objects and definitions related to the gameboard. */
 package object gameboard {
 
-  case class JournalElem(val l: J, val pha: TurnPhase.T, val roundno: Int, val civ: Civilization.T, val content: AnyRef, val tech: Option[TechnologyName.T] = None, val priv: Boolean = false)
+  case class JournalElem(val l: J, val pha: TurnPhase.T, val roundno: Int, val civ: Civilization.T, val params : Seq[String], val tech: Option[TechnologyName.T] = None, val priv: Boolean = false)
 
   type Journal = collection.mutable.ListBuffer[JournalElem]
 

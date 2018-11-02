@@ -4,7 +4,7 @@ import civilization.action.constructCommand
 import civilization.gameboard._
 import civilization.helper._
 import civilization.io.fromjson.{toArrayHutVillages, toSeqPatterMap}
-import civilization.message.{FatalError, M, Mess,J}
+import civilization.message.{FatalError, M, Mess, J}
 import civilization.objects._
 import play.api.libs.json.JsValue
 import civilization.io.fromjson.ImplicitMiximFromJson
@@ -80,7 +80,7 @@ object GenBoard extends ImplicitMiximFromJson with ImplicitMiximToJson {
     if (!sciv.isEmpty) throw FatalError(Mess(M.TOOMANYCIVREQUESTED))
     val players: List[PlayerDeck] = l.map(c => {
       val civ: CivilizationG = civs.find(_.civ == c).get
-//      val pt: PlayerTechnology = PlayerTechnology(civ.tech, Some(true))
+      //      val pt: PlayerTechnology = PlayerTechnology(civ.tech, Some(true))
       PlayerDeck(c, Nil, Nil, new BoardResources(), civ.gover, 0)
     }
     )
@@ -97,17 +97,18 @@ object GenBoard extends ImplicitMiximFromJson with ImplicitMiximToJson {
     g.players.foreach(pl => {
       // add and activate technology
       val civ: CivilizationG = civs.find(_.civ == pl.civ).get
-      val commandC = constructCommand(Command.RESEARCHFREETECHNOLOGY,pl.civ,null,civ.tech)
+      val commandC = constructCommand(Command.RESEARCHFREETECHNOLOGY, pl.civ, null, civ.tech)
       g.play.addCommand(commandC)
+      addToJournal(g, pl.civ, true, J.YOUARERECEIVINGSTARTINGTECHNOLOGY)
 
       if (CivilizationFeatures.freeGreatPersonAtTheBeginning(pl.civ)) {
-        addToJournal(g,pl.civ,J.YOUARERECEIVINGFREEGREATPERSON,null)
+        addToJournal(g, pl.civ, true, J.YOUARERECEIVINGFREEGREATPERSON)
         val commandC = constructCommand(Command.GREATPERSON, pl.civ, null, getRandomPerson(g))
         //g.addForcedCommand(commandC)
-        playCommand(g,commandC)
+        playCommand(g, commandC)
       }
       if (CivilizationFeatures.takefree2Infantry(pl.civ)) {
-        addToJournal(g,pl.civ,J.YOUARERECEIVING2FREEINFANTRYUNITS,null)
+        addToJournal(g, pl.civ, true, J.YOUARERECEIVING2FREEINFANTRYUNITS)
         // do twice
         for (i <- 0 to 1) {
           val commandC = constructCommand(Command.TAKEUNIT, pl.civ, null, getRandomUnit(g, CombatUnitType.Infantry, false))
@@ -115,7 +116,7 @@ object GenBoard extends ImplicitMiximFromJson with ImplicitMiximToJson {
         }
       }
       if (CivilizationFeatures.freeResourcesAtStart(pl.civ)) {
-        addToJournal(g,pl.civ,J.YOUARERECEIVINGFREERESOURCESFROMMARKET,null)
+        addToJournal(g, pl.civ, true, J.YOUARERECEIVINGFREERESOURCESFROMMARKET)
         val commandC = constructCommand(Command.TAKEFREEALLRESOURCESFROMMARKET, pl.civ, null)
         g.play.addCommand(commandC)
       }

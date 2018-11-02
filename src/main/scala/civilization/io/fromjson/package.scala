@@ -7,6 +7,8 @@ import civilization.objects._
 import civilization.gameboard._
 import civilization.gameboard.CultureTrack._
 import civilization.io.readdir.Param._
+import civilization.message.J
+import civilization.message.J.J
 
 package object fromjson extends ImplicitMiximFromJson {
 
@@ -54,6 +56,7 @@ package object fromjson extends ImplicitMiximFromJson {
   implicit val enumtypeLootName: Reads[LootEffectName.Value] = EnumUtils.enumReads(LootEffectName)
   implicit val enumtypeGameWinType: Reads[GameWinType.Value] = EnumUtils.enumReads(GameWinType)
   implicit val enumtypeCommandStatus: Reads[CommandStatus.Value] = EnumUtils.enumReads(CommandStatus)
+  implicit val enumtypeJournalM: Reads[J] = EnumUtils.enumReads(J)
 
   implicit val winnerlooteffectReads : Reads[WinnerLootEffect] = (
     (JsPath \ S.name).read[LootEffectName.T] and
@@ -126,6 +129,22 @@ package object fromjson extends ImplicitMiximFromJson {
         (JsPath \ S.phase).readNullable[TurnPhase.T] and
         (JsPath \ S.desc).read[String]
   ) (GreatPerson.apply _)
+
+  implicit val journalelemReads : Reads[JournalElem] = (
+//    S.id -> o.l,
+//    S.phase -> o.pha,
+//    S.roundno -> o.roundno,
+//    S.civ -> o.civ,
+//    S.param -> o.params,
+//    S.tech -> o.tech
+    (JsPath \ S.id).read[J] and
+      (JsPath \ S.phase).read[TurnPhase.T] and
+      (JsPath \ S.roundno).read[Int] and
+      (JsPath \ S.civ).read[Civilization.T] and
+      (JsPath \ S.param).read[Seq[String]] and
+      (JsPath \ S.tech).readNullable[TechnologyName.T] and
+      (JsPath \ S.priv).read[Boolean]
+  ) (JournalElem.apply _)
 
   implicit val culturecardReads : Reads[CultureCard] = (
     (JsPath \ S.name).read[CultureCardName.T] and
@@ -547,6 +566,8 @@ package object fromjson extends ImplicitMiximFromJson {
   def toArrayHutVillages(j: JsValue): Array[HutVillage] = j.as[Array[HutVillage]]
 
   def toMetaData(j: JsValue): GameMetaData = j.as[GameMetaData]
+
+  def toJournalElem(j: JsValue) : JournalElem = j.as[JournalElem]
 
   implicit def toSeqOfWonders(j: JsValue): Seq[WondersOfTheWorld] = j.as[Seq[WondersOfTheWorld]]
 

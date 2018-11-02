@@ -13,6 +13,8 @@ package object R {
 
   private final val PLAY = "play"
 
+  private final val JOURNAL = "journal"
+
   private final val METADATA = "metadata"
 
   private final val ALLCURRENT = CIVILIZATION + "." + CURRENT + ".*"
@@ -81,20 +83,44 @@ package object R {
 
     override def updateGame(id: Int, value: String): Unit = r.withClient(r => r.set(gameKey(id), value))
 
-
     private def keyPlay(id: Int): String = gameKey(id) + "." + PLAY
 
+    private def getTableLen(id: Int, ktoS: (Int) => String): Int = r.withClient(r => r.llen(ktoS(id)).get.toInt)
+
+    private def getTableOfString(id: Int, ktoS: (Int) => String): Seq[String] = {
+      val len: Int = r.withClient(r => r.llen(ktoS(id)).get.toInt)
+      for (i <- 0 until len) yield r.withClient(r => r.lindex(ktoS(id), i.toInt).get)
+    }
+
+    private def addStringToTable(id: Int, ktoS: (Int) => String, s: String): Unit = r.withClient(r => r.rpush(ktoS(id), s))
+
     override def getPlayForGame(id: Int): Seq[String] = {
-      val len: Int = r.withClient(r => r.llen(keyPlay(id)).get.toInt)
-      for (i <- 0 until len) yield r.withClient(r => r.lindex(keyPlay(id), i.toInt).get)
+      //      val len: Int = r.withClient(r => r.llen(keyPlay(id)).get.toInt)
+      //      for (i <- 0 until len) yield r.withClient(r => r.lindex(keyPlay(id), i.toInt).get)
+      getTableOfString(id, keyPlay)
     }
 
-    override def replaceMoveToPlay(id : Int, i : Int, move : String) = {
+    override def replaceMoveToPlay(id: Int, i: Int, move: String) = {
       // index from one
-      r.withClient(r => r.lset(keyPlay(id), i.toInt,move))
+      r.withClient(r => r.lset(keyPlay(id), i.toInt, move))
     }
 
-    override def addMoveToPlay(id: Int, move: String): Unit = r.withClient(r => r.rpush(keyPlay(id), move))
+    //    override def addMoveToPlay(id: Int, move: String): Unit = r.withClient(r => r.rpush(keyPlay(id), move))
+    override def addMoveToPlay(id: Int, move: String): Unit = addStringToTable(id, keyPlay, move)
+
+    // journal
+
+    private def getJKey(id: Int): String = gameKey(id) + "." + JOURNAL
+
+    override def getJournalForGame(id: Int): Seq[String] = getTableOfString(id, getJKey)
+
+
+    override def addJournalEntry(id: Int, jou: String): Unit = addStringToTable(id, getJKey, jou)
+
+    override def numberOfJournalE(id: Int): Int = getTableLen(id, getJKey)
+
+    //
+
 
     override def getGame(id: Int): String = r.withClient(r => r.get(gameKey(id)).get)
 
@@ -110,9 +136,9 @@ package object R {
       keys.map(extractGameId(_)).map(g => (g, getMetaData(g)))
     }
 
-    override def getConn : RConnection = new RConnection () {
+    override def getConn: RConnection = new RConnection() {
       override def setConnection(host: String, port: Int, database: Int): Unit =
-        RR.setConnection(host,port,database)
+        RR.setConnection(host, port, database)
 
       override def setConnection(url: String): Unit = RR.setConnection(url)
     }

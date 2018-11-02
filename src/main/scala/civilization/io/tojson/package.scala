@@ -190,6 +190,19 @@ package object tojson extends ImplicitMiximToJson {
     )
   }
 
+  implicit val mapJournalEntry: Writes[JournalElem] = new Writes[JournalElem] {
+    override def writes(o: JournalElem): JsValue = Json.obj(
+      S.id -> o.l,
+      S.phase -> o.pha,
+      S.roundno -> o.roundno,
+      S.civ -> o.civ,
+      S.param -> o.params,
+      S.tech -> o.tech,
+      S.priv -> o.priv
+    )
+  }
+
+
   implicit val metadataWrites: Writes[GameMetaData] = new Writes[GameMetaData] {
     def writes(m: GameMetaData) = Json.obj(
       S.version -> m.version,
@@ -199,6 +212,7 @@ package object tojson extends ImplicitMiximToJson {
       S.desc -> m.desc
     )
   }
+
 
   implicit val winnerlootWrites: Writes[WinnerLoot] = new Writes[WinnerLoot] {
     def writes(m: WinnerLoot) = Json.obj(
@@ -333,6 +347,19 @@ package object tojson extends ImplicitMiximToJson {
     Json.toJson(j)
   }
 
+  def writeJ(civ: Civilization.T, j: Seq[JournalElem]): JsValue = {
+    var no: Int = 0
+    // remove private
+    val s : Seq[JsValue] = j.filter(e => !e.priv || e.civ == civ).
+      map(e => {
+        no = no + 1; (no, e)
+      }).map(e => Json.obj(
+      "no" -> e._1,
+      "elem" -> e._2
+    ))
+    JsArray(s)
+  }
+
   def writeCommandValues(m: CommandValues): JsValue = Json.toJson(m)
 
   def writeMetaData(m: GameMetaData): JsValue = Json.toJson(m)
@@ -351,6 +378,8 @@ package object tojson extends ImplicitMiximToJson {
 
   def writeCultureTrack(c: CultureTrack): JsValue = Json.toJson(c)
 
+  def writeJournalElem(j : JournalElem) : JsValue = Json.toJson(j)
+
   implicit def writeCultureTrackCost(c: CultureTrackCost): JsValue = Json.toJson(c)
 
   implicit def writeGreatPersonTypes(t: Seq[GreatPersonType]): JsValue = Json.toJson(t)
@@ -358,5 +387,7 @@ package object tojson extends ImplicitMiximToJson {
   implicit def writeGreatPerson(t: Seq[GreatPerson]): JsValue = Json.toJson(t)
 
   implicit def writeCultureCards(t: Seq[CultureCard]): JsValue = Json.toJson(t)
+
+
 
 }

@@ -29,7 +29,8 @@ object GameResources {
       S.culturetrack -> g.culturetrack,
       "greatpersontype" -> g.greatpersontype,
       S.greatperson -> g.greatpersons,
-      "cards" -> g.culturecards
+      "cards" -> g.culturecards,
+      "journal" -> readJournalDict
     )
     j
   }

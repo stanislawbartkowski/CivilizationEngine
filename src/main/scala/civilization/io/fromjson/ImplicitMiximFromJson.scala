@@ -78,5 +78,4 @@ trait ImplicitMiximFromJson {
 
   implicit def toParams(j: JsValue): CommandValues = j.as[CommandValues]
 
-
 }

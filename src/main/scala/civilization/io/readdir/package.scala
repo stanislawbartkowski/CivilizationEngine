@@ -20,6 +20,8 @@ package object readdir extends ImplicitMiximFromJson {
     Json.parse(getClass().getClassLoader.getResource(resourcefile).openStream())
 
 
+  def readJournalDict : JsValue = readJSON("messages", "journal.json")
+
   def readJSON(resourcedir: String, resourcefile: String): JsValue = {
     val i: Iterator[String] =
       Source.fromResource(resourcedir + "/" + resourcefile).getLines()

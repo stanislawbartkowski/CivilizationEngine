@@ -9,8 +9,6 @@ import civilization.objects.{Civilization, Command, _}
 import org.scalatest.FunSuite
 import play.api.libs.json.{JsArray, JsString, JsValue}
 import Helper._
-import civilization.helper.battle.BattleActions
-import civilization.io.readdir.GameResources
 
 class Test35 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJson {
 

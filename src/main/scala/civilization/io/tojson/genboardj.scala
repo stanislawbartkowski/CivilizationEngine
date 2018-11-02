@@ -166,7 +166,7 @@ object genboardj {
   }
 
   private def gameToJ(g: Game): JsValue = {
-    Json.obj("roundno" -> g.roundno, S.phase -> g.phase, "active" -> g.active)
+    Json.obj(S.roundno -> g.roundno, S.phase -> g.phase, "active" -> g.active)
   }
 
   private def toSeqTech(li: Seq[Technology]): JsValue = {

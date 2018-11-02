@@ -316,7 +316,7 @@ object AttackCommand extends ImplicitMiximToJson {
         // mark iron
         ba.canuseiron = false
         ba.ironused = to
-        addToJournal(board, civ, J.ATTACKWITHIRON, null, Some(TechnologyName.Metallurgy))
+        addToJournal(board, civ, isExecute, J.ATTACKWITHIRON, Nil, Some(TechnologyName.Metallurgy))
       }
       if (board.conf.ironincreasedefend) defendstrength = attackstrength
       ba.fighting(to) = Some(FrontUnit(pUnit, attackstrength, defendstrength, 0))
@@ -332,7 +332,7 @@ object AttackCommand extends ImplicitMiximToJson {
       if (board.battle.get.endofbattle && board.battle.get.attackerwinner && isExecute) {
         // check if capital destroyed
         val (_, _, _, defeCapital: Boolean) = getBattleInfo(board)
-        if (defeCapital) board.addForcedCommandC(Command.ENDBATTLE,board.battle.get.attackerciv,null,JsArray())
+        if (defeCapital) board.addForcedCommandC(Command.ENDBATTLE, board.battle.get.attackerciv, null, JsArray())
       }
     }
   }

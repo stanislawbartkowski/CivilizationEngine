@@ -34,6 +34,7 @@ package object I extends ImplicitMiximFromJson {
   final val LISTOFWAITINGGAMES: Int = 5
   final val REGISTEROWNERTWOGAME: Int = 6
   final val ITEMIZECOMMAND: Int = 7
+  final val GETJOURNAL: Int = 8
 
   private val random = new SecureRandom()
 
@@ -46,14 +47,20 @@ package object I extends ImplicitMiximFromJson {
     g.metadata = m
     // replay game
     val p: Seq[String] = r.getPlayForGame(gameid)
+    // read journal as list of JSon String
+    val j: Seq[String] = r.getJournalForGame(gameid)
+    // transform to JournalElem
+    j.foreach(s => {
+      val j: JsValue = toJ(s); g.addJ(toJournalElem(j))
+    })
     // only last command may have suspended status
-    var counter : Int = 0 // to identify the last command
+    var counter: Int = 0 // to identify the last command
     p.foreach(s => {
       val co: CommandValues = toJ(s)
       val comm: Command = action.constructCommand(co)
-      if (comm.isSuspended && counter != p.length-1)
-        // break stuff
-        throw FatalError(Mess(M.ONLYLASTCOMMANDCANHAVESUPENDEDSTATUS, (counter,p.length-1,comm)))
+      if (comm.isSuspended && counter != p.length - 1)
+      // break stuff
+        throw FatalError(Mess(M.ONLYLASTCOMMANDCANHAVESUPENDEDSTATUS, (counter, p.length - 1, comm)))
       comm.setReplay
       playsingleCommand(g, comm)
       counter = counter + 1
@@ -67,7 +74,6 @@ package object I extends ImplicitMiximFromJson {
     val game: CurrentGame = r.getCurrentGame(token)
 
     r.touchCurrentGame(token)
-    //    (game, getGameBoard(game.gameid))
     (game, Factory.getIC.getT(game.gameid, getGameBoard))
   }
 
@@ -83,6 +89,12 @@ package object I extends ImplicitMiximFromJson {
     //  val g : GameBoard = getGameBoard(game.gameid)
     val g: GameBoard = Factory.getIC.getT(game.gameid, getGameBoard)
     Json.prettyPrint(genboardj.genBoardGameJson(g, g.playerDeck(game.civ)))
+  }
+
+  private def getJournal(token: String): String = {
+    val g = getBoard(token)
+    val j: JsValue = writeJ(g._1.civ, g._2.journal)
+    Json.prettyPrint(j)
   }
 
   def getData(what: Int, tokenorciv: String, param: String): String = {
@@ -102,6 +114,7 @@ package object I extends ImplicitMiximFromJson {
           val j: JsValue = GameResources.instance()
           Json.prettyPrint(j)
         }
+        case GETJOURNAL => getJournal(tokenorciv)
       }
     }
   }
@@ -133,6 +146,7 @@ package object I extends ImplicitMiximFromJson {
       r.addMoveToPlay(gameid, s)
     }
     )
+    updateJournal(gameid, g)
     currentGame(civ, gameid)
   }
 
@@ -151,16 +165,32 @@ package object I extends ImplicitMiximFromJson {
     r.updateMetaData(gameid, writeMetaData(g.metadata).toString())
   }
 
+  private def updateJournal(gameid : Int, b: GameBoard) = {
+    // current stored journal size
+    val nj: Int = r.numberOfJournalE(gameid)
+    // number of new elements
+    val addN: Int = b.journal.length - nj
+    // get last addN elements
+    assert(addN >= 0)
+    b.journal.reverse.take(addN).reverse.foreach(j => {
+      val jval: JsValue = writeJournalElem(j)
+      r.addJournalEntry(gameid, jval.toString())
+    }
+    )
+  }
+
   private def executeCommand(gb: (CurrentGame, GameBoard), com: CommandValues): Mess = {
     val co: Command = constructCommand(com)
     var mess: Mess = playCommand(gb._2, co, c => {
       val cv: CommandValues = toC(c)
       r.addMoveToPlay(gb._1.gameid, writeCommandValues(cv).toString())
+      updateJournal(gb._1.gameid,gb._2)
     },
-    counter => {
-      val cv: CommandValues = toC(gb._2.play.commands(counter))
-      r.replaceMoveToPlay(gb._1.gameid,counter,writeCommandValues(cv).toString())
-    }
+      counter => {
+        val cv: CommandValues = toC(gb._2.play.commands(counter))
+        r.replaceMoveToPlay(gb._1.gameid, counter, writeCommandValues(cv).toString())
+        updateJournal(gb._1.gameid, gb._2)
+      }
     )
     // modif metadata with current timestamp
     gb._2.metadata.modiftimestamp()
