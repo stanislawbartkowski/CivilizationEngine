@@ -26,6 +26,6 @@ class Cache extends ICache {
     c.get.g
   }
 
-  override def isCached: Boolean = false
+  override def isCached: Boolean = true
 
 }
