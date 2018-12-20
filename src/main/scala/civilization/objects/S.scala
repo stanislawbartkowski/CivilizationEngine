@@ -85,4 +85,5 @@ object S {
   final val roundno = "roundno"
   final val id="id"
   final val priv="priv"
+  final val jparam="jparam"
 }

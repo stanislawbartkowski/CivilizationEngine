@@ -204,6 +204,7 @@ package object I extends ImplicitMiximFromJson {
     val civ: Civilization.T = gb._1.civ
     val command: Command.T = Command.withName(action)
     val coma: CommandValues = CommandValues(command, civ, if (row == -1) null else P(row, col), CommandStatus.No, if (jsparam == null) null else toJ(jsparam))
+
     touchGame(gb._1.gameid, g)
     val m: Mess = executeCommand(gb, coma)
     if (m == null) null else m.toString

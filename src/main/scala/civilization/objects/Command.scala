@@ -74,6 +74,3 @@ object CommandStatus extends Enumeration {
 case class CommandValues(val command: Command.T, val civ: Civilization.T, val p: P, val status: CommandStatus.T, val param: JsValue)
 
 
-
-
-

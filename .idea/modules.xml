@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/CivilizationEngine.iml" filepath="$PROJECT_DIR$/.idea/CivilizationEngine.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/CivilizationEngine-build.iml" filepath="$PROJECT_DIR$/.idea/modules/CivilizationEngine-build.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/civilizationengine-build.iml" filepath="$PROJECT_DIR$/.idea/modules/civilizationengine-build.iml" />
     </modules>
   </component>

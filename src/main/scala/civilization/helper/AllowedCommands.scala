@@ -23,7 +23,7 @@ object AllowedCommands {
     // if "turned" phase of the game, only current player has moves until completes
     if (TurnPhase.turnAction(cu.turnPhase) && deck.civ != cu.notcompleted.head) return Nil
     // if player already completed return Nil
-    // 2017/01/05
+    // 2018/01/05
     if (!(cu.notcompleted contains deck.civ)) return Nil
     co = CommandContainer.commandsAvail(b, deck, cu.turnPhase)
     cu.turnPhase match {

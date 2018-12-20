@@ -4,7 +4,7 @@ import civilization.action.{AbstractCommand, Command, CommandPackage, constructC
 import civilization.gameboard.{Figures, GameBoard, PlayerDeck}
 import civilization.helper.move.MoveAction
 import civilization.io.fromjson.ImplicitMiximFromJson
-import civilization.message.{M, Mess}
+import civilization.message.{M, Mess, J}
 import civilization.objects._
 import civilization.io.tojson.{ImplicitMiximToJson, writesFigures}
 import play.api.libs.json.JsValue
@@ -31,6 +31,8 @@ object SetCityAction extends CommandPackage with ImplicitMiximFromJson with Impl
   }
 
   protected class SetCityAction extends AbstractCommand {
+
+    override def registerCommandInJournal(board: GameBoard) = registerCommandInJournalDefault(board)
 
     private def setcitycommandverify(board: GameBoard, deck: PlayerDeck, p: P, command: Command.T): Mess = {
       verifySetCity(board, deck, p, command).getOrElse(null)

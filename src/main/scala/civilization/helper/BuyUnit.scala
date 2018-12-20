@@ -30,17 +30,20 @@ object BuyUnit extends CommandPackage with ImplicitMiximFromJson with ImplicitMi
     CitiesCanAfford(b, civ, cost)
   }
 
-  override def itemizePP(b: gameboard.GameBoard, deck : PlayerDeck, com: Command.T): Seq[P] = {
+  override def itemizePP(b: gameboard.GameBoard, deck: PlayerDeck, com: Command.T): Seq[P] = {
     val limit: PlayerLimits = getLimits(b, deck)
     itemizeI(b, deck, com, limit)
   }
 
   protected class BuyUnitAction extends AbstractCommandNone {
+
+    override def registerCommandInJournal(board: GameBoard) = registerCommandInJournalDefault(board)
+
     def execute(board: GameBoard) = {
       val u: CombatUnitType.T = toU(command)
-      checkKilledUnits(board,u)
+      checkKilledUnits(board, u)
       if (isExecute) {
-        val co: CombatUnit = getRandomUnit(board, u,false)
+        val co: CombatUnit = getRandomUnit(board, u, false)
         val commandC: Command = constructCommand(Command.TAKEUNIT, civ, p, co)
         // execute later
         board.addForcedCommand(commandC)
@@ -56,8 +59,12 @@ object BuyUnit extends CommandPackage with ImplicitMiximFromJson with ImplicitMi
 
     override def execute(board: GameBoard): Unit = {
       deck.units = deck.units :+ param
-      val fun = (p1: CombatUnit,p2 : CombatUnit ) => { p1 == p2 }
-      board.market.units = removeElem(board.market.units,param,(p1: CombatUnit,p2 : CombatUnit ) => { p1 == p2 })
+      val fun = (p1: CombatUnit, p2: CombatUnit) => {
+        p1 == p2
+      }
+      board.market.units = removeElem(board.market.units, param, (p1: CombatUnit, p2: CombatUnit) => {
+        p1 == p2
+      })
     }
   }
 

@@ -7,7 +7,7 @@ import civilization.helper.battle.AttackCommand
 import civilization.helper.move.{ExploreHutCommand, MoveAction, RevealTileAction}
 import civilization.io.fromjson._
 import civilization.io.tojson._
-import civilization.message.{FatalError, M, Mess}
+import civilization.message.{FatalError, M, Mess, J}
 import civilization.objects.Resource.Value
 import civilization.objects._
 import play.api.libs.json.{JsNull, JsValue}
@@ -115,7 +115,7 @@ package object action extends ImplicitMiximToJson with ImplicitMiximFromJson {
 
     def setReplay = _replay = true
 
-    def setNoReplay : Unit = _replay = false
+    def setNoReplay: Unit = _replay = false
 
     def isExecute: Boolean = !_replay
 
@@ -137,19 +137,23 @@ package object action extends ImplicitMiximToJson with ImplicitMiximFromJson {
 
     def isNormal: Boolean = _status == CommandStatus.No
 
-    private var _executesuspendedcommand : Boolean = false
+    private var _executesuspendedcommand: Boolean = false
 
     def setExecuteSuspendedCommand = _executesuspendedcommand = true
-    def isExecuteSuspendedCommand : Boolean = _executesuspendedcommand
 
-    private var _cancelsuspendedcommand : Boolean = false
+    def isExecuteSuspendedCommand: Boolean = _executesuspendedcommand
+
+    private var _cancelsuspendedcommand: Boolean = false
 
     protected def setCancelSuspendedCommand = _cancelsuspendedcommand = true
-    def isCancelSuspendedCommand : Boolean = _cancelsuspendedcommand
 
-    private var _forgetCurrentCommand : Boolean = false
+    def isCancelSuspendedCommand: Boolean = _cancelsuspendedcommand
+
+    private var _forgetCurrentCommand: Boolean = false
+
     protected def setForgetCurrentCommand = _forgetCurrentCommand = true
-    def isForgetCurrentCommand : Boolean = _forgetCurrentCommand
+
+    def isForgetCurrentCommand: Boolean = _forgetCurrentCommand
 
 
     // TODO: should return Option[Mess], not null
@@ -160,9 +164,20 @@ package object action extends ImplicitMiximToJson with ImplicitMiximFromJson {
       verify(board)
     }
 
+
+    protected def registerCommandInJournal(board: GameBoard) = registerCommandInJournalDefault(board)
+
+    protected def registerCommandInJournalDefault(board: GameBoard) = {
+      val op : Option[P] = if (p != null) Some(p) else None
+      val ojparam : Option[JsValue] = if (j != null) Some(j) else None
+      val opa : Option[CommandParams] = if (op == None && ojparam == None) None else Some(CommandParams(op,ojparam))
+      addToJournal(board, civ, isExecute, J.DOACTION, List(command.toString()), None, opa)
+    }
+
     protected def verify(board: GameBoard): Mess = null
 
     def executeCommand(board: GameBoard) = {
+      if (isExecute) registerCommandInJournal(board)
       deck = board.playerDeck(civ)
       execute(board)
     }

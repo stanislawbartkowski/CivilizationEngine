@@ -190,6 +190,13 @@ package object tojson extends ImplicitMiximToJson {
     )
   }
 
+  implicit val commandparamsWrites : Writes[CommandParams] = new Writes[CommandParams] {
+    override def writes(o: CommandParams): JsValue = Json.obj(
+      S.p -> o.p,
+      S.param -> o.param
+    )
+  }
+
   implicit val mapJournalEntry: Writes[JournalElem] = new Writes[JournalElem] {
     override def writes(o: JournalElem): JsValue = Json.obj(
       S.id -> o.l,
@@ -198,7 +205,8 @@ package object tojson extends ImplicitMiximToJson {
       S.civ -> o.civ,
       S.param -> o.params,
       S.tech -> o.tech,
-      S.priv -> o.priv
+      S.priv -> o.priv,
+      S.jparam -> o.jparams
     )
   }
 

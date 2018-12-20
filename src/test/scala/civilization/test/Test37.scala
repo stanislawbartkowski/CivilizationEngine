@@ -114,6 +114,21 @@ class Test37 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
     val susp1 = gg1.suspendedForCiv(Civilization.China)
     println(susp1)
     assert(!gg.isSuspended)
+
+    // check journal
+    val s = II.getData(II.GETJOURNAL, tokenA)
+    println(s)
+    val j: JsArray = toJ(s).as[JsArray]
+    println(j)
+    val el: JsValue = j.value(0)
+    println(el)
+    val ele: JsValue = (el \ "elem").as[JsValue]
+    println(ele)
+    val pp: P = (ele \ "jparam" \ "p").as[P]
+    println(pp)
+    assert(pp.row == 2 && pp.col == 2)
+    val jsparam = (ele \ "jparam" \ "param").as[JsValue]
+    println(jsparam)
   }
 
   test("Hanging gardens wonder") {

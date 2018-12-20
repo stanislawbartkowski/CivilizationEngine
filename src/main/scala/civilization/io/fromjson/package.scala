@@ -58,9 +58,9 @@ package object fromjson extends ImplicitMiximFromJson {
   implicit val enumtypeCommandStatus: Reads[CommandStatus.Value] = EnumUtils.enumReads(CommandStatus)
   implicit val enumtypeJournalM: Reads[J] = EnumUtils.enumReads(J)
 
-  implicit val winnerlooteffectReads : Reads[WinnerLootEffect] = (
+  implicit val winnerlooteffectReads: Reads[WinnerLootEffect] = (
     (JsPath \ S.name).read[LootEffectName.T] and
-      (JsPath \S.loot).read[Int] and
+      (JsPath \ S.loot).read[Int] and
       (JsPath \ S.tech).readNullable[TechnologyName.T] and
       (JsPath \ S.resource).readNullable[Resource.T] and
       (JsPath \ S.level).readNullable[Int] and
@@ -116,44 +116,44 @@ package object fromjson extends ImplicitMiximFromJson {
     }
   }
 
-  implicit val greatpersonTypeReads : Reads[GreatPersonType] = (
+  implicit val greatpersonTypeReads: Reads[GreatPersonType] = (
     (JsPath \ S.name).read[GreatPersonTypeName.T] and
       (JsPath \ S.tokens).read[Tokens]
     ) (GreatPersonType.apply _)
 
-  implicit val greatpersonReads : Reads[GreatPerson] = (
+  implicit val greatpersonReads: Reads[GreatPerson] = (
     (JsPath \ S.name).read[GreatPersonName.T] and
       (JsPath \ S.notimplemented).readNullable[Boolean] and
-        (JsPath \ S.nameshort).read[String] and
-        (JsPath \ S.persontype).read[GreatPersonTypeName.T] and
-        (JsPath \ S.phase).readNullable[TurnPhase.T] and
-        (JsPath \ S.desc).read[String]
-  ) (GreatPerson.apply _)
+      (JsPath \ S.nameshort).read[String] and
+      (JsPath \ S.persontype).read[GreatPersonTypeName.T] and
+      (JsPath \ S.phase).readNullable[TurnPhase.T] and
+      (JsPath \ S.desc).read[String]
+    ) (GreatPerson.apply _)
 
-  implicit val journalelemReads : Reads[JournalElem] = (
-//    S.id -> o.l,
-//    S.phase -> o.pha,
-//    S.roundno -> o.roundno,
-//    S.civ -> o.civ,
-//    S.param -> o.params,
-//    S.tech -> o.tech
+  implicit val commandParamsReads: Reads[CommandParams] = (
+    (JsPath \ S.p).readNullable[P] and
+      (JsPath \ S.param).readNullable[JsValue]
+    ) (CommandParams.apply _)
+
+  implicit val journalelemReads: Reads[JournalElem] = (
     (JsPath \ S.id).read[J] and
       (JsPath \ S.phase).read[TurnPhase.T] and
       (JsPath \ S.roundno).read[Int] and
       (JsPath \ S.civ).read[Civilization.T] and
       (JsPath \ S.param).read[Seq[String]] and
       (JsPath \ S.tech).readNullable[TechnologyName.T] and
-      (JsPath \ S.priv).read[Boolean]
-  ) (JournalElem.apply _)
+      (JsPath \ S.priv).read[Boolean] and
+      (JsPath \ S.jparam).readNullable[CommandParams]
+    ) (JournalElem.apply _)
 
-  implicit val culturecardReads : Reads[CultureCard] = (
+  implicit val culturecardReads: Reads[CultureCard] = (
     (JsPath \ S.name).read[CultureCardName.T] and
-      (JsPath \S.level).read[Int] and
+      (JsPath \ S.level).read[Int] and
       (JsPath \ S.notimplemented).readNullable[Boolean] and
       (JsPath \ S.num).read[Int] and
-      (JsPath \S.phase).readNullable[TurnPhase.T] and
+      (JsPath \ S.phase).readNullable[TurnPhase.T] and
       (JsPath \ S.desc).read[String]
-  ) (CultureCard.apply _)
+    ) (CultureCard.apply _)
 
   implicit val playefiguresReads: Reads[PlayerFigures] = new Reads[PlayerFigures] {
     def reads(json: JsValue): JsResult[PlayerFigures] = {
@@ -176,12 +176,12 @@ package object fromjson extends ImplicitMiximFromJson {
 
   //implicit val commandparamReads: Reads[CommandValues] = new Reads[CommandValues] {
   //  def reads(json: JsValue): JsResult[CommandValues] = {
-    //  val command: Command.T = (json \ S.command).as[Command.T]
-      //val civ: Civilization.T = (json \ S.civ).as[Civilization.T]
-      //val p: P = (json \ S.p).asOpt[P].getOrElse(null)
-      //val param: JsValue = (json \ S.param).asOpt[JsValue].getOrElse(null)
-      //JsSuccess(CommandValues(command, civ, p, param))
-    //}
+  //  val command: Command.T = (json \ S.command).as[Command.T]
+  //val civ: Civilization.T = (json \ S.civ).as[Civilization.T]
+  //val p: P = (json \ S.p).asOpt[P].getOrElse(null)
+  //val param: JsValue = (json \ S.param).asOpt[JsValue].getOrElse(null)
+  //JsSuccess(CommandValues(command, civ, p, param))
+  //}
   //}
 
 
@@ -277,7 +277,7 @@ package object fromjson extends ImplicitMiximFromJson {
   implicit val readsPlayerTechnology: Reads[PlayerTechnology] = (
     (JsPath \ S.tech).read[TechnologyName.T] and
       (JsPath \ S.initial).readNullable[Boolean]
-//      (JsPath \ S.coins).readNullable[Int]
+    //      (JsPath \ S.coins).readNullable[Int]
     ) (PlayerTechnology.apply _)
 
   implicit val readCivilization: Reads[CivilizationG] = (
@@ -307,7 +307,7 @@ package object fromjson extends ImplicitMiximFromJson {
       val civ: Civilization.T = (json \ S.civ).as[Civilization.T]
       val p: P = (json \ S.p).asOpt[P].getOrElse(null)
       val param: JsValue = (json \ S.param).asOpt[JsValue].getOrElse(null)
-      val status : CommandStatus.T = (json \ S.status).asOpt[CommandStatus.T].getOrElse(CommandStatus.No)
+      val status: CommandStatus.T = (json \ S.status).asOpt[CommandStatus.T].getOrElse(CommandStatus.No)
 
       JsSuccess(CommandValues(command, civ, p, status, param))
     }
@@ -474,11 +474,11 @@ package object fromjson extends ImplicitMiximFromJson {
   }
 
 
-//  case class SeqCommandValuesJ(val j: JsValue) extends FromJson {
-//    type Value = Seq[CommandValues]
+  //  case class SeqCommandValuesJ(val j: JsValue) extends FromJson {
+  //    type Value = Seq[CommandValues]
 
-//    def to: JsResult[Seq[CommandValues]] = (JsPath).read[Seq[CommandValues]].reads(j)
-//   }
+  //    def to: JsResult[Seq[CommandValues]] = (JsPath).read[Seq[CommandValues]].reads(j)
+  //   }
 
 
   case class PatterMapSeqJ(val j: JsValue) extends FromJson {
@@ -539,9 +539,9 @@ package object fromjson extends ImplicitMiximFromJson {
 
   def toJ(json: String): JsValue = Json.parse(json)
 
-//  implicit def toParams(j: JsValue): CommandValues = j.as[CommandValues]
+  //  implicit def toParams(j: JsValue): CommandValues = j.as[CommandValues]
 
-//  implicit def toSeqParams(j: JsValue): Seq[CommandValues] = j.as[Seq[CommandValues]]
+  //  implicit def toSeqParams(j: JsValue): Seq[CommandValues] = j.as[Seq[CommandValues]]
 
 
   def toFigure(j: JsValue): Figure.T = {
@@ -567,7 +567,7 @@ package object fromjson extends ImplicitMiximFromJson {
 
   def toMetaData(j: JsValue): GameMetaData = j.as[GameMetaData]
 
-  def toJournalElem(j: JsValue) : JournalElem = j.as[JournalElem]
+  def toJournalElem(j: JsValue): JournalElem = j.as[JournalElem]
 
   implicit def toSeqOfWonders(j: JsValue): Seq[WondersOfTheWorld] = j.as[Seq[WondersOfTheWorld]]
 
@@ -575,9 +575,9 @@ package object fromjson extends ImplicitMiximFromJson {
 
   implicit def toCultureTrack(j: JsValue): Array[CultureTrackSegment] = j.as[Array[CultureTrackSegment]]
 
-  implicit def toListOfGreatPersonType(j : JsValue) : Seq[GreatPersonType] = j.as[Seq[GreatPersonType]]
+  implicit def toListOfGreatPersonType(j: JsValue): Seq[GreatPersonType] = j.as[Seq[GreatPersonType]]
 
-  implicit def toListOfGreatPersons(j : JsValue) : Seq[GreatPerson] = j.as[Seq[GreatPerson]]
+  implicit def toListOfGreatPersons(j: JsValue): Seq[GreatPerson] = j.as[Seq[GreatPerson]]
 
-  implicit def toListOfCards(j : JsValue) : Seq[CultureCard] = j.as[Seq[CultureCard]]
+  implicit def toListOfCards(j: JsValue): Seq[CultureCard] = j.as[Seq[CultureCard]]
 }

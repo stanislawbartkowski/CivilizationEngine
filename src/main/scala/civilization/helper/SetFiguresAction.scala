@@ -19,16 +19,16 @@ object SetFigureAction extends CommandPackage with ImplicitMiximFromJson with Im
     lcities.flatMap(s => pointsAround(b, s).map(p => (if (city.isEmpty) s else city.get, p)).filter(po => isSquareForFigure(b, deck, fi, po._2).isEmpty))
 
 
-  private def fixthelistfornavy(b: GameBoard, deck: PlayerDeck, com: Command.T, alist: Seq[(P, P)],fi: Figure.T): Seq[(P, P)] =
+  private def fixthelistfornavy(b: GameBoard, deck: PlayerDeck, com: Command.T, alist: Seq[(P, P)], fi: Figure.T): Seq[(P, P)] =
     if (alist.isEmpty || com != Command.BUYARMY || !deck.hasTechnologyFeature(TechnologyFeatures.buyFigureInAnyCityWithShipyard)) alist
     else {
       // cities user already
       val citiesalready: Set[P] = alist.map(_._1).toSet
       // remaining cities with Shipyard
-      val remaining: Set[P] = citiesForCivilization(b, deck).filter(c => squaresAround(b,c.p).exists(p => p.s.building.isDefined && p.s.building.get.name == BuildingName.Shipyard)).
+      val remaining: Set[P] = citiesForCivilization(b, deck).filter(c => squaresAround(b, c.p).exists(p => p.s.building.isDefined && p.s.building.get.name == BuildingName.Shipyard)).
         map(_.p).toSet -- citiesalready
       // add points to the first city
-      alist ++ createPointList(b,deck,remaining.toSeq,fi,Some(alist.head._1))
+      alist ++ createPointList(b, deck, remaining.toSeq, fi, Some(alist.head._1))
     }
 
   // public because it is tested externally
@@ -45,9 +45,9 @@ object SetFigureAction extends CommandPackage with ImplicitMiximFromJson with Im
     val fi: Figure.T = if (com == Command.SETARMY || com == Command.BUYARMY) Figure.Army else Figure.Scout
 
     val lcities: Seq[P] = if (com == Command.BUYSCOUT || com == Command.BUYARMY) CitiesCanAfford(b, deck, ObjectCost.getCost(fi)) else citiesForCivilization(b, deck).map(_.p)
-//    var alist: Seq[(P, P)] = lcities.flatMap(s => pointsAround(b, s).map(p => (s, p)).filter(po => isSquareForFigure(b, deck, fi, po._2).isEmpty))
-    var alist: Seq[(P, P)] = createPointList(b,deck,lcities,fi,None)
-    fixthelistfornavy(b, deck, com, alist,fi)
+    //    var alist: Seq[(P, P)] = lcities.flatMap(s => pointsAround(b, s).map(p => (s, p)).filter(po => isSquareForFigure(b, deck, fi, po._2).isEmpty))
+    var alist: Seq[(P, P)] = createPointList(b, deck, lcities, fi, None)
+    fixthelistfornavy(b, deck, com, alist, fi)
   }
 
 
@@ -64,8 +64,11 @@ object SetFigureAction extends CommandPackage with ImplicitMiximFromJson with Im
 
   class SetFigureAction(override val param: (Figure.T, P)) extends AbstractCommand(param) {
 
+    override def registerCommandInJournal(board: GameBoard) = registerCommandInJournalDefault(board)
+
     def execute(board: GameBoard) =
       putFigure(board, civ, param._2, param._1)
+
     //      putFigures(board, civ, param._2, if (param._1 == Figure.Army) Figures(1, 0) else Figures(0, 1))
 
     override def verify(board: GameBoard): Mess = verifySetFigure(board, deck, p, param._2, param._1, command).getOrElse(null)

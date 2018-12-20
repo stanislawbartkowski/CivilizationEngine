@@ -10,6 +10,7 @@ import org.scalatest.FunSuite
 import play.api.libs.json.{JsArray, JsString, JsValue}
 import Helper._
 import civilization.helper.battle.BattleActions
+import civilization.message.J
 
 class Test36 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJson {
 
@@ -75,6 +76,12 @@ class Test36 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
     // discard card immediately
     assert(l contains Command.DISCARDCARD)
     assert(!(l contains Command.ENDOFPHASE))
+    gg.journal.foreach(println)
+    var found : Boolean = false
+    gg.journal.foreach( e => {
+      if (e.l == J.DOACTION) found = true
+    })
+    assert(found)
   }
 
   test("Research lost ") {

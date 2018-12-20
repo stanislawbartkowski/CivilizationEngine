@@ -12,7 +12,7 @@ import play.api.libs.json.{JsNumber, JsValue}
 /** Placeholder for objects and definitions related to the gameboard. */
 package object gameboard {
 
-  case class JournalElem(val l: J, val pha: TurnPhase.T, val roundno: Int, val civ: Civilization.T, val params : Seq[String], val tech: Option[TechnologyName.T] = None, val priv: Boolean = false)
+  case class JournalElem(val l: J, val pha: TurnPhase.T, val roundno: Int, val civ: Civilization.T, val params: Seq[String], val tech: Option[TechnologyName.T] = None, val priv: Boolean = false, val jparams : Option[CommandParams] = None)
 
   type Journal = collection.mutable.ListBuffer[JournalElem]
 
@@ -89,8 +89,8 @@ package object gameboard {
     */
   case class Figures(var numberofArmies: Int, var numberofScouts: Int) {
 
-    def this(f : Figure.T) =
-      this(if (f == Figure.Army) 1 else 0,if (f == Figure.Scout) 1 else 0)
+    def this(f: Figure.T) =
+      this(if (f == Figure.Army) 1 else 0, if (f == Figure.Scout) 1 else 0)
 
 
     /** Not occupied by any army */
@@ -350,7 +350,7 @@ package object gameboard {
 
   case class EndOfGame(val winner: Civilization.T, val wintype: GameWinType.T)
 
-  case class ActionTypeSuspension(val civ : Civilization.T,val comm : Command.T,val par : JsValue)
+  case class ActionTypeSuspension(val civ: Civilization.T, val comm: Command.T, val par: JsValue)
 
   case class GameBoard(val players: Seq[PlayerDeck], val map: BoardMap, val resources: Resources, val market: Market) {
 
@@ -358,16 +358,16 @@ package object gameboard {
     var pllist: Seq[Civilization.T] = Nil
 
     // action suspended
-    var susplist : Seq[ActionTypeSuspension] = Nil
+    var susplist: Seq[ActionTypeSuspension] = Nil
 
-    def addActionSuspend(civ : Civilization.T,comm : Command.T,par : JsValue) =
-      susplist = susplist :+ ActionTypeSuspension(civ,comm,par)
+    def addActionSuspend(civ: Civilization.T, comm: Command.T, par: JsValue) =
+      susplist = susplist :+ ActionTypeSuspension(civ, comm, par)
 
     def clearActionSuspend = susplist = Nil
 
-    def suspendedForCiv(civ:Civilization.T) : Seq[ActionTypeSuspension] = susplist.filter(_.civ == civ)
+    def suspendedForCiv(civ: Civilization.T): Seq[ActionTypeSuspension] = susplist.filter(_.civ == civ)
 
-    def isSuspended : Boolean = !susplist.isEmpty
+    def isSuspended: Boolean = !susplist.isEmpty
 
     def others(civ: Civilization.T): Seq[Civilization.T] = pllist.filter(civ != _)
 
@@ -377,7 +377,7 @@ package object gameboard {
     // cheating, calculate trade from current data
     var tradecurrent: Boolean = false
     // cheating, test ony
-    var logistricdoesnotupgradeartillery : Boolean = false
+    var logistricdoesnotupgradeartillery: Boolean = false
 
     var metadata: GameMetaData = new GameMetaData("")
     // force command to execute next
