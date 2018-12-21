@@ -167,12 +167,15 @@ package object action extends ImplicitMiximToJson with ImplicitMiximFromJson {
 
     protected def registerCommandInJournal(board: GameBoard) = registerCommandInJournalDefault(board)
 
-    protected def registerCommandInJournalDefault(board: GameBoard) = {
-      val op : Option[P] = if (p != null) Some(p) else None
-      val ojparam : Option[JsValue] = if (j != null) Some(j) else None
-      val opa : Option[CommandParams] = if (op == None && ojparam == None) None else Some(CommandParams(op,ojparam))
-      addToJournal(board, civ, isExecute, J.DOACTION, List(command.toString()), None, opa)
+    protected def addCommandToJournal(board: GameBoard, tech: Option[TechnologyName.T], privacy: JournalPrivacy.T, j: JsValue = null) = {
+      val op: Option[P] = if (p != null) Some(p) else None
+      val ojparam: Option[JsValue] = if (j != null) Some(j) else None
+      val opa: Option[CommandParams] = if (op == None && ojparam == None) None else Some(CommandParams(op, ojparam))
+      addToJournal(board, civ, isExecute, J.DOACTION, List(command.toString()), tech, privacy, opa)
     }
+
+    protected def registerCommandInJournalDefault(board: GameBoard, tech: Option[TechnologyName.T] = None, privacy: JournalPrivacy.T = JournalPrivacy.Public) =
+      addCommandToJournal(board, tech, privacy, j)
 
     protected def verify(board: GameBoard): Mess = null
 

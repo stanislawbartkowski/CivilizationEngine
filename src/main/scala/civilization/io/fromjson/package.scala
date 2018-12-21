@@ -4,7 +4,7 @@ import play.api.libs.json._
 import play.api.libs.json.Reads._
 import play.api.libs.functional.syntax._
 import civilization.objects._
-import civilization.gameboard._
+import civilization.gameboard.{JournalPrivacy, _}
 import civilization.gameboard.CultureTrack._
 import civilization.io.readdir.Param._
 import civilization.message.J
@@ -57,6 +57,7 @@ package object fromjson extends ImplicitMiximFromJson {
   implicit val enumtypeGameWinType: Reads[GameWinType.Value] = EnumUtils.enumReads(GameWinType)
   implicit val enumtypeCommandStatus: Reads[CommandStatus.Value] = EnumUtils.enumReads(CommandStatus)
   implicit val enumtypeJournalM: Reads[J] = EnumUtils.enumReads(J)
+  implicit val enumtypeJournalPrivacy: Reads[JournalPrivacy.Value] = EnumUtils.enumReads(JournalPrivacy)
 
   implicit val winnerlooteffectReads: Reads[WinnerLootEffect] = (
     (JsPath \ S.name).read[LootEffectName.T] and
@@ -142,7 +143,7 @@ package object fromjson extends ImplicitMiximFromJson {
       (JsPath \ S.civ).read[Civilization.T] and
       (JsPath \ S.param).read[Seq[String]] and
       (JsPath \ S.tech).readNullable[TechnologyName.T] and
-      (JsPath \ S.priv).read[Boolean] and
+      (JsPath \ S.priv).read[JournalPrivacy.T] and
       (JsPath \ S.jparam).readNullable[CommandParams]
     ) (JournalElem.apply _)
 

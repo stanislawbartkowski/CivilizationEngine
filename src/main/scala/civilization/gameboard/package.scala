@@ -6,13 +6,19 @@ import civilization.objects._
 import civilization.action.{Command, Play, constructCommand}
 import civilization.io.readdir.GameResources
 import civilization.message.J.J
+import civilization.objects.Terrain.Value
 import play.api.libs.json.{JsNumber, JsValue}
 
 
 /** Placeholder for objects and definitions related to the gameboard. */
 package object gameboard {
 
-  case class JournalElem(val l: J, val pha: TurnPhase.T, val roundno: Int, val civ: Civilization.T, val params: Seq[String], val tech: Option[TechnologyName.T] = None, val priv: Boolean = false, val jparams : Option[CommandParams] = None)
+  object JournalPrivacy extends Enumeration {
+    type T = Value
+    val Private,NotPrivate, Public = Value
+  }
+
+  case class JournalElem(val l: J, val pha: TurnPhase.T, val roundno: Int, val civ: Civilization.T, val params: Seq[String], val tech: Option[TechnologyName.T] = None, val priv: JournalPrivacy.T = JournalPrivacy.Public, val jparams : Option[CommandParams] = None)
 
   type Journal = collection.mutable.ListBuffer[JournalElem]
 
@@ -20,7 +26,7 @@ package object gameboard {
   /** Version: used during storing and retrieving gameboard from datastore.
     * Ignore games which does not fit to avoid runtime errors
     */
-  private final val packageversion: Int = 7;
+  private final val packageversion: Int = 8;
 
   def genEmptySquares: Array[Array[MapSquare]] = {
     val squares: Array[Array[MapSquare]] = Array.ofDim(TILESIZE, TILESIZE)

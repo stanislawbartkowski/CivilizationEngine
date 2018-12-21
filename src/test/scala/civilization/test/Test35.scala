@@ -111,7 +111,19 @@ class Test35 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
     println(pr2.prod)
     // increase production becuase of MilitaryScience
     assert(pr1.prod + 3 == pr2.prod)
-
+    // journal
+    val s = II.getData(II.GETJOURNAL, token)
+    println(s)
+    val j: JsArray = toJ(s).as[JsArray]
+    println(j)
+    val el: JsValue = j.value(0)
+    println(el)
+    val ele: JsValue = (el \ "elem").as[JsValue]
+    println(ele)
+    val tech = (ele \ "tech").as[TechnologyName.T]
+    println(tech)
+    // check that tech is added to journal for research
+    assert(tech == TechnologyName.MilitaryScience)
   }
 
   test("Technologyu action again") {

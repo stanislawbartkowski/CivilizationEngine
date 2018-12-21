@@ -37,8 +37,6 @@ object BuyUnit extends CommandPackage with ImplicitMiximFromJson with ImplicitMi
 
   protected class BuyUnitAction extends AbstractCommandNone {
 
-    override def registerCommandInJournal(board: GameBoard) = registerCommandInJournalDefault(board)
-
     def execute(board: GameBoard) = {
       val u: CombatUnitType.T = toU(command)
       checkKilledUnits(board, u)

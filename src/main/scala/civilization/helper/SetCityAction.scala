@@ -32,8 +32,6 @@ object SetCityAction extends CommandPackage with ImplicitMiximFromJson with Impl
 
   protected class SetCityAction extends AbstractCommand {
 
-    override def registerCommandInJournal(board: GameBoard) = registerCommandInJournalDefault(board)
-
     private def setcitycommandverify(board: GameBoard, deck: PlayerDeck, p: P, command: Command.T): Mess = {
       verifySetCity(board, deck, p, command).getOrElse(null)
     }

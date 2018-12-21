@@ -1115,11 +1115,11 @@ package object helper {
   // journal
   // ==================================
 
-  def addToJournal(b: GameBoard, civ: Civilization.T, isExecute: Boolean, j: J.J, params: Seq[String] = Nil, tech: Option[TechnologyName.T] = None, jparam: Option[CommandParams] = None) = {
+  def addToJournal(b: GameBoard, civ: Civilization.T, isExecute: Boolean, j: J.J, params: Seq[String] = Nil, tech: Option[TechnologyName.T] = None, privacy: JournalPrivacy.T = JournalPrivacy.Public, jparam: Option[CommandParams] = None) = {
     assert(params != null)
     if (isExecute) {
       val curr = currentPhase(b)
-      b.addJ(JournalElem(j, curr.turnPhase, curr.roundno, civ, params, tech, false, jparam))
+      b.addJ(JournalElem(j, curr.turnPhase, curr.roundno, civ, params, tech, privacy, jparam))
     }
   }
 
