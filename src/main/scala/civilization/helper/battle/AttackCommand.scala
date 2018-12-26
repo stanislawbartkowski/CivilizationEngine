@@ -316,7 +316,7 @@ object AttackCommand extends ImplicitMiximToJson {
         // mark iron
         ba.canuseiron = false
         ba.ironused = to
-        addToJournal(board, civ, isExecute, J.ATTACKWITHIRON, Nil, Some(TechnologyName.Metallurgy))
+        addToJournal(board, civ, isExecute, J.ATTACKWITHIRON, Nil, JournalElem.constructJA(TechnologyName.Metallurgy))
       }
       if (board.conf.ironincreasedefend) defendstrength = attackstrength
       ba.fighting(to) = Some(FrontUnit(pUnit, attackstrength, defendstrength, 0))

@@ -1,7 +1,7 @@
 package civilization
 
 import civilization.action.{Command, CommandContainer, constructCommand}
-import civilization.gameboard.{BattleFieldSide, _}
+import civilization.gameboard._
 import civilization.io.readdir.GameResources
 import civilization.message.{FatalError, J, M, Mess}
 import civilization.objects._
@@ -1013,13 +1013,15 @@ package object helper {
     putFigures(b, civ, p, new Figures(f))
 
 
-  def exploreHutOrVillage(b: GameBoard, pl: PlayerDeck, p: P) = {
+  def exploreHutOrVillage(b: GameBoard, pl: PlayerDeck, p: P, isExecute: Boolean) = {
     val m: MapSquareP = getSquare(b, p)
     val h: HutVillage = m.s.hv.get
     m.s.hv = None
     pl.hvlist = pl.hvlist :+ h
     // final, move figures to point
     moveFigures(b, pl, p, None)
+    // add to journal
+    addToJournal(b, pl, isExecute, J.HUTVILLAGERESOURCERECEIVED, Nil, JournalElem.constructJA(h.resource), JournalElem.JournalPrivacy.Private)
   }
 
   def moveFigures(b: GameBoard, civ: Civilization.T, p: P, fparam: Option[Figures], kill: Boolean = false) = {
@@ -1115,11 +1117,11 @@ package object helper {
   // journal
   // ==================================
 
-  def addToJournal(b: GameBoard, civ: Civilization.T, isExecute: Boolean, j: J.J, params: Seq[String] = Nil, tech: Option[TechnologyName.T] = None, privacy: JournalPrivacy.T = JournalPrivacy.Public, jparam: Option[CommandParams] = None) = {
+  def addToJournal(b: GameBoard, civ: Civilization.T, isExecute: Boolean, j: J.J, params: Seq[String] = Nil, a: JournalElem.JournalArtifacts = JournalElem.constructJA, privacy: JournalElem.JournalPrivacy.T = JournalElem.JournalPrivacy.Public, jparam: Option[CommandParams] = None) = {
     assert(params != null)
     if (isExecute) {
       val curr = currentPhase(b)
-      b.addJ(JournalElem(j, curr.turnPhase, curr.roundno, civ, params, tech, privacy, jparam))
+      b.addJ(JournalElem JournalElem(j, curr.turnPhase, curr.roundno, civ, params, a, privacy, jparam))
     }
   }
 
@@ -1162,9 +1164,11 @@ package object helper {
       b.increaseCultureCommand(civ, 1)
   }
 
-  def takeResourceFromBoard(b: GameBoard, deck: PlayerDeck, reso: Resource.T) = {
+  def takeResourceFromBoard(b: GameBoard, deck: PlayerDeck, reso: Resource.T, isExecute: Boolean) = {
     deck.resou.incr(reso)
     b.resources.resou.decr(reso)
+    // add to journal
+    addToJournal(b, deck, isExecute, J.RESOURCEFROMBOARDTAKEN, List("" + b.resources.resou.nof(reso)), JournalElem.constructJA(reso))
   }
 
   def decrResource(b: GameBoard, civ: PlayerDeck, res: Resource.T) = {

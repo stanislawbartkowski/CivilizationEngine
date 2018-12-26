@@ -8,17 +8,11 @@ import civilization.io.readdir.GameResources
 import civilization.message.J.J
 import civilization.objects.Terrain.Value
 import play.api.libs.json.{JsNumber, JsValue}
+import civilization.gameboard.JournalElem._
 
 
 /** Placeholder for objects and definitions related to the gameboard. */
 package object gameboard {
-
-  object JournalPrivacy extends Enumeration {
-    type T = Value
-    val Private,NotPrivate, Public = Value
-  }
-
-  case class JournalElem(val l: J, val pha: TurnPhase.T, val roundno: Int, val civ: Civilization.T, val params: Seq[String], val tech: Option[TechnologyName.T] = None, val priv: JournalPrivacy.T = JournalPrivacy.Public, val jparams : Option[CommandParams] = None)
 
   type Journal = collection.mutable.ListBuffer[JournalElem]
 

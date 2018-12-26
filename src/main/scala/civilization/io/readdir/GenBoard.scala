@@ -99,7 +99,7 @@ object GenBoard extends ImplicitMiximFromJson with ImplicitMiximToJson {
       val civ: CivilizationG = civs.find(_.civ == pl.civ).get
       val commandC = constructCommand(Command.RESEARCHFREETECHNOLOGY, pl.civ, null, civ.tech)
       g.play.addCommand(commandC)
-      addToJournal(g, pl.civ, true, J.YOUARERECEIVINGSTARTINGTECHNOLOGY,Nil,Some(civ.tech))
+      addToJournal(g, pl.civ, true, J.YOUARERECEIVINGSTARTINGTECHNOLOGY, Nil, JournalElem.constructJA(civ.tech))
 
       if (CivilizationFeatures.freeGreatPersonAtTheBeginning(pl.civ)) {
         addToJournal(g, pl.civ, true, J.YOUARERECEIVINGFREEGREATPERSON)

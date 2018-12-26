@@ -82,6 +82,7 @@ object AdvanceCulture extends CommandPackage with ImplicitMiximFromJson with Imp
   }
 
   protected class TakeCultureCard(override val param: CultureCardName.T) extends AbstractCommand(param) {
+
     override def verify(board: GameBoard): Mess = null
 
     override def execute(board: GameBoard): Unit =
@@ -100,11 +101,6 @@ object AdvanceCulture extends CommandPackage with ImplicitMiximFromJson with Imp
   }
 
   protected class TakeGreatPerson(override val param: GreatPersonName.T) extends AbstractCommand(param) {
-
-    override def registerCommandInJournal(board: GameBoard) = {
-      addCommandToJournal(board,None,JournalPrivacy.Private,j) // private contains GreatPerson name
-      addCommandToJournal(board,None,JournalPrivacy.NotPrivate) // not private without name
-    }
 
     override def verify(board: GameBoard): Mess = null
 

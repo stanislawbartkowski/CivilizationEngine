@@ -164,18 +164,23 @@ package object action extends ImplicitMiximToJson with ImplicitMiximFromJson {
       verify(board)
     }
 
-
     protected def registerCommandInJournal(board: GameBoard) = registerCommandInJournalDefault(board)
 
-    protected def addCommandToJournal(board: GameBoard, tech: Option[TechnologyName.T], privacy: JournalPrivacy.T, j: JsValue = null) = {
+    protected def addCommandToJournal(board: GameBoard, a: JournalElem.JournalArtifacts, privacy: JournalElem.JournalPrivacy.T, j: JsValue = null) = {
       val op: Option[P] = if (p != null) Some(p) else None
       val ojparam: Option[JsValue] = if (j != null) Some(j) else None
       val opa: Option[CommandParams] = if (op == None && ojparam == None) None else Some(CommandParams(op, ojparam))
-      addToJournal(board, civ, isExecute, J.DOACTION, List(command.toString()), tech, privacy, opa)
+      addToJournal(board, civ, isExecute, J.DOACTION, List(command.toString()), a, privacy, opa)
     }
 
-    protected def registerCommandInJournalDefault(board: GameBoard, tech: Option[TechnologyName.T] = None, privacy: JournalPrivacy.T = JournalPrivacy.Public) =
-      addCommandToJournal(board, tech, privacy, j)
+    protected def registerCommandInJournalDefault(board: GameBoard, a: JournalElem.JournalArtifacts = JournalElem.constructJA(param), privacy: JournalElem.JournalPrivacy.T = JournalElem.JournalPrivacy.Public) = {
+
+      if (Command.isPrivateDetails(command)) {
+        addCommandToJournal(board, a, JournalElem.JournalPrivacy.Private, j) // private contains param and JsValue
+        addCommandToJournal(board, JournalElem.constructJA, JournalElem.JournalPrivacy.NotPrivate) // not private without name
+      }
+      else addCommandToJournal(board, a, privacy, j)
+    }
 
     protected def verify(board: GameBoard): Mess = null
 

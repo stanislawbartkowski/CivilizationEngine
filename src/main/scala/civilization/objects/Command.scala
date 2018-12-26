@@ -33,6 +33,8 @@ object Command extends Enumeration {
     }
   }
 
+  def isPrivateDetails(t : Value) : Boolean = (t == GREATPERSON) || (t == CULTURECARD)
+
   def anyPhase(t: Value): Boolean = t == Command.DISCARDCARD || t == Command.LETSUSPENDEDGO
 
   def inPhase(t: Value, phase: TurnPhase.T): Boolean = anyPhase(t) || actionPhase(t) == phase

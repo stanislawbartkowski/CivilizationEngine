@@ -1,7 +1,7 @@
 package civilization.test
 
 import civilization.I
-import civilization.gameboard.{GameBoard, WinnerLoot}
+import civilization.gameboard.{GameBoard, JournalElem}
 import civilization.helper._
 import civilization.io.fromjson.{toJ, _}
 import civilization.io.tojson.ImplicitMiximToJson
@@ -120,10 +120,10 @@ class Test35 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
     println(el)
     val ele: JsValue = (el \ "elem").as[JsValue]
     println(ele)
-    val tech = (ele \ "tech").as[TechnologyName.T]
-    println(tech)
+    val a = (ele \ "jartifacts").as[JournalElem.JournalArtifacts]
+    println(a)
     // check that tech is added to journal for research
-    assert(tech == TechnologyName.MilitaryScience)
+    assert(a.tech.get == TechnologyName.MilitaryScience)
   }
 
   test("Technologyu action again") {

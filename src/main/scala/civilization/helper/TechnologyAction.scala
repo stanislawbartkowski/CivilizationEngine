@@ -12,12 +12,12 @@ object TechnologyAction {
     pl.tech.foreach(te => {
       if (te.tech == TechnologyName.CodeOfLaw) {
         if (te.coins < COINSCAPACITY) // increase
-          if (TechnologyUsedAlready(b, te)) addToJournal(b, pl, isExecute, J.COINADDEDALREDYINTHISTURN, Nil, Some(te.tech))
+          if (TechnologyUsedAlready(b, te)) addToJournal(b, pl, isExecute, J.COINADDEDALREDYINTHISTURN, Nil, JournalElem.constructJA(te.tech))
           else {
             addCoinToTechnology(b, pl, te, isExecute)
-            addToJournal(b, pl, isExecute, J.PUTCOINAFTERBATTLE, Nil, Some(te.tech))
+            addToJournal(b, pl, isExecute, J.PUTCOINAFTERBATTLE, Nil, JournalElem.constructJA(te.tech))
           }
-        else addToJournal(b, pl, isExecute, J.CANNOTADDCOINLIMIT, Seq("" + COINSCAPACITY), Some(te.tech))
+        else addToJournal(b, pl, isExecute, J.CANNOTADDCOINLIMIT, Seq("" + COINSCAPACITY), JournalElem.constructJA(te.tech))
       }
 
     })

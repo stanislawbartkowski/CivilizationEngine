@@ -24,7 +24,7 @@ object GetResourceCommand extends CommandPackage with ImplicitMiximFromJson with
     override protected def execute(board: GameBoard): Unit = {
       command match {
         case Command.DROPRESOURCE => decrResource(board, deck, param)
-        case Command.GETRESOURCE => takeResourceFromBoard(board, deck, param)
+        case Command.GETRESOURCE => takeResourceFromBoard(board, deck, param, isExecute)
       }
     }
   }

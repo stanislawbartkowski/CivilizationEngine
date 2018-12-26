@@ -1,7 +1,7 @@
 package civilization.helper
 
 import civilization.action.{AbstractCommand, CommandPackage, constructCommand}
-import civilization.gameboard.{GameBoard, PlayerDeck, PlayerTechnology}
+import civilization.gameboard.{GameBoard, PlayerDeck, PlayerTechnology,JournalElem}
 import civilization.io.fromjson.ImplicitMiximFromJson
 import civilization.io.readdir.GameResources
 import civilization.io.tojson.ImplicitMiximToJson
@@ -89,8 +89,6 @@ object ResearchTechnologyAction extends CommandPackage with ImplicitMiximFromJso
       if (level > 1 && listofLevel(b, deck, level - 1).length + 1 <= listofLevel(b, deck, level).length) return Mess(M.NOPLACEINTECHNOLOGYTREE, tech)
       null
     }
-
-    override def registerCommandInJournal(board: GameBoard) = registerCommandInJournalDefault(board,Some(param))
 
     override def execute(board: GameBoard) = researchTechnologyExecute(board, deck, param, isExecute)
 

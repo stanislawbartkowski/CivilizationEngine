@@ -8,5 +8,8 @@
   "YOUARERECEIVINGFREERESOURCESFROMMARKET" : "Free resource from the market received",
   "RESEARCHINGTECHOLOGY" : "Researching technology",
   "YOUARERECEIVINGSTARTINGTECHNOLOGY" : "You are receiving starting technology",
-  "DOACTION" : "%0%"
+  "DOACTION" : "%0%",
+  "HUTVILLAGERESOURCERECEIVED" : "Hut or Village resource received",
+  "RESOURCEFROMBOARDTAKEN" : "Resource taken from the market. %0% resources left."
+
 }

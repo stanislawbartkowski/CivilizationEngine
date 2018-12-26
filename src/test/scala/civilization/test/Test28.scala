@@ -1,7 +1,7 @@
 package civilization.test
 
 import civilization.I
-import civilization.gameboard.{ GameBoard, JournalPrivacy}
+import civilization.gameboard._
 import civilization.helper._
 import civilization.io.fromjson._
 import civilization.io.tojson.ImplicitMiximToJson
@@ -48,13 +48,13 @@ class Test28 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
     j.value.foreach( e => {
       println(e)
       val a : JsArray = (e \ "elem" \ "param").as[JsArray]
-      val p : JournalPrivacy.T =  (e \ "elem" \ "priv").as[JournalPrivacy.T]
+      val p : JournalElem.JournalPrivacy.T =  (e \ "elem" \ "priv").as[JournalElem.JournalPrivacy.T]
       println(a)
       if (a.value.length > 0) {
         val actionid = a.value(0).as[String]
         println(actionid)
         if (actionid == "GREATPERSON") {
-          assert(p == JournalPrivacy.Private)
+          assert(p == JournalElem.JournalPrivacy.Private)
           ok = true
         }
       }

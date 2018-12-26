@@ -4,7 +4,7 @@ import play.api.libs.json._
 import play.api.libs.json.Reads._
 import play.api.libs.functional.syntax._
 import civilization.objects._
-import civilization.gameboard.{JournalPrivacy, _}
+import civilization.gameboard._
 import civilization.gameboard.CultureTrack._
 import civilization.io.readdir.Param._
 import civilization.message.J
@@ -57,7 +57,7 @@ package object fromjson extends ImplicitMiximFromJson {
   implicit val enumtypeGameWinType: Reads[GameWinType.Value] = EnumUtils.enumReads(GameWinType)
   implicit val enumtypeCommandStatus: Reads[CommandStatus.Value] = EnumUtils.enumReads(CommandStatus)
   implicit val enumtypeJournalM: Reads[J] = EnumUtils.enumReads(J)
-  implicit val enumtypeJournalPrivacy: Reads[JournalPrivacy.Value] = EnumUtils.enumReads(JournalPrivacy)
+  implicit val enumtypeJournalPrivacy: Reads[JournalElem.JournalPrivacy.Value] = EnumUtils.enumReads(JournalElem.JournalPrivacy)
 
   implicit val winnerlooteffectReads: Reads[WinnerLootEffect] = (
     (JsPath \ S.name).read[LootEffectName.T] and
@@ -136,16 +136,23 @@ package object fromjson extends ImplicitMiximFromJson {
       (JsPath \ S.param).readNullable[JsValue]
     ) (CommandParams.apply _)
 
-  implicit val journalelemReads: Reads[JournalElem] = (
+  implicit val journalartifactReads : Reads[JournalElem.JournalArtifacts] = (
+    (JsPath \ S.tech).readNullable[TechnologyName.T] and
+      (JsPath \ S.card).readNullable[CultureCardName.T] and
+      (JsPath \ S.resource).readNullable[Resource.T] and
+      (JsPath \ S.building).readNullable[BuildingName.T]
+  ) (JournalElem.JournalArtifacts.apply _)
+
+  implicit val journalelemReads: Reads[JournalElem.JournalElem] = (
     (JsPath \ S.id).read[J] and
       (JsPath \ S.phase).read[TurnPhase.T] and
       (JsPath \ S.roundno).read[Int] and
       (JsPath \ S.civ).read[Civilization.T] and
       (JsPath \ S.param).read[Seq[String]] and
-      (JsPath \ S.tech).readNullable[TechnologyName.T] and
-      (JsPath \ S.priv).read[JournalPrivacy.T] and
+      (JsPath \ S.jartifacts).read[JournalElem.JournalArtifacts] and
+      (JsPath \ S.priv).read[JournalElem.JournalPrivacy.T] and
       (JsPath \ S.jparam).readNullable[CommandParams]
-    ) (JournalElem.apply _)
+    ) (JournalElem.JournalElem.apply _)
 
   implicit val culturecardReads: Reads[CultureCard] = (
     (JsPath \ S.name).read[CultureCardName.T] and
@@ -568,7 +575,7 @@ package object fromjson extends ImplicitMiximFromJson {
 
   def toMetaData(j: JsValue): GameMetaData = j.as[GameMetaData]
 
-  def toJournalElem(j: JsValue): JournalElem = j.as[JournalElem]
+  def toJournalElem(j: JsValue): JournalElem.JournalElem = j.as[JournalElem.JournalElem]
 
   implicit def toSeqOfWonders(j: JsValue): Seq[WondersOfTheWorld] = j.as[Seq[WondersOfTheWorld]]
 

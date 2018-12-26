@@ -2,6 +2,7 @@ package civilization.io
 
 import civilization.gameboard._
 import civilization.gameboard.CultureTrack._
+import civilization.gameboard
 import civilization.objects._
 import play.api.libs.functional.syntax._
 import play.api.libs.json
@@ -197,14 +198,23 @@ package object tojson extends ImplicitMiximToJson {
     )
   }
 
-  implicit val mapJournalEntry: Writes[JournalElem] = new Writes[JournalElem] {
-    override def writes(o: JournalElem): JsValue = Json.obj(
+  implicit val mapJournalArtifactsWrite : Writes[JournalElem.JournalArtifacts] = new Writes[JournalElem.JournalArtifacts] {
+    override def writes(o: JournalElem.JournalArtifacts): JsValue = Json.obj(
+      S.tech -> o.tech,
+      S.card -> o.card,
+      S.resource -> o.res,
+      S.building -> o.building
+    )
+  }
+
+  implicit val mapJournalEntry: Writes[JournalElem.JournalElem] = new Writes[JournalElem.JournalElem] {
+    override def writes(o: JournalElem.JournalElem): JsValue = Json.obj(
       S.id -> o.l,
       S.phase -> o.pha,
       S.roundno -> o.roundno,
       S.civ -> o.civ,
       S.param -> o.params,
-      S.tech -> o.tech,
+      S.jartifacts -> o.artif,
       S.priv -> o.priv,
       S.jparam -> o.jparams
     )
@@ -355,13 +365,13 @@ package object tojson extends ImplicitMiximToJson {
     Json.toJson(j)
   }
 
-  def writeJ(civ: Civilization.T, j: Seq[JournalElem]): JsValue = {
+  def writeJ(civ: Civilization.T, j: Seq[JournalElem.JournalElem]): JsValue = {
     var no: Int = 0
     // remove private
     val s: Seq[JsValue] = j.filter(e =>
-      (e.priv == JournalPrivacy.Public) ||
-        (e.civ == civ && e.priv != JournalPrivacy.NotPrivate) ||
-        e.civ != civ && e.priv == JournalPrivacy.NotPrivate).
+      (e.priv == JournalElem.JournalPrivacy.Public) ||
+        (e.civ == civ && e.priv != JournalElem.JournalPrivacy.NotPrivate) ||
+        e.civ != civ && e.priv == JournalElem.JournalPrivacy.NotPrivate).
       map(e => {
         no = no + 1;
         (no, e)
@@ -390,7 +400,7 @@ package object tojson extends ImplicitMiximToJson {
 
   def writeCultureTrack(c: CultureTrack): JsValue = Json.toJson(c)
 
-  def writeJournalElem(j: JournalElem): JsValue = Json.toJson(j)
+  def writeJournalElem(j: JournalElem.JournalElem): JsValue = Json.toJson(j)
 
   implicit def writeCultureTrackCost(c: CultureTrackCost): JsValue = Json.toJson(c)
 

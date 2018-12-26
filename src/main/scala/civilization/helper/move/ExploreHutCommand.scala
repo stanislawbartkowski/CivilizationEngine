@@ -24,7 +24,7 @@ object ExploreHutCommand {
     }
 
     override def execute(board: gameboard.GameBoard): Unit = {
-      exploreHutOrVillage(board, deck, p)
+      exploreHutOrVillage(board, deck, p, isExecute)
       cultureforhutvillage(board, deck, isExecute)
     }
   }

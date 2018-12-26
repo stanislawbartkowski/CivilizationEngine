@@ -34,6 +34,20 @@ class Test17 extends FunSuite with ImplicitMiximToJson {
     assert(l.find(_ == Command.REVEALTILE).isEmpty)
     assert(l.find(_ == Command.ENDOFMOVE).isEmpty)
     assert(l.find(_ == Command.ENDOFPHASE).isDefined)
+    // check journal
+    val s = II.getData(II.GETJOURNAL, token)
+    println(s)
+    val jo: JsArray = toJ(s).as[JsArray]
+    println(jo)
+    val je : JsValue = jo.value(1)
+    println(je)
+    val ele: JsValue = (je \ "elem").as[JsValue]
+    println(ele)
+    val a = (ele \ "jartifacts").as[JournalElem.JournalArtifacts]
+    println(a)
+    // resource
+    assert(a.res.isDefined)
+    assert(a.res.get == Resource.Silk)
   }
 
   test("Gen BoardGJ, check that resources for hut and villages are preserved") {
