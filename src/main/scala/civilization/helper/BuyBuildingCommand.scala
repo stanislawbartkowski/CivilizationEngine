@@ -1,6 +1,7 @@
 package civilization.helper
 
 import civilization.action.{AbstractCommand, CommandPackage}
+import civilization.gameboard.JournalElem.JournalArtifacts
 import civilization.gameboard._
 import civilization.helper.BuildSquare._
 import civilization.io.fromjson.ImplicitMiximFromJson
@@ -98,9 +99,10 @@ object BuyBuildingCommand extends CommandPackage with ImplicitMiximFromJson with
 
   protected class BuyBuilding(override val param: BuildingPoint) extends AbstractCommand(param) {
 
-    override def verify(board: GameBoard): message.Mess = {
+    override def verify(board: GameBoard): message.Mess =
       verifyB(board, deck, p, param, message.M.CANNOTBUYBUILDINGHERE, possibleBuildings(command))
-    }
+
+    override def registerCommandInJournal(board: GameBoard) = registerCommandInJournalDefault(board, JournalElem.constructJA(param.b))
 
     override def execute(board: GameBoard): Unit = {
       val bui: Building = GameResources.getBuilding(param.b)

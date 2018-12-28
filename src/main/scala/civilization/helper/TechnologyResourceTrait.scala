@@ -1,6 +1,7 @@
 package civilization.helper
 
 import civilization.action.{AbstractCommand, Command, CommandPackage}
+import civilization.gameboard.JournalElem._
 import civilization.gameboard.{GameBoard, PlayerDeck}
 import civilization.helper.CurrencyAction.CurrencyAction
 import civilization.helper.DemocracyAction.emptyItemize
@@ -15,6 +16,8 @@ trait TechnologyResourceTrait extends CommandPackage with ResourceActionTrait wi
 
   abstract protected class TechnologyResourceAction(override val param: HVResource) extends AbstractCommand(param) {
 
+    override def registerCommandInJournal(board: GameBoard) = registerCommandInJournalDefault(board, JournalArtifacts(Some(techn), None, Some(resource(board)), None))
+
     override def verify(board: gameboard.GameBoard): message.Mess = {
       if (param.resource != resource(board)) return message.Mess(message.M.INCORRECTRESOURCEUSED, (command, techn, resource(board), param))
       if (Command.isTechnologyInCity(command)) {
@@ -22,7 +25,6 @@ trait TechnologyResourceTrait extends CommandPackage with ResourceActionTrait wi
         if (cities.find(_ == p).isEmpty) return message.Mess(message.M.RESOURCEALREADYUSEDORCITYAGAIN, (command, techn, resource(board), param))
       }
       null
-
     }
 
     def executeI(board: gameboard.GameBoard): Unit

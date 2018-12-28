@@ -1,7 +1,7 @@
 package civilization.test
 
 import civilization.I
-import civilization.gameboard.GameBoard
+import civilization.gameboard.{GameBoard, JournalElem}
 import civilization.io.fromjson.ImplicitMiximFromJson
 import civilization.objects.Civilization
 import org.scalatest.FunSuite
@@ -123,6 +123,16 @@ class Test21 extends FunSuite with ImplicitMiximFromJson {
     val afterb = gg.market.buildings.noB(BuildingName.Market)
     // market released to market again
     assert(beforeb + 1 == afterb)
+    // journal
+    // check journal
+    val sj = II.getData(II.GETJOURNAL, token)
+    val jo: JsArray = toJ(sj).as[JsArray]
+    println(jo)
+    val je : JsValue = jo.value(0)
+    val ele: JsValue = (je \ "elem").as[JsValue]
+    val a = (ele \ "jartifacts").as[JournalElem.JournalArtifacts]
+    println(a)
+    assert(a.building.get == BuildingName.Temple)
   }
 
 

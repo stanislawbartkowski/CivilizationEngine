@@ -1,12 +1,12 @@
 package civilization.test
 
 import civilization.I
-import civilization.gameboard.GameBoard
+import civilization.gameboard.{GameBoard, JournalElem}
 import civilization.helper._
 import civilization.io.fromjson.{toJ, _}
 import civilization.io.tojson.ImplicitMiximToJson
 import civilization.objects.{Civilization, Command, _}
-import civilization.test.Helper.{II}
+import civilization.test.Helper.II
 import org.scalatest.FunSuite
 import play.api.libs.json.{JsArray, JsString, JsValue}
 import Helper._
@@ -52,6 +52,19 @@ class Test32 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
     println(prod)
     assert(prod.fromwheat == 5)
     assert(prod.prod == 12)
+    // check journal
+    val s = II.getData(II.GETJOURNAL, token)
+    println(s)
+    val jo: JsArray = toJ(s).as[JsArray]
+    println(jo)
+    val je : JsValue = jo.value(0)
+    println(je)
+    val ele: JsValue = (je \ "elem").as[JsValue]
+    println(ele)
+    val a = (ele \ "jartifacts").as[JournalElem.JournalArtifacts]
+    println(a)
+    assert(a.res.get == Resource.Wheat)
+    assert(a.tech.get == TechnologyName.Construction)
   }
 
   test("MetalCasting action") {
