@@ -1,12 +1,10 @@
 package civilization.helper
 
 import civilization.action.{AbstractCommand, Command, CommandPackage}
-import civilization.gameboard.{BuildingPoint, GameBoard, PlayerDeck, PlayerTechnology}
+import civilization.gameboard
+import civilization.gameboard.{GameBoard, PlayerDeck}
 import civilization.io.fromjson.ImplicitMiximFromJson
-import civilization.io.readdir.GameResources
 import civilization.io.tojson.ImplicitMiximToJson
-import civilization.message.{M, Mess}
-import civilization.{action, gameboard, message, objects}
 import civilization.objects._
 import play.api.libs.json.JsValue
 

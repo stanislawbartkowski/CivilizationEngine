@@ -64,6 +64,10 @@ object BuyWorldWonder extends CommandPackage with ImplicitMiximFromJson with Imp
   private def removeWonderFromMarket(b: GameBoard, w: Wonders.T) = b.market.wonders = b.market.wonders.filter(_ != w)
 
   protected class BuyWonder(override val param: BuildingPoint) extends AbstractCommand(param) {
+
+
+    override def registerCommandInJournal(board: GameBoard) = registerCommandInJournalDefault(board, JournalElem.constructJA(param.w))
+
     override def verify(board: gameboard.GameBoard): message.Mess =
       verifyB(board, deck, p, param, message.M.CANNOTBUYWONDERGHERE, possibleWonders)
 
@@ -99,7 +103,7 @@ object BuyWorldWonder extends CommandPackage with ImplicitMiximFromJson with Imp
     else if (command == Command.RANDOMWONDER) new RandomWonder(param)
     else new BuyWonder(param)
 
-  override def itemize(b: GameBoard, deck : PlayerDeck, com: Command.T): Seq[JsValue] = {
+  override def itemize(b: GameBoard, deck: PlayerDeck, com: Command.T): Seq[JsValue] = {
     if (com == Command.FREEWONDER) if (deck.freeWonder.isEmpty) return Nil
     itemizeB(b, deck, false, possibleWonders)
   }

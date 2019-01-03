@@ -198,6 +198,7 @@ class Test25 extends FunSuite with ImplicitMiximToJson {
       println(c)
     })
     var gg = I.getBoardForToken(token)
+    println(gg.playerDeck(Civilization.China).cultureresource.cards)
     val cu1 = gg.playerDeck(Civilization.China).resou.nof(Resource.Culture)
     println(cu1)
     assert(cu1 == 6)
@@ -213,6 +214,20 @@ class Test25 extends FunSuite with ImplicitMiximToJson {
     assert(tra1.spendOnCulture == 3)
     assert(tra1.trade == 7)
     println(gg.playerDeck(Civilization.China).cultureresource.cards)
+    // get one culture card
+    assert(gg.playerDeck(Civilization.China).cultureresource.cards.length == 1)
+    // check journal
+    val s = II.getData(II.GETJOURNAL, token)
+    println(s)
+    val j: JsArray = toJ(s).as[JsArray]
+    println(j)
+    val el: JsValue = j.value(1)
+    println(el)
+    val ele: JsValue = (el \ "elem").as[JsValue]
+    println(ele)
+    val a = (ele \ "jartifacts").as[JournalElem.JournalArtifacts]
+    println(a)
+    assert(a.card.nonEmpty)
   }
 
   test("Implement TradingPost research") {

@@ -9,6 +9,8 @@ import civilization.test.Helper.{II, _}
 import org.scalatest.FunSuite
 import play.api.libs.json._
 import civilization.I
+import civilization.io.fromjson._
+import civilization.io.tojson._
 
 class Test22 extends FunSuite with ImplicitMiximFromJson {
 
@@ -63,19 +65,31 @@ class Test22 extends FunSuite with ImplicitMiximFromJson {
     println(gg.market.wonders)
     // Stonehege should dissapear
     assert(gg.getCurrentWonders().find(_ == Wonders.Stonehenge).isEmpty)
+    // journal
+    val s = II.getData(II.GETJOURNAL, token)
+    println(s)
+    val jo: JsArray = toJ(s).as[JsArray]
+    println(jo)
+    val je: JsValue = jo.value(0)
+    println(je)
+    val ele: JsValue = (je \ "elem").as[JsValue]
+    println(ele)
+    val a = (ele \ "jartifacts").as[JournalElem.JournalArtifacts]
+    println(a)
+    assert(a.wonder.get == Wonders.Stonehenge)
   }
 
-//  test("Buy several times") {
-//    assertThrows[Exception] {
-//      Helper.readBoardAndPlayT("test22/BOARDGAME4.json", "test22/PLAY4.json", Civilization.Germany)
-//    }
-//  }
+  //  test("Buy several times") {
+  //    assertThrows[Exception] {
+  //      Helper.readBoardAndPlayT("test22/BOARDGAME4.json", "test22/PLAY4.json", Civilization.Germany)
+  //    }
+  //  }
 
-//  test("Buy several times two players") {
-//    assertThrows[Exception] {
-//      val reg = Helper.ReadAndPlayForTwo("test22/BOARDGAME5.json", "test22/PLAY5.json", Civilization.Rome, Civilization.Russia)
-//    }
-//  }
+  //  test("Buy several times two players") {
+  //    assertThrows[Exception] {
+  //      val reg = Helper.ReadAndPlayForTwo("test22/BOARDGAME5.json", "test22/PLAY5.json", Civilization.Rome, Civilization.Russia)
+  //    }
+  //  }
 
   test("Check visible wonders") {
     val reg = Helper.readBoardAndPlayT("test22/BOARDGAME1.json", "test22/PLAY1.json", Civilization.Arabs)

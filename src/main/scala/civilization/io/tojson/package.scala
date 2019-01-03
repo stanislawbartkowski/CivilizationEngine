@@ -203,7 +203,8 @@ package object tojson extends ImplicitMiximToJson {
       S.tech -> o.tech,
       S.card -> o.card,
       S.resource -> o.res,
-      S.building -> o.building
+      S.building -> o.building,
+      S.wonder -> o.wonder
     )
   }
 

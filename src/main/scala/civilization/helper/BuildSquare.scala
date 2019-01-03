@@ -3,7 +3,7 @@ package civilization.helper
 import civilization.gameboard.{BuildingPoint, GameBoard, PlayerDeck}
 import civilization.helper.BuyBuildingCommand.writesPoint
 import civilization.message
-import civilization.objects.{Civilization, P, S}
+import civilization.objects.{P, S}
 import play.api.libs.json.{JsValue, Json}
 
 object BuildSquare {

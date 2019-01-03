@@ -1,7 +1,6 @@
 package civilization.helper
 
 import civilization.action.{AbstractCommand, CommandPackage}
-import civilization.gameboard.JournalElem.JournalArtifacts
 import civilization.gameboard._
 import civilization.helper.BuildSquare._
 import civilization.io.fromjson.ImplicitMiximFromJson

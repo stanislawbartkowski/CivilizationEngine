@@ -1,13 +1,12 @@
 package civilization.helper
 
 import civilization.action.{AbstractCommand, CommandPackage}
-import civilization.gameboard.{BuildingPoint, GameBoard, PlayerDeck}
+import civilization.gameboard.{GameBoard, PlayerDeck}
 import civilization.io.fromjson.ImplicitMiximFromJson
 import civilization.io.tojson.ImplicitMiximToJson
 import civilization.message.{M, Mess}
-import civilization.{action, gameboard, message, objects}
-import civilization.objects.Civilization.T
 import civilization.objects.{Civilization, Command, P}
+import civilization.{gameboard, message, objects}
 import play.api.libs.json.JsValue
 
 object DevoutToCultureCommand extends CommandPackage with ImplicitMiximFromJson with ImplicitMiximToJson {

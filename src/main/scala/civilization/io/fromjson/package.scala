@@ -140,7 +140,8 @@ package object fromjson extends ImplicitMiximFromJson {
     (JsPath \ S.tech).readNullable[TechnologyName.T] and
       (JsPath \ S.card).readNullable[CultureCardName.T] and
       (JsPath \ S.resource).readNullable[Resource.T] and
-      (JsPath \ S.building).readNullable[BuildingName.T]
+      (JsPath \ S.building).readNullable[BuildingName.T] and
+      (JsPath  \ S.wonder).readNullable[Wonders.T]
   ) (JournalElem.JournalArtifacts.apply _)
 
   implicit val journalelemReads: Reads[JournalElem.JournalElem] = (

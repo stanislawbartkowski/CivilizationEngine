@@ -16,7 +16,7 @@ trait TechnologyResourceTrait extends CommandPackage with ResourceActionTrait wi
 
   abstract protected class TechnologyResourceAction(override val param: HVResource) extends AbstractCommand(param) {
 
-    override def registerCommandInJournal(board: GameBoard) = registerCommandInJournalDefault(board, JournalArtifacts(Some(techn), None, Some(resource(board)), None))
+    override def registerCommandInJournal(board: GameBoard) = registerCommandInJournalDefault(board, JournalArtifacts(Some(techn), None, Some(resource(board)), None, None))
 
     override def verify(board: gameboard.GameBoard): message.Mess = {
       if (param.resource != resource(board)) return message.Mess(message.M.INCORRECTRESOURCEUSED, (command, techn, resource(board), param))

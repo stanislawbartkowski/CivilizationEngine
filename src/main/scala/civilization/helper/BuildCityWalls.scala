@@ -1,15 +1,13 @@
 package civilization.helper
 
 import civilization.action._
-import civilization.gameboard.{BuildingPoint, GameBoard, PlayerDeck}
-import civilization.helper.DevoutToCultureCommand.DevoutToCultureCommand
+import civilization.gameboard.{GameBoard, PlayerDeck}
 import civilization.io.fromjson.ImplicitMiximFromJson
 import civilization.io.tojson.ImplicitMiximToJson
 import civilization.message.{M, Mess}
-import civilization.{action, gameboard, message, objects}
-import civilization.objects._
-import civilization.objects.{Civilization, Command, P}
 import civilization.objects.Command.T
+import civilization.objects.{Civilization, Command, P, _}
+import civilization.{gameboard, message}
 import play.api.libs.json.JsValue
 
 object BuildCityWalls extends CommandPackage with ImplicitMiximFromJson with ImplicitMiximToJson {
