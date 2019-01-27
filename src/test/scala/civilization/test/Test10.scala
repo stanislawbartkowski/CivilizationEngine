@@ -46,6 +46,10 @@ class Test10 extends FunSuite {
 //    val found : Boolean = w.value.find(j => j
     w.value.foreach(println)
     assert (! w.value.map(j => (j \ "gameid").as[Int]).toSet.contains(gameid))
+    // now deregister China
+    II.getData(II.UNREGISTERTOKEN,ctoken)
+    // verify that players not ready for America again
+    assert(!II.allPlayersReady(token))
   }
 
 
@@ -156,7 +160,7 @@ class Test10 extends FunSuite {
   test("Check two players game") {
     val token : String = II.getData(II.REGISTEROWNERTWOGAME,"Rome,China")
     println(token)
-    val res1 = WaitingGames.findListOfWaitingGames(RA)
+    val res1 : Seq[civilization.I.WaitingGames.WaitingGames] = WaitingGames.findListOfWaitingGames(RA)
     println(res1)
     val game: CurrentGame = RA.getCurrentGame(token)
     val gameid: Int = game.gameid
