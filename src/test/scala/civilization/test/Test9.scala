@@ -258,7 +258,9 @@ class Test9 extends FunSuite {
   }
 
   test("Check itemize for setcapital") {
-    val token: String = II.getData(REGISTEROWNER, "Germany")
+//    val token: String = II.getData(REGISTEROWNER, "Germany")
+    val token : String = registerOwner("Germany")
+
     val s: String = II.itemizeCommand(token, "SETCAPITAL")
     println(s)
     assert(s != null)

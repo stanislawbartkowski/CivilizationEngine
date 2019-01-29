@@ -194,7 +194,8 @@ class Test37 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
   }
 
   test("Test Journal") {
-    val token: String = II.getData(II.REGISTEROWNER, "China")
+//    val token: String = II.getData(II.REGISTEROWNER, "China")
+    val token : String = registerOwner("China")
     println(token)
     val s = II.getData(II.GETJOURNAL, token)
     println(s)

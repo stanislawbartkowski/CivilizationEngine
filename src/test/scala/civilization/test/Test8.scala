@@ -15,7 +15,8 @@ class Test8 extends FunSuite {
   Helper.I
 
   test("Execute command, check available") {
-    val token: String = II.getData(REGISTEROWNER, "Germany")
+//    val token: String = II.getData(REGISTEROWNER, "Germany")
+    val token : String = registerOwner("Germany")
     var g: GameBoard = getBoardForToken(token);
     var l: Seq[Command.T] = allowedCommandsH(g, Civilization.Germany)
     println(l)
@@ -40,7 +41,8 @@ class Test8 extends FunSuite {
   }
 
   test("Execute command, set army and scout") {
-    val token: String = II.getData(REGISTEROWNER, "Germany")
+//    val token: String = II.getData(REGISTEROWNER, "Germany")
+    val token : String = registerOwner("Germany")
     var g: GameBoard = getBoardForToken(token);
     var s: String = executeCommand(token, "SETCAPITAL", 2, 2, null)
     g = getBoardForToken(token);
@@ -66,7 +68,8 @@ class Test8 extends FunSuite {
   }
 
   test("Execute command, itemized") {
-    val token: String = II.getData(REGISTEROWNER, "Rome")
+//    val token: String = II.getData(REGISTEROWNER, "Rome")
+    val token : String = registerOwner("Rome")
     var g: GameBoard = getBoardForToken(token);
     var s: String = executeCommand(token, "SETCAPITAL", 1, 2, null)
     println(s)
@@ -104,7 +107,8 @@ class Test8 extends FunSuite {
   }
 
   test("Check production for city") {
-    val token: String = II.getData(REGISTEROWNER, "Rome")
+//    val token: String = II.getData(REGISTEROWNER, "Rome")
+    val token : String = registerOwner("Rome")
     var g: GameBoard = getBoardForToken(token);
     var s: String = executeCommand(token, "SETCAPITAL", 1, 2, null)
     println(s)

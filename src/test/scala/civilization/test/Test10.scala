@@ -158,7 +158,8 @@ class Test10 extends FunSuite {
   }
 
   test("Check two players game") {
-    val token : String = II.getData(II.REGISTEROWNERTWOGAME,"Rome,China")
+//    val token : String = II.getData(II.REGISTEROWNERTWOGAME,"Rome,China")
+    val token : String = registerOwnerTwo("Rome,China")
     println(token)
     val res1 : Seq[civilization.I.WaitingGames.WaitingGames] = WaitingGames.findListOfWaitingGames(RA)
     println(res1)

@@ -17,7 +17,8 @@ class Test29 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
   Helper.I
 
   test("Egypt bonus") {
-    val token: String = II.getData(II.REGISTEROWNER, "Egypt")
+//    val token: String = II.getData(II.REGISTEROWNER, "Egypt")
+    val token : String = registerOwner("Egypt")
     println(token)
     var gg = I.getBoardForToken(token)
     val pl = gg.playerDeck(Civilization.Egypt)

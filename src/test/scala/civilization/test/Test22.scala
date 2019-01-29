@@ -17,7 +17,8 @@ class Test22 extends FunSuite with ImplicitMiximFromJson {
   Helper.I
 
   test("Wonders") {
-    val token: String = II.getData(II.REGISTEROWNER, "China")
+//    val token: String = II.getData(II.REGISTEROWNER, "China")
+    val token : String = registerOwner("China")
     println(token)
     var gg: GameBoard = I.getBoardForToken(token)
     println(gg.market.wonders)

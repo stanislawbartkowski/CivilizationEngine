@@ -97,11 +97,13 @@ package object I extends ImplicitMiximFromJson {
     Json.prettyPrint(j)
   }
 
+  private def toS(s : (String, Int)) : String = s._1 + "," + s._2
+
   def getData(what: Int, tokenorciv: String, param: String): String = {
     synchronized {
       what match {
-        case REGISTEROWNER => registerOwnerPlay(tokenorciv, "GAME1.json")
-        case REGISTEROWNERTWOGAME => registerOwnerPlay(tokenorciv, "GAME2.json")
+        case REGISTEROWNER => toS(registerOwnerPlay(tokenorciv, "GAME1.json"))
+        case REGISTEROWNERTWOGAME => toS(registerOwnerPlay(tokenorciv, "GAME2.json"))
         case GETBOARDGAME => getBoardForCiv(tokenorciv)
         case LISTOFGAMES => listOfGames
         case UNREGISTERTOKEN => {
@@ -121,7 +123,7 @@ package object I extends ImplicitMiximFromJson {
 
   private def toCiv(civ: String): Civilization.T = Civilization.withName(civ)
 
-  private def registerOwnerPlay(civ: String, game: String): String = {
+  private def registerOwnerPlay(civ: String, game: String): (String,Int) = {
     val l: List[Civilization.T] = civ.split(",").toList.map(toCiv(_))
     val g: GameBoard = genBoard(l, game)
     registerGame(g, l.head)
@@ -134,7 +136,7 @@ package object I extends ImplicitMiximFromJson {
     token
   }
 
-  def registerGame(g: GameBoard, civ: Civilization.T): String = {
+  def registerGame(g: GameBoard, civ: Civilization.T): (String,Int) = {
     val gameS: String = writesGameBoard(g).toString()
     val gameid: Int = r.registerGame(gameS)
     val metadata: String = writeMetaData(g.metadata).toString()
@@ -147,7 +149,7 @@ package object I extends ImplicitMiximFromJson {
     }
     )
     updateJournal(gameid, g)
-    currentGame(civ, gameid)
+    (currentGame(civ, gameid),gameid)
   }
 
   def joinGame(gameid: Int, c: String): String = {

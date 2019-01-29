@@ -18,7 +18,8 @@ class Test11 extends FunSuite {
   Helper.I
 
   test("Two players game") {
-    val token: String = II.getData(II.REGISTEROWNERTWOGAME, "Rome,China")
+//    val token: String = II.getData(II.REGISTEROWNERTWOGAME, "Rome,China")
+    val token : String = registerOwnerTwo("Rome,China")
     println(token)
     val s = II.getData(II.GETBOARDGAME, token)
     println(s)

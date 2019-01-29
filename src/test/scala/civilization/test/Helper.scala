@@ -38,9 +38,20 @@ object Helper {
 
   def getBoardAndRegister(boardpath: String, civ: Civilization.T): (String, GameBoard) = {
     val g: GameBoard = getBoard(boardpath)
-    val token: String = civilization.I.registerGame(g, civ)
+    val token: String = civilization.I.registerGame(g, civ)._1
     (token, g)
   }
+
+  private def extractToken(s : String) : String = s.split(",")(0)
+
+  def registerOwner(civ : String) : String =
+     extractToken(II.getData(II.REGISTEROWNER, civ))
+
+  def registerOwnerTwo(civ : String) : String =
+    extractToken(II.getData(II.REGISTEROWNERTWOGAME, civ))
+
+  //  val token: String = II.getData(II.REGISTEROWNERTWOGAME, "Rome,China")
+
 
   def readBoardAndPlayT(boardpath: String, playPath: String, civ: Civilization.T): (String, GameBoard) = {
     val g: GameBoard = getBoard(boardpath)
@@ -49,7 +60,7 @@ object Helper {
       val co: Command = constructCommand(c)
       g.play.addCommand(co)
     })
-    val token: String = civilization.I.registerGame(g, civ)
+    val token: String = civilization.I.registerGame(g, civ)._1
     (token, getBoardForToken(token))
   }
 

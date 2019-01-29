@@ -21,7 +21,8 @@ class Test20 extends FunSuite with ImplicitMiximFromJson {
   Helper.I
 
   test("Two players game") {
-    val token: String = II.getData(II.REGISTEROWNERTWOGAME, "Rome,China")
+//    val token: String = II.getData(II.REGISTEROWNERTWOGAME, "Rome,China")
+    val token : String = registerOwnerTwo("Rome,China")
     println(token)
     val game: CurrentGame = RA.getCurrentGame(token)
     val gameid: Int = game.gameid
@@ -96,7 +97,8 @@ class Test20 extends FunSuite with ImplicitMiximFromJson {
   }
 
   test("Two players game, build capital on the other player home tile") {
-    val token: String = II.getData(II.REGISTEROWNERTWOGAME, "Rome,China")
+//    val token: String = II.getData(II.REGISTEROWNERTWOGAME, "Rome,China")
+    val token : String = registerOwnerTwo("Rome,China")
     println(token)
     val game: CurrentGame = RA.getCurrentGame(token)
     val gameid: Int = game.gameid
@@ -121,7 +123,8 @@ class Test20 extends FunSuite with ImplicitMiximFromJson {
   }
 
   test("Two players game, building in turn") {
-    val token: String = II.getData(II.REGISTEROWNERTWOGAME, "Rome,China")
+//    val token: String = II.getData(II.REGISTEROWNERTWOGAME, "Rome,China")
+    val token : String = registerOwnerTwo("Rome,China")
     println(token)
     val game: CurrentGame = RA.getCurrentGame(token)
     val gameid: Int = game.gameid
@@ -167,7 +170,8 @@ class Test20 extends FunSuite with ImplicitMiximFromJson {
   }
 
   test("Two players game, check JSon for technologies") {
-    val token: String = II.getData(II.REGISTEROWNERTWOGAME, "Rome,China")
+//    val token: String = II.getData(II.REGISTEROWNERTWOGAME, "Rome,China")
+    val token : String = registerOwnerTwo("Rome,China")
     println(token)
     val game: CurrentGame = RA.getCurrentGame(token)
     val gameid: Int = game.gameid
@@ -306,7 +310,7 @@ class Test20 extends FunSuite with ImplicitMiximFromJson {
     println(g.market.buildings.table)
     assert(g.market.buildings.table.size > 0)
     g.market.buildings.table.foreach(t => assert(t._2 >= 5))
-    val token: String = civilization.I.registerGame(g, Civilization.Germany)
+    val token: String = civilization.I.registerGame(g, Civilization.Germany)._1
     var ss = II.getData(II.GETBOARDGAME, token)
     println(ss)
   }

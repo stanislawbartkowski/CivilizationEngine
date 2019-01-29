@@ -33,7 +33,8 @@ class Test28 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
   }
 
   test("Generate board for America") {
-    val token: String = II.getData(II.REGISTEROWNER, "America")
+//    val token: String = II.getData(II.REGISTEROWNER, "America")
+    val token : String = registerOwner("America")
     println(token)
     var gg = I.getBoardForToken(token)
     val pl = gg.playerDeck(Civilization.America)
@@ -120,7 +121,8 @@ class Test28 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
   }
 
   test("City wall for China in capital") {
-    val token: String = II.getData(II.REGISTEROWNER, "China")
+//    val token: String = II.getData(II.REGISTEROWNER, "China")
+    val token : String = registerOwner("China")
     println(token)
     var gg = I.getBoardForToken(token)
     var l = allowedCommandsH(gg, Civilization.China)

@@ -162,7 +162,8 @@ class Test24 extends FunSuite with ImplicitMiximFromJson {
   }
 
   test("Check culture is exported for square") {
-    val token: String = II.getData(II.REGISTEROWNER, "China")
+//    val token: String = II.getData(II.REGISTEROWNER, "China")
+    val token : String = registerOwner("China")
     println(token)
     val gg: GameBoard = I.getBoardForToken(token)
     val seq = allSquares(gg)

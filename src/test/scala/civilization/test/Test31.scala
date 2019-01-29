@@ -17,7 +17,8 @@ class Test31 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
   Helper.I
 
   test("Russia start bonus") {
-    val token: String = II.getData(II.REGISTEROWNER, "Russia")
+//    val token: String = II.getData(II.REGISTEROWNER, "Russia")
+    val token : String = registerOwner("Russia")
     println(token)
     var gg = I.getBoardForToken(token)
     var l = allowedCommandsH(gg, Civilization.Russia)
@@ -94,7 +95,8 @@ class Test31 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
   }
 
   test("Spain start bonus") {
-    val token: String = II.getData(II.REGISTEROWNER, "Spain")
+//    val token: String = II.getData(II.REGISTEROWNER, "Spain")
+    val token : String = registerOwner("Spain")
     println(token)
     var gg = I.getBoardForToken(token)
     var l = allowedCommandsH(gg, Civilization.Spain)
@@ -193,7 +195,8 @@ class Test31 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
   }
 
   test("Arabs start bonus, free resources") {
-    val token: String = II.getData(II.REGISTEROWNER, "Arabs")
+//    val token: String = II.getData(II.REGISTEROWNER, "Arabs")
+    val token : String = registerOwner("Arabs")
     println(token)
     var gg = I.getBoardForToken(token)
     val deck = gg.playerDeck(Civilization.Arabs)
@@ -222,7 +225,8 @@ class Test31 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
   }
 
   test("Arabs start bonus, verify military level") {
-    val token: String = II.getData(II.REGISTEROWNER, "Arabs")
+//    val token: String = II.getData(II.REGISTEROWNER, "Arabs")
+    val token : String = registerOwner("Arabs")
     println(token)
     var gg = I.getBoardForToken(token)
     val pl = gg.playerDeck(Civilization.Arabs)

@@ -9,7 +9,7 @@ import org.scalatest.FunSuite
 import civilization.helper._
 import civilization.message.Mess
 import civilization.io.readdir.GenBoard.genBoard
-import Helper.II
+import Helper.{II, registerOwner}
 
 
 
@@ -59,7 +59,8 @@ class Test7 extends FunSuite {
 
   test("Register") {
 
-    val s: String = II.getData(II.REGISTEROWNER, "Germany")
+//    val s: String = II.getData(II.REGISTEROWNER, "Germany")
+    val s : String = registerOwner("Germany")
     println(s)
     val b: String = II.getData(II.GETBOARDGAME, s)
     println(b)
@@ -83,7 +84,8 @@ class Test7 extends FunSuite {
   }
 
   test("Execute command") {
-    val token: String = II.getData(II.REGISTEROWNER, "Germany")
+//    val token: String = II.getData(II.REGISTEROWNER, "Germany")
+    val token : String = registerOwner("Germany")
     var m: String = II.executeCommand(token, "SETCAPITAL", 2, 3, null)
     println(m)
     assert(m != null)

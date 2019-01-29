@@ -95,7 +95,8 @@ class Test15 extends FunSuite {
   }
 
   test("Test round no with start game") {
-    val token: String = II.getData(II.REGISTEROWNER, "China")
+//    val token: String = II.getData(II.REGISTEROWNER, "China")
+    val token : String = registerOwner("China")
     println(token)
     val s = II.getData(II.GETBOARDGAME, token)
     Helper.executeCommandH(token, "SETCAPITAL", 2, 2, null)
