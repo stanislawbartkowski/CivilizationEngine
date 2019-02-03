@@ -26,6 +26,8 @@ trait RAccess {
 
   def getGame(id: Int): String
 
+  def deleteGame(id : Int)
+
   // game actions
 
   def getPlayForGame(id: Int): Seq[String]

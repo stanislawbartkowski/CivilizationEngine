@@ -19,4 +19,6 @@ class II extends IC {
 
   override def allPlayersReady(token: String): Boolean = I.allPlayersReady(token)
 
+  override def deleteGame(gameid: Int) = I.deleteGame(gameid)
+
 }

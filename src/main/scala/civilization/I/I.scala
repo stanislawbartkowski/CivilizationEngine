@@ -244,6 +244,8 @@ package object I extends ImplicitMiximFromJson {
     currentGame(civ, gameid)
   }
 
+  def deleteGame(gameid : Int) = r.deleteGame(gameid)
+
   def allPlayersReady(token: String): Boolean = {
     val game: CurrentGame = r.getCurrentGame(token)
     val w: Seq[Int] = WaitingGames.listofCurrentGames(r)

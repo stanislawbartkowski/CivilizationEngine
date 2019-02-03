@@ -81,6 +81,7 @@ package object R {
       id
     }
 
+
     override def updateGame(id: Int, value: String): Unit = r.withClient(r => r.set(gameKey(id), value))
 
     private def keyPlay(id: Int): String = gameKey(id) + "." + PLAY
@@ -108,6 +109,7 @@ package object R {
     //    override def addMoveToPlay(id: Int, move: String): Unit = r.withClient(r => r.rpush(keyPlay(id), move))
     override def addMoveToPlay(id: Int, move: String): Unit = addStringToTable(id, keyPlay, move)
 
+
     // journal
 
     private def getJKey(id: Int): String = gameKey(id) + "." + JOURNAL
@@ -124,7 +126,7 @@ package object R {
 
     override def getGame(id: Int): String = r.withClient(r => r.get(gameKey(id)).get)
 
-    def keyMetaData(id: Int) = gameKey(id) + "." + METADATA
+    private def keyMetaData(id: Int) : String = gameKey(id) + "." + METADATA
 
     override def updateMetaData(id: Int, value: String): Unit = r.withClient(r => r.set(keyMetaData(id), value))
 
@@ -136,12 +138,29 @@ package object R {
       keys.map(extractGameId(_)).map(g => (g, getMetaData(g)))
     }
 
+    override def deleteGame(id : Int) = {
+      val gkey :String = gameKey(id)
+      // remove game
+      r.withClient(r => r.del(gkey))
+      val jkey : String = getJKey(id)
+      // remove journal
+      r.withClient(r => r.del(jkey))
+      // remove metadata
+      val mkey : String = keyMetaData(id)
+      r.withClient(r => r.del(mkey))
+      // remove play
+      val pkey : String = keyPlay(id)
+      r.withClient(r => r.del(pkey))
+    }
+
     override def getConn: RConnection = new RConnection() {
       override def setConnection(host: String, port: Int, database: Int): Unit =
         RR.setConnection(host, port, database)
 
       override def setConnection(url: String): Unit = RR.setConnection(url)
     }
+
+
 
   }
 

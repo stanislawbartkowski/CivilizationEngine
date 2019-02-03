@@ -64,13 +64,13 @@ object Helper {
     (token, getBoardForToken(token))
   }
 
-  def ReadAndPlayForTwo(boardpath: String, playPath: String, civ1: Civilization.T, civ2: Civilization.T): (String, String) = {
+  def ReadAndPlayForTwo(boardpath: String, playPath: String, civ1: Civilization.T, civ2: Civilization.T): (String, String, Int) = {
     val cu = readBoardAndPlayT(boardpath, playPath, civ1)
     val token: String = cu._1
     val game: CurrentGame = RA.getCurrentGame(token)
     val gameid: Int = game.gameid
     val ctoken: String = II.joinGame(gameid, civ2.toString)
-    return (token, ctoken)
+    return (token, ctoken, gameid)
   }
 
   def getLimitsH(gg: GameBoard, civ: Civilization.T): PlayerLimits = getLimits(gg, gg.playerDeck(civ))

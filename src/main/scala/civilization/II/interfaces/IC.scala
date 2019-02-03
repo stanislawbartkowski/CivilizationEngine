@@ -28,4 +28,6 @@ trait IC {
 
   def allPlayersReady(token: String): Boolean
 
+  def deleteGame(gameid : Int)
+
 }
