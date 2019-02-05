@@ -824,19 +824,6 @@ Devout city to culture. City can be helped by scout standing on the squre having
 
 For every command the engine can return itemization, list of possible moves. The format is different for every command.
 
-## SETCAPITAL, SETCITY, SPENDTRADE
- 
-List of points where a city or capital can be build or cities where trade can be spend to beef up production
-
-Format:
-
-\[ { "row" : int, "col" : int } \]
-
-Sample
- \[{"row" : 1, "col" : 2}, { "row" : 2, "col: 2"} \]
- 
- For SETCITY it is a list points where new city can be build.
-
 ## SENDPRODUCTION, UNDOSENDPRODUCTION, HARVESTRESOURCES
 
 List of pairs, city and scout or square. City, where production can be sent and scout, a square to be harvested or undone
