@@ -51,7 +51,8 @@ package object I extends ImplicitMiximFromJson {
     val j: Seq[String] = r.getJournalForGame(gameid)
     // transform to JournalElem
     j.foreach(s => {
-      val j: JsValue = toJ(s); g.addJ(toJournalElem(j))
+      val j: JsValue = toJ(s);
+      g.addJ(toJournalElem(j))
     })
     // only last command may have suspended status
     var counter: Int = 0 // to identify the last command
@@ -97,7 +98,7 @@ package object I extends ImplicitMiximFromJson {
     Json.prettyPrint(j)
   }
 
-  private def toS(s : (String, Int)) : String = s._1 + "," + s._2
+  private def toS(s: (String, Int)): String = s._1 + "," + s._2
 
   def getData(what: Int, tokenorciv: String, param: String): String = {
     synchronized {
@@ -123,7 +124,7 @@ package object I extends ImplicitMiximFromJson {
 
   private def toCiv(civ: String): Civilization.T = Civilization.withName(civ)
 
-  private def registerOwnerPlay(civ: String, game: String): (String,Int) = {
+  private def registerOwnerPlay(civ: String, game: String): (String, Int) = {
     val l: List[Civilization.T] = civ.split(",").toList.map(toCiv(_))
     val g: GameBoard = genBoard(l, game)
     registerGame(g, l.head)
@@ -136,7 +137,7 @@ package object I extends ImplicitMiximFromJson {
     token
   }
 
-  def registerGame(g: GameBoard, civ: Civilization.T): (String,Int) = {
+  def registerGame(g: GameBoard, civ: Civilization.T): (String, Int) = {
     val gameS: String = writesGameBoard(g).toString()
     val gameid: Int = r.registerGame(gameS)
     val metadata: String = writeMetaData(g.metadata).toString()
@@ -149,7 +150,34 @@ package object I extends ImplicitMiximFromJson {
     }
     )
     updateJournal(gameid, g)
-    (currentGame(civ, gameid),gameid)
+    (currentGame(civ, gameid), gameid)
+  }
+
+  private def readSinglePlayerGame(board: JsValue, play: JsArray, civ: Civilization.T): (String, Int) = {
+    val g: GameBoard = readGameBoard(board)
+    val p: Seq[CommandValues] = readPlay(play)
+    p.foreach(c => {
+      val co: Command = constructCommand(c)
+      g.play.addCommand(co)
+    })
+    civilization.I.registerGame(g, civ)
+  }
+
+  private def breakGame(s: String): (JsValue, JsArray) = {
+    val j: JsValue = toJ(s)
+    val j1: JsValue = (j \ S.board).as[JsValue]
+    val j2: JsArray = (j \ S.game).as[JsArray]
+    (j1, j2)
+  }
+
+  def readPlayerGameS(board: String, civs: String): String = {
+    val c: Array[String] = civs.split(",")
+    val (b, j) = breakGame(board)
+    val t: (String, Int) = readSinglePlayerGame(b, j, toCiv(c(0)))
+    if (c.length > 1) {
+      val ctoken: String = joinGame(t._2, c(1))
+      t._1 + ',' + ctoken + ',' + t._2.toString()
+    } else t._1 + ',' + t._2.toString()
   }
 
   def joinGame(gameid: Int, c: String): String = {
@@ -167,7 +195,7 @@ package object I extends ImplicitMiximFromJson {
     r.updateMetaData(gameid, writeMetaData(g.metadata).toString())
   }
 
-  private def updateJournal(gameid : Int, b: GameBoard) = {
+  private def updateJournal(gameid: Int, b: GameBoard) = {
     // current stored journal size
     val nj: Int = r.numberOfJournalE(gameid)
     // number of new elements
@@ -186,7 +214,7 @@ package object I extends ImplicitMiximFromJson {
     var mess: Mess = playCommand(gb._2, co, c => {
       val cv: CommandValues = toC(c)
       r.addMoveToPlay(gb._1.gameid, writeCommandValues(cv).toString())
-      updateJournal(gb._1.gameid,gb._2)
+      updateJournal(gb._1.gameid, gb._2)
     },
       counter => {
         val cv: CommandValues = toC(gb._2.play.commands(counter))
@@ -244,7 +272,10 @@ package object I extends ImplicitMiximFromJson {
     currentGame(civ, gameid)
   }
 
-  def deleteGame(gameid : Int) = r.deleteGame(gameid)
+  def deleteGame(gameid: Int) = {
+    r.deleteGame(gameid)
+    removeexistinggames(gameid)
+  }
 
   def allPlayersReady(token: String): Boolean = {
     val game: CurrentGame = r.getCurrentGame(token)
@@ -258,6 +289,25 @@ package object I extends ImplicitMiximFromJson {
   private def listOfWaitingGames(): String = {
     var games: Seq[JsValue] = WaitingGames.findListOfWaitingGames(r)
     Json.toJson(games).toString()
+  }
+
+  private def toJsonList(head: String, m: Seq[String], tail: String): String = {
+    if (m.isEmpty) return head + "[]\n" + tail
+    // concatenate all except the last to drop off , coma
+    var jj: String = m.dropRight(1).foldLeft(head + "[\n") {
+
+      (a, b) => a + b + ",\n"
+    }
+    jj + m.last + "\n]" + tail
+  }
+
+  def downloadGame(gameid: Int): String = {
+    val board: String = r.getGame(gameid)
+    val m: Seq[String] = r.getPlayForGame(gameid)
+    val jj : String = toJsonList("\"" + S.game + "\":",m, "")
+//    val jou: Seq[String] = r.getJournalForGame(gameid)
+    val b : String = "{ \"" + S.board + "\" : " + board + ',' + jj + '}'
+    b
   }
 
 }

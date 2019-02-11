@@ -21,4 +21,8 @@ class II extends IC {
 
   override def deleteGame(gameid: Int) = I.deleteGame(gameid)
 
+  override def readPlayerGameS(board: String, civs: String): String = I.readPlayerGameS(board, civs)
+
+  override def downloadGame(gameid: Int): String = I.downloadGame(gameid)
+
 }

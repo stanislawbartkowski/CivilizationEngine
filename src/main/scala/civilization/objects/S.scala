@@ -88,4 +88,6 @@ object S {
   final val jparam = "jparam"
   final val card = "card"
   final val jartifacts = "jartifacts"
+  final val game = "game"
+  final val board = "board"
 }

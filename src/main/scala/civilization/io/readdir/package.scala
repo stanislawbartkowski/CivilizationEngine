@@ -4,20 +4,29 @@ import java.io.File
 
 import play.api.libs.json.Reads._
 import play.api.libs.json._
-
 import civilization.io.fromjson._
 import civilization.objects._
 import civilization.gameboard._
 import civilization.gameboard.CultureTrack._
+import com.intellij.util.io.IOUtil
 import play.api.libs.functional.syntax._
 
 import scala.io.Source
+//import scala.sys.process.processInternal.InputStream
+//import java.io.{InputStream}
 
 /** Helper for reading resource data as JSON */
 package object readdir extends ImplicitMiximFromJson {
 
+//  def readTestS(resourcefile: String) : String = getClass().getClassLoader.getResource(resourcefile).openStream()
+
+  private def itoString(i : java.io.InputStream) : String = scala.io.Source.fromInputStream(i).mkString
+
+  def readTestS(resourcefile: String) : String = itoString(getClass().getClassLoader.getResource(resourcefile).openStream())
+
   def readTestJSON(resourcefile: String): JsValue =
-    Json.parse(getClass().getClassLoader.getResource(resourcefile).openStream())
+//    Json.parse(getClass().getClassLoader.getResource(resourcefile).openStream())
+    Json.parse(readTestS(resourcefile))
 
 
   def readJournalDict : JsValue = readJSON("messages", "journal.json")
@@ -75,8 +84,8 @@ package object readdir extends ImplicitMiximFromJson {
   }
 
   def readPlay(j: JsValue): Seq[CommandValues] = {
-    val js: JsValue = (j \ "game").get
-    js
+//    val js: JsValue = (j \ S.game).get
+    j
   }
 
   def readTechnologies: Seq[Technology] = readJSON("objects", "TECHNOLOGIES.json")

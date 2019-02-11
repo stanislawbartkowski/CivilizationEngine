@@ -14,13 +14,13 @@ trait IC {
   final val ITEMIZECOMMAND = I.ITEMIZECOMMAND
   final val GETJOURNAL = I.GETJOURNAL
 
-  def getData(what: Int, tokenorciv: String = null, param : String = null): String
+  def getData(what: Int, tokenorciv: String = null, param: String = null): String
 
   def executeCommand(token: String, action: String, row: Int, col: Int, jsparam: String): String
 
   def itemizeCommand(token: String, action: String): String
 
-  def setR(r: RAccess) : Unit
+  def setR(r: RAccess): Unit
 
   def resumeGame(gameid: Int, civ: String): String
 
@@ -28,6 +28,10 @@ trait IC {
 
   def allPlayersReady(token: String): Boolean
 
-  def deleteGame(gameid : Int)
+  def deleteGame(gameid: Int)
+
+  def readPlayerGameS(board: String, civs: String): String
+
+  def downloadGame(gameid : Int) : String
 
 }

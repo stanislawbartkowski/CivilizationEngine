@@ -22,12 +22,30 @@ class Test38 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
     // remove game
     II.deleteGame(gameid)
     // check that game is removed
-    val glist : JsArray = toJ(II.getData(II.LISTOFGAMES)).as[JsArray]
-    glist.value.foreach( e => {
+    val glist: JsArray = toJ(II.getData(II.LISTOFGAMES)).as[JsArray]
+    glist.value.foreach(e => {
       val g = (e \ "gameid").as[Int]
       println(g)
       assert(g != gameid)
     })
+  }
+
+  test("Download game") {
+    val reg = Helper.ReadAndPlayForTwo("test37/BOARDGAME1.json", "test37/PLAY1.json", Civilization.America, Civilization.China)
+    val tokenA = reg._1
+    val tokenC = reg._2
+    val gameid = reg._3
+    val g: String = II.downloadGame(gameid)
+    println(g)
+    II.deleteGame(gameid)
+    // try to register games again
+//    val r = II.readTwoPlayerGameS(g._1,g._2,"America","China")
+    val r = II.readPlayerGameS(g,"America,China")
+    println(r)
+    val nextgameid : Int = r.split(",")(2).toInt
+    println(nextgameid)
+    // remove
+    II.deleteGame(nextgameid)
   }
 
 }
