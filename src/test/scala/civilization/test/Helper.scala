@@ -41,7 +41,7 @@ object Helper {
 
   def getBoardAndRegister(boardpath: String, civ: Civilization.T): (String, GameBoard) = {
     val g: GameBoard = getBoard(boardpath)
-    val token: String = civilization.I.registerGame(g, civ)._1
+    val (token: String, gameid : Int) = civilization.I.decodeS(civilization.I.registerGame(g, civ))
     (token, g)
   }
 

@@ -2,7 +2,6 @@ package civilization.test
 
 import civilization.I.II
 import civilization.I
-import civilization.I.{registerGame}
 import civilization.gameboard.GameBoard
 import civilization.helper._
 import civilization.objects.{Civilization, Command, P}

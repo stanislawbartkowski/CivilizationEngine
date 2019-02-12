@@ -1,7 +1,6 @@
 package civilization.test
 
 import civilization.I
-import civilization.I.registerGame
 import civilization.gameboard.GameBoard
 import civilization.helper.getProductionForCity
 import civilization.objects.{Civilization, Command, P}

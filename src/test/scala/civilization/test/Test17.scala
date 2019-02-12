@@ -64,7 +64,7 @@ class Test17 extends FunSuite with ImplicitMiximToJson {
     )
     println(noh)
     assert(noh > 0)
-    val token: String = civilization.I.registerGame(g, Civilization.Germany)._1
+    val (token: String, gameid : Int) = civilization.I.decodeS(civilization.I.registerGame(g, Civilization.Germany))
     var gg: GameBoard = I.getBoardForToken(token)
     var nohh = 0
     gg.map.map.foreach(

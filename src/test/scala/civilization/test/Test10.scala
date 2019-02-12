@@ -36,7 +36,7 @@ class Test10 extends FunSuite {
     assert(!II.allPlayersReady(token))
     var s : String = II.getData(II.LISTOFWAITINGGAMES)
     println(s)
-    val ctoken: String = II.joinGame(gameid, "China")
+    val (ctoken: String,_ : Int) = civilization.I.decodeS(II.joinGame(gameid, "China"))
     // joined, game ready
     assert(II.allPlayersReady(token))
     assert(II.allPlayersReady(ctoken))
@@ -65,7 +65,7 @@ class Test10 extends FunSuite {
     println(res1)
     // should be on waiting list, not current in play
     assert(!res.contains(gameid))
-    val ctoken: String = II.joinGame(gameid, "China")
+    val ctoken: String = civilization.I.decodeS(II.joinGame(gameid, "China"))._1
     println(ctoken)
     res = WaitingGames.findListOfWaitingGames(RA)
     println(res)
@@ -87,7 +87,7 @@ class Test10 extends FunSuite {
     val game: CurrentGame = RA.getCurrentGame(token)
     val gameid: Int = game.gameid
     println(gameid)
-    val ctoken: String = II.joinGame(gameid, "China")
+    val ctoken: String = civilization.I.decodeS(II.joinGame(gameid, "China"))._1
     val b: GameBoard = I.getBoardForToken(token)
     var a: Seq[Command.T] = allowedCommandsH(b, Civilization.Rome)
     println(a)

@@ -27,7 +27,7 @@ class Test20 extends FunSuite with ImplicitMiximFromJson {
     val game: CurrentGame = RA.getCurrentGame(token)
     val gameid: Int = game.gameid
     println(gameid)
-    val ctoken: String = II.joinGame(gameid, Civilization.China.toString)
+    val (ctoken: String, gameId : Int) = civilization.I.decodeS(II.joinGame(gameid, Civilization.China.toString))
     // Rome active at the beginning
     Helper.activeciv(token, "Rome", "StartOfTurn")
     // Rome also active for China
@@ -310,7 +310,7 @@ class Test20 extends FunSuite with ImplicitMiximFromJson {
     println(g.market.buildings.table)
     assert(g.market.buildings.table.size > 0)
     g.market.buildings.table.foreach(t => assert(t._2 >= 5))
-    val token: String = civilization.I.registerGame(g, Civilization.Germany)._1
+    val (token: String, gameid : Int) = civilization.I.decodeS(civilization.I.registerGame(g, Civilization.Germany))
     var ss = II.getData(II.GETBOARDGAME, token)
     println(ss)
   }

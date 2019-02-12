@@ -103,8 +103,8 @@ package object I extends ImplicitMiximFromJson {
   def getData(what: Int, tokenorciv: String, param: String): String = {
     synchronized {
       what match {
-        case REGISTEROWNER => toS(registerOwnerPlay(tokenorciv, "GAME1.json"))
-        case REGISTEROWNERTWOGAME => toS(registerOwnerPlay(tokenorciv, "GAME2.json"))
+        case REGISTEROWNER => registerOwnerPlay(tokenorciv, "GAME1.json")
+        case REGISTEROWNERTWOGAME => registerOwnerPlay(tokenorciv, "GAME2.json")
         case GETBOARDGAME => getBoardForCiv(tokenorciv)
         case LISTOFGAMES => listOfGames
         case UNREGISTERTOKEN => {
@@ -124,7 +124,7 @@ package object I extends ImplicitMiximFromJson {
 
   private def toCiv(civ: String): Civilization.T = Civilization.withName(civ)
 
-  private def registerOwnerPlay(civ: String, game: String): (String, Int) = {
+  private def registerOwnerPlay(civ: String, game: String): String = {
     val l: List[Civilization.T] = civ.split(",").toList.map(toCiv(_))
     val g: GameBoard = genBoard(l, game)
     registerGame(g, l.head)
@@ -134,10 +134,10 @@ package object I extends ImplicitMiximFromJson {
     val token: String = genToken()
     val cu: CurrentGame = CurrentGame(gameid, civ)
     r.registerCurrentGame(token, cu)
-    token
+    toS(token,gameid)
   }
 
-  def registerGame(g: GameBoard, civ: Civilization.T): (String, Int) = {
+  def registerGame(g: GameBoard, civ: Civilization.T): String = {
     val gameS: String = writesGameBoard(g).toString()
     val gameid: Int = r.registerGame(gameS)
     val metadata: String = writeMetaData(g.metadata).toString()
@@ -150,17 +150,17 @@ package object I extends ImplicitMiximFromJson {
     }
     )
     updateJournal(gameid, g)
-    (currentGame(civ, gameid), gameid)
+    currentGame(civ, gameid)
   }
 
-  private def readSinglePlayerGame(board: JsValue, play: JsArray, civ: Civilization.T): (String, Int) = {
+  private def readSinglePlayerGame(board: JsValue, play: JsArray, civ: Civilization.T): String = {
     val g: GameBoard = readGameBoard(board)
     val p: Seq[CommandValues] = readPlay(play)
     p.foreach(c => {
       val co: Command = constructCommand(c)
       g.play.addCommand(co)
     })
-    civilization.I.registerGame(g, civ)
+    registerGame(g, civ)
   }
 
   private def breakGame(s: String): (JsValue, JsArray) = {
@@ -170,14 +170,20 @@ package object I extends ImplicitMiximFromJson {
     (j1, j2)
   }
 
+  def decodeS(s : String) : (String,Int) = {
+    val c: Array[String] = s.split(",")
+    (c(0),c(1).toInt)
+  }
+
   def readPlayerGameS(board: String, civs: String): String = {
     val c: Array[String] = civs.split(",")
     val (b, j) = breakGame(board)
-    val t: (String, Int) = readSinglePlayerGame(b, j, toCiv(c(0)))
+    val t: String = readSinglePlayerGame(b, j, toCiv(c(0)))
     if (c.length > 1) {
-      val ctoken: String = joinGame(t._2, c(1))
-      t._1 + ',' + ctoken + ',' + t._2.toString()
-    } else t._1 + ',' + t._2.toString()
+      val (token : String ,gameid : Int) = decodeS(t)
+      val ctoken: String = joinGame(gameid, c(1))
+      token + ',' + toS(ctoken,gameid)
+    } else t
   }
 
   def joinGame(gameid: Int, c: String): String = {
