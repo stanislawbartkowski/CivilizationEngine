@@ -747,16 +747,6 @@ One Hut and Spy discovered
 * Usage example:  
   * executeCommand("secret token","UNSENDPRODUCTION",2,2,"{"row" : 5, "col" : 3})
   * Undo send production in city (2,2) from square (5,3)
-
-## BUYARTILLERY,BUYMOUNTED,BUYINFANTRY,BUYAIRCRAFT
-
-* executeCommand(token,"BUYARTILLERY",row,col,null)
-* Parameters:
-  * row,col : city where the unit specifield by command name is to be bought
-  * jsparam : not used
-* Usage example:  
-  * executeCommand("secret token","BUYARTILLERY",2,2,null)
-  * Buy Artillery in city (2,2)
   
 ## ATTACK
 * executeCommand(token,"ATTACK",row, col)
@@ -837,7 +827,7 @@ Sample
 
 Production from square (1,5) can be sent to city (2.2)
 
-## BUYARTILLERY,BUYMOUNTED,BUYINFANTRY,BUYAIRCRAFT, UNDOSPENDTRADE, UNDOSPENDTRADE
+## UNDOSPENDTRADE, UNDOSPENDTRADE
 
 List of cities where unit can be bought. 
 
