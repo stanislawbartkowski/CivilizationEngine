@@ -840,20 +840,6 @@ Sample:
 
 A unit can be bought in two cities : (2,2) and (5,3)
 
-## EXPLOREHUT
-
-List of huts (always single) ready to be exlored
-
-Format:
-
- {"p" : { "row" : int, "col" : int}, "explore" : \[{ "row" : int, "col" : int }\] }
-
-Sample
-
- {"p" : { "row" : 2, "col" : 5}, "explore" : \[{ "row" : 2, "col" : 4 }\] }
- 
- Scout or figure at point (2,5) can explore hit (2,4)
- 
  ## BUYBUILDING
  
 Returns a list of cities and list of buildings possible to buy and build on the outskirts of a particular city.
