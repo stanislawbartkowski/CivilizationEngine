@@ -710,34 +710,6 @@ Infantry unit with power specified.
 Number of units (Hut or Villages) and detailed list of discovered resources.
 In this example:
 One Hut and Spy discovered
-
-## executeCommand(token,actionname,row,col,jsparam)
-* Parameters
-  * token : Returned by REGISTERGAME
-  * action : Command to execute: SETCAPITAL, SETSITY, SPENDPRODUCTION
-  * row,col : Square position identyfying the object. Depends on the action. For instance: SETCITY - square where city is supposed to be built
-  * jsparam : Additional parameter in JSON format. Depends on the action. For instance: STARTMODE - fugures or armies to move moved. Null if parameter is not required.
-* Result: if null then command executed succesfully. If not null, the command failed and the result contains failure description
-* Usage example: executeCommand("secret token","SETCITY",2,2,null)
-* Description: Executes command and moves game from one state to another. After success call getData(GETBOARDGAME) to receive current game state. 
-
-## itemizeCommand(token,command)
-* Parameters: token and command name
-* Returns: List of possible parameters for the command. The content depends on a particular command
-* Usage example: val l : String = itemizeCommand("secret token","SETCAPITAL")
-* Description: Returns more detailed information. For instance: if the command is SETCAPITAL the command will return a list of all points where the capital can be built. Can be used by user interface to customize screen.
-
-# executeCommand format
-
-## SENDPRODUCTION,HARVESTRESOURCE
-* executeCommand(token,"SENDPRODUCTION",row,col,jsparam: { "row" : int, "col" : int })
-* executeCommand(token,"HARVESTRESOURCE",row,col,jsparam: { "row" : int, "col" : int })
-* Parameters
-  * row,col : city position where production is to be sent
-  * jsparam : scout square coordinates to be harvested
-* Usage example:
-  * executeCommand("secret token","SENDPRODUCTION",2,2,"{"row" : 5, "col" : 3})
-  * Send production from square (5,3) to city/capital (2,2)
   
 ## UNDOSENDPRODUCTION
 * executeCommand(token,"UNDOSENDPRODUCTION",row,col,jsparam : jsparam: { "row" : int, "col" : int })
@@ -773,16 +745,6 @@ One Hut and Spy discovered
 * Usage example:
   * executeCommand("ENDBATTLE",-1,-1,null)
   
-## BUYBUILDING
-* executeCommand("secret token","BUYBUILIGING",row,col, { "row" : row, "col" : col, "building" : "building name"})
-* Parameters:
- *  row,col : city
- *  { "row","col", "building"} : square at the outskirt of the city where bulding is build and set up
-* Usage example:
- * executeCommand("BUYBUILDING",0,4,{{"p":{"row":0,"col":4},"building":"Temple"})
- 
-Remark: The same command is used to build a new building on an empty square and as a replacement of existing building. For replacement, the previous building is removed and new is nailed down. Also for a limited building. The previous limited building is removed regardless where it is standind and a new building is put.  
-
 ## POTTERYACTION,PHILOSOPHYACTION
 
 Spend resources or hut/villages and put a coin on the technology
@@ -814,19 +776,6 @@ Devout city to culture. City can be helped by scout standing on the squre having
 
 For every command the engine can return itemization, list of possible moves. The format is different for every command.
 
-## SENDPRODUCTION, UNDOSENDPRODUCTION, HARVESTRESOURCES
-
-List of pairs, city and scout or square. City, where production can be sent and scout, a square to be harvested or undone
-
-Format:
-\[ { "p" : {"row" : int, "col" : int}, "param" : { "row" : int, "col" : int } } \]
-
-Sample
-
-\[ { "p" : { "row" : 2, "col" : 2 }, "param" : { "row" : 1, "col" : 5 } } \]
-
-Production from square (1,5) can be sent to city (2.2)
-
 ## UNDOSPENDTRADE, UNDOSPENDTRADE
 
 List of cities where unit can be bought. 
@@ -840,44 +789,7 @@ Sample:
 
 A unit can be bought in two cities : (2,2) and (5,3)
 
- ## BUYBUILDING
- 
-Returns a list of cities and list of buildings possible to buy and build on the outskirts of a particular city.
 
-Example below:
-
-```JSON
- [{"p":{"row":1,"col":5},
-```
-City at square (1,5)
-Around a city Market and Temple can be built.
-```JSON
-       {"p":{"row":0,"col":4},"building":"Market","list":[]},
-```
-Market can be build at square (0,4).
-
-```
-"list":[]
-```
-For every building, there is a list of buildings to be pulled down if new building is puit there. The list could contain 1 (for replacement) or 2 elements. The second case is for "limited" building marked with star sign. In order to build a next limited building, the previous one should be removed.
-       
- ```JSON
- [{"p":{"row":1,"col":5},
-   "list":[
-       {"p":{"row":0,"col":4},"building":"Market","list":[]},
-       {"p":{"row":0,"col":4},"building":"Temple","list":[]},
-       {"p":{"row":2,"col":4},"building":"Market","list":[]},
-       {"p":{"row":2,"col":4},"building":"Temple","list":[]},
-       {"p":{"row":2,"col":6},"building":"Market","list":[]},
-       {"p":{"row":2,"col":6},"building":"Temple","list":[]},
-       {"p":{"row":1,"col":4},"building":"Market","list":[]},
-       {"p":{"row":1,"col":4},"building":"Temple","list":[]},
-       {"p":{"row":1,"col":6},"building":"Market","list":[]},
-       {"p":{"row":1,"col":6},"building":"Temple","list":[]}
-     ]
-  }
-  ]
-```
 ## POTTERYACTION,PHILOSOPHYACTION
 
 Returns list of cities where action is possible to execute
