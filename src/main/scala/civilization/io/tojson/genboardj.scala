@@ -126,7 +126,7 @@ object genboardj {
     "armieslimit" -> p.limits.armieslimit,
     "scoutslimit" -> p.limits.scoutslimit,
     "tradeforprod" -> p.limits.tradeforProd,
-    "prodfortrade" -> p.limits.prodfortrade,
+//    "prodfortrade" -> p.limits.prodfortrade,
     S.units -> unitstoJSON(p.pl.units, you, p.pl.combatlevel),
     S.resources -> p.pl.resou,
     S.hutvillages -> hvtojson(p.pl.hvlist, you),

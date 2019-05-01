@@ -22,12 +22,12 @@ class Test28 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
     val token: String = gg._1
     val pl: PlayerLimits = getLimitsH(g, Civilization.America)
     println(pl.tradeforProd)
-    assert(pl.tradeforProd == 3)
-    assert(pl.prodfortrade == 2)
+    assert(pl.tradeforProd == 2)
+//    assert(pl.prodfortrade == 2)
     val s = II.getData(II.GETBOARDGAME, token)
     val ju: JsValue = Helper.jyou(toJ(s))
     println(ju)
-    val prodfortrade = (ju \ "prodfortrade").as[Int]
+    val prodfortrade = (ju \ "tradeforprod").as[Int]
     println(prodfortrade)
     assert(prodfortrade == 2)
   }

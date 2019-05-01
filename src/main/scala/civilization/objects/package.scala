@@ -6,7 +6,7 @@ package object objects {
   val TRADEMAX: Int = 27
   val TILESIZE: Int = 4
   val DEFAULTTRADEFORPROD = 3
-  val DEFAULTPRODFORTRADE = 1
+//  val DEFAULTPRODFORTRADE = 3
   val UNITLEVELSIZE = 4
   val UNITSBATTLE = 3
   val IRONSTRENGTH = 3

@@ -3,7 +3,6 @@ package civilization.test
 import civilization.I.{CurrentGame, getBoardForToken}
 import civilization.gameboard.{GameBoard, PlayerDeck}
 import civilization.io.readdir.{readGameBoard, readPlay, readTestJSON, readTestS}
-import civilization.message.{FatalError, Mess}
 import civilization.objects.{Civilization, CommandValues, _}
 import play.api.libs.json._
 import civilization.io.fromjson.toJ
@@ -66,26 +65,24 @@ object Helper {
   def readBoardAndPlayT(boardpath: String, playPath: String, civ: Civilization.T): (String, GameBoard) = {
     val board: String = getBoardS(boardpath)
     val play: String = getPlayS(playPath)
-//    val t: String = II.readSinglePlayerGameS(board, play, civ.toString())
     val t : String = II.readPlayerGameS(toSingleString(board,play),civ.toString())
     val token = extractToken(t)
     (token, getBoardForToken(token))
   }
 
-  //  def ReadAndPlayForTwo(boardpath: String, playPath: String, civ1: Civilization.T, civ2: Civilization.T): (String, String, Int) = {
-  //    val cu = readBoardAndPlayT(boardpath, playPath, civ1)
-  //    val token: String = cu._1
-  //    val game: CurrentGame = RA.getCurrentGame(token)
-  //    val gameid: Int = game.gameid
-  //    val ctoken: String = II.joinGame(gameid, civ2.toString)
-  //    return (token, ctoken, gameid)
-  //  }
+  def getBoardToken(token : String) : GameBoard = getBoardForToken(token)
+
+  def readGameSingle(gamepath : String, civ : Civilization.T) : (String, Int) = {
+    val game : String = getBoardS(gamepath)
+    val t : String = II.readPlayerGameS(game,civ.toString())
+    val tk = t.split(',') // token
+    (tk(0), tk(1).toInt)
+  }
 
   def ReadAndPlayForTwo(boardpath: String, playPath: String, civ1: Civilization.T, civ2: Civilization.T): (String, String, Int) = {
     val board: String = getBoardS(boardpath)
     val play: String = getPlayS(playPath)
     val t : String = II.readPlayerGameS(toSingleString(board,play),civ1.toString() + ',' + civ2.toString())
-//    val t: String = II.readTwoPlayerGameS(board, play, civ1.toString(), civ2.toString())
     val tk = t.split(',') // token
     (tk(0), tk(1), tk(2).toInt)
   }

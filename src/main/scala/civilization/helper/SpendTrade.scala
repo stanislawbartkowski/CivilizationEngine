@@ -32,7 +32,7 @@ object SpendTrade extends CommandPackage with ImplicitMiximFromJson with Implici
     override def verify(board: gameboard.GameBoard): message.Mess = {
       val trade: TradeForCiv = numberofTrade(board, deck)
       val li: PlayerLimits = getLimits(board, deck)
-      if (li.prodForTrade(param) > trade.trade) return Mess(M.NOTENOUGHTRADETOSPENDFORPROD, (command, trade.trade))
+      if (li.prodtoTrade(param) > trade.trade) return Mess(M.NOTENOUGHTRADETOSPENDFORPROD, (command, trade.trade))
       null
     }
 

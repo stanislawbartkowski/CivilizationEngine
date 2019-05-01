@@ -646,10 +646,8 @@ package object helper {
     if (firstRound(b, None)) num * 2 else num
   }
 
-  private def reduceTradeBySpend(b: GameBoard, civ: Civilization.T, playerLimits: PlayerLimits): Int = {
-    playerLimits.prodForTrade(spendProdForCities(b, civ).foldLeft(0) { (sum, i) => sum + i._2 })
-  }
-
+  private def reduceTradeBySpend(b: GameBoard, civ: Civilization.T, playerLimits: PlayerLimits): Int =
+    playerLimits.prodtoTrade(spendProdForCities(b, civ).foldLeft(0) { (sum, i) => sum + i._2 })
 
   private def numberofTradePhasenoresearch(b: GameBoard, civ: Civilization.T, phase: TurnPhase.T): Int = {
     // commands : reverse
@@ -870,10 +868,10 @@ package object helper {
 
   case class PlayerLimits(val citieslimit: Int, val stackinglimit: Int, val watercrossingallowed: Boolean, val waterstopallowed: Boolean,
                           val armieslimit: Int, val scoutslimit: Int, val travelSpeed: Int, val tradeforProd: Int,
-                          val playerStrength: CombatUnitStrength, val aircraftUnlocked: Boolean, val scoutscanExplore: Boolean, val combatBonus: Int, val handsize: Int,
-                          val prodfortrade: Int) {
+                          val playerStrength: CombatUnitStrength, val aircraftUnlocked: Boolean, val scoutscanExplore: Boolean, val combatBonus: Int, val handsize: Int) {
 
-    def prodForTrade(prod: Int): Int = (prod / prodfortrade).toInt * tradeforProd
+//    def prodForTrade(prod: Int): Int = (prod / prodfortrade).toInt * tradeforProd
+    def prodtoTrade(prod: Int): Int = prod * tradeforProd
   }
 
   private def numofGreatPersonFeature(b: GameBoard, civ: Civilization.T, feature: GreatPersonName.T => Boolean): Int =
@@ -886,8 +884,8 @@ package object helper {
     val scoutslimit: Int = deck.defaultscoutslimit - count._2
     val handsize: Int = deck.defaultculturehandsize + deck.numofTechnologyFeatures(TechnologyFeatures.increaseHandSize)
 
-    val tradeforprod: Int = DEFAULTTRADEFORPROD;
-    val prodfortrade: Int = CivilizationFeatures.prodfortrade(deck.civ)
+//    val tradeforprod: Int = DEFAULTTRADEFORPROD;
+    val tradeforprod: Int = CivilizationFeatures.tradeForProd(deck.civ)
     val technologytravelspeed: Int =
       math.max(DEFAULTTRAVELSPPED, if (deck.tech.isEmpty) 0 else deck.tech.map(t => TechnologyFeatures.speedLimit(t.tech)).max)
     val travelspeed: Int = technologytravelspeed + (if (CivilizationFeatures.increaseTravelSpeedByOne(deck.civ)) 1 else 0) +
@@ -896,7 +894,7 @@ package object helper {
     PlayerLimits(citieslimit, deck.stackLimit,
       deck.hasTechnologyFeature(TechnologyFeatures.watercrossingAllowed),
       deck.hasTechnologyFeature(TechnologyFeatures.canStopInWater),
-      armieslimit, scoutslimit, travelspeed, tradeforprod, deck.combatlevel, false, false, calculateCombatBonus(b, deck.civ), handsize, prodfortrade)
+      armieslimit, scoutslimit, travelspeed, tradeforprod, deck.combatlevel, false, false, calculateCombatBonus(b, deck.civ), handsize)
   }
 
   // =====================================
