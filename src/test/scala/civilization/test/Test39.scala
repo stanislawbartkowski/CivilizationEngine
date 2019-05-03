@@ -15,9 +15,9 @@ class Test39 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
 
   Helper.I
 
-  private def verify1(token : String, expectedtrade : Int, expectedprod : Int) = {
-    val g : GameBoard = Helper.getBoardToken(token)
-    val t :  TradeForCiv = numberofTradeH(g, Civilization.America)
+  private def verify1(token: String, expectedtrade: Int, expectedprod: Int) = {
+    val g: GameBoard = Helper.getBoardToken(token)
+    val t: TradeForCiv = numberofTradeH(g, Civilization.America)
     println(t.trade)
     println(t)
     assert(t.trade == expectedtrade)
@@ -27,11 +27,18 @@ class Test39 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
   }
 
   test("Verify again SPENDTRADE") {
-    val (token,gameid) = Helper.readGameSingle("test39/GAME1.json", Civilization.America)
-    verify1(token,7,5)
+    val (token, gameid) = Helper.readGameSingle("test39/GAME1.json", Civilization.America)
+    verify1(token, 7, 5)
     Helper.executeCommandH(token, "SPENDTRADE", 2, 2, "1")
-    verify1(token,5,6)
+    verify1(token, 5, 6)
     II.deleteGame(gameid)
+  }
+
+
+  test("Test incorrect ADVANCECULTURE") {
+    val (token, gameid) = Helper.readGameSingle("test39/GAME2.json", Civilization.America)
+    // command should fail
+    Helper.executeCommandFail(token, "ADVANCECULTURE")
   }
 }
 

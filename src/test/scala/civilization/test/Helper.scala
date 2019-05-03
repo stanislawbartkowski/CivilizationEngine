@@ -111,7 +111,7 @@ object Helper {
     assert(e(token, action, row, col, jsparam) == null)
   }
 
-  def executeCommandFail(token: String, action: String, row: Int, col: Int, jsparam: String): Unit = {
+  def executeCommandFail(token: String, action: String, row: Int = -1, col: Int = -1, jsparam: String = null): Unit = {
     assert(e(token, action, row, col, jsparam) != null)
   }
 
