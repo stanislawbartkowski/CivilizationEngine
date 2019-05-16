@@ -2,6 +2,8 @@
 
 https://www.fantasyflightgames.com/en/products/civilization/
 
+Detailed command description: WIKI https://github.com/stanislawbartkowski/CivilizationEngine/wiki
+
 It is a Scala project to implement Civilization The Board Game engine. Only base game, without expansions "About Wisdom and Warfare" and "Fame and Fortune"
 It is the beginning, for the time being only the following actions are implemented:
 * map: squares and tiles
@@ -719,15 +721,7 @@ One Hut and Spy discovered
 * Usage example:  
   * executeCommand("secret token","UNSENDPRODUCTION",2,2,"{"row" : 5, "col" : 3})
   * Undo send production in city (2,2) from square (5,3)
-  
-## ATTACK
-* executeCommand(token,"ATTACK",row, col)
-* Parameters:
- * row,col : square to attack. Can be village or alient unit or city. Currently only attacking village is implemented. The attacking unit is the current unix in move phase
-* Usage example:
-  * executeCommand("secret token","ATTACK",4,0,null)
-  * Start the battle involving village at square (4,0)
-  
+    
 ## PLAYUNIT
 ## PLAYUNITIRON
 * executeCommand(token,"PLAYUNIT",indexfrom, indexto,null)
@@ -762,32 +756,9 @@ Spend resources or hut/villages and put a coin on the technology
 
  Spend Hut with Spy and Iron to put coin on Pottery technology. The action is executed in city (1,2)
 
-## DEVOUTTOCULTURE
-
-Devout city to culture. City can be helped by scout standing on the squre having resource token.
-
-* executeCommand("secret token","DEVOUTTOCULTURE",row,col,[{"row":row,"col":col])
-
-*Parameters:
-* row,col : city to be devouted to culture
-* list : list of supporting scouts. If no scout is supporting empty list should be passed
-
 # itemizeCommand format
 
 For every command the engine can return itemization, list of possible moves. The format is different for every command.
-
-## UNDOSPENDTRADE, UNDOSPENDTRADE
-
-List of cities where unit can be bought. 
-
-Format:
-\[ {"p": {"row" : int,"col" : int}} \]
-
-Sample:
-
-\[ {"p: : {"row" : 2,"col" : 2}},{ "p" : {"row" : 5,"col" : 3}} \]
-
-A unit can be bought in two cities : (2,2) and (5,3)
 
 
 ## POTTERYACTION,PHILOSOPHYACTION
@@ -800,14 +771,3 @@ Example:
  [{"p":{"row":1,"col":5},
 ```
 Action can be execute in city (1,5)
-
-## DEVOUTTOCULTURE
-
-Return list of cities accompanied by list of scout ready to send the culture to the city
-
-Example
-
-```JSON
-[{"p":{"row":1,"col":1},"list":[]}]
-```
-City (1,1) can devout itself to culture. No scout can support.
