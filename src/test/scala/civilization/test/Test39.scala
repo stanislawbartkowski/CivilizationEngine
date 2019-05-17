@@ -40,5 +40,21 @@ class Test39 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
     // command should fail
     Helper.executeCommandFail(token, "ADVANCECULTURE")
   }
+
+  test("Verify GETBOARD twice") {
+    val (token, gameid) = Helper.readGameSingle("test39/GAME1.json", Civilization.America)
+    verify1(token, 7, 5)
+    Helper.executeCommandH(token, "SPENDTRADE", 2, 2, "1")
+    val res = II.getData(II.GETBOARDGAME,token)
+    print(res)
+    // try again
+    val res1 = II.getData(II.GETBOARDGAME,token)
+    print("\n=============================================================\n")
+    print(res1)
+    // empty for the second time
+    assert(res1 == "")
+    II.deleteGame(gameid)
+  }
+
 }
 
