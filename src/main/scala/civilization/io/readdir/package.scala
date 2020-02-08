@@ -1,14 +1,11 @@
 package civilization.io
 
-import java.io.File
-
 import play.api.libs.json.Reads._
 import play.api.libs.json._
 import civilization.io.fromjson._
 import civilization.objects._
 import civilization.gameboard._
 import civilization.gameboard.CultureTrack._
-import com.intellij.util.io.IOUtil
 import play.api.libs.functional.syntax._
 
 import scala.io.Source
@@ -38,17 +35,8 @@ package object readdir extends ImplicitMiximFromJson {
     Json.parse(s)
   }
 
-  // TODO : not always work as expected, failing for Heroku
-  //  private def getDirectory(resourcedir : String) : Seq[String] = Source.fromResource(resourcedir).getLines().toSeq
-
-  private def getDirectory(resourcedir: String): Seq[String] = {
-    val fullDirName: String = getClass.getClassLoader.getResource(resourcedir).getPath
-    val d = new File(fullDirName)
-    d.listFiles().map(_.getName)
-  }
-
   def readdirJSON(resourcedir: String): List[(String, JsValue)] = {
-    val o: Seq[String] = getDirectory(resourcedir)
+    val o: Seq[String] = ReadDir.getDirectory(resourcedir)
     o.map(filename => (filename, readJSON(resourcedir, filename))).toList
   }
 

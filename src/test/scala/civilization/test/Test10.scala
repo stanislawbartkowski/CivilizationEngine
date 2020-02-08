@@ -50,6 +50,7 @@ class Test10 extends FunSuite {
     II.getData(II.UNREGISTERTOKEN,ctoken)
     // verify that players not ready for America again
     assert(!II.allPlayersReady(token))
+    II.deleteGame(gameid)
   }
 
 
@@ -79,6 +80,7 @@ class Test10 extends FunSuite {
     val gamechina: CurrentGame = RA.getCurrentGame(ctoken)
     // should be the same game now
     gamerome.gameid should equal(gamechina.gameid)
+    II.deleteGame(gameid)
   }
 
   test("Two players game") {
@@ -130,6 +132,7 @@ class Test10 extends FunSuite {
     Helper.activeciv(token, "Rome", "Movement")
     // Rome active, not China
     Helper.activeciv(ctoken, "Rome", "Movement")
+    II.deleteGame(gameid)
   }
 
   test("Two players game, set capital") {
