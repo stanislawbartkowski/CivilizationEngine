@@ -1,5 +1,7 @@
 package civilization.II.interfaces
 
+import java.util.Optional
+
 trait RAccess {
 
   def getConn: RConnection
@@ -24,7 +26,7 @@ trait RAccess {
 
   def updateGame(id: Int, value: String)
 
-  def getGame(id: Int): String
+  def getGame(id: Int): Option[String]
 
   def deleteGame(id : Int)
 

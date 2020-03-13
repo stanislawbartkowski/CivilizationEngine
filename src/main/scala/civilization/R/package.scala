@@ -1,5 +1,7 @@
 package civilization
 
+import java.util.Optional
+
 import civilization.II.interfaces.{RAccess, RConnection}
 import com.redis._
 
@@ -124,7 +126,7 @@ package object R {
     //
 
 
-    override def getGame(id: Int): String = r.withClient(r => r.get(gameKey(id)).get)
+    override def getGame(id: Int): Option[String] = r.withClient(r => r.get(gameKey(id)))
 
     private def keyMetaData(id: Int) : String = gameKey(id) + "." + METADATA
 

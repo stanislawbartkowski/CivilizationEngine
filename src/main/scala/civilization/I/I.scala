@@ -41,7 +41,7 @@ package object I extends ImplicitMiximFromJson {
   private def genToken(): String = new BigInteger(130, random).toString(32)
 
   private def getGameBoard(gameid: Int): GameBoard = {
-    val s: String = r.getGame(gameid)
+    val s: String = r.getGame(gameid).get
     val g: GameBoard = readGameBoard(toJ(s))
     val m: GameMetaData = toMetaData(toJ(r.getMetaData(gameid)))
     g.metadata = m
@@ -273,6 +273,9 @@ package object I extends ImplicitMiximFromJson {
   }
 
   def resumeGame(gameid: Int, c: String): String = {
+    // verify that game exists
+    if (r.getGame(gameid).isEmpty)
+      throw FatalError(Mess(M.GAMEIDDOESNOTEXIST, (gameid,0)))
     removeexistinggames(gameid)
     val civ: Civilization.T = toCiv(c)
     currentGame(civ, gameid)
@@ -308,7 +311,7 @@ package object I extends ImplicitMiximFromJson {
   }
 
   def downloadGame(gameid: Int): String = {
-    val board: String = r.getGame(gameid)
+    val board: String = r.getGame(gameid).get
     val m: Seq[String] = r.getPlayForGame(gameid)
     val jj : String = toJsonList("\"" + S.game + "\":",m, "")
 //    val jou: Seq[String] = r.getJournalForGame(gameid)

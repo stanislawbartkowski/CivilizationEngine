@@ -6,7 +6,8 @@ import civilization.objects.Civilization
 import org.scalatest.FunSuite
 import civilization.test.Helper._
 import civilization.io.fromjson.toJ
-import play.api.libs.json.JsArray
+import civilization.message.FatalError
+import play.api.libs.json.{JsArray, JsObject, JsValue}
 
 
 class Test38 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJson {
@@ -39,13 +40,29 @@ class Test38 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJso
     println(g)
     II.deleteGame(gameid)
     // try to register games again
-//    val r = II.readTwoPlayerGameS(g._1,g._2,"America","China")
-    val r = II.readPlayerGameS(g,"America,China")
+    //    val r = II.readTwoPlayerGameS(g._1,g._2,"America","China")
+    val r = II.readPlayerGameS(g, "America,China")
     println(r)
-    val nextgameid : Int = r.split(",")(2).toInt
+    val nextgameid: Int = r.split(",")(2).toInt
     println(nextgameid)
     // remove
     II.deleteGame(nextgameid)
+  }
+
+  test("Resume nonexisting game") {
+    val s: String = II.getData(II.LISTOFGAMES);
+    println(s);
+    val lgames: JsArray = toJ(s).as[JsArray]
+    val maxid = lgames.value.map(s => {
+      val j: JsObject = s.as[JsObject]
+      println(j)
+      val gameid: Int = j.value.get("gameid").get
+      gameid
+    }).toList.max
+    assertThrows[FatalError] {
+      val token: String = II.resumeGame(maxid + 1, "China")
+      println(token)
+    }
   }
 
 }

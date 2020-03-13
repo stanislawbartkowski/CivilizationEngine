@@ -29,7 +29,7 @@ object WaitingGames {
     // group games by list of players
     // filter out out of version games
     val nplayes: Map[Int, Seq[Civilization.T]] = r.getGames().filter(m => toMetaData(toJ(m._2)).okV).
-      map(g => (g._1, toGameBoard(toJ(r.getGame(g._1))))).map(gg => gg._1 -> gg._2.players.map(_.civ)).toMap
+      map(g => (g._1, toGameBoard(toJ(r.getGame(g._1).get)))).map(gg => gg._1 -> gg._2.players.map(_.civ)).toMap
     // filter out all underplayed
     games.filter(
       // all underplayed game

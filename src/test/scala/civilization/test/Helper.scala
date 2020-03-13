@@ -17,7 +17,8 @@ object Helper {
 
   val II = Factory.getI
   val RA = Factory.getR
-  RA.getConn.setConnection("think", 6379, 1)
+//  RA.getConn.setConnection("think", 6379, 1)
+  RA.getConn.setConnection("localhost", 6379, 0)
   II.setR(RA)
 
   def I = {
