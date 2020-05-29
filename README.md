@@ -68,7 +68,7 @@ IMPORTANT: seems not working properly, IntelliJ ant build does not generate scal
 * Result: Current state of game as JSON object
 * Usage example: val board:String = getData(GETBOARDGAME,"secret token")
 * Description : Returns the gameboard reflecting the current state. 
-
+ 
 # Format, JSON
 ```JSON
 { {
