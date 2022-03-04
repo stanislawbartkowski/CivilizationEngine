@@ -2,5 +2,7 @@
 /.idea/
 /.idea/
 /.bsp/
-/project/
 *.class
+/target/
+/project/target/
+/project/project/
