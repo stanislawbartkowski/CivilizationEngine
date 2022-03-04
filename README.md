@@ -50,6 +50,17 @@ The solution is available as Intellij IDEA project. Steps to recreate:
 * pick up the result: ls out/artifacts/CivilizationEngine/
 IMPORTANT: seems not working properly, IntelliJ ant build does not generate scalac tasks
 
+# Create jar from command line
+
+Install SBT: https://www.scala-sbt.org/1.x/docs/Installing-sbt-on-Linux.html
+
+> sbt clean assembly<br>
+
+Result
+
+> ll target/scala-2.13/CivilizationEngine-assembly-1.0.jar<br>
+
+ 
 # Brief interface description
 
 * package civilization.II. All parameters and result are passed as JSON objects
