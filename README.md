@@ -23,6 +23,11 @@ Only single player test game is available.
 The output artifact is CivilizationEngine.jar
 The only dependency is play_json (https://www.playframework.com/documentation/2.6.x/ScalaJson). Check build.sbt file.
 
+# Redis
+
+> podman pull docker.io/library/redis <br>
+> podman run -d --name redis -p 6379:6379 redis <br>
+
 # The project
 
 The solution is available as Intellij IDEA project. Steps to recreate:
