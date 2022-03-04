@@ -1,0 +1,5 @@
+{
+  "game": [
+    {"command" : "SETCAPITAL","civ" : "America", "p" : {"row":2, "col" : 2}}
+  ]
+}

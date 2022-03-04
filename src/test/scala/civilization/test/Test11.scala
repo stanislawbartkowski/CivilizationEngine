@@ -8,14 +8,14 @@ import civilization.io.fromjson.toJ
 import civilization.objects._
 import civilization.I
 import civilization.I.II
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 import play.api.libs.json.{JsArray, JsString, JsValue}
 import Helper._
 
 
-class Test11 extends FunSuite {
+class Test11 extends AnyFunSuite {
 
-  Helper.I
+  Helper.X
 
   test("Two players game") {
 //    val token: String = II.getData(II.REGISTEROWNERTWOGAME, "Rome,China")

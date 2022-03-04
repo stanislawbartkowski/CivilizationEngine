@@ -7,14 +7,14 @@ import civilization.io.fromjson._
 import civilization.io.readdir.GenBoard.genBoard
 import civilization.message._
 import civilization.objects._
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 import Helper._
 
 
 
-class Test6 extends FunSuite {
+class Test6 extends AnyFunSuite {
 
-  Helper.I
+  Helper.X
 
   test("Start game") {
     var (token,b) = Helper.readBoardAndPlayT("test5/BOARDGAME1.json", "test6/GAME1.json", Civilization.Germany)

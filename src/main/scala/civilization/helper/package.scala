@@ -209,7 +209,7 @@ package object helper {
     val b = a.toBuffer
     val t: T = b(i)
     b.remove(i)
-    return (t, b)
+    return (t, b.toSeq)
   }
 
   def getRandom[T](a: Seq[T], no: Integer): (Seq[T], Seq[T]) = {
@@ -224,7 +224,7 @@ package object helper {
       b.remove(randI)
     }
     // convert again to immutables
-    (res, b)
+    (res toSeq, b toSeq)
   }
 
   def removeFromSeq[T](u: Seq[T], toremove: Seq[T], eq: (T, T) => Boolean): Seq[T] = {
@@ -303,7 +303,7 @@ package object helper {
   }
 
   private def currentTurnReverse(b: GameBoard, civ: Civilization.T): Seq[Command] =
-    currentTurnReverseFromSeq(b.play.commands.filter(_.civ == civ))
+    currentTurnReverseFromSeq(b.play.commands.filter(_.civ == civ) toSeq)
 
 
   //  private def currentTurnReverseForCiv(b: GameBoard, civ: Civilization.T): Seq[Command] =
@@ -313,7 +313,7 @@ package object helper {
   def currentPhase(b: GameBoard): CurrentPhase = {
 
     // reverse command, analyze from end
-    val rlist: Seq[action.Command] = b.play.commands.reverse
+    val rlist: Seq[action.Command] = b.play.commands.reverse toSeq
     // collect civ for last phase
     // filter only ENDOFPHASE
     val ephases: Seq[Command] = rlist.filter(getPhase(_).isDefined)
@@ -349,7 +349,7 @@ package object helper {
   }
 
   private def lastPhaseCommandsReverse(b: GameBoard, civ: Civilization.T, pha: TurnPhase.T): Seq[Command] = {
-    val rlist: Seq[Command] = b.play.commands.reverse
+    val rlist: Seq[Command] = b.play.commands.reverse toSeq
     var clist: Seq[Command] = Nil
     val prevP: TurnPhase.T = prevPhase(pha)
     breakable {
@@ -534,7 +534,7 @@ package object helper {
     )
   }
 
-  def playsingleCommand(b: GameBoard, command: Command, f: Command => Unit = p => Unit, fsuspended: Int => Unit = p => Unit): Mess = {
+  def playsingleCommand(b: GameBoard, command: Command, f: Command => Unit = p => (), fsuspended: Int => Unit = p => ()): Mess = {
     var m: Mess = commandForPhase(b, command)
     if (m != null) return m
     // test if point on board
@@ -570,7 +570,7 @@ package object helper {
     null
   }
 
-  def playCommand(b: GameBoard, command: Command, f: Command => Unit = p => Unit, fsuspended: Int => Unit = p => Unit): Mess = {
+  def playCommand(b: GameBoard, command: Command, f: Command => Unit = p => (), fsuspended: Int => Unit = p => ()): Mess = {
     var m: Mess = playsingleCommand(b, command, f, fsuspended)
     if (m != null) return m
     // play forced commands
@@ -631,7 +631,7 @@ package object helper {
 
 
   private def numberofloottrade(b: GameBoard, civ: Civilization.T): Int = {
-    val loott: Int = currentTurnReverseFromSeq(b.play.commands).foldLeft(0)((sum, c) => {
+    val loott: Int = currentTurnReverseFromSeq(b.play.commands toSeq).foldLeft(0)((sum, c) => {
       var modif: Int = 0
       sum + modif
     }
@@ -651,7 +651,7 @@ package object helper {
 
   private def numberofTradePhasenoresearch(b: GameBoard, civ: Civilization.T, phase: TurnPhase.T): Int = {
     // commands : reverse
-    val rlist: Seq[Command] = b.play.commands.reverse.filter(_.civ == civ)
+    val rlist: Seq[Command] = b.play.commands.reverse.filter(_.civ == civ) toSeq
 
     var lasttrade: Int = 0
     var wasresearch: Boolean = false

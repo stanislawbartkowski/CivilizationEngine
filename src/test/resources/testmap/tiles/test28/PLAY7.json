@@ -1,0 +1,41 @@
+{
+  "game": [
+
+
+    {"command":"SETCAPITAL","civ":"China","p":{"row":2,"col":2},"param":null},
+{"command":"BUILDCITYWALLFORFREE","civ":"China","p":{"row":2,"col":2},"param":null},
+{"command":"SETARMY","civ":"China","p":{"row":2,"col":2},"param":{"row":3,"col":2}},
+{"command":"SETSCOUT","civ":"China","p":{"row":2,"col":2},"param":{"row":2,"col":3}},
+{"command":"ENDOFPHASE","civ":"China","p":null,"param":"StartOfTurn"},
+{"command":"ENDOFPHASE","civ":"China","p":null,"param":"Trade"},
+{"command":"BUYBUILDING","civ":"China","p":{"row":2,"col":2},"param":{"p":{"row":2,"col":3},"building":"Library"}},
+{"command":"ENDOFPHASE","civ":"China","p":null,"param":"CityManagement"},
+{"command":"STARTMOVE","civ":"China","p":{"row":2,"col":3},"param":{"numberofArmies":0,"numberofScouts":1}},
+{"command":"REVEALTILE","civ":"China","p":{"row":0,"col":1},"param":"Left"},
+{"command":"MOVE","civ":"China","p":{"row":2,"col":4},"param":null},
+{"command":"ENDOFMOVE","civ":"China","p":null,"param":null},
+{"command":"STARTMOVE","civ":"China","p":{"row":3,"col":2},"param":{"numberofArmies":1,"numberofScouts":0}},
+{"command":"MOVE","civ":"China","p":{"row":3,"col":3},"param":null},
+{"command":"MOVE","civ":"China","p":{"row":3,"col":4},"param":null},
+{"command":"ENDOFMOVE","civ":"China","p":null,"param":null},
+{"command":"ENDOFPHASE","civ":"China","p":null,"param":"Movement"},
+{"command":"RESEARCH","civ":"China","p":null,"param":"HorsebackRiding"},
+{"command":"ENDOFPHASE","civ":"China","p":null,"param":"Research"},
+{"command":"ENDOFPHASE","civ":"China","p":null,"param":"StartOfTurn"},
+{"command":"ENDOFPHASE","civ":"China","p":null,"param":"Trade"},
+{"command":"BUYARMY","civ":"China","p":{"row":2,"col":2},"param":{"row":3,"col":2}},
+{"command":"ENDOFPHASE","civ":"China","p":null,"param":"CityManagement"},
+{"command":"STARTMOVE","civ":"China","p":{"row":3,"col":4},"param":{"numberofArmies":1,"numberofScouts":0}},
+{"command":"ATTACK","civ":"China","p":{"row":3,"col":5},"param":null},
+{"command":"STARTBATTLE","civ":"China","p":{"row":3,"col":5},"param":{"attacker":[{"name":"Mounted","strength":[2,3,4,5]},{"name":"Artillery","strength":[3,4,5,6]},{"name":"Infantry","strength":[2,3,4,5]}],"defender":[{"name":"Infantry","strength":[2,3,4,5]},{"name":"Artillery","strength":[2,3,4,5]},{"name":"Mounted","strength":[2,3,4,5]}]}},
+{"command":"PLAYUNIT","civ":"China","p":{"row":0,"col":0},"param":null},
+{"command":"PLAYUNIT","civ":"China","p":{"row":0,"col":0},"param":null},
+{"command":"PLAYUNIT","civ":"China","p":{"row":1,"col":1},"param":null},
+{"command":"PLAYUNIT","civ":"China","p":{"row":0,"col":1},"param":null},
+{"command":"PLAYUNIT","civ":"China","p":{"row":0,"col":1},"param":null},
+{"command":"PLAYUNIT","civ":"China","p":{"row":0,"col":0},"param":null},
+{"command":"SAVEUNIT","civ":"China","p":{"row":2,"col":-1},"param":null},
+{"command":"ENDBATTLE","civ":"China","p":null,"param":[]},
+{"command":"ENDOFMOVE","civ":"China","p":null,"param":null}
+
+    ] }

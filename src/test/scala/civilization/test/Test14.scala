@@ -1,6 +1,6 @@
 package civilization.test
 
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 import civilization.gameboard.GameBoard
 import civilization.helper._
 import civilization.objects._
@@ -11,9 +11,9 @@ import civilization.io.readdir._
 import play.api.libs.json.{JsArray, JsValue}
 import Helper.{numof}
 
-class Test14 extends FunSuite with ImplicitMiximFromJson {
+class Test14 extends AnyFunSuite with ImplicitMiximFromJson {
 
-    Helper.I
+    Helper.X
 
   test("Test JSON combat units") {
       val s : String = """{ "name" : "Infantry", "strength": [1,2,3,4] }""";

@@ -5,14 +5,14 @@ import civilization.I
 import civilization.gameboard.GameBoard
 import civilization.helper._
 import civilization.objects.{Civilization, Command, P}
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 import Helper._
 
 
 
-class Test12 extends FunSuite {
+class Test12 extends AnyFunSuite {
 
-  Helper.I
+  Helper.X
 
   test("Spend trade for production") {
     var (token,b) = Helper.readBoardAndPlayT("test11/BOARDGAME1.json", "test12/GAME1.json", Civilization.Rome)

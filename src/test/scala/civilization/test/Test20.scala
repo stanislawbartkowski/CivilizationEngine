@@ -6,7 +6,7 @@ import civilization.gameboard.GameBoard
 import civilization.gameboard._
 import civilization.helper._
 import civilization.io.fromjson.toJ
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 import civilization.objects._
 import play.api.libs.json._
 import civilization.io.readdir._
@@ -16,9 +16,9 @@ import civilization.io.readdir.GameResources
 import Helper._
 
 
-class Test20 extends FunSuite with ImplicitMiximFromJson {
+class Test20 extends AnyFunSuite with ImplicitMiximFromJson {
 
-  Helper.I
+  Helper.X
 
   test("Two players game") {
 //    val token: String = II.getData(II.REGISTEROWNERTWOGAME, "Rome,China")

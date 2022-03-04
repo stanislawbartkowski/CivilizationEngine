@@ -7,10 +7,12 @@ import civilization.helper.battle.AttackCommand
 import civilization.helper.move.{ExploreHutCommand, MoveAction, RevealTileAction}
 import civilization.io.fromjson._
 import civilization.io.tojson._
-import civilization.message.{FatalError, M, Mess, J}
+import civilization.message.{FatalError, J, M, Mess}
 import civilization.objects.Resource.Value
 import civilization.objects._
 import play.api.libs.json.{JsNull, JsValue}
+
+import scala.language.postfixOps
 
 package object action extends ImplicitMiximToJson with ImplicitMiximFromJson {
 
@@ -217,12 +219,12 @@ package object action extends ImplicitMiximToJson with ImplicitMiximFromJson {
 
     protected def emptyCommandPoint(param: JsValue): Command =
       new AbstractCommand(toP(param)) {
-        override def execute(board: GameBoard) = Unit
+        override def execute(board: GameBoard) = ()
       }
 
     protected def emptyCommand(): Command =
       new AbstractCommandNone() {
-        override def execute(board: GameBoard) = Unit
+        override def execute(board: GameBoard) = ()
       }
 
     protected def emptyItemizeP(): Seq[P] = Seq(P(0, 0))

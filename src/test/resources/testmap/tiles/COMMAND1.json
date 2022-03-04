@@ -1,0 +1,8 @@
+{
+  "command": "SETCAPITAL",
+  "civ": "Germany",
+  "param": {
+    "row": 2,
+    "col": 2
+  }
+}

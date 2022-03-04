@@ -1,0 +1,16 @@
+{
+  "game": [
+    {"command" : "SETCAPITAL","civ" : "Rome", "p" : {"row":2, "col" : 2}},
+    { "command" : "SETSCOUT", "civ" : "Rome", "p" : {"row":2, "col" : 2}, "param" : {"row" : 3, "col":1}},
+    { "command" : "SETARMY", "civ" : "Rome", "p" : {"row":2, "col" : 2}, "param" : {"row" : 3, "col":1}},
+    { "command" : "ENDOFPHASE","civ" : "Rome", "param" : "StartOfTurn" },
+    { "command" : "ENDOFPHASE","civ" : "Rome", "param" : "Trade" },
+    { "command" : "BUYARTILLERY","civ" : "Rome", "p" : {"row":2, "col" : 2}},
+    { "command" : "TAKEUNIT","civ" : "Rome", "p" : {"row":2, "col" : 2},"param" : {"name":"Artillery","strength":[1,3,4,6]}},
+    { "command" : "ENDOFPHASE","civ" : "Rome", "param" : "CityManagement" },
+    { "command" : "ENDOFPHASE","civ" : "Rome", "param" : "Movement" },
+    { "command" : "ENDOFPHASE","civ" : "Rome", "param" : "Research" },
+    { "command" : "ENDOFPHASE","civ" : "Rome", "param" : "StartOfTurn" },
+    { "command" : "ENDOFPHASE","civ" : "Rome", "param" : "Trade" }
+  ]
+}

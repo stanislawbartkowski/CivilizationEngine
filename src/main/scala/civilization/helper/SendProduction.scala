@@ -39,7 +39,7 @@ object SendProduction extends CommandPackage with ImplicitMiximFromJson with Imp
       null
     }
 
-    override def execute(board: gameboard.GameBoard): Unit = Unit
+    override def execute(board: gameboard.GameBoard): Unit = ()
   }
 
   override def produceCommand(command: Command.T, civ: Civilization.T, p: P, param: JsValue) =

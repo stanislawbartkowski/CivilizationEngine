@@ -5,6 +5,8 @@ import civilization.helper._
 import civilization.objects.{TurnPhase, _}
 import play.api.libs.json.JsValue
 
+import scala.language.postfixOps
+
 object CommandContainer {
 
   val commands: Seq[CommandPackage] = Seq(BuyUnit, SpendTrade, SendProduction, HarvestResource,

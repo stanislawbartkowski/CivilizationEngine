@@ -7,14 +7,14 @@ import civilization.io.fromjson._
 import civilization.io.tojson.ImplicitMiximToJson
 import civilization.objects.{Civilization, Command, _}
 import civilization.test.Helper.{II}
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 import play.api.libs.json.{JsArray, JsValue}
 import Helper._
 
 
-class Test30 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJson {
+class Test30 extends AnyFunSuite with ImplicitMiximToJson with ImplicitMiximFromJson {
 
-  Helper.I
+  Helper.X
 
   test("Germany bonus") {
 //    val token: String = II.getData(II.REGISTEROWNER, "Germany")

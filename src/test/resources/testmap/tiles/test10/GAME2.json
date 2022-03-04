@@ -1,0 +1,12 @@
+{
+  "game": [
+    {"command" : "SETCAPITAL","civ" : "Rome", "p" : {"row":1, "col" : 2}},
+    { "command" : "SETSCOUT", "civ" : "Rome", "p" : {"row":1, "col" : 2}, "param" : {"row" : 0, "col":2}},
+    { "command" : "SETARMY", "civ" : "Rome", "p" : {"row":1, "col" : 2}, "param" : {"row" : 0, "col":1}},
+    {"command" : "SETCAPITAL","civ" : "China", "p" : {"row":5, "col" : 1}},
+    { "command" : "SETSCOUT", "civ" : "China", "p" : {"row":5, "col" : 1}, "param" : {"row" : 4, "col":1}},
+    { "command" : "SETARMY", "civ" : "China", "p" : {"row":5, "col" : 1}, "param" : {"row" : 5, "col":2}},
+    { "command" : "ENDOFPHASE","civ" : "Rome", "param" : "StartOfTurn" },
+    { "command" : "ENDOFPHASE","civ" : "China", "param" : "StartOfTurn" }
+  ]
+}

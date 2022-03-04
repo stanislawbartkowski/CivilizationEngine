@@ -65,7 +65,7 @@ object MoveAction extends ImplicitMiximFromJson with ImplicitMiximToJson {
   }
 
   class StartMoveAction(override val param: Figures) extends AbstractCommand(param) {
-    def execute(board: GameBoard) = Unit
+    def execute(board: GameBoard) = ()
 
     override def verify(board: GameBoard): Mess = startOfMoveVerify(board, civ, p, param)
   }

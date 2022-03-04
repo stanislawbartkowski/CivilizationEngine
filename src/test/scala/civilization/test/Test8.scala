@@ -5,14 +5,14 @@ import civilization.gameboard.GameBoard
 import civilization.helper.SetFigureAction.itemizeForSetBuyFigures
 import civilization.io.fromjson.{toJ, _}
 import civilization.objects._
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 import play.api.libs.json.{JsValue, _}
 import Helper._
 
 
-class Test8 extends FunSuite {
+class Test8 extends AnyFunSuite {
 
-  Helper.I
+  Helper.X
 
   test("Execute command, check available") {
 //    val token: String = II.getData(REGISTEROWNER, "Germany")

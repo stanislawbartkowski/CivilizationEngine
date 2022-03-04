@@ -1,0 +1,10 @@
+{
+  "game": [
+
+    {"command":"SETCAPITAL","civ":"China","p":{"row":1,"col":1},"param":null},
+{"command":"SETSCOUT","civ":"China","p":{"row":1,"col":1},"param":{"row":2,"col":2}},
+{"command":"SETARMY","civ":"China","p":{"row":1,"col":1},"param":{"row":2,"col":1}},
+{"command":"ENDOFPHASE","civ":"China","p":null,"param":"StartOfTurn"},
+{"command":"ENDOFPHASE","civ":"China","p":null,"param":"Trade"}
+
+    ] }

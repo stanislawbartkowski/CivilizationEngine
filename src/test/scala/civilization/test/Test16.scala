@@ -6,14 +6,14 @@ import civilization.gameboard.GameBoard
 import civilization.helper._
 import civilization.io.fromjson._
 import civilization.objects.{Civilization, Command, _}
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 import play.api.libs.json.{JsArray, JsValue, _}
 import Helper._
 
 
-class Test16  extends FunSuite {
+class Test16  extends AnyFunSuite {
 
-  Helper.I
+  Helper.X
 
   test("Test opposite player ending CityManagement") {
     val c = Helper.ReadAndPlayForTwo("test10/BOARDGAME2.json", "test16/GAME1.json", Civilization.Rome, Civilization.China)

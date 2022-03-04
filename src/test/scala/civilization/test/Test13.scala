@@ -4,15 +4,15 @@ import civilization.I
 import civilization.gameboard.GameBoard
 import civilization.helper.getProductionForCity
 import civilization.objects.{Civilization, Command, P}
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 import civilization.io.fromjson._
 import play.api.libs.json.JsArray
 import Helper._
 
 
-class Test13 extends FunSuite {
+class Test13 extends AnyFunSuite {
 
-  Helper.I
+  Helper.X
 
   test("Test no scouts") {
     var (token,bb) = Helper.readBoardAndPlayT("test11/BOARDGAME1.json", "test13/GAME1.json", Civilization.Rome)

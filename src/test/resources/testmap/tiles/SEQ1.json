@@ -1,0 +1,28 @@
+[
+  {
+    "terrain": "Mountain",
+    "tokens": {
+      "Production": 1
+    }
+  },
+  {
+    "terrain": "Desert",
+    "resource": "Incense",
+    "tokens": {
+      "Trade": 1
+    }
+  },
+  {
+    "terrain": "Mountain",
+    "tokens": {
+      "Production": 1
+    }
+  },
+  {
+    "terrain": "Grassland",
+    "resource": "Silk",
+    "tokens": {
+      "Production": 2
+    }
+  }
+]

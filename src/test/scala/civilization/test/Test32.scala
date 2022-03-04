@@ -6,15 +6,15 @@ import civilization.helper._
 import civilization.io.fromjson.{toJ, _}
 import civilization.io.tojson.ImplicitMiximToJson
 import civilization.objects.{Civilization, Command, _}
-import civilization.test.Helper.II
-import org.scalatest.FunSuite
+//import civilization.test.Helper.XI
+import org.scalatest.funsuite.AnyFunSuite
 import play.api.libs.json.{JsArray, JsString, JsValue}
 import Helper._
 
 
-class Test32 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJson {
+class Test32 extends AnyFunSuite with ImplicitMiximToJson with ImplicitMiximFromJson {
 
-  Helper.I
+  Helper.X
 
   test("Philosopy action") {
     val reg = Helper.readBoardAndPlayT("test32/BOARDGAME1.json", "test32/PLAY1.json", Civilization.Arabs)

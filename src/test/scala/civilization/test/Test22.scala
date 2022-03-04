@@ -6,15 +6,15 @@ import civilization.io.fromjson.{ImplicitMiximFromJson, toJ}
 import civilization.io.readdir._
 import civilization.objects._
 import civilization.test.Helper.{II, _}
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 import play.api.libs.json._
 import civilization.I
 import civilization.io.fromjson._
 import civilization.io.tojson._
 
-class Test22 extends FunSuite with ImplicitMiximFromJson {
+class Test22 extends AnyFunSuite with ImplicitMiximFromJson {
 
-  Helper.I
+  Helper.X
 
   test("Wonders") {
 //    val token: String = II.getData(II.REGISTEROWNER, "China")

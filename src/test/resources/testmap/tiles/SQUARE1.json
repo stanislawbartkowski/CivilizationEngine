@@ -1,0 +1,7 @@
+{
+  "terrain": "Desert",
+  "resource": "Incense",
+  "tokens": {
+    "Trade": 1
+  }
+}

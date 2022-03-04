@@ -4,13 +4,13 @@ import civilization.gameboard._
 import civilization.io.fromjson._
 import civilization.io.readdir.{readTestJSON,readdirJSON, readListOfTiles,readGameBoard, readTechnologies, readJSON}
 import civilization.objects._
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 import play.api.libs.json.{JsPath, JsValue}
 
 
-class Test1 extends FunSuite {
+class Test1 extends AnyFunSuite {
 
-  Helper.I
+  Helper.X
 
   test("Test that we can read resource/map/tile without exception") {
     val l: List[(String, JsValue)] = readdirJSON("map/tiles")

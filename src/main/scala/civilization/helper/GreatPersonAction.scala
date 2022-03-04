@@ -18,7 +18,7 @@ object GreatPersonAction extends CommandPackage with ImplicitMiximFromJson with 
 
   private def possibleGreatPersons(gp: Seq[GreatPersonName.T])(b: GameBoard, deck: PlayerDeck, city: P): Seq[BuildSquare] = {
     getOutskirtsForBuild(b, deck.civ, city).flatMap(pp => gp.map(g =>
-      BuildSquare.BuildSquare(BuildingPoint(pp.p, None, None, Some(g)), getStructureHere(pp))
+      BuildSquare(BuildingPoint(pp.p, None, None, Some(g)), getStructureHere(pp))
     ))
   }
 

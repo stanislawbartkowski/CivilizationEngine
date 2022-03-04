@@ -7,13 +7,13 @@ import civilization.helper._
 import civilization.io.fromjson.toJ
 import civilization.message._
 import civilization.objects._
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 import play.api.libs.json.{JsArray, JsValue}
 import Helper._
 
-class Test15 extends FunSuite {
+class Test15 extends AnyFunSuite {
 
-  Helper.I
+  Helper.X
 
   test("Test buy units") {
     val reg = Helper.readBoardAndPlayT("test11/BOARDGAME1.json", "test13/GAME2.json", Civilization.Rome)

@@ -6,13 +6,12 @@ import civilization.helper._
 import civilization.io.fromjson._
 import civilization.message.Mess
 import civilization.objects._
-import org.scalatest.FunSuite
-import Helper.II
+import org.scalatest.funsuite.AnyFunSuite
 
 
-class Test4 extends FunSuite {
+class Test4 extends AnyFunSuite {
 
-  Helper.I
+  Helper.X
 
   test("Check city") {
     val b: GameBoard = Helper.getBoard("test2/BOARDGAME1.json")

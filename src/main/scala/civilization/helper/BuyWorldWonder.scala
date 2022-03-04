@@ -55,7 +55,7 @@ object BuyWorldWonder extends CommandPackage with ImplicitMiximFromJson with Imp
         val r: Seq[P] = if (wond.isDefined && wond.get != p.p) Seq(wond.get) else Nil
         val remove: Seq[P] = r ++ getStructureHere(p)
 
-        BuildSquare.BuildSquare(BuildingPoint(p.p, None, Some(w), None), remove)
+        BuildSquare(BuildingPoint(p.p, None, Some(w), None), remove)
       })
     })
     res

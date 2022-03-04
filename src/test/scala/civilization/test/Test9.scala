@@ -6,14 +6,14 @@ import civilization.helper._
 import civilization.helper.move.MoveItemize
 import civilization.io.fromjson._
 import civilization.objects._
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 import play.api.libs.json._
 import civilization.helper.move.MoveItemize.{PossibleMove, itemizeForMove}
 import Helper._
 
-class Test9 extends FunSuite {
+class Test9 extends AnyFunSuite {
 
-  Helper.I
+  Helper.X
 
   test("Execute command, set army and scout goto citymanagement") {
     val r = Helper.readBoardAndPlayT("test9/BOARDGAME1.json", "test9/GAME1.json", Civilization.Rome)

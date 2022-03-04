@@ -1,19 +1,16 @@
 package civilization.test
 
 import civilization.I
-import org.scalatest.FunSuite
 import civilization.gameboard._
-import civilization.helper.AllowedCommands.allowedCommands
-import civilization.objects._
 import civilization.helper._
-import civilization.io.fromjson.toJ
-import play.api.libs.json.JsValue
-import Helper._
+import civilization.objects._
+import civilization.test.Helper._
+import org.scalatest.funsuite.AnyFunSuite
 
 
-class Test2 extends FunSuite {
+class Test2 extends AnyFunSuite {
 
-  Helper.I
+  Helper.X
 
   test("Test board") {
     val b: GameBoard = Helper.getBoard("test2/BOARDGAME1.json")

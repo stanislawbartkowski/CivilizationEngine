@@ -7,16 +7,16 @@ import civilization.io.fromjson.{toJ, _}
 import civilization.io.readdir.GenBoard.genBoard
 import civilization.io.tojson.ImplicitMiximToJson
 import civilization.objects._
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 import play.api.libs.json._
 import civilization.helper._
 import civilization.helper.battle.BattleActions
 import Helper._
 
 
-class Test19 extends FunSuite with ImplicitMiximToJson {
+class Test19 extends AnyFunSuite with ImplicitMiximToJson {
 
-  Helper.I
+  Helper.X
 
   test("List of civs") {
     val c: String = II.getData(II.LISTOFRES)

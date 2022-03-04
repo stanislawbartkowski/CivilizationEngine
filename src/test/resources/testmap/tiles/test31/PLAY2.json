@@ -1,0 +1,13 @@
+{
+  "game": [
+
+    {"command":"SETCAPITAL","civ":"Spain","p":{"row":2,"col":2},"param":null},
+{"command":"SETARMY","civ":"Spain","p":{"row":2,"col":2},"param":{"row":3,"col":2}},
+{"command":"SETSCOUT","civ":"Spain","p":{"row":2,"col":2},"param":{"row":3,"col":3}},
+{"command":"ENDOFPHASE","civ":"Spain","p":null,"param":"StartOfTurn"},
+{"command":"ENDOFPHASE","civ":"Spain","p":null,"param":"Trade"},
+{"command":"ENDOFPHASE","civ":"Spain","p":null,"param":"CityManagement"},
+{"command":"STARTMOVE","civ":"Spain","p":{"row":3,"col":3},"param":{"numberofArmies":0,"numberofScouts":1}},
+{"command":"REVEALTILE","civ":"Spain","p":{"row":0,"col":1},"param":"Left"}
+
+    ]}

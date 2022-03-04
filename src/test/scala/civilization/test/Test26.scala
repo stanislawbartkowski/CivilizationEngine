@@ -5,15 +5,15 @@ import civilization.helper._
 import civilization.io.fromjson._
 import civilization.io.tojson.ImplicitMiximToJson
 import civilization.objects.{Civilization, _}
-import civilization.test.Helper.II
-import org.scalatest.FunSuite
+//import civilization.test.Helper.XI
+import org.scalatest.funsuite.AnyFunSuite
 import play.api.libs.json.{JsArray, JsValue}
 import Helper._
 
 
-class Test26 extends FunSuite with ImplicitMiximToJson {
+class Test26 extends AnyFunSuite with ImplicitMiximToJson {
 
-  Helper.I
+  Helper.X
 
   test("Pottery only once per turn") {
 

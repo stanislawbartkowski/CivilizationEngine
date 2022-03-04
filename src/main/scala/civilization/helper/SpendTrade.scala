@@ -37,7 +37,7 @@ object SpendTrade extends CommandPackage with ImplicitMiximFromJson with Implici
     }
 
     // do nothing
-    override def execute(board: gameboard.GameBoard): Unit = Unit
+    override def execute(board: gameboard.GameBoard): Unit = ()
   }
 
 

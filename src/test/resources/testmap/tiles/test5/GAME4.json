@@ -1,0 +1,13 @@
+{
+  "game": [
+    {"command" : "SETCAPITAL","civ" : "Germany", "p" : {"row":2, "col" : 2}},
+    { "command" : "SETARMY", "civ" : "Germany", "p" : {"row":2, "col" : 2},"param":{"row":3, "col" : 1}},
+    { "command" : "SETSCOUT", "civ" : "Germany", "p" : {"row":2, "col" : 2},"param": {"row":2, "col" : 1}},
+    { "command" : "ENDOFPHASE","civ" : "Germany", "param" : "StartOfTurn" },
+    { "command" : "ENDOFPHASE","civ" : "Germany", "param" : "Trade" },
+    { "command" : "BUYARMY", "civ" : "Germany", "p" : {"row":2, "col" : 2},"param": {"row":1, "col" : 1}},
+    { "command" : "ENDOFPHASE","civ" : "Germany", "param" : "CityManagement" },
+    { "command" : "STARTMOVE", "civ" : "Germany", "p" : { "row":1,"col" : 1},"param" : {"numberofArmies" : 1} }
+
+  ]
+}

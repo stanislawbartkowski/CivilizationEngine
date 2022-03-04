@@ -1,21 +1,20 @@
 package civilization.test
 
 import civilization.gameboard.GameBoard
-import civilization.objects._
-import civilization.io.tojson._
-import civilization.io.fromjson._
-import play.api.libs.json._
-import org.scalatest.FunSuite
 import civilization.helper._
-import civilization.message.Mess
+import civilization.io.fromjson._
 import civilization.io.readdir.GenBoard.genBoard
-import Helper.{II, registerOwner}
+import civilization.io.tojson._
+import civilization.objects._
+import civilization.test.Helper.{II, registerOwner}
+import org.scalatest.funsuite.AnyFunSuite
+import play.api.libs.json._
 
 
 
-class Test7 extends FunSuite {
+class Test7 extends AnyFunSuite {
 
-  Helper.I
+  Helper.X
 
   private def eqr(r : Resource.T,sq1: Square) = sq1.resource.isDefined && sq1.resource.get == r
 

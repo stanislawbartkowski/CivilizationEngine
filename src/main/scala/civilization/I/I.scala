@@ -94,7 +94,7 @@ package object I extends ImplicitMiximFromJson {
 
   private def getJournal(token: String): String = {
     val g = getBoard(token)
-    val j: JsValue = writeJ(g._1.civ, g._2.journal)
+    val j: JsValue = writeJ(g._1.civ, g._2.journal.toList)
     Json.prettyPrint(j)
   }
 

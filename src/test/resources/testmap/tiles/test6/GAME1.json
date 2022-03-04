@@ -1,0 +1,9 @@
+{
+  "game": [
+    {"command" : "SETCAPITAL","civ" : "Germany", "p" : {"row":2, "col" : 2}},
+    { "command" : "ENDOFPHASE","civ" : "Germany", "param" : "StartOfTurn" },
+    { "command" : "ENDOFPHASE","civ" : "Germany", "param" : "Trade" },
+    { "command" : "ENDOFPHASE","civ" : "Germany", "param" : "CityManagement" },
+    { "command" : "ENDOFPHASE","civ" : "Germany", "param" : "Movement" }
+  ]
+}

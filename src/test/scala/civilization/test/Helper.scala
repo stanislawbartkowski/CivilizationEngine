@@ -17,12 +17,14 @@ object Helper {
 
   val II = Factory.getI
   val RA = Factory.getR
-//  RA.getConn.setConnection("think", 6379, 1)
-  RA.getConn.setConnection("localhost", 6379, 0)
+  RA.getConn.setConnection("thinkarek", 6379, 1)
+//  RA.getConn.setConnection("localhost", 6379, 0)
   II.setR(RA)
 
-  def I = {
-  }
+  //def I = {
+  //}
+
+  def X = {}
 
   private def getBoardS(path: String): String = readTestS("testmap/tiles/" + path)
 

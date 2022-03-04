@@ -3,7 +3,7 @@ package civilization.test
 import civilization.io.fromjson.ImplicitMiximFromJson
 import civilization.io.tojson.ImplicitMiximToJson
 import civilization.objects.{Civilization, P}
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 import civilization.test.Helper._
 import civilization.io.fromjson.toJ
 import play.api.libs.json.JsArray
@@ -11,9 +11,9 @@ import civilization.gameboard.GameBoard
 import civilization.helper.{TradeForCiv, numberofTrade}
 
 
-class Test39 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJson {
+class Test39 extends AnyFunSuite with ImplicitMiximToJson with ImplicitMiximFromJson {
 
-  Helper.I
+  Helper.X
 
   private def verify1(token: String, expectedtrade: Int, expectedprod: Int) = {
     val g: GameBoard = Helper.getBoardToken(token)

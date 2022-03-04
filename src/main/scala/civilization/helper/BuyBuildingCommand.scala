@@ -85,7 +85,7 @@ object BuyBuildingCommand extends CommandPackage with ImplicitMiximFromJson with
         var po: Seq[P] = getStructureHere(p)
         // throw off star building
         if (bui.star.isDefined && star.isDefined && p.p != star.get.p) po = po :+ star.get.p
-        BuildSquare.BuildSquare(BuildingPoint(p.p, Some(bui.name), None, None), po)
+        BuildSquare(BuildingPoint(p.p, Some(bui.name), None, None), po)
       }
     ))
     // remove building on the same place

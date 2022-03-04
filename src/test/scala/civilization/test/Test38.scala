@@ -3,16 +3,16 @@ package civilization.test
 import civilization.io.fromjson.ImplicitMiximFromJson
 import civilization.io.tojson.ImplicitMiximToJson
 import civilization.objects.Civilization
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 import civilization.test.Helper._
 import civilization.io.fromjson.toJ
 import civilization.message.FatalError
 import play.api.libs.json.{JsArray, JsObject, JsValue}
 
 
-class Test38 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJson {
+class Test38 extends AnyFunSuite with ImplicitMiximToJson with ImplicitMiximFromJson {
 
-  Helper.I
+  Helper.X
 
   test("Create and remove game") {
     val reg = Helper.ReadAndPlayForTwo("test37/BOARDGAME1.json", "test37/PLAY1.json", Civilization.America, Civilization.China)

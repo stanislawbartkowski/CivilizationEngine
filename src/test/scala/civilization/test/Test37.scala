@@ -7,15 +7,15 @@ import civilization.io.fromjson._
 import civilization.io.tojson.ImplicitMiximToJson
 import civilization.objects.{Civilization, Command, _}
 import civilization.test.Helper._
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 import civilization.I
 import civilization.action.Command
 import play.api.libs.json.{JsArray, JsNull, JsValue}
 
 
-class Test37 extends FunSuite with ImplicitMiximToJson with ImplicitMiximFromJson {
+class Test37 extends AnyFunSuite with ImplicitMiximToJson with ImplicitMiximFromJson {
 
-  Helper.I
+  Helper.X
 
   test("Writing technology") {
     val reg = Helper.ReadAndPlayForTwo("test37/BOARDGAME1.json", "test37/PLAY1.json", Civilization.America, Civilization.China)

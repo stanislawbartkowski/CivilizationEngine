@@ -6,13 +6,13 @@ import civilization.helper.{MapSquareP, getSquare}
 import civilization.io.fromjson.toJ
 import civilization.io.tojson.ImplicitMiximToJson
 import civilization.objects._
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 import Helper._
 
 
-class Test18 extends FunSuite with ImplicitMiximToJson {
+class Test18 extends AnyFunSuite with ImplicitMiximToJson {
 
-  Helper.I
+  Helper.X
 
   test("Failed battle with village") {
 

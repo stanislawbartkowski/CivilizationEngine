@@ -5,16 +5,16 @@ import civilization.gameboard.GameBoard
 import civilization.io.fromjson.toJ
 import civilization.objects._
 import civilization.{I, RR}
-import org.scalatest.FunSuite
-import org.scalatest.Matchers._
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers._
 import play.api.libs.json.{JsArray, JsValue}
 import Helper.{II,RA}
 import Helper._
 
 
-class Test10 extends FunSuite {
+class Test10 extends AnyFunSuite {
 
-  Helper.I
+  Helper.X
 
   test("Register and unregister") {
     val cu = Helper.getBoardAndRegister("test10/BOARDGAME1.json", Civilization.Rome)

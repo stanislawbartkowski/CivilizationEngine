@@ -1,19 +1,18 @@
 package civilization.test
 
 import civilization.action._
-import civilization.gameboard.GameBoard
 import civilization.helper._
 import civilization.io.fromjson._
 import civilization.message._
 import civilization.objects._
-import org.scalatest.FunSuite
+import civilization.test.Helper._
+import org.scalatest.funsuite.AnyFunSuite
 import play.api.libs.json.JsValue
-import Helper._
 
 
-class Test5 extends FunSuite {
+class Test5 extends AnyFunSuite {
 
-  Helper.I
+  Helper.X
 
   test("Start game") {
     var (token,b) = Helper.readBoardAndPlayT("test5/BOARDGAME1.json", "test5/GAME1.json", Civilization.Germany)
