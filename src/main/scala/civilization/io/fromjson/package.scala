@@ -183,17 +183,6 @@ package object fromjson extends ImplicitMiximFromJson {
     }
   }
 
-  //implicit val commandparamReads: Reads[CommandValues] = new Reads[CommandValues] {
-  //  def reads(json: JsValue): JsResult[CommandValues] = {
-  //  val command: Command.T = (json \ S.command).as[Command.T]
-  //val civ: Civilization.T = (json \ S.civ).as[Civilization.T]
-  //val p: P = (json \ S.p).asOpt[P].getOrElse(null)
-  //val param: JsValue = (json \ S.param).asOpt[JsValue].getOrElse(null)
-  //JsSuccess(CommandValues(command, civ, p, param))
-  //}
-  //}
-
-
   implicit val cityReads: Reads[City] = (
     (JsPath \ S.civ).read[Civilization.T] and (JsPath \ S.citytype).read[City.T]
     ) (City.apply _)

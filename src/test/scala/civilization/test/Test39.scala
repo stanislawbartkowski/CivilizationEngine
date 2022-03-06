@@ -5,8 +5,6 @@ import civilization.io.tojson.ImplicitMiximToJson
 import civilization.objects.{Civilization, P}
 import org.scalatest.funsuite.AnyFunSuite
 import civilization.test.Helper._
-import civilization.io.fromjson.toJ
-import play.api.libs.json.JsArray
 import civilization.gameboard.GameBoard
 import civilization.helper.{TradeForCiv, numberofTrade}
 

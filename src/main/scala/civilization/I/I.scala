@@ -20,6 +20,8 @@ import civilization.II.factory.{Factory}
 
 package object I extends ImplicitMiximFromJson {
 
+  final val CIVVERSTRING: String = "Civilization Engine 1.0, 2022/03/05"
+
   private var r: RAccess = _
 
   def setR(r: RAccess) = {
@@ -35,6 +37,7 @@ package object I extends ImplicitMiximFromJson {
   final val REGISTEROWNERTWOGAME: Int = 6
   final val ITEMIZECOMMAND: Int = 7
   final val GETJOURNAL: Int = 8
+  final val GETCIVVERSION: Int = 9
 
   private val random = new SecureRandom()
 
@@ -103,6 +106,7 @@ package object I extends ImplicitMiximFromJson {
   def getData(what: Int, tokenorciv: String, param: String): String = {
     synchronized {
       what match {
+        case GETCIVVERSION => CIVVERSTRING
         case REGISTEROWNER => registerOwnerPlay(tokenorciv, "GAME1.json")
         case REGISTEROWNERTWOGAME => registerOwnerPlay(tokenorciv, "GAME2.json")
         case GETBOARDGAME => getBoardForCiv(tokenorciv)
