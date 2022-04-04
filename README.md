@@ -41,15 +41,6 @@ The solution is available as Intellij IDEA project. Steps to recreate:
  
  ![](https://github.com/stanislawbartkowski/CivilizationEngine/blob/master/screenshots/Zrzut%20ekranu%20z%202017-08-22%2023-30-13.png)
  
-# Create artifact from command line.
-
-* git clone https://github.com/stanislawbartkowski/CivilizationEngine.git
-* cd CivilizationEngine
-* customize properties: vi build.properties
-* ant 
-* pick up the result: ls out/artifacts/CivilizationEngine/
-IMPORTANT: seems not working properly, IntelliJ ant build does not generate scalac tasks
-
 # Create jar from command line
 
 Install SBT: https://www.scala-sbt.org/1.x/docs/Installing-sbt-on-Linux.html
